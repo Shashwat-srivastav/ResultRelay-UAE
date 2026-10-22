@@ -143,7 +143,7 @@ backend/app/
   static/app/               built frontend (served by the API process)
 evaluation/
   scenarios/                7 synthetic event streams
-  expected_actions/         independently authored acceptable outcomes
+  expected_actions/         the assertions each scenario must satisfy (authorship is declared, not provable)
   report.md, results/       generated artefacts
 knowledge_base/
   source_register.csv      14 sources, with licence and verification status
@@ -239,8 +239,9 @@ assertion itself.
 
 - **Synthetic everything.** No real patient data, no EHR, no SMS gateway, no model provider.
 - **Scenario authorship.** The eight scenarios were written by the same team that built the
-  engine. Expected outcomes were authored separately and marked as such, but that is not
-  independent validation. See `REPORT.md` §6.
+  engine. Expected outcomes are marked with an `authored_independently` flag, but the git history
+  cannot substantiate the authoring order — both landed in the same commit — so treat that flag as a
+  stated intention and not as independent validation. See `REPORT.md` §6.
 - **One partial discriminator.** Scenario S6 separates only `retrieval_only`. It is reported as a
   partial result rather than dressed up as a general one.
 - **No clinical claim.** Nothing here shows a patient outcome improved.

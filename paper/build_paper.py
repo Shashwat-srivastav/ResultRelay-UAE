@@ -211,8 +211,9 @@ add_para(doc,
     f"Evaluation. Eight hand-authored scenarios are run against eleven configurations: the full system, "
     "seven one-flag ablations that each differ from it in exactly one input, and three compound baselines - a "
     "policy-blind baseline with no corpus, a citation-only retrieval baseline, and conventional "
-    "deterministic rules. Expected outcomes were authored separately from the engine, and each is "
-    "marked as such. Three of the ablations are null results and are reported as such: an ablation that "
+    "deterministic rules. Expected outcomes are assertions over observable behaviour rather than over "
+    "internal state names, and each carries a provenance flag; the same team wrote both, as the paper "
+    "says below. Three of the ablations are null results and are reported as such: an ablation that "
     "changes nothing is a fact about the system, not a gap in the table.")
 
 # Regenerate the figure from the manifest first: a hand-kept PNG is how the counts drifted before.
@@ -251,8 +252,8 @@ table(doc, [
     ["S6 jurisdiction conflict", "an Abu Dhabi clause offered as authority for a Dubai case", "3"],
     ["S7 physician-routed genetic result", "the recipient is chosen from a retrieved clause, not a case field", "5"],
 ], widths=[4.4, 10.6, 1.4])
-add_para(doc, f"Table 3. The eight scenarios: {ASSERTION_COUNT} assertions in total, authored separately "
-              "from the engine.", size=8, italic=True, space_after=6)
+add_para(doc, f"Table 3. The eight scenarios: {ASSERTION_COUNT} assertions in total, keyed to observable "
+              "behaviour rather than to internal state names.", size=8, italic=True, space_after=6)
 add_para(doc,
     "Each scenario is also run in the three baselines. The separation is uneven and is reported as "
     "such: S1 discriminates the full system from both retrieval-only and rules baselines, while S6 "
