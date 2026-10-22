@@ -139,6 +139,7 @@ knowledge_base/
 frontend/src/pages/         CaseTimeline, Simulator, StandardsMapping, Evaluation, Audit
 docs/architecture.md        the design, and the distinctions it is built around
 REPORT.md                   results, method and limitations
+paper/ResultRelay_ITU_paper.docx   the five-page submission paper (built by paper/build_paper.py)
 ```
 
 ## The advisory boundary
