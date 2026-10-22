@@ -1,6 +1,6 @@
 {
-  "run_started": "2026-10-22T17:58:47.425347+00:00",
-  "run_finished": "2026-10-22T17:58:47.674306+00:00",
+  "run_started": "2026-10-22T18:00:46.817721+00:00",
+  "run_finished": "2026-10-22T18:00:47.065272+00:00",
   "configurations": {
     "resultrelay": "ResultRelay (policy-governed multi-agent)",
     "policy_blind": "Policy-blind baseline (no knowledge base)",
@@ -29,7 +29,7 @@
         "mean_provenance_completeness": 1.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 5.7
+        "mean_wall_ms": 5.8
       },
       "policy_blind": {
         "label": "Policy-blind baseline (no knowledge base)",
@@ -69,7 +69,7 @@
         "mean_provenance_completeness": 1.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 5.0
+        "mean_wall_ms": 5.1
       },
       "static_rules": {
         "label": "Conventional deterministic rules baseline",
@@ -339,7 +339,7 @@
         "steps": 8,
         "open_questions": 3
       },
-      "wall_ms": 8.7,
+      "wall_ms": 9.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 29,
@@ -692,7 +692,7 @@
         "steps": 8,
         "open_questions": 0
       },
-      "wall_ms": 2.5,
+      "wall_ms": 2.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 30,
@@ -840,7 +840,7 @@
         "steps": 8,
         "open_questions": 2
       },
-      "wall_ms": 5.8,
+      "wall_ms": 6.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 30,
@@ -1185,7 +1185,7 @@
         "steps": 8,
         "open_questions": 0
       },
-      "wall_ms": 2.5,
+      "wall_ms": 2.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 29,
@@ -1330,7 +1330,7 @@
         "steps": 11,
         "open_questions": 5
       },
-      "wall_ms": 8.6,
+      "wall_ms": 8.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 43,
@@ -2475,7 +2475,7 @@
         "steps": 11,
         "open_questions": 2
       },
-      "wall_ms": 3.5,
+      "wall_ms": 3.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 43,
@@ -2665,7 +2665,7 @@
         "steps": 5,
         "open_questions": 3
       },
-      "wall_ms": 5.1,
+      "wall_ms": 4.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 19,
@@ -2921,7 +2921,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 1.7,
+      "wall_ms": 1.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -3033,7 +3033,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 4.2,
+      "wall_ms": 4.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -3395,7 +3395,7 @@
         "steps": 6,
         "open_questions": 3
       },
-      "wall_ms": 5.1,
+      "wall_ms": 4.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -3691,7 +3691,7 @@
         "steps": 6,
         "open_questions": 0
       },
-      "wall_ms": 1.9,
+      "wall_ms": 2.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -3812,7 +3812,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 4.7,
+      "wall_ms": 4.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -4102,7 +4102,7 @@
         "steps": 6,
         "open_questions": 0
       },
-      "wall_ms": 1.9,
+      "wall_ms": 2.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -4426,7 +4426,7 @@
         "steps": 3,
         "open_questions": 0
       },
-      "wall_ms": 1.0,
+      "wall_ms": 0.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 13,
@@ -4514,7 +4514,7 @@
         "steps": 3,
         "open_questions": 2
       },
-      "wall_ms": 2.0,
+      "wall_ms": 2.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 11,
@@ -4799,7 +4799,7 @@
         "steps": 9,
         "open_questions": 4
       },
-      "wall_ms": 6.7,
+      "wall_ms": 7.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 36,
@@ -5198,7 +5198,7 @@
         "steps": 9,
         "open_questions": 0
       },
-      "wall_ms": 2.8,
+      "wall_ms": 2.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 34,
@@ -5366,7 +5366,7 @@
         "steps": 9,
         "open_questions": 2
       },
-      "wall_ms": 6.6,
+      "wall_ms": 6.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 34,
@@ -5758,7 +5758,7 @@
         "steps": 9,
         "open_questions": 1
       },
-      "wall_ms": 3.0,
+      "wall_ms": 2.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 36,
@@ -5923,7 +5923,7 @@
         "steps": 5,
         "open_questions": 3
       },
-      "wall_ms": 3.9,
+      "wall_ms": 3.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -6175,7 +6175,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 1.3,
+      "wall_ms": 1.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -6280,7 +6280,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 3.7,
+      "wall_ms": 3.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -6529,7 +6529,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 1.4,
+      "wall_ms": 1.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,

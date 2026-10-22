@@ -1,10 +1,10 @@
 {
   "manifest_version": "1.0",
-  "generated_at": "2026-10-22T17:58:49.276165+00:00",
+  "generated_at": "2026-10-22T18:00:47.120710+00:00",
   "synthetic_data_only": true,
   "disclaimer": "Demonstration prototype with synthetic data. Not a clinical service and not evidence of clinical safety, effectiveness or regulatory compliance.",
   "knowledge_base": {
-    "built_at": "2026-10-22T17:58:44.502150+00:00",
+    "built_at": "2026-10-22T18:00:43.920361+00:00",
     "chunk_count": 56,
     "index_sha256": "4d467f5ffe8f13cc850f0b994d8be3fc203fc904e380cbdde4e416aee0d1139a",
     "verification": {
@@ -1780,12 +1780,12 @@
         "framework_dimension": "Cross-cutting",
         "framework_index": "Generative AI governance",
         "source_reference": "Report 2.0 (GenAI content index)",
-        "implemented_capability": "No generative model is invoked; the provider interface is present but disabled",
-        "code_location": "backend/app/core/config.py (LLM provider stub)",
-        "evidence": "Deterministic mode is the default and the tested mode",
-        "demonstrating_test": "make test",
-        "status": "NOT_IMPLEMENTED",
-        "limitations": "Generative AI governance is therefore untested. Any future LLM integration must keep the deterministic gate authoritative; this is a design constraint, not a demonstrated control."
+        "implemented_capability": "No generative model is invoked. The advisory boundary is implemented and tested: a model may propose, is refused if offshore or ungrounded, and can never change a gate decision",
+        "code_location": "backend/app/advisers/ (base, residency, guard, stub) ; backend/app/orchestration/gate.py::enforce (advisory attached after the decision)",
+        "evidence": "15 adviser tests including one that asserts the gate decision is byte-identical with and without an accepted proposal; the boundary is closed by default (enable_llm=False)",
+        "demonstrating_test": "backend/tests/test_adviser.py (15 tests)",
+        "status": "PARTIAL",
+        "limitations": "No model client is implemented, by design: the only adviser is a deterministic stub used to exercise containment. Generative-AI behaviour is therefore untested - what is tested is the guard."
       },
       {
         "mapping_id": "R15",
@@ -1804,18 +1804,18 @@
         "framework_dimension": "Data",
         "framework_index": "Cross-border data and model placement",
         "source_reference": "Federal Law 2/2019 Art. 13 and Art. 24 (U1)",
-        "implemented_capability": "Nothing enforced. The design decision is recorded: because Art. 13 covers 'store, process, generate or transform' and Art. 24 sets a AED 500,000-700,000 penalty, an LLM adviser may only be introduced with an in-country endpoint",
-        "code_location": "backend/app/core/config.py (LLM provider stub, disabled) ; knowledge_base/excerpts/U1_ict_health_law.yaml::U1-art13-localisation",
-        "evidence": "The stub is disabled by default and the deterministic gate is the tested path, so the non-compliant deployment is not reachable in the tested configuration",
-        "demonstrating_test": "manual review - no automated test asserts residency, because no model endpoint exists",
-        "status": "NOT_IMPLEMENTED",
-        "limitations": "This is the sharpest open risk in any move from the prototype to a deployed adviser (audit item P0-4). A hosted API model outside the UAE would process health data abroad and fall squarely inside Art. 13."
+        "implemented_capability": "Enforced at the advisory boundary: an out-of-country endpoint is refused with Art. 13/24 cited, and a named Health Authority resolution is the only route to an offshore endpoint",
+        "code_location": "backend/app/advisers/residency.py ; backend/tests/test_adviser.py",
+        "evidence": "classify() treats .ae and loopback as in-country and everything else as out-of-country; unknown is refused",
+        "demonstrating_test": "backend/tests/test_adviser.py::test_an_offshore_endpoint_is_refused_with_the_article_that_refuses_it ; test_a_named_resolution_is_the_only_route_out_of_the_country",
+        "status": "PARTIAL",
+        "limitations": "The check is on the endpoint string, not on traffic; it cannot see DNS, proxies or a model bundled into a desktop app. The 25-year retention and patient-feedback duties remain unimplemented (GR-13, GR-14)."
       }
     ]
   },
   "evaluation": {
-    "run_started": "2026-10-22T17:58:47.425347+00:00",
-    "run_finished": "2026-10-22T17:58:47.674306+00:00",
+    "run_started": "2026-10-22T18:00:46.817721+00:00",
+    "run_finished": "2026-10-22T18:00:47.065272+00:00",
     "scenario_count": 7,
     "run_count": 28,
     "summary": {
@@ -1838,7 +1838,7 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 5.7
+          "mean_wall_ms": 5.8
         },
         "policy_blind": {
           "label": "Policy-blind baseline (no knowledge base)",
@@ -1878,7 +1878,7 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 5.0
+          "mean_wall_ms": 5.1
         },
         "static_rules": {
           "label": "Conventional deterministic rules baseline",

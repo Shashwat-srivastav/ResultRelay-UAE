@@ -8,6 +8,11 @@ No model output reaches an action without passing through this module. The gate:
 4. records what it refused and why.
 
 The gate never reads the free-text rationale of an agent. It reads structured fields.
+
+The same is true of the advisory layer. ``enforce`` accepts an optional
+:class:`~app.advisers.base.AdvisoryRecord` and attaches it to the decision *after* the decision is
+computed, so an adviser can be inspected, scored and disagreed with but cannot influence the
+outcome. The wrapper at the bottom of this module is the only place the two meet.
 """
 
 from __future__ import annotations
@@ -15,6 +20,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from app.advisers.base import AdvisoryRecord
 from app.models.schemas import AgentAssessment, GateDecision, RecommendedAction
 from app.state_machine.states import CaseState
 from app.state_machine.transitions import EventType, MachineContext, evaluate
@@ -84,7 +90,7 @@ def resolve_proposals(assessments: list[AgentAssessment]) -> tuple[RecommendedAc
     return chosen, trace
 
 
-def enforce(
+def _enforce(
     *,
     proposal: RecommendedAction,
     review_revision: str,
@@ -262,6 +268,54 @@ def enforce(
         policy_refs=refs,
         requires_human=result.requires_human,
     )
+
+
+def enforce(
+    *,
+    proposal: RecommendedAction,
+    review_revision: str,
+    ctx: MachineContext,
+    assessments: list[AgentAssessment],
+    config: GateConfig | None = None,
+    kb_available: bool = True,
+    documentation_recorded: bool = False,
+    approvals: dict[str, dict] | None = None,
+    advisory: AdvisoryRecord | None = None,
+) -> GateDecision:
+    """Deterministic decision, with the advisory layer attached afterwards and never before.
+
+    The decision is computed by ``_enforce`` from structured fields only. The advisory record is
+    attached afterwards, together with an explicit note when the adviser disagreed with the gate -
+    which is the interesting case, because the gate is meant to win.
+    """
+    decision = _enforce(
+        proposal=proposal,
+        review_revision=review_revision,
+        ctx=ctx,
+        assessments=assessments,
+        config=config,
+        kb_available=kb_available,
+        documentation_recorded=documentation_recorded,
+        approvals=approvals,
+    )
+    if advisory is None:
+        return decision
+
+    update: dict[str, Any] = {"advisory": advisory.as_dict()}
+    checked = list(decision.conditions_checked)
+    checked.append(f"adviser status: {advisory.status.value} ({advisory.reason})")
+    if advisory.considered and advisory.proposal is not None:
+        candidate = advisory.proposal.candidate_action
+        if candidate is not decision.enforced_action:
+            checked.append(
+                f"adviser proposed {candidate.value}; the gate enforced {decision.enforced_action.value} "
+                "and did not read the proposal while deciding"
+            )
+            update["advisory_overruled"] = True
+        else:
+            checked.append(f"adviser agreed with the gate ({candidate.value}); agreement is not evidence")
+    update["conditions_checked"] = checked
+    return decision.model_copy(update=update)
 
 
 def naive_gate(proposal: RecommendedAction, ctx: MachineContext) -> GateDecision:

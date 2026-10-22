@@ -134,3 +134,8 @@ class GateDecision(BaseModel):
     conditions_checked: list[str] = Field(default_factory=list)
     requires_human: bool = False
     policy_refs: list[str] = Field(default_factory=list)
+    #: The advisory layer's record, attached after the decision was computed. Present only when an
+    #: adviser was configured; never read by the gate.
+    advisory: dict[str, Any] | None = None
+    #: True when an adviser proposed something the gate did not enforce.
+    advisory_overruled: bool = False

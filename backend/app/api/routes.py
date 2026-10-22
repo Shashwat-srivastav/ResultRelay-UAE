@@ -250,6 +250,12 @@ def health() -> dict[str, Any]:
         "real_network_access": REAL_NETWORK_ACCESS,
         "real_ehr_integration": False,
         "llm_provider": "disabled (deterministic mode)",
+        "advisory_boundary": {
+            "status": "closed" if not settings.enable_llm else "open (advisory only)",
+            "can_change_a_decision": False,
+            "residency_rule": "Federal Law 2/2019 Art. 13 - out-of-country processing refused without a Health Authority resolution",
+            "containment_tests": "backend/tests/test_adviser.py",
+        },
         "knowledge_base": kb,
         "settings": describe(),
         "disclaimer": settings.disclaimer,

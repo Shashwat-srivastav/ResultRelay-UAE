@@ -231,6 +231,37 @@ that a genetic result may not go to the patient, and that a clause belongs to an
 
 ---
 
+## 5b. The advisory boundary (a model may propose, never decide)
+
+`backend/app/advisers/` is the only place a model is allowed to exist, and by default nothing does.
+
+```
+case snapshot ──► advisers.guard.advise() ──► AdvisoryRecord ──► gate.enforce(advisory=...)
+                          │                                            │
+                refuse before the model runs                 decision already computed
+                (residency / disabled)                       (advisory attached afterwards)
+```
+
+| check | rule | failure status |
+|---|---|---|
+| boundary | closed unless `RESULTRELAY_ENABLE_LLM` is set *and* an adviser is supplied | `DISABLED` |
+| residency | Art. 13: out-of-country endpoints refused unless a named Health Authority resolution is recorded | `REFUSED_RESIDENCY` |
+| citations resolve | every cited chunk id must exist in the corpus | `REJECTED_UNGROUNDED` |
+| citations apply | every cited chunk must be from the applicable jurisdiction set (Dubai + federal for a Dubai case) | `REJECTED_OUT_OF_JURISDICTION` |
+| shape | the proposal must be over the known action set; an exception is not authority | `REJECTED_MALFORMED` |
+| classification | whatever survives is `PRODUCT_DESIGN_CONTROL`, never policy | `ADVISORY_ONLY` |
+
+The gate computes its decision first and receives the advisory record afterwards, in
+`gate.enforce`. When the adviser disagreed, the record says so (`advisory_overruled`) and the
+conditions list states that the proposal was not read while deciding. The test that matters is
+`test_the_gate_decision_is_identical_with_and_without_an_adviser`: it asserts the enforced action,
+the permitted flag, the invariant and the blocked-action list are unchanged when an accepted
+proposal is attached.
+
+Two honesty notes. The residency check reads the endpoint string; it cannot see DNS, a proxy, or a
+model shipped inside a desktop binary. And no model client is implemented: the only adviser in the
+tree is a deterministic stub, so what is tested is the *guard*, not the quality of any model.
+
 ## 6. Persistence and audit
 
 SQLite via SQLAlchemy, twelve tables: cases, result revisions, events, communication attempts,

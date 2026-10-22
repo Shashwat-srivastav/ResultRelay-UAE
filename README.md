@@ -141,6 +141,15 @@ docs/architecture.md        the design, and the distinctions it is built around
 REPORT.md                   results, method and limitations
 ```
 
+## The advisory boundary
+
+A model may propose; it may never decide. `backend/app/advisers/` holds the containment wrapper:
+the boundary is closed by default, an out-of-country endpoint is refused under Federal Law 2/2019
+Art. 13 unless a named Health Authority resolution is recorded, a proposal citing material outside
+the applicable jurisdiction is rejected, and the deterministic gate computes its decision before it
+sees the proposal at all. `backend/tests/test_adviser.py` asserts the decision is unchanged when an
+accepted proposal is attached. No model client ships in the tree.
+
 ## Honest limitations
 
 - **Synthetic everything.** No real patient data, no EHR, no SMS gateway, no model provider.
@@ -150,8 +159,10 @@ REPORT.md                   results, method and limitations
 - **One partial discriminator.** Scenario S6 separates only `retrieval_only`. It is reported as a
   partial result rather than dressed up as a general one.
 - **No clinical claim.** Nothing here shows a patient outcome improved.
-- **Gaps are published.** Twelve open questions — including "no retrieved source sets an
-  acknowledgment clock" — are in `knowledge_base/gap_register.csv` rather than in a comments file.
+- **Gaps are published.** Fourteen open questions — including "no retrieved source sets an
+  acknowledgment clock", the federal 25-year retention floor this build does not implement, and the
+  absence of any way for a patient to report an inaccurate result — are in
+  `knowledge_base/gap_register.csv` rather than in a comments file.
 
 ## Licence and third-party text
 
