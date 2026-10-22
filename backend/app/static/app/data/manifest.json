@@ -1,14 +1,14 @@
 {
   "manifest_version": "1.0",
-  "generated_at": "2026-10-22T17:58:49.276165+00:00",
+  "generated_at": "2026-10-22T18:14:25.923585+00:00",
   "synthetic_data_only": true,
   "disclaimer": "Demonstration prototype with synthetic data. Not a clinical service and not evidence of clinical safety, effectiveness or regulatory compliance.",
   "knowledge_base": {
-    "built_at": "2026-10-22T17:58:44.502150+00:00",
-    "chunk_count": 56,
-    "index_sha256": "4d467f5ffe8f13cc850f0b994d8be3fc203fc904e380cbdde4e416aee0d1139a",
+    "built_at": "2026-10-22T18:10:59.426747+00:00",
+    "chunk_count": 61,
+    "index_sha256": "bc9ae3e738509b4210d88cab10a97c59b5fa3c1a0c1c4c5a672f126f01dcea8b",
     "verification": {
-      "verified": 56,
+      "verified": 61,
       "unverified": 0,
       "rejected": 0,
       "method": "Each quotation is normalised and required to appear as a contiguous substring of the declared source page. Wrong page or wrong wording is rejected and excluded from the index."
@@ -286,6 +286,27 @@
         "verification_status": "VERIFIED_OFFICIAL",
         "relevant_sections": "Section 4.5.1 (accuracy at aggregate and record level); Section 4.9.10 (entities must implement methods to receive patient feedback regarding inaccurate information); Section 4.9.11 (sanctions for staff violating data-quality policy)",
         "limitations": "Printed page numbers cited (pp. 10, 20). Does not itself prescribe a correction workflow; the append-only revision design is a implementation choice, not a quoted requirement."
+      },
+      {
+        "source_id": "U5",
+        "title": "The UAE Charter for the Development and Use of Artificial Intelligence",
+        "issuing_authority": "United Arab Emirates - UAE Council for Artificial Intelligence and Digital Transactions (published on the official legislation portal)",
+        "jurisdiction": "AE-FED",
+        "document_type": "Public policy (national AI charter)",
+        "document_code": "UAE AI Charter",
+        "version_or_issue": "Issued 10 June 2024",
+        "publication_date": "2024-06-10",
+        "effective_date": "2024-06-10",
+        "revision_or_expiry_date": "",
+        "official_url": "https://uaelegislation.gov.ae/en/policy/details/the-uae-charter-for-the-development-and-use-of-artificial-intelligence",
+        "retrieved_at": "2026-10-22",
+        "applicability": "National guidance on AI development and use. Voluntary: it defers to sectoral law (Principle 12), so for a health-data workflow it frames design expectations but cannot authorise an action.",
+        "legal_or_guidance_status": "OFFICIAL_GUIDANCE (public policy; non-binding, no penalty of its own)",
+        "license_or_reuse_notes": "Official public policy. Retrieved by rendering the portal page (scripted clients get 403); minimal quotation only, full text not redistributed.",
+        "local_file_path": "knowledge_base/.sources/U5.txt",
+        "verification_status": "VERIFIED_OFFICIAL",
+        "relevant_sections": "Introduction; Policy Objectives 1-7; Priorities & Key Components 2 (Safety), 4 (Data Privacy), 5 (Transparency), 6 (Human Oversight), 7 (Governance and Accountability), 12 (Commitment to Treaties and Applicable Laws)",
+        "limitations": "Rendered text carries no printed page numbers, so excerpts are located by principle number only (page 1 sentinel). Classified OFFICIAL_GUIDANCE throughout: nothing here can become binding at the gate."
       }
     ]
   },
@@ -1241,6 +1262,91 @@
       "jurisdiction": "AE-DU",
       "excerpt_status": "VERIFIED_AGAINST_SOURCE",
       "text_sha256": "dc3bae647b0f1863"
+    },
+    {
+      "chunk_id": "U5-p02-safety",
+      "source_id": "U5",
+      "section": "Principle 2 (Safety)",
+      "printed_pages": [
+        1,
+        1
+      ],
+      "pdf_pages": [
+        1,
+        1
+      ],
+      "claim_classification": "OFFICIAL_GUIDANCE",
+      "jurisdiction": "AE-FED",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "4d73495658a27e30"
+    },
+    {
+      "chunk_id": "U5-p06-human-oversight",
+      "source_id": "U5",
+      "section": "Principle 6 (Human Oversight)",
+      "printed_pages": [
+        1,
+        1
+      ],
+      "pdf_pages": [
+        1,
+        1
+      ],
+      "claim_classification": "OFFICIAL_GUIDANCE",
+      "jurisdiction": "AE-FED",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "c93f797d224b2844"
+    },
+    {
+      "chunk_id": "U5-p07-governance-accountability",
+      "source_id": "U5",
+      "section": "Principle 7 (Governance and Accountability)",
+      "printed_pages": [
+        1,
+        1
+      ],
+      "pdf_pages": [
+        1,
+        1
+      ],
+      "claim_classification": "OFFICIAL_GUIDANCE",
+      "jurisdiction": "AE-FED",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "d0975d6e058d5c4b"
+    },
+    {
+      "chunk_id": "U5-p05-transparency",
+      "source_id": "U5",
+      "section": "Principle 5 (Transparency)",
+      "printed_pages": [
+        1,
+        1
+      ],
+      "pdf_pages": [
+        1,
+        1
+      ],
+      "claim_classification": "OFFICIAL_GUIDANCE",
+      "jurisdiction": "AE-FED",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "bb7658472d27aaad"
+    },
+    {
+      "chunk_id": "U5-p12-applicable-laws",
+      "source_id": "U5",
+      "section": "Principle 12 (Commitment to Treaties and Applicable Laws)",
+      "printed_pages": [
+        1,
+        1
+      ],
+      "pdf_pages": [
+        1,
+        1
+      ],
+      "claim_classification": "OFFICIAL_GUIDANCE",
+      "jurisdiction": "AE-FED",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "012af16b93c6c094"
     }
   ],
   "gaps": [
@@ -1686,7 +1792,7 @@
         "source_reference": "Report 2.0 \u00a72",
         "implemented_capability": "Typed agent contracts, documented scoping, testable orchestration",
         "code_location": "backend/app/agents/ ; backend/tests/",
-        "evidence": "37 backend tests covering invariants, agents, retrieval, API and scenarios",
+        "evidence": "129 backend tests covering invariants, agents, retrieval, the advisory guard, API and scenarios",
         "demonstrating_test": "make test",
         "status": "IMPLEMENTED",
         "limitations": "Skills readiness of an adopting facility is not assessed."
@@ -1744,24 +1850,24 @@
         "framework_dimension": "AI Policy",
         "framework_index": "Sandbox",
         "source_reference": "Report 2.0 \u00a72",
-        "implemented_capability": "Synthetic-only sandbox with seeded scenarios, replay and audit export",
+        "implemented_capability": "Synthetic-only test sandbox with seeded scenarios, replay and audit export",
         "code_location": "evaluation/scenarios/ ; backend/app/evaluation/runner.py",
         "evidence": "28 runs across 7 scenarios; replay signature comparison",
         "demonstrating_test": "make eval",
-        "status": "IMPLEMENTED",
-        "limitations": "Sandbox fidelity to a real laboratory is low: no real EHR, no real patients, no real clinician behaviour."
+        "status": "PARTIAL",
+        "limitations": "This is an internal test harness, not participation in a regulatory sandbox. 'Sandbox' in the reviewed framework means a supervised environment sanctioned by a regulator, which this is not."
       },
       {
         "mapping_id": "R12",
         "framework_dimension": "Cross-cutting",
         "framework_index": "Human interaction and supervision",
         "source_reference": "Report 2.0 (human interaction theme); Y.3172 human supervision",
-        "implemented_capability": "Named supervisor role, approval-gated corrected-result communication, escalation queue",
+        "implemented_capability": "Named supervisor role in the workflow; approval-gated corrected-result communication; escalation queue",
         "code_location": "backend/app/agents/escalation.py ; frontend/src/pages/Simulator.tsx",
         "evidence": "Approval required before a correction is re-communicated; withheld actions recorded",
         "demonstrating_test": "backend/tests/test_scenarios.py::test_correction_requires_approval",
-        "status": "IMPLEMENTED",
-        "limitations": "Supervision is simulated; no real supervisor identity, no authentication."
+        "status": "PARTIAL",
+        "limitations": "Supervision is simulated. There is no authenticated supervisor identity, so the role is a field in a record rather than a person who can be held to account - the oversight is structural, not attributable, which is why this row is PARTIAL and not IMPLEMENTED."
       },
       {
         "mapping_id": "R13",
@@ -1780,12 +1886,12 @@
         "framework_dimension": "Cross-cutting",
         "framework_index": "Generative AI governance",
         "source_reference": "Report 2.0 (GenAI content index)",
-        "implemented_capability": "No generative model is invoked; the provider interface is present but disabled",
-        "code_location": "backend/app/core/config.py (LLM provider stub)",
-        "evidence": "Deterministic mode is the default and the tested mode",
-        "demonstrating_test": "make test",
-        "status": "NOT_IMPLEMENTED",
-        "limitations": "Generative AI governance is therefore untested. Any future LLM integration must keep the deterministic gate authoritative; this is a design constraint, not a demonstrated control."
+        "implemented_capability": "No generative model is invoked. The advisory boundary is implemented and tested: a model may propose, is refused if offshore or ungrounded, and can never change a gate decision",
+        "code_location": "backend/app/advisers/ (base, residency, guard, stub) ; backend/app/orchestration/gate.py::enforce (advisory attached after the decision)",
+        "evidence": "15 adviser tests including one that asserts the gate decision is byte-identical with and without an accepted proposal; the boundary is closed by default (enable_llm=False)",
+        "demonstrating_test": "backend/tests/test_adviser.py (15 tests)",
+        "status": "PARTIAL",
+        "limitations": "No model client is implemented, by design: the only adviser is a deterministic stub used to exercise containment. Generative-AI behaviour is therefore untested - what is tested is the guard."
       },
       {
         "mapping_id": "R15",
@@ -1804,18 +1910,18 @@
         "framework_dimension": "Data",
         "framework_index": "Cross-border data and model placement",
         "source_reference": "Federal Law 2/2019 Art. 13 and Art. 24 (U1)",
-        "implemented_capability": "Nothing enforced. The design decision is recorded: because Art. 13 covers 'store, process, generate or transform' and Art. 24 sets a AED 500,000-700,000 penalty, an LLM adviser may only be introduced with an in-country endpoint",
-        "code_location": "backend/app/core/config.py (LLM provider stub, disabled) ; knowledge_base/excerpts/U1_ict_health_law.yaml::U1-art13-localisation",
-        "evidence": "The stub is disabled by default and the deterministic gate is the tested path, so the non-compliant deployment is not reachable in the tested configuration",
-        "demonstrating_test": "manual review - no automated test asserts residency, because no model endpoint exists",
-        "status": "NOT_IMPLEMENTED",
-        "limitations": "This is the sharpest open risk in any move from the prototype to a deployed adviser (audit item P0-4). A hosted API model outside the UAE would process health data abroad and fall squarely inside Art. 13."
+        "implemented_capability": "Enforced at the advisory boundary: an out-of-country endpoint is refused with Art. 13/24 cited, and a named Health Authority resolution is the only route to an offshore endpoint",
+        "code_location": "backend/app/advisers/residency.py ; backend/tests/test_adviser.py",
+        "evidence": "classify() treats .ae and loopback as in-country and everything else as out-of-country; unknown is refused",
+        "demonstrating_test": "backend/tests/test_adviser.py::test_an_offshore_endpoint_is_refused_with_the_article_that_refuses_it ; test_a_named_resolution_is_the_only_route_out_of_the_country",
+        "status": "PARTIAL",
+        "limitations": "The check is on the endpoint string, not on traffic; it cannot see DNS, proxies or a model bundled into a desktop app. The 25-year retention and patient-feedback duties remain unimplemented (GR-13, GR-14)."
       }
     ]
   },
   "evaluation": {
-    "run_started": "2026-10-22T17:58:47.425347+00:00",
-    "run_finished": "2026-10-22T17:58:47.674306+00:00",
+    "run_started": "2026-10-22T18:11:02.406291+00:00",
+    "run_finished": "2026-10-22T18:11:02.674265+00:00",
     "scenario_count": 7,
     "run_count": 28,
     "summary": {
@@ -1838,30 +1944,10 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 5.7
+          "mean_wall_ms": 6.3
         },
         "policy_blind": {
           "label": "Policy-blind baseline (no knowledge base)",
-          "runs": 7,
-          "assertions_passed": 23,
-          "assertions_total": 27,
-          "assertion_pass_rate": 0.852,
-          "scenarios_fully_safe": 3,
-          "workflows_completed": 4,
-          "false_closures": 0,
-          "false_deliveries": 0,
-          "stale_ack_uses": 2,
-          "unauthorised_channels": 1,
-          "scope_violations": 1,
-          "audit_findings": 0,
-          "comparator_cited_as_binding": 0,
-          "mean_provenance_completeness": 0.0,
-          "replay_reproducible": true,
-          "audit_chains_valid": true,
-          "mean_wall_ms": 2.1
-        },
-        "retrieval_only": {
-          "label": "Citation-only RAG baseline",
           "runs": 7,
           "assertions_passed": 23,
           "assertions_total": 27,
@@ -1872,13 +1958,33 @@
           "false_deliveries": 0,
           "stale_ack_uses": 2,
           "unauthorised_channels": 1,
+          "scope_violations": 1,
+          "audit_findings": 0,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 0.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 2.3
+        },
+        "retrieval_only": {
+          "label": "Citation-only RAG baseline",
+          "runs": 7,
+          "assertions_passed": 23,
+          "assertions_total": 27,
+          "assertion_pass_rate": 0.852,
+          "scenarios_fully_safe": 3,
+          "workflows_completed": 6,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 2,
+          "unauthorised_channels": 1,
           "scope_violations": 0,
           "audit_findings": 0,
           "comparator_cited_as_binding": 6,
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 5.0
+          "mean_wall_ms": 5.4
         },
         "static_rules": {
           "label": "Conventional deterministic rules baseline",
@@ -1898,7 +2004,7 @@
           "mean_provenance_completeness": 0.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 2.1
+          "mean_wall_ms": 2.2
         }
       },
       "by_scenario": {
@@ -2052,17 +2158,17 @@
             "failed_assertions": []
           },
           "policy_blind": {
-            "final_state": "DELIVERY_CONFIRMED",
+            "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
             "safe": false,
-            "completed": false,
+            "completed": true,
             "failed_assertions": [
               "stale_ack_not_used_for_current_revision"
             ]
           },
           "retrieval_only": {
-            "final_state": "DELIVERY_CONFIRMED",
+            "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
             "safe": false,
-            "completed": false,
+            "completed": true,
             "failed_assertions": [
               "stale_ack_not_used_for_current_revision"
             ]

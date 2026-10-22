@@ -5,6 +5,8 @@ import Simulator from "./pages/Simulator";
 import StandardsMapping from "./pages/StandardsMapping";
 import Evaluation from "./pages/Evaluation";
 import Audit from "./pages/Audit";
+import Trace from "./pages/Trace";
+import Compare from "./pages/Compare";
 
 const NAV = [
   {
@@ -13,6 +15,8 @@ const NAV = [
       { to: "/", label: "Console", exact: true },
       { to: "/cases", label: "Case timeline" },
       { to: "/simulator", label: "Simulator" },
+      { to: "/compare", label: "Side-by-side" },
+      { to: "/trace", label: "Decision trace" },
     ],
   },
   {
@@ -29,6 +33,8 @@ const TITLES: Record<string, { kicker: string; title: string }> = {
   "/": { kicker: "Result communication", title: "Console" },
   "/cases": { kicker: "Case layer", title: "Case timeline" },
   "/simulator": { kicker: "Scenario runner", title: "Simulator" },
+  "/compare": { kicker: "Same scenario, two configurations", title: "Side-by-side" },
+  "/trace": { kicker: "Artefacts, not self-report", title: "Decision trace" },
   "/standards": { kicker: "Evidence layer", title: "Standards & gaps" },
   "/evaluation": { kicker: "Evidence layer", title: "Evaluation" },
   "/audit": { kicker: "Audit layer", title: "Audit trail" },
@@ -108,6 +114,8 @@ export default function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/cases" element={<CaseTimeline />} />
             <Route path="/simulator" element={<Simulator />} />
+        <Route path="/compare" element={<Compare />} />
+        <Route path="/trace" element={<Trace />} />
             <Route path="/standards" element={<StandardsMapping />} />
             <Route path="/evaluation" element={<Evaluation />} />
             <Route path="/audit" element={<Audit />} />

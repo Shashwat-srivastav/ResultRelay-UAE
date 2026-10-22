@@ -167,3 +167,55 @@ def test_gap_register_and_mappings_are_served(client):
 
 def test_missing_case_is_404(client):
     assert client.get("/api/cases/NOPE").status_code == 404
+
+
+# --------------------------------------------------------------------------- store reconciliation
+def test_the_store_reconciles_against_its_audit_chain(client):
+    """H-3: the runtime is in memory, so the store must be checkable against something durable."""
+    started = _start(client)
+    run_id = started["run"]["run_id"]
+    case_id = started["run"]["case_id"]
+    client.post(f"/api/runs/{run_id}/play")
+
+    body = client.get(f"/api/cases/{case_id}/integrity").json()
+    assert body["chain_valid"] is True
+    assert body["reconciled"] is True, body["findings"]
+    assert body["store_state"] == body["replayed_state"]
+    assert body["transition_count"] >= 1
+    assert body["audit_entry_count"] >= 1
+
+
+def test_divergence_between_store_and_replay_is_reported_not_repaired(client):
+    """Point the replayed state away from the stored state and the endpoint must say so."""
+    from sqlalchemy import select
+
+    from app.models.db import CaseRow, session
+
+    started = _start(client)
+    run_id = started["run"]["run_id"]
+    case_id = started["run"]["case_id"]
+    client.post(f"/api/runs/{run_id}/play")
+
+    s = session()
+    try:
+        case = s.get(CaseRow, case_id)
+        assert case is not None
+        original = case.current_state
+        case.current_state = "COMMUNICATION_DOCUMENTED" if original != "COMMUNICATION_DOCUMENTED" else "RESULT_DRAFT"
+        s.commit()
+    finally:
+        s.close()
+
+    body = client.get(f"/api/cases/{case_id}/integrity").json()
+    assert body["reconciled"] is False
+    assert any("replaying the persisted transitions yields" in f for f in body["findings"])
+
+    # put the row back so the failure does not leak into other tests through the shared database
+    s = session()
+    try:
+        case = s.get(CaseRow, case_id)
+        assert case is not None
+        case.current_state = original
+        s.commit()
+    finally:
+        s.close()

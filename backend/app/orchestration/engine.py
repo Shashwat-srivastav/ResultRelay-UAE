@@ -18,6 +18,7 @@ Agents never see future events and never see each other's raw context.
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -196,6 +197,26 @@ class Runtime:
             )
             for a in self.acknowledgments
         ]
+
+
+def configure_adviser() -> Any:
+    """Return the configured adviser, or None.
+
+    Off unless ``RESULTRELAY_ADVISE_URL`` names an endpoint inside the State. The client applies the
+    Article 13 residency check in its constructor, so a misconfigured deployment fails at start-up
+    rather than at the first patient.
+    """
+    url = os.environ.get("RESULTRELAY_ADVISE_URL")
+    if not url:
+        return None
+    from app.advisers.llm import HttpTransport, OpenAICompatibleAdviser
+
+    return OpenAICompatibleAdviser(
+        base_url=url,
+        model=os.environ.get("RESULTRELAY_ADVISE_MODEL", "local-model"),
+        transport=HttpTransport(),
+        resolution_ref=os.environ.get("RESULTRELAY_RESIDENCY_RESOLUTION") or None,
+    )
 
 
 def _parse_minutes(at: Any) -> float | None:
@@ -754,6 +775,21 @@ class Orchestrator:
             require_evidence_for_high_risk=rt.config.use_kb,
             block_on_jurisdiction_violation=rt.config.applicability_filter,
         )
+        advisory = None
+        if os.environ.get("RESULTRELAY_ADVISE") == "1":
+            from app.advisers import advise
+
+            adviser = configure_adviser()
+            advisory = advise(
+                jurisdiction=rt.jurisdiction,
+                situation=f"{spec.get('summary', '')} {proposal.value}",
+                evidence=[c.model_dump() for a in assessments for c in a.applicable_sources],
+                adviser=adviser,
+                endpoint=os.environ.get("RESULTRELAY_ADVISE_URL"),
+                resolution_ref=os.environ.get("RESULTRELAY_RESIDENCY_RESOLUTION") or None,
+                enabled=True if adviser is not None else False,
+            )
+            result["advisory"] = advisory.as_dict()
         if rt.config.use_invariants:
             gate = enforce(
                 proposal=proposal,
@@ -764,6 +800,7 @@ class Orchestrator:
                 kb_available=rt.config.use_kb,
                 documentation_recorded=(rt.documentation_recorded or proposal == RecommendedAction.RECORD_DOCUMENTATION),
                 approvals=rt.approvals,
+                advisory=advisory,
             )
         else:
             gate = naive_gate(proposal, self.machine_context(event, evidence=evidence))

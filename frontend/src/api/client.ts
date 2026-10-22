@@ -26,6 +26,8 @@ export const api = {
   playRun: (runId: string) => req<any>(`/runs/${runId}/play`, { method: "POST" }),
   getRun: (runId: string) => req<any>(`/runs/${runId}`),
   auditBundle: (runId: string) => req<any>(`/runs/${runId}/audit`),
+  trace: (runId: string) => req<any>(`/runs/${runId}/trace`),
+  listTraces: () => req<any[]>("/runs"),
   channels: (runId: string) => req<any>(`/channels?run_id=${runId}`),
   sources: () => req<any>("/kb/sources"),
   search: (q: string, opts: { jurisdiction?: string; scope?: string; claim?: string } = {}) => {
