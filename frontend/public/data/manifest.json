@@ -1,10 +1,10 @@
 {
   "manifest_version": "1.0",
-  "generated_at": "2026-10-22T18:00:47.120710+00:00",
+  "generated_at": "2026-10-22T18:04:57.708728+00:00",
   "synthetic_data_only": true,
   "disclaimer": "Demonstration prototype with synthetic data. Not a clinical service and not evidence of clinical safety, effectiveness or regulatory compliance.",
   "knowledge_base": {
-    "built_at": "2026-10-22T18:00:43.920361+00:00",
+    "built_at": "2026-10-22T18:04:54.467064+00:00",
     "chunk_count": 56,
     "index_sha256": "4d467f5ffe8f13cc850f0b994d8be3fc203fc904e380cbdde4e416aee0d1139a",
     "verification": {
@@ -1686,7 +1686,7 @@
         "source_reference": "Report 2.0 \u00a72",
         "implemented_capability": "Typed agent contracts, documented scoping, testable orchestration",
         "code_location": "backend/app/agents/ ; backend/tests/",
-        "evidence": "37 backend tests covering invariants, agents, retrieval, API and scenarios",
+        "evidence": "129 backend tests covering invariants, agents, retrieval, the advisory guard, API and scenarios",
         "demonstrating_test": "make test",
         "status": "IMPLEMENTED",
         "limitations": "Skills readiness of an adopting facility is not assessed."
@@ -1744,24 +1744,24 @@
         "framework_dimension": "AI Policy",
         "framework_index": "Sandbox",
         "source_reference": "Report 2.0 \u00a72",
-        "implemented_capability": "Synthetic-only sandbox with seeded scenarios, replay and audit export",
+        "implemented_capability": "Synthetic-only test sandbox with seeded scenarios, replay and audit export",
         "code_location": "evaluation/scenarios/ ; backend/app/evaluation/runner.py",
         "evidence": "28 runs across 7 scenarios; replay signature comparison",
         "demonstrating_test": "make eval",
-        "status": "IMPLEMENTED",
-        "limitations": "Sandbox fidelity to a real laboratory is low: no real EHR, no real patients, no real clinician behaviour."
+        "status": "PARTIAL",
+        "limitations": "This is an internal test harness, not participation in a regulatory sandbox. 'Sandbox' in the reviewed framework means a supervised environment sanctioned by a regulator, which this is not."
       },
       {
         "mapping_id": "R12",
         "framework_dimension": "Cross-cutting",
         "framework_index": "Human interaction and supervision",
         "source_reference": "Report 2.0 (human interaction theme); Y.3172 human supervision",
-        "implemented_capability": "Named supervisor role, approval-gated corrected-result communication, escalation queue",
+        "implemented_capability": "Named supervisor role in the workflow; approval-gated corrected-result communication; escalation queue",
         "code_location": "backend/app/agents/escalation.py ; frontend/src/pages/Simulator.tsx",
         "evidence": "Approval required before a correction is re-communicated; withheld actions recorded",
         "demonstrating_test": "backend/tests/test_scenarios.py::test_correction_requires_approval",
-        "status": "IMPLEMENTED",
-        "limitations": "Supervision is simulated; no real supervisor identity, no authentication."
+        "status": "PARTIAL",
+        "limitations": "Supervision is simulated. There is no authenticated supervisor identity, so the role is a field in a record rather than a person who can be held to account - the oversight is structural, not attributable, which is why this row is PARTIAL and not IMPLEMENTED."
       },
       {
         "mapping_id": "R13",
@@ -1814,8 +1814,8 @@
     ]
   },
   "evaluation": {
-    "run_started": "2026-10-22T18:00:46.817721+00:00",
-    "run_finished": "2026-10-22T18:00:47.065272+00:00",
+    "run_started": "2026-10-22T18:04:57.413890+00:00",
+    "run_finished": "2026-10-22T18:04:57.653821+00:00",
     "scenario_count": 7,
     "run_count": 28,
     "summary": {
@@ -1838,7 +1838,7 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 5.8
+          "mean_wall_ms": 5.5
         },
         "policy_blind": {
           "label": "Policy-blind baseline (no knowledge base)",
@@ -1858,7 +1858,7 @@
           "mean_provenance_completeness": 0.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 2.1
+          "mean_wall_ms": 2.0
         },
         "retrieval_only": {
           "label": "Citation-only RAG baseline",
@@ -1878,7 +1878,7 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 5.1
+          "mean_wall_ms": 5.0
         },
         "static_rules": {
           "label": "Conventional deterministic rules baseline",
