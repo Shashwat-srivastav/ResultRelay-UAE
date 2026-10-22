@@ -1,10 +1,10 @@
 {
   "manifest_version": "1.0",
-  "generated_at": "2026-10-22T18:16:36.403012+00:00",
+  "generated_at": "2026-10-22T18:16:45.485517+00:00",
   "synthetic_data_only": true,
   "disclaimer": "Demonstration prototype with synthetic data. Not a clinical service and not evidence of clinical safety, effectiveness or regulatory compliance.",
   "knowledge_base": {
-    "built_at": "2026-10-22T18:16:32.838889+00:00",
+    "built_at": "2026-10-22T18:16:41.969400+00:00",
     "chunk_count": 63,
     "index_sha256": "dcbfca95322c3ab632f71e6b5bf5aaa0fd17187771c805b44f4a9d95b7e7a288",
     "verification": {
@@ -1944,18 +1944,30 @@
         "framework_dimension": "Data",
         "framework_index": "Cross-border data and model placement",
         "source_reference": "Federal Law 2/2019 Art. 13 and Art. 24 (U1)",
-        "implemented_capability": "Enforced at the advisory boundary: an out-of-country endpoint is refused with Art. 13/24 cited, and a named Health Authority resolution is the only route to an offshore endpoint",
-        "code_location": "backend/app/advisers/residency.py ; backend/tests/test_adviser.py",
-        "evidence": "classify() treats .ae and loopback as in-country and everything else as out-of-country; unknown is refused",
-        "demonstrating_test": "backend/tests/test_adviser.py::test_an_offshore_endpoint_is_refused_with_the_article_that_refuses_it ; test_a_named_resolution_is_the_only_route_out_of_the_country",
-        "status": "PARTIAL",
-        "limitations": "The check is on the endpoint string, not on traffic; it cannot see DNS, proxies or a model bundled into a desktop app. The 25-year retention and patient-feedback duties remain unimplemented (GR-13, GR-14)."
+        "implemented_capability": "Enforced at two boundaries: the advisory guard refuses an offshore endpoint before any data is shaped, and the model client refuses to construct against an endpoint outside the State",
+        "code_location": "backend/app/advisers/residency.py ; backend/app/advisers/llm.py ; backend/app/advisers/guard.py",
+        "evidence": "classify() treats .ae and loopback as in-country and everything else as out-of-country; unknown is refused; the client raises PermissionError at construction",
+        "demonstrating_test": "backend/tests/test_llm_adviser.py::test_an_offshore_endpoint_is_refused_before_any_data_is_shaped ; tests/test_adviser.py (residency cases)",
+        "status": "IMPLEMENTED",
+        "limitations": "Checks the endpoint string, not traffic: it cannot see DNS, a proxy, or a model bundled into a desktop app. No in-country endpoint is configured in this build, so the control is tested but not exercised live."
+      },
+      {
+        "mapping_id": "R17",
+        "framework_dimension": "Cross-cutting",
+        "framework_index": "Traceability and explainability",
+        "source_reference": "UAE AI Charter P5 (Transparency) and P7 (Governance and Accountability) - OFFICIAL_GUIDANCE; ITU AI Readiness Report 2.0 (transparency theme)",
+        "implemented_capability": "Every step is published as ordered artefacts: event, retrieved evidence with claim class, per-agent proposal with derived confidence and its basis, gate conditions and invariant, transition, resulting state",
+        "code_location": "backend/app/api/routes.py::run_trace ; frontend/src/pages/Trace.tsx ; GET /api/runs/{id}/trace",
+        "evidence": "Traces are generated from the run itself; the page runs any scenario under two configurations side by side and flags citations outside the case jurisdiction",
+        "demonstrating_test": "tests/test_api.py (trace endpoint) ; tests/test_adviser.py::test_the_gate_decision_is_identical_with_and_without_an_adviser",
+        "status": "IMPLEMENTED",
+        "limitations": "Artefacts, not reasoning. Raw model chain-of-thought is deliberately not published: it is unverifiable and invites trust in prose over evidence."
       }
     ]
   },
   "evaluation": {
-    "run_started": "2026-10-22T18:16:36.074380+00:00",
-    "run_finished": "2026-10-22T18:16:36.346013+00:00",
+    "run_started": "2026-10-22T18:16:45.148463+00:00",
+    "run_finished": "2026-10-22T18:16:45.428665+00:00",
     "scenario_count": 7,
     "run_count": 28,
     "summary": {
@@ -1978,7 +1990,7 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 6.4
+          "mean_wall_ms": 6.5
         },
         "policy_blind": {
           "label": "Policy-blind baseline (no knowledge base)",
@@ -2018,7 +2030,7 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 5.5
+          "mean_wall_ms": 5.8
         },
         "static_rules": {
           "label": "Conventional deterministic rules baseline",
@@ -2038,7 +2050,7 @@
           "mean_provenance_completeness": 0.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 2.4
+          "mean_wall_ms": 2.3
         }
       },
       "by_scenario": {
