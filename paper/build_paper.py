@@ -201,6 +201,9 @@ add_para(doc,
     "deterministic rules. Expected outcomes were authored separately from the engine, and each is "
     "marked as such.")
 
+# Regenerate the figure from the manifest first: a hand-kept PNG is how the counts drifted before.
+import subprocess, sys
+subprocess.run([sys.executable, str(ROOT / "paper" / "make_figure.py")], check=True)
 doc.add_picture(str(ROOT / "paper" / "figure1_pipeline.png"), width=Cm(16.4))
 doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
 add_para(doc, "Figure 1. Where the constraints sit. The corpus and the jurisdiction layer bound what the "

@@ -1,9 +1,18 @@
 #!/usr/bin/env python3
 """Figure 1: where the constraints sit in the pipeline."""
+import json
+from pathlib import Path
+
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+
+# Counts come from the built manifest, never from a literal, so the figure cannot drift from the corpus.
+ROOT = Path(__file__).resolve().parent.parent
+_manifest = json.loads((ROOT / "frontend/public/data/manifest.json").read_text())
+_SOURCES = len(_manifest["knowledge_base"]["sources"])
+_EXCERPTS = len(_manifest["excerpts"])
 
 fig, ax = plt.subplots(figsize=(9.4, 3.9), dpi=300)
 ax.set_xlim(0, 100); ax.set_ylim(0, 40); ax.axis("off")
@@ -21,7 +30,7 @@ def arrow(p1, p2, ls="-", color="#222222"):
                                  shrinkA=0, shrinkB=0))
 
 Y, H = 25, 12
-box(1,  Y, 17, H, "Corpus", "14 sources\n63 verified excerpts")
+box(1,  Y, 17, H, "Corpus", f"{_SOURCES} sources\n{_EXCERPTS} verified excerpts")
 box(23, Y, 17, H, "Agents", "structured\nassessments only")
 box(45, Y, 17, H, "Deterministic gate", "state machine\n+ invariants")
 box(67, Y, 17, H, "Transport", "attempt ≠ delivery\n≠ acknowledgment")
@@ -44,5 +53,6 @@ ax.text(64.5, 9.0,
         ha="left", va="center", fontsize=6.4, style="italic", color="#8a4b00", linespacing=1.4)
 
 plt.tight_layout(pad=0.2)
-fig.savefig("figure1_pipeline.png", bbox_inches="tight", facecolor="white")
-print("figure written")
+out = ROOT / "paper" / "figure1_pipeline.png"
+fig.savefig(out, bbox_inches="tight", facecolor="white")
+print(f"figure -> {out} ({_SOURCES} sources, {_EXCERPTS} excerpts)")
