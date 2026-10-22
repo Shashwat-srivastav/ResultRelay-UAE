@@ -1,6 +1,6 @@
 {
-  "run_started": "2026-10-22T18:30:08.245770+00:00",
-  "run_finished": "2026-10-22T18:30:08.528565+00:00",
+  "run_started": "2026-10-22T18:41:36.346195+00:00",
+  "run_finished": "2026-10-22T18:41:36.627098+00:00",
   "configurations": {
     "resultrelay": "ResultRelay (policy-governed multi-agent)",
     "policy_blind": "Policy-blind baseline (no knowledge base)",
@@ -29,7 +29,7 @@
         "mean_provenance_completeness": 1.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 6.8
+        "mean_wall_ms": 6.4
       },
       "policy_blind": {
         "label": "Policy-blind baseline (no knowledge base)",
@@ -49,7 +49,7 @@
         "mean_provenance_completeness": 0.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 2.4
+        "mean_wall_ms": 2.3
       },
       "retrieval_only": {
         "label": "Citation-only RAG baseline",
@@ -339,7 +339,7 @@
         "steps": 8,
         "open_questions": 3
       },
-      "wall_ms": 11.2,
+      "wall_ms": 10.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 29,
@@ -840,7 +840,7 @@
         "steps": 8,
         "open_questions": 2
       },
-      "wall_ms": 6.4,
+      "wall_ms": 6.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 30,
@@ -1185,7 +1185,7 @@
         "steps": 8,
         "open_questions": 0
       },
-      "wall_ms": 3.0,
+      "wall_ms": 2.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 29,
@@ -1330,7 +1330,7 @@
         "steps": 11,
         "open_questions": 4
       },
-      "wall_ms": 11.6,
+      "wall_ms": 9.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 43,
@@ -1811,7 +1811,7 @@
         "steps": 11,
         "open_questions": 1
       },
-      "wall_ms": 3.8,
+      "wall_ms": 4.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 41,
@@ -2003,7 +2003,7 @@
         "steps": 11,
         "open_questions": 3
       },
-      "wall_ms": 9.4,
+      "wall_ms": 10.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 41,
@@ -2921,7 +2921,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 1.9,
+      "wall_ms": 1.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -3033,7 +3033,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 4.4,
+      "wall_ms": 4.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -3286,7 +3286,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 1.7,
+      "wall_ms": 1.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 19,
@@ -3395,7 +3395,7 @@
         "steps": 6,
         "open_questions": 3
       },
-      "wall_ms": 5.8,
+      "wall_ms": 5.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -4102,7 +4102,7 @@
         "steps": 6,
         "open_questions": 0
       },
-      "wall_ms": 2.3,
+      "wall_ms": 2.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -5198,7 +5198,7 @@
         "steps": 9,
         "open_questions": 0
       },
-      "wall_ms": 3.5,
+      "wall_ms": 3.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 34,
@@ -5366,7 +5366,7 @@
         "steps": 9,
         "open_questions": 2
       },
-      "wall_ms": 7.4,
+      "wall_ms": 7.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 34,
@@ -5758,7 +5758,7 @@
         "steps": 9,
         "open_questions": 1
       },
-      "wall_ms": 3.1,
+      "wall_ms": 3.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 36,
@@ -6280,7 +6280,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 5.2,
+      "wall_ms": 4.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -6529,7 +6529,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 1.6,
+      "wall_ms": 1.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,

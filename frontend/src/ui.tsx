@@ -4,10 +4,28 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 /* primitives                                                          */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Does this chip's text read as an identifier rather than a phrase?
+ *
+ * Identifiers (states, events, clause numbers, digests) belong in the mono face so their characters
+ * line up and 0/O is unambiguous; phrases ("needs a human") belong in the sans face, because mono at
+ * 11px slows word recognition. This is a heuristic with a narrow job, not a parser.
+ */
+export function looksLikeIdentifier(node: React.ReactNode): boolean {
+  if (typeof node !== "string") return false;
+  const s = node.trim();
+  if (!s || s.length > 64) return false;
+  if (/^[A-Z0-9_.[\]|/§:+-]+(?: [A-Z0-9_.[\]|/§:+-]+)*$/.test(s)) return true; // ALL_CAPS / codes
+  if (/^[a-z0-9-]+(?:\.[a-z0-9-]+)+$/.test(s)) return true; // dotted.paths, never prose
+  if (/^[A-Z]{2,}-[A-Za-z0-9-]+$/.test(s)) return true; // RUN-abc123, SYN-CASE-007
+  if (/^#[\w-]+/.test(s)) return true; // #19
+  return false;
+}
+
 export function Chip({
   children,
   tone = "neutral",
-  mono = true,
+  mono,
   title,
 }: {
   children: React.ReactNode;
@@ -15,8 +33,9 @@ export function Chip({
   mono?: boolean;
   title?: string;
 }) {
+  const useMono = mono ?? looksLikeIdentifier(children);
   return (
-    <span className={`chip ${tone}${mono ? "" : " sans"}`} title={title}>
+    <span className={`chip ${tone}${useMono ? " mono" : ""}`} title={title}>
       {children}
     </span>
   );

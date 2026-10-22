@@ -165,6 +165,13 @@ the UI has to render in a sandbox with no network, so nothing is fetched from a 
 Initial JS is ~246 kB gzipped 75; three.js is a separate lazy chunk (131 kB gzip) that only downloads
 when a scene mounts.
 
+Type and colour are self-hosted and measured, not asserted: **Inter** and **JetBrains Mono** ship in
+`frontend/public/fonts/` (SIL OFL 1.1, licences alongside) and are served from `/fonts`, and
+`python3 scripts/check_contrast.py` verifies 35 foreground/background pairs against WCAG AA — including
+the 3:1 floor for control boundaries and focus rings. It runs as part of `make check`. The audit that
+produced it, including the three failures it found after the first pass, is
+[`docs/design/05-typography-and-colour.md`](docs/design/05-typography-and-colour.md).
+
 ## Deployment boundary (read before hosting this)
 
 This build has **no authentication**. Every endpoint returns case data to anyone who can reach it.

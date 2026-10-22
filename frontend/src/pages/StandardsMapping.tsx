@@ -64,7 +64,16 @@ function Sources() {
         <span className="tiny muted">{q.data.manifest.engine}</span>
       </div>
       <div className="table-wrap" style={{ maxHeight: 560 }}>
-        <table>
+        {/* Fixed column widths: with auto layout the long classification chip took the space it
+            wanted and squeezed the document title into a 10-line column beside 400px of empty table. */}
+        <table className="table-fixed">
+          <colgroup>
+            <col style={{ width: 74 }} />
+            <col />
+            <col style={{ width: 112 }} />
+            <col style={{ width: 300 }} />
+            <col style={{ width: 78 }} />
+          </colgroup>
           <thead>
             <tr>
               <th>Source</th>
@@ -87,9 +96,17 @@ function Sources() {
                 </td>
                 <td className="mono tiny">{r.jurisdiction}</td>
                 <td>
+                  {/* The register stores the class plus its scope in one string ("BINDING_REQUIREMENT
+                      (within Abu Dhabi); OUT-OF-JURISDICTION COMPARATOR for a Dubai case"). A chip is
+                      for the token; the scope is a sentence and belongs in text, not in a badge. */}
                   <Chip tone={CLAIM_TONE[r.legal_or_guidance_status] ?? "neutral"}>
-                    {r.legal_or_guidance_status}
+                    {String(r.legal_or_guidance_status).split(/[\s;(]/)[0]}
                   </Chip>
+                  {String(r.legal_or_guidance_status).slice(String(r.legal_or_guidance_status).split(/[\s;(]/)[0].length).replace(/^[\s;(]+/, "").length > 0 && (
+                    <div className="tiny muted" style={{ marginTop: 4, lineHeight: 1.45 }}>
+                      {String(r.legal_or_guidance_status).slice(String(r.legal_or_guidance_status).split(/[\s;(]/)[0].length).replace(/^[\s;(]+/, "").replace(/\)$/, "")}
+                    </div>
+                  )}
                   <div className="tiny muted" style={{ marginTop: 3 }}>
                     {r.verification_status}
                   </div>

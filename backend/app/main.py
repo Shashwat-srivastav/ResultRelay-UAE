@@ -62,6 +62,11 @@ if STATIC_DIR.exists():
     # download it with curl and check the claims without the server being involved.
     if (STATIC_DIR / "data").exists():
         app.mount("/data", StaticFiles(directory=STATIC_DIR / "data"), name="data")
+    # Self-hosted webfonts. Without this mount every font request fell through to the SPA catch-all
+    # below and came back as index.html with a text/html content type, so the browser rejected the
+    # font and silently substituted a system face — the UI looked "fine" while using the wrong type.
+    if (STATIC_DIR / "fonts").exists():
+        app.mount("/fonts", StaticFiles(directory=STATIC_DIR / "fonts"), name="fonts")
 
     @app.get("/{full_path:path}")
     def spa(full_path: str):

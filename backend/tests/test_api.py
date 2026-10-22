@@ -8,6 +8,9 @@ nothing is served from frontend state.
 from __future__ import annotations
 
 import json
+from pathlib import Path
+
+import pytest
 
 
 def _start(client, scenario="S1-ambiguous-delivery", config="resultrelay"):
@@ -219,3 +222,21 @@ def test_divergence_between_store_and_replay_is_reported_not_repaired(client):
         s.commit()
     finally:
         s.close()
+
+
+def test_self_hosted_fonts_are_served_as_fonts(client):
+    """The SPA catch-all used to answer /fonts/* with index.html, so every font silently fell back.
+
+    A font that 200s as text/html is worse than a 404: nothing logs, nothing breaks, and the whole
+    typographic system is quietly replaced by DejaVu.
+    """
+    STATIC = Path(__file__).resolve().parents[1] / "app" / "static" / "app"
+    if not (STATIC / "fonts").exists():
+        pytest.skip("frontend not built: no static fonts to serve")
+    for name in ("inter-var-latin.woff2", "jetbrains-mono-var-latin.woff2"):
+        r = client.get(f"/fonts/{name}")
+        assert r.status_code == 200, name
+        assert r.headers["content-type"] in {"font/woff2", "application/font-woff2", "application/octet-stream"}, (
+            f"{name} served as {r.headers['content-type']}"
+        )
+        assert r.content[:4] == b"wOF2", f"{name} is not a woff2 payload"

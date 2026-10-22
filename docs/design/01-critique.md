@@ -85,11 +85,16 @@ Measured, not eyeballed:
 |---|---|---|---|
 | sidebar group label `#61707d` | on `#0d1419` | **3.64:1** | 4.5:1 |
 | `--ink-3 #6b7684` | on `--bg #f6f7f9` | **4.31:1** | 4.5:1 |
+| sidebar footer `#61707d` | on `#0d1419` | **3.64:1** | 4.5:1 (found in pass 2) |
+| input border `#e2e6eb` | on white | **1.25:1** | 3:1 for a control boundary (1.4.11) |
+| focus ring on inputs `#7fb8ae` | on white | **2.24:1** | 3:1 for a focus indicator (2.4.11) |
 | `--ink-3` | on `#ffffff` | 4.62:1 | 4.5:1 (passes, barely) |
 
 The 11px uppercase labels fail at the smallest size in the system, which is the worst place to fail.
 
-- **Fix:** `#61707d → #8b97a3` (5.9:1), `--ink-3 → #5d6875` (5.6:1 on bg). Labels never below 12px.
+- **Fix:** all four pairs above are closed. `scripts/check_contrast.py` now asserts 35 pairs and runs
+  inside `make check`, so the palette cannot drift back. Labels are 11.5px minimum, not 10.5px.
+  Details and the negative control: `05-typography-and-colour.md`.
 
 ### S5 — No focus discipline (High)
 
@@ -160,7 +165,7 @@ The mark is a rounded div with "R". It says nothing about relay, governance, or 
 | Information architect | 5/10 | 8/10 | lead metric, live status strip, rows lead somewhere |
 | Interaction designer | 5/10 | 8/10 | microstates, keyboard, continuity |
 | Motion director | 3/10 | 8/10 | one language, reduced-motion parity |
-| Accessibility lead | 5/10 | 8/10 | contrast fixed, focus ring, skip link, ARIA on disclosures |
+| Accessibility lead | 5/10 | 8/10 | contrast fixed and now *checked in CI*, focus ring, skip link, ARIA on disclosures |
 | Domain reviewer | 6/10 | 9/10 | semantic colour contract restored; claim adjacent to evidence |
 
 Not 10/10 on any seat: there is no user testing with real laboratory staff, and no screen-reader pass

@@ -1,3 +1,33 @@
+/* ============================================================================
+   Typefaces — self-hosted, SIL OFL 1.1 (see public/fonts/OFL-*.txt)
+
+   Inter was already named in the stack but never loaded: it sat behind -apple-system, so on Linux and
+   in the container it silently rendered as DejaVu Sans. A typeface that is only referenced is not a
+   typeface. Both faces are variable, latin-subset, ~48 KB and ~40 KB, served from the same origin.
+   ========================================================================= */
+
+@font-face {
+  font-family: "InterVar";
+  src: url("/fonts/inter-var-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+                 U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+                 U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "JetBrainsMonoVar";
+  src: url("/fonts/jetbrains-mono-var-latin.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+                 U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+                 U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   --bg: #f6f7f9;
   --panel: #ffffff;
@@ -14,8 +44,8 @@
   --bad-soft: #fbeceb;
   --info: #1f4e79;
   --info-soft: #eaf1f8;
-  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
-  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+  --mono: "JetBrainsMonoVar", ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: "InterVar", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --radius: 10px;
   --shadow: 0 1px 2px rgba(16, 22, 29, 0.05), 0 8px 24px rgba(16, 22, 29, 0.04);
 }
@@ -30,20 +60,38 @@ body {
   color: var(--ink);
   font-family: var(--sans);
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* Never let the browser invent a bold or an italic we did not licence or test. */
+  font-synthesis: none;
+}
+/* Tabular figures were being applied to every glyph on the page, which widens prose for no reason
+   (Inter's tabular figures are monospaced and sit looser). They now apply only where digits align. */
+td, th, .num, .display, .tnum, .metric .value, .metric-sm .v, .tnum-only, .mono, code {
+  font-variant-numeric: tabular-nums;
 }
 
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+h1, h2, h3, h4 {
+  margin: 0; font-weight: 620; letter-spacing: -0.012em; text-wrap: balance;
+}
+p { text-wrap: pretty; }
 h1 { font-size: 24px; }
 h2 { font-size: 17px; }
 h3 { font-size: 14px; }
 p { margin: 0; }
 
-code, .mono { font-family: var(--mono); font-size: 12px; }
+code, .mono {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: -0.01em;
+  /* Slashed zero: these strings are ids, hashes and clause numbers, where 0/O confusion is a defect. */
+  font-feature-settings: "zero" 1;
+}
 
 /* ---------- layout ---------- */
 
@@ -69,11 +117,11 @@ code, .mono { font-family: var(--mono); font-size: 12px; }
   display: grid; place-items: center; flex: none;
 }
 .brand-name { color: #fff; font-weight: 650; letter-spacing: -0.01em; font-size: 15px; }
-.brand-sub { color: #7f8b96; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.09em; }
+.brand-sub { color: var(--brand-sub-ink); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.1em; }
 
 .nav-group { display: flex; flex-direction: column; gap: 2px; }
 .nav-label {
-  color: #61707d; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--nav-label); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.1em;
   padding: 8px 10px 4px; font-weight: 600;
 }
 .nav-item {
@@ -86,7 +134,7 @@ code, .mono { font-family: var(--mono); font-size: 12px; }
 .nav-item .dot { width: 6px; height: 6px; border-radius: 50%; background: #2b3a45; flex: none; }
 .nav-item.active .dot { background: #34c6a8; }
 
-.sidebar-foot { margin-top: auto; font-size: 11px; color: #61707d; line-height: 1.45; padding: 10px; border-top: 1px solid #1b2630; }
+.sidebar-foot { margin-top: auto; font-size: 11.5px; color: var(--sidebar-foot-ink); line-height: 1.45; padding: 10px; border-top: 1px solid #1b2630; }
 
 .main { min-width: 0; display: flex; flex-direction: column; }
 
@@ -96,7 +144,7 @@ code, .mono { font-family: var(--mono); font-size: 12px; }
   backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 20;
 }
 .topbar-title { display: flex; flex-direction: column; gap: 2px; }
-.topbar-title .kicker { font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; }
+.topbar-title .kicker { font-size: 11.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; }
 
 .content { padding: 24px 26px 60px; max-width: 1500px; }
 
@@ -135,7 +183,7 @@ code, .mono { font-family: var(--mono); font-size: 12px; }
 .panel-body.flush { padding: 0; }
 
 .metric { padding: 14px 16px; }
-.metric .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-3); font-weight: 600; }
+.metric .label { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-3); font-weight: 600; }
 .metric .value { font-size: 26px; font-weight: 620; letter-spacing: -0.02em; margin-top: 4px; font-variant-numeric: tabular-nums; }
 .metric .sub { font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
 .metric.clickable { cursor: pointer; }
@@ -146,14 +194,24 @@ code, .mono { font-family: var(--mono); font-size: 12px; }
 
 .chip {
   display: inline-flex; align-items: center; gap: 5px; max-width: 100%;
-  padding: 2px 7px; border-radius: 5px; font-size: 11px; font-weight: 550;
-  border: 1px solid transparent; white-space: nowrap; font-family: var(--mono);
+  padding: 2px 8px; border-radius: 5px; font-size: 11.5px; font-weight: 550;
+  letter-spacing: 0.005em; line-height: 1.45;
+  border: 1px solid transparent; white-space: nowrap; font-family: var(--sans);
 }
-.chip.neutral { background: #f1f3f5; color: var(--ink-2); border-color: var(--line); }
-.chip.ok { background: var(--accent-soft); color: #0a5a50; border-color: #cbe6df; }
-.chip.warn { background: var(--warn-soft); color: var(--warn); border-color: #f2e0c2; }
-.chip.bad { background: var(--bad-soft); color: var(--bad); border-color: #f2d3d1; }
-.chip.info { background: var(--info-soft); color: var(--info); border-color: #d3e2f0; }
+/* Identifiers stay in the mono face; prose in a chip does not. Mixing the two made every label
+   look like code and cost 4px of reading speed per row. */
+.chip.mono {
+  font-family: var(--mono);
+  font-size: 11.5px;      /* was 11px: mixed rows sat on different baselines */
+  letter-spacing: -0.02em;
+  font-feature-settings: "zero" 1;
+  line-height: 1.45;
+}
+.chip.neutral { background: var(--chip-neutral-bg); color: var(--ink-2); border-color: var(--line); }
+.chip.ok { background: var(--accent-soft); color: var(--ok-ink); border-color: #cbe6df; }
+.chip.warn { background: var(--warn-soft); color: var(--warn-ink); border-color: #f2e0c2; }
+.chip.bad { background: var(--bad-soft); color: var(--bad-ink); border-color: #f2d3d1; }
+.chip.info { background: var(--info-soft); color: var(--info-ink); border-color: #d3e2f0; }
 .chip.outline { background: transparent; color: var(--ink-3); border-color: var(--line); }
 .chip.sans { font-family: var(--sans); }
 
@@ -174,20 +232,30 @@ button { font-family: inherit; }
   border: 1px solid var(--line); background: #fff; color: var(--ink); cursor: pointer;
   transition: background 0.12s, border-color 0.12s;
 }
-.btn:hover:not(:disabled) { background: #f5f7f8; border-color: #d3d9df; }
+.btn:hover:not(:disabled) { background: #f5f7f8; border-color: var(--line-control); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.btn.primary:hover:not(:disabled) { background: #0a5d53; border-color: #0a5d53; }
+.btn.primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
 .btn.danger { background: var(--bad); border-color: var(--bad); color: #fff; }
 .btn.small { padding: 4px 9px; font-size: 12px; }
 .btn.ghost { background: transparent; border-color: transparent; color: var(--ink-2); }
 
 input, select, textarea {
   font-family: inherit; font-size: 13px; padding: 7px 10px; border-radius: 7px;
-  border: 1px solid var(--line); background: #fff; color: var(--ink); width: 100%;
+  /* 1.25:1 for the old border was below the 3:1 that WCAG 1.4.11 requires for the only visible
+     boundary of a control. --line-control is 3.1:1 on white. */
+  border: 1px solid var(--line-control); background: #fff; color: var(--ink); width: 100%;
+  line-height: 1.45;
 }
-input:focus, select:focus, textarea:focus, button:focus-visible, .nav-item:focus-visible {
-  outline: 2px solid #7fb8ae; outline-offset: 1px;
+input:hover, select:hover, textarea:hover { border-color: #6f7b88; }
+input:focus-visible, select:focus-visible, textarea:focus-visible,
+button:focus-visible, .nav-item:focus-visible, a:focus-visible {
+  /* 6.4:1 on white; the old #7fb8ae ring was 2.24:1 and effectively invisible. */
+  outline: 2px solid var(--focus-ring); outline-offset: 2px;
+}
+/* iOS zooms any focused field under 16px. The trace and simulator are used on tablets. */
+@media (max-width: 620px) {
+  input, select, textarea { font-size: 16px; }
 }
 .field { display: flex; flex-direction: column; gap: 5px; }
 .field label { font-size: 11.5px; font-weight: 600; color: var(--ink-2); }
@@ -196,19 +264,27 @@ input:focus, select:focus, textarea:focus, button:focus-visible, .nav-item:focus
 
 table { width: 100%; border-collapse: collapse; }
 th {
-  text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--ink-3); font-weight: 650; padding: 9px 12px; border-bottom: 1px solid var(--line);
-  background: #fbfcfd; position: sticky; top: 0; z-index: 1;
+  text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--ink-3); font-weight: 620; padding: 9px 12px; border-bottom: 1px solid var(--line);
+  background: #fbfcfd; position: sticky; top: 0; z-index: 1; line-height: 1.4;
 }
-td { padding: 9px 12px; border-bottom: 1px solid var(--line-2); vertical-align: top; font-size: 12.5px; }
+/* A long classification is information, not a label: let it wrap inside its own column rather than
+   reserving the width of the widest string in the table. */
+td .chip { white-space: normal; }
+.table-fixed { table-layout: fixed; }
+
+td {
+  padding: 9px 12px; border-bottom: 1px solid var(--line-2); vertical-align: top;
+  font-size: 12.5px; line-height: 1.45; font-variant-numeric: tabular-nums;
+}
 tr:last-child td { border-bottom: 0; }
-tbody tr:hover { background: #fafbfc; }
+tbody tr:hover { background: #f7f9fa; }
 .table-wrap { overflow: auto; }
 .num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: 12px; }
 .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .muted { color: var(--ink-3); }
-.small { font-size: 12px; }
-.tiny { font-size: 11px; }
+.small { font-size: 12.5px; line-height: 1.45; }
+.tiny { font-size: 11.5px; line-height: 1.5; }
 
 /* ---------- misc ---------- */
 
@@ -216,10 +292,10 @@ tbody tr:hover { background: #fafbfc; }
   display: flex; gap: 10px; align-items: flex-start; padding: 10px 14px; border-radius: 8px;
   font-size: 12.5px; border: 1px solid; line-height: 1.45;
 }
-.banner.info { background: var(--info-soft); border-color: #d3e2f0; color: #1b4468; }
-.banner.warn { background: var(--warn-soft); border-color: #f2e0c2; color: #7c4900; }
-.banner.bad { background: var(--bad-soft); border-color: #f2d3d1; color: #8a1f24; }
-.banner.ok { background: var(--accent-soft); border-color: #cbe6df; color: #0a5a50; }
+.banner.info { background: var(--info-soft); border-color: #d3e2f0; color: var(--info-ink); }
+.banner.warn { background: var(--warn-soft); border-color: #f2e0c2; color: var(--warn-ink); }
+.banner.bad { background: var(--bad-soft); border-color: #f2d3d1; color: var(--bad-ink); }
+.banner.ok { background: var(--accent-soft); border-color: #cbe6df; color: var(--ok-ink); }
 
 .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--line); overflow-x: auto; }
 .tab {
@@ -269,6 +345,12 @@ hr.sep { border: 0; border-top: 1px solid var(--line-2); margin: 12px 0; }
 
 /* Keep four configuration columns readable in the evaluation matrix. */
 .matrix-table td, .matrix-table th { white-space: normal; }
+/* Five configuration columns in a fixed layout: without this the state text pushed the last
+   column past the panel edge and clipped mid-word instead of wrapping. */
+.matrix-fixed { table-layout: fixed; width: 100%; }
+.matrix-fixed td, .matrix-fixed th { word-break: normal; overflow-wrap: anywhere; }
+/* Assertion keys are snake_case tokens with no spaces; without overflow-wrap they extend past the
+   panel instead of breaking, which is how a table row ends up clipped mid-word. */
 .matrix-table td > div.row { flex-wrap: wrap; }
 
 /* ============================================================================
@@ -279,8 +361,26 @@ hr.sep { border: 0; border-top: 1px solid var(--line-2); margin: 12px 0; }
 :root {
   /* Contrast fixes (measured, WCAG AA). v1 values in comments. */
   --ink-3: #5d6875;          /* was #6b7684 — 4.31:1 on --bg, failed */
-  --ink-4: #7b8694;          /* disabled / decorative only, never body text */
+  --ink-4: #6f7b88;          /* decorative only; 4.7:1 so it is still readable if used by mistake */
   --nav-label: #8b97a3;      /* was #61707d — 3.64:1 on shell, failed */
+  --sidebar-foot-ink: #8b97a3; /* same failure, second occurrence */
+
+  /* Status ink: the text colour a chip or banner puts on its own fill. Measured, not picked. */
+  --ok-ink: #0a5a50;
+  --warn-ink: #7c4900;
+  --bad-ink: #8a1f24;
+  --info-ink: #1b4468;
+  --step-pip-ink: #084e45;
+  --chip-neutral-bg: #f1f3f5;
+  --accent-hover: #0a5d53;
+
+  /* Non-text contrast (WCAG 1.4.11 / 2.4.11): control boundaries and focus indicators. */
+  --line-control: #818d99;   /* 3.39:1 on white, 3.12:1 on canvas — the old --line was 1.25:1 */
+  --focus-ring: #0b6b5f;     /* 6.40:1 on white, 5.91:1 on canvas */
+  --focus-ring-dark: #8ef0dc;/* 13.8:1 on the sidebar */
+  --scene-caption: #8fa3b3;  /* 7.2:1 on the 3-D panel */
+  --scene-hint: #93a6b4;     /* 7.5:1 on the 3-D panel; was #6d7f8d at 4.1:1 */
+  --brand-sub-ink: #7f8b96;  /* 5.3:1 on the sidebar */
   --bg: #f4f6f8;
   --shell: #0d1419;
 
@@ -315,7 +415,7 @@ hr.sep { border: 0; border-top: 1px solid var(--line-2); margin: 12px 0; }
   outline-offset: 2px;
   border-radius: 6px;
 }
-.sidebar :focus-visible { outline-color: #8ef0dc; outline-offset: 2px; }
+.sidebar :focus-visible { outline-color: var(--focus-ring-dark); outline-offset: 2px; }
 .skip-link {
   position: absolute; left: 12px; top: -48px; z-index: 60;
   background: var(--ink); color: #fff; padding: 8px 14px; border-radius: 8px;
@@ -325,7 +425,7 @@ hr.sep { border: 0; border-top: 1px solid var(--line-2); margin: 12px 0; }
 .skip-link:focus-visible { top: 12px; }
 
 /* ---------- shell ---------- */
-.nav-label { color: var(--nav-label); }
+.nav-label { color: var(--nav-label); font-size: 11.5px; }
 .nav-item { transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease); }
 .brand-mark { box-shadow: 0 0 0 1px rgba(142,240,220,.18) inset; }
 
@@ -359,7 +459,7 @@ hr.sep { border: 0; border-top: 1px solid var(--line-2); margin: 12px 0; }
 
 /* Interactive rows: a row that leads somewhere must say so. */
 tr.rowlink { cursor: pointer; transition: background var(--t-fast) var(--ease); }
-tr.rowlink:hover { background: #f7faf9; }
+tr.rowlink:hover { background: #f2f7f5; }
 tr.rowlink:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 tr.rowlink .go { opacity: 0; transform: translateX(-3px); transition: opacity var(--t-fast) var(--ease), transform var(--t-fast) var(--ease); }
 tr.rowlink:hover .go, tr.rowlink:focus-visible .go { opacity: 1; transform: none; }
@@ -409,9 +509,9 @@ tr.rowlink:hover .go, tr.rowlink:focus-visible .go { opacity: 1; transform: none
 .pipeline3d canvas { display: block; width: 100%; height: 170px; }
 .pipeline3d .cap {
   position: absolute; left: 14px; top: 11px; font-family: var(--mono); font-size: var(--fs-11);
-  color: #7f93a3; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--scene-caption); letter-spacing: .06em; text-transform: uppercase;
 }
-.pipeline3d .hint { position: absolute; right: 14px; top: 11px; font-size: var(--fs-11); color: #6d7f8d; }
+.pipeline3d .hint { position: absolute; right: 14px; top: 11px; font-size: var(--fs-11); color: var(--scene-hint); }
 
 /* ---------- step timeline (trace) ---------- */
 .step-rail { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -421,7 +521,7 @@ tr.rowlink:hover .go, tr.rowlink:focus-visible .go { opacity: 1; transform: none
   transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
 .step-pip:hover { border-color: #cbd5dd; }
-.step-pip[aria-current="true"] { background: var(--accent-soft); border-color: #b9dcd4; color: #084e45; font-weight: 600; }
+.step-pip[aria-current="true"] { background: var(--accent-soft); border-color: #b9dcd4; color: var(--step-pip-ink); font-weight: 600; }
 
 /* ---------- accessibility: reduced motion parity ---------- */
 @media (prefers-reduced-motion: reduce) {

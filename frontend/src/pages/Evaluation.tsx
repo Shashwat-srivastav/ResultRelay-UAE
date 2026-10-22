@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "../api/client";
-import { Banner, Chip, Empty, Panel, Spinner, Skeleton, statusTone, useAsync } from "../ui";
+import { Banner, Chip, Empty, Panel, Spinner, Skeleton, fmtTime, statusTone, useAsync } from "../ui";
 
 const ASSERTION_LABELS: Record<string, string> = {
   no_delivery_without_matched_receipt: "No delivery without a matched receipt",
@@ -59,7 +59,7 @@ export default function Evaluation() {
 
       <Panel
         title="Evaluation run"
-        hint={report ? `${report.run_count ?? "—"} runs · ${report.run_finished ?? "—"} finished` : "no results loaded"}
+        hint={report ? `${report.run_count ?? "—"} runs · finished ${fmtTime(report.run_finished)}` : "no results loaded"}
         action={
           <button className="btn primary small" onClick={runAll} disabled={running}>
             {running ? <Spinner /> : "Run 7 × 4 matrix"}
@@ -196,7 +196,13 @@ function PerScenario({ runs }: { runs: any[] }) {
   return (
     <Panel title="Assertion matrix" hint="passed / total, per scenario and configuration" flush>
       <div className="table-wrap">
-        <table className="matrix-table">
+        <table className="matrix-table matrix-fixed">
+          <colgroup>
+            <col style={{ width: 210 }} />
+            {configs.map((c) => (
+              <col key={c} />
+            ))}
+          </colgroup>
           <thead>
             <tr>
               <th>Scenario</th>
@@ -208,7 +214,7 @@ function PerScenario({ runs }: { runs: any[] }) {
           <tbody>
             {scenarios.map((s) => (
               <tr key={s}>
-                <td className="mono tiny">{s}</td>
+                <td className="mono tiny" style={{ overflowWrap: "anywhere" }}>{s}</td>
                 {configs.map((c) => {
                   const r = get(s, c);
                   if (!r) return <td key={c} className="muted">—</td>;
@@ -216,18 +222,22 @@ function PerScenario({ runs }: { runs: any[] }) {
                   const failed = entries.filter(([, ok]) => !ok);
                   return (
                     <td key={c}>
-                      <div className="row" style={{ gap: 6 }}>
+                      <div className="row" style={{ gap: 6, flexWrap: "wrap" }}>
                         <Chip tone={failed.length === 0 ? "ok" : failed.length >= 3 ? "bad" : "warn"}>
                           {r.assertions_passed}/{r.assertions_total}
                         </Chip>
                         {r.final_state && (
-                          <span className="mono tiny muted" title={r.final_state}>
+                          <span
+                            className="mono tiny muted"
+                            title={r.final_state}
+                            style={{ overflowWrap: "anywhere", whiteSpace: "normal" }}
+                          >
                             {r.final_state}
                           </span>
                         )}
                       </div>
                       {failed.length > 0 && (
-                        <div className="tiny" style={{ color: "var(--bad)", marginTop: 3 }}>
+                        <div className="tiny" style={{ color: "var(--bad)", marginTop: 3, overflowWrap: "anywhere" }}>
                           {failed.map(([k]) => k).join(", ")}
                         </div>
                       )}

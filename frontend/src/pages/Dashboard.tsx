@@ -212,8 +212,13 @@ export default function Dashboard() {
                 </div>
                 <div className="spread">
                   <span className="muted small">Retrieval</span>
-                  <span className="small mono truncate" style={{ maxWidth: 190, textAlign: "right" }} title={health.data.knowledge_base.engine}>
-                    {health.data.knowledge_base.engine}
+                  <span
+                    className="small mono"
+                    style={{ textAlign: "right" }}
+                    title={health.data.knowledge_base.engine}
+                  >
+                    {String(health.data.knowledge_base.engine).split(/[\s(]/)[0]}
+                    <span className="muted"> · deterministic</span>
                   </span>
                 </div>
                 <div className="spread">

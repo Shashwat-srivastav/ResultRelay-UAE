@@ -25,11 +25,14 @@ const TONE_BY_LAYER: Record<string, string> = {
 
 export default function CaseTimeline() {
   const [params, setParams] = useSearchParams();
-  const selected = params.get("case");
+  const selectedParam = params.get("case");
   const [tab, setTab] = useState<"layers" | "events" | "transitions" | "evidence">("layers");
   const [layerFilter, setLayerFilter] = useState<"all" | string>("all");
 
   const list = useAsync<{ cases: any[]; count: number }>(() => api.cases(), []);
+  // Arriving without a selection used to show two rows and a grey instruction — a dead end on the
+  // page whose whole job is inspection. Default to the most recently updated case instead.
+  const selected = selectedParam ?? list.data?.cases?.[0]?.case_id ?? null;
   const detail = useAsync<any>(
     () => (selected ? api.caseDetail(selected) : Promise.resolve(null)),
     [selected]
@@ -70,9 +73,9 @@ export default function CaseTimeline() {
                   <th>Configuration</th>
                   <th>State</th>
                   <th>Revision</th>
-                  <th className="num">Acks</th>
+                  <th>Acknowledgment</th>
                   <th>Delivery</th>
-                  <th>Escalations</th>
+                  <th className="num">Escalations</th>
                 </tr>
               </thead>
               <tbody>
@@ -87,14 +90,23 @@ export default function CaseTimeline() {
                     <td><Chip tone={r.configuration === "resultrelay" ? "ok" : "neutral"}>{r.configuration}</Chip></td>
                     <td><Chip tone={stateTone(r.current_state)}>{r.current_state}</Chip></td>
                     <td className="mono tiny">{r.current_revision_id ?? "—"}</td>
-                    <td className="num">
-                      {r.acknowledgment_count}
-                      {r.acknowledgment_count > 0 && (
-                        <span title={r.acknowledges_current ? "acknowledgement bound to current revision" : "acknowledgement bound to a superseded revision"}>
-                          {" "}
+                    <td>
+                      {r.acknowledgment_count === 0 ? (
+                        <span className="muted small">none</span>
+                      ) : (
+                        <span
+                          className="row"
+                          style={{ gap: 6 }}
+                          title={
+                            r.acknowledges_current
+                              ? "acknowledgement bound to the current revision"
+                              : "acknowledgement bound to a superseded revision"
+                          }
+                        >
                           <Chip tone={r.acknowledges_current ? "ok" : "bad"}>
-                            {r.acknowledges_current ? "current" : "stale"}
+                            {r.acknowledges_current ? "current rev" : "stale rev"}
                           </Chip>
+                          <span className="tiny muted tnum">{r.acknowledgment_count}</span>
                         </span>
                       )}
                     </td>
@@ -105,7 +117,7 @@ export default function CaseTimeline() {
                         <span className="muted">none</span>
                       )}
                     </td>
-                    <td className="num">{r.escalation_count || <span className="muted">0</span>}</td>
+                    <td className="num">{r.escalation_count || 0}</td>
                   </tr>
                 ))}
               </tbody>
@@ -180,18 +192,24 @@ export default function CaseTimeline() {
                     {LAYERS.filter((l) => layerFilter === "all" || l.id === layerFilter).map((l) => {
                       const items = grouped[l.id] ?? [];
                       return (
-                        <div key={l.id} className="panel" style={{ boxShadow: "none" }}>
-                          <div className="panel-head">
-                            <div className="row">
-                              <span
-                                style={{
-                                  width: 8, height: 8, borderRadius: 2, background: TONE_BY_LAYER[l.id],
-                                }}
-                              />
-                              <h2 style={{ fontSize: 13 }}>{l.label}</h2>
-                              <span className="hint">{items.length} event{items.length === 1 ? "" : "s"}</span>
+                        <div key={l.id} className="panel" style={{ boxShadow: "none", alignSelf: "start" }}>
+                          <div className="panel-head" style={{ alignItems: "flex-start" }}>
+                            <div>
+                              <div className="row">
+                                <span
+                                  style={{
+                                    width: 8, height: 8, borderRadius: 2, background: TONE_BY_LAYER[l.id],
+                                  }}
+                                />
+                                <h2 style={{ fontSize: 13 }}>{l.label}</h2>
+                                <span className="hint">{items.length} event{items.length === 1 ? "" : "s"}</span>
+                              </div>
+                              {/* The blurb is a sentence, not a label: give it a line under the title
+                                  instead of truncating it into the right-hand corner. */}
+                              <div className="tiny muted" style={{ marginTop: 3, lineHeight: 1.45 }}>
+                                {l.blurb}
+                              </div>
                             </div>
-                            <span className="tiny muted truncate" style={{ maxWidth: 230 }}>{l.blurb}</span>
                           </div>
                           <div className="panel-body" style={{ paddingTop: 12 }}>
                             {items.length === 0 && <Empty>No {l.label.toLowerCase()} events recorded.</Empty>}

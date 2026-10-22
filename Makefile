@@ -8,7 +8,7 @@
 #   make build     build the frontend into the backend's static directory
 #   make dev       serve API + built UI on :8000
 #   make manifest  export a static JSON manifest of evidence claims
-#   make check     verify + test + eval (what CI would run)
+#   make check     verify + test + eval + contrast (what CI would run)
 
 PY := python3
 BACKEND := backend
@@ -50,7 +50,10 @@ dev: build
 	@echo "dev server on $${RESULTRELAY_HOST:-127.0.0.1}:$${PORT:-8000} (the API has no authentication)"
 	cd $(BACKEND) && $(PY) -m uvicorn app.main:app --host $${RESULTRELAY_HOST:-127.0.0.1} --port $${PORT:-8000}
 
-check: verify test eval
+contrast:
+	$(PY) scripts/check_contrast.py
+
+check: verify test eval contrast
 
 clean:
 	rm -f backend/resultrelay.db

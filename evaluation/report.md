@@ -1,6 +1,6 @@
 # ResultRelay evaluation report
 
-Generated: 2026-10-22T18:30:08.528565+00:00  
+Generated: 2026-10-22T18:41:36.627098+00:00  
 Runs: 28 (7 scenarios x 4 configurations)
 
 > All data is synthetic. These results are **not** evidence of clinical safety, clinical effectiveness, or regulatory compliance.
