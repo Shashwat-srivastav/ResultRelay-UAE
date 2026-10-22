@@ -22,8 +22,8 @@ half-closed (the client exists, no model is running), and H-3 is mitigated rathe
 
 | ID | Finding (abridged) | Status | Evidence gathered now |
 |---|---|---|---|
-| **C-1** | No AI model exists; five "agents" are deterministic functions | **PARTIAL — nearer** | The containment layer now exists and is tested (`backend/app/advisers/`, 15 tests), but **there is still no model**: `core/config.py:49` `enable_llm=False`, no model SDK in `pyproject.toml`. What was added is the *ability to safely add one*, not the AI. Acceptance test 1 still fails. |
-| **C-2** | KB lacks the national material the rubric scores | **FIXED** | 13 sources, **7 Emirati** (S1, S2, AD1, U1, U2, U3, U4), 56 excerpts, 0 rejected. Data protection now present (PDPL, U2); health-data law present (U1); Dubai retention/quality policies present (U3, U4). **Still missing:** cybersecurity standard (DoH ADHICS — `doh.gov.ae` fails TLS from this environment), national AI strategy (`ai.gov.ae` returns 403), facility licensure mandate. Excerpt count is 56 against a ≥60 target. |
+| **C-1** | No AI model exists; five "agents" are deterministic functions | **PARTIAL — nearer** | A model client exists and is tested (`backend/app/advisers/llm.py`, `tests/test_llm_adviser.py`, 11 tests, plus the containment tests in `tests/test_adviser.py`), but **it is not connected**: the default transport refuses, `enable_llm=False`, and no endpoint is configured. The guard, the residency check and the trace are real; the model is configuration away, not code away. Acceptance test 1 is unproven because nothing runs. |
+| **C-2** | KB lacks the national material the rubric scores | **FIXED** | **14 sources, 8 Emirati** (S1, AD1, AD2, U1–U5), **63 excerpts, 63 verified, 0 rejected**. Data protection (PDPL, U2) ✓, federal health-data statute (U1) ✓, Dubai retention and quality policies (U3, U4) ✓, **cybersecurity (AD2, DoH ADHICS V2/2024)** ✓, **national AI strategy and Charter (U5)** ✓. Facilities licensure is covered indirectly through S1 §2 scope, not by a dedicated instrument. The empty S2 row was deleted rather than left as a source with nothing behind it. |
 | **C-3** | Positioning contradicts the rubric (geography-specific thesis) | **FIXED (framing)** | `REPORT.md` §7 and the paper now lead with the *domain* gap — which instrument governs a patient message, and what that instrument forces in software — and treat jurisdiction binding as the supporting mechanism. The old "Dubai vs Abu Dhabi" framing is no longer the headline. |
 | **H-1** | Fallback authorisation is a negation-blind keyword test | **FIXED** | `policy_applicability.py` no longer inspects words. The audit's injection now yields `fallback_authorised = False`, no alternate-channel attempt, `ESCALATION_REQUIRED`. Locked in by `tests/test_fallback_authorisation.py` (10 tests, including the positive control). |
 | **H-2** | Event provenance is caller-trusted (`result_revision_id`, `_establishes_receipt`) | **FIXED** | Guard reads `attempt.receipt_recorded`, written only by `apply_event` after the guard passes; `_establishes_receipt` is gone. `tests/test_state_machine.py` covers both the duplicate case and the adapter-belief case that made the old flag necessary. |
@@ -42,7 +42,7 @@ half-closed (the client exists, no model is running), and H-3 is mitigated rathe
 | Hardcoded agent confidences | **FIXED** — derived from checks/citations/unresolved, with the basis published per assessment |
 | `mode: Literal["DETERMINISTIC","LLM"]` declares an unreachable capability | **PARTIAL** — the value is now reachable via `RESULTRELAY_ADVISE=1` + an in-country endpoint, still off by default |
 | `MAX_RUNS` eviction | **FIXED** — evicts to the bound and asserts it holds |
-| Readiness rows resting on absent capabilities | **FIXED** — R11 (sandbox) and R12 (human oversight) relabelled `PARTIAL` with the reason stated; R14/R16 already `PARTIAL`; R06 evidence count corrected (37 → 129 tests) |
+| Readiness rows resting on absent capabilities | **FIXED** — R11 (sandbox) and R12 (human oversight) relabelled `PARTIAL` with the reason stated; R14/R16 already `PARTIAL`; R06 evidence count corrected (37 → 157 tests) |
 | S2 registered with zero excerpts | **FIXED** — row deleted rather than left as a claim without evidence |
 | No relevance floor in the policy agent | **FIXED** — `POLICY_MIN_SCORE = 1.0`, so "no clause matched" is now a possible, honest answer |
 
@@ -61,7 +61,7 @@ half-closed (the client exists, no model is running), and H-3 is mitigated rathe
 | Test | Target | Status |
 |---|---|---|
 | **1. The AI test** — a live model proposes, the gate refuses, a prohibition is not read as permission | model + refusal + `fallback_authorised=False` | **2 of 3.** The prohibition case now returns `fallback_authorised=False` (H-1 fixed), the gate refuses with a named invariant, and the client + guard are tested against hostile model output. The missing third is a *running* model: no endpoint is configured here. |
-| **2. The corpus test** — ≥12 sources, ≥6 Emirati, incl. data protection and cybersecurity, ≥60 verified excerpts, 0 rejections | 12 / 6 / 60 / 0 | **PASS.** 14 sources, 9 Emirati, 63 verified excerpts, 0 rejected; data protection (U2), cybersecurity (AD2), AI strategy (U5) and the federal health-data statute (U1) are all present. |
+| **2. The corpus test** — ≥12 sources, ≥6 Emirati, incl. data protection and cybersecurity, ≥60 verified excerpts, 0 rejections | 12 / 6 / 60 / 0 | **PASS.** 14 sources, 8 Emirati (AE-DU 3, AE-AZ 2, AE-FED 3), 63 verified excerpts, 0 rejected; data protection (U2), cybersecurity (AD2), AI strategy (U5) and the federal health-data statute (U1) are all present. |
 | **3. The evidence test** — clean clone, `make check`, every headline number reproduced, `static_rules` 26/27 stated up front | reproducibility + disclosure | **PASS (with a caveat).** `make check` is green from a clean tree (157 tests, 7/7 – 27/27); every number in the paper is generated from `manifest.json` and `latest.json`; the rules baseline appears in the results table. The caveat is unchanged: disclosure is not methodological repair (H-7 stays open). |
 
 ---
@@ -71,13 +71,14 @@ half-closed (the client exists, no model is running), and H-3 is mitigated rathe
 The audit's own gate was: *if items 1 (registration) or 4 (a real, constrained agent) cannot be
 completed, the verdict becomes `STOP`.* On the evidence above:
 
-- **Corpus breadth (C-2)** moved from "8 documents, 2 Emirati, no data protection" to "13 documents,
-  7 Emirati, with the governing federal statute and the PDPL scope exclusion". The flagship legal
-  finding is now stronger than the one the audit scored.
-- **The AI gap (C-1)** did not close. A containment wrapper is not an agent. This is the largest
-  remaining distance between the submission and the rubric.
-- **H-1** is unchanged and is now the single most damaging open defect, because it is the one the
-  clinical reviewer predicted would be dismissed in the room and matter in production.
+- **Corpus breadth (C-2) closed** at 14 documents / 63 verified excerpts, 8 Emirati, including the
+  federal statute, the PDPL scope exclusion, the Dubai policies, the Abu Dhabi cyber standard and the
+  national AI Charter. Every one of the audit's named omissions now has a document behind it.
+- **The AI gap (C-1) narrowed but did not close.** A tested client and a hard residency boundary are
+  not a running agent. This remains the largest distance between the submission and the rubric, and
+  the honest description is "the adviser is wired and refused by default", not "there is an AI".
+- **H-1 closed.** The prohibition is now read as a prohibition, by construction rather than by
+  vocabulary, with the audit's own injection as the regression test.
 
 **Current position: `SUBMIT ONLY AFTER FIXES`, still.** The ranking of what remains, by
 points-per-hour:

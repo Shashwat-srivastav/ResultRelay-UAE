@@ -21,7 +21,7 @@ def arrow(p1, p2, ls="-", color="#222222"):
                                  shrinkA=0, shrinkB=0))
 
 Y, H = 25, 12
-box(1,  Y, 17, H, "Corpus", "13 sources\n56 verified excerpts")
+box(1,  Y, 17, H, "Corpus", "14 sources\n63 verified excerpts")
 box(23, Y, 17, H, "Agents", "structured\nassessments only")
 box(45, Y, 17, H, "Deterministic gate", "state machine\n+ invariants")
 box(67, Y, 17, H, "Transport", "attempt ≠ delivery\n≠ acknowledgment")
