@@ -90,6 +90,8 @@ export default function Compare() {
       </Panel>
 
       {runs && diff && (
+        <>
+        <div className="beam" style={{ margin: "2px 0 12px" }} />
         <div className="row" style={{ alignItems: "flex-start", gap: 16, flexWrap: "wrap" }}>
           {[left, right].map((cfg) => {
             const r = runs[cfg];
@@ -148,6 +150,7 @@ export default function Compare() {
             );
           })}
         </div>
+        </>
       )}
 
       {runs && diff && diff.foreign && (

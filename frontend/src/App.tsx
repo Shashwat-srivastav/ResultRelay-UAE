@@ -56,6 +56,7 @@ export default function App() {
 
   return (
     <div className="shell">
+      <a className="skip-link" href="#main">Skip to content</a>
       <aside className="sidebar">
         <div className="brand">
           <span className="brand-mark">
@@ -85,11 +86,16 @@ export default function App() {
         ))}
 
         <div className="sidebar-foot">
-          <strong style={{ color: "#8b98a4" }}>Demonstration build</strong>
+          <strong style={{ color: "#9aa7b3" }}>Demonstration build</strong>
           <div style={{ marginTop: 4 }}>
-            Synthetic patients and results only. No EHR, messaging or LLM provider is connected.
+            Synthetic patients and results only. No EHR, messaging or model provider is connected.
           </div>
-          <div style={{ marginTop: 8, fontFamily: "var(--mono)", fontSize: 10.5 }}>v0.1.0 · deterministic</div>
+          <div className="shell-status">
+            <div className="row-s"><span>Synthetic data</span><b>yes</b></div>
+            <div className="row-s"><span>Network access</span><b>none</b></div>
+            <div className="row-s"><span>Authentication</span><b>not present</b></div>
+          </div>
+          <div style={{ marginTop: 8, fontFamily: "var(--mono)", fontSize: 11 }}>v0.1.0 · deterministic</div>
         </div>
       </aside>
 
@@ -109,7 +115,8 @@ export default function App() {
           </div>
         </header>
 
-        <main className="content">
+        <main className="content" id="main">
+          <div key={loc.pathname} className="blur-fade">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/cases" element={<CaseTimeline />} />
@@ -121,6 +128,7 @@ export default function App() {
             <Route path="/audit" element={<Audit />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          </div>
         </main>
       </div>
     </div>

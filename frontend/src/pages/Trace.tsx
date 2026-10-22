@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { api } from "../api/client";
 import { Banner, Chip, Empty, Panel, Skeleton, fmtTime, useAsync } from "../ui";
+import { Pipeline3DLazy as Pipeline3D } from "../design/Pipeline3DLazy";
+import { useReveal } from "../design/motion";
 
 /**
  * The decision trace: what the system knew, what each agent proposed, what the gate decided and why.
@@ -11,26 +14,55 @@ import { Banner, Chip, Empty, Panel, Skeleton, fmtTime, useAsync } from "../ui";
  * there is no model to reason.
  */
 export default function Trace() {
-  const [runId, setRunId] = useState<string | null>(null);
-  const [open, setOpen] = useState<number | null>(1);
+  const [params, setParams] = useSearchParams();
+  const runParam = params.get("run");
+  const stepParam = Number(params.get("step") ?? "1") || 1;
 
   const traces = useAsync<any[]>(() => api.listTraces(), []);
   const runs = traces.data ?? [];
-  const active = runId ?? runs[0]?.run_id ?? null;
+  const active = runParam ?? runs[0]?.run_id ?? null;
   const trace = useAsync<any>(
     () => (active ? api.trace(active) : Promise.resolve(null)),
     [active]
   );
 
+  const [open, setOpen] = useState<number | null>(stepParam);
+  useEffect(() => setOpen(stepParam), [stepParam]);
+
+  const steps = trace.data?.steps ?? [];
+  const reveal = useReveal<HTMLDivElement>([trace.data, active], 0.03);
+  const stepRefs = useRef<Record<number, HTMLDivElement | null>>({});
+
+  const pipeline = useMemo(
+    () =>
+      steps.map((s: any) => ({
+        label: `step ${s.step}`,
+        permitted: Boolean(s["4_gate"]?.permitted),
+        active: s.step === open,
+      })),
+    [steps, open]
+  );
+
+  function goTo(step: number) {
+    setOpen(step);
+    const next = new URLSearchParams(params);
+    if (active) next.set("run", String(active));
+    next.set("step", String(step));
+    setParams(next, { replace: true });
+    stepRefs.current[step]?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
   return (
-    <div className="stack">
-      <Banner tone="info">
-        <span>
-          Every step is recorded as ordered artefacts — event, evidence, proposals, gate decision, transition,
-          resulting state. The gate's decision is computed before any advisory input is read, so a proposal can be
-          inspected, scored and overruled but never enforced.
-        </span>
-      </Banner>
+    <div className="stack" ref={reveal}>
+      <div data-reveal>
+        <Banner tone="info">
+          <span>
+            Every step is recorded as ordered artefacts — event, evidence, proposals, gate decision, transition,
+            resulting state. The gate's decision is computed before any advisory input is read, so a proposal can be
+            inspected, scored and overruled but never enforced.
+          </span>
+        </Banner>
+      </div>
 
       <Panel
         title="Runs in this process"
@@ -38,7 +70,12 @@ export default function Trace() {
         action={
           <select
             value={active ?? ""}
-            onChange={(e) => setRunId(e.target.value)}
+            onChange={(e) => {
+              const next = new URLSearchParams(params);
+              next.set("run", e.target.value);
+              next.delete("step");
+              setParams(next, { replace: true });
+            }}
             style={{ width: 320 }}
             aria-label="run"
           >
@@ -62,32 +99,73 @@ export default function Trace() {
         ) : trace.error ? (
           <Empty>{String(trace.error)}</Empty>
         ) : trace.data ? (
-          <div className="stack" style={{ gap: 10 }}>
+          <div className="stack" style={{ gap: 12 }}>
             <div className="row tiny muted" style={{ gap: 12 }}>
               <span>{trace.data.configuration}</span>
               <span>case {trace.data.case_id}</span>
               <span title={trace.data.kb_index_sha256}>corpus {trace.data.kb_index_sha256?.slice(0, 12)}</span>
             </div>
 
-            {trace.data.steps.map((s: any) => {
+            {pipeline.some((s: { permitted: boolean }) => !s.permitted) && (
+              <Pipeline3D steps={pipeline} onSelect={(i) => goTo(i + 1)} caption="this run, step by step — refused steps stop at the gate" />
+            )}
+
+            {/* Keyboard-parity navigation: the same jump the 3-D scene offers, in text. */}
+            <div className="step-rail" role="tablist" aria-label="steps">
+              {steps.map((s: any) => (
+                <button
+                  key={s.step}
+                  role="tab"
+                  className="step-pip"
+                  aria-current={s.step === open ? "true" : undefined}
+                  aria-selected={s.step === open}
+                  onClick={() => goTo(s.step)}
+                >
+                  {String(s.step).padStart(2, "0")} · {s["4_gate"]?.permitted ? "ok" : "blocked"}
+                </button>
+              ))}
+            </div>
+
+            {steps.map((s: any) => {
               const isOpen = open === s.step;
               const gate = s["4_gate"];
               return (
-                <div key={s.step} className="card" style={{ padding: 12 }}>
-                  <div className="row" style={{ justifyContent: "space-between" }}>
-                    <div className="row" style={{ gap: 10 }}>
+                <div
+                  key={s.step}
+                  className={`card${isOpen ? " panel-glow" : ""}`}
+                  style={{ padding: 12 }}
+                  ref={(el) => {
+                    stepRefs.current[s.step] = el;
+                  }}
+                  data-reveal
+                >
+                  <button
+                    className="row"
+                    onClick={() => goTo(s.step)}
+                    aria-expanded={isOpen}
+                    style={{
+                      justifyContent: "space-between",
+                      width: "100%",
+                      background: "none",
+                      border: 0,
+                      padding: 0,
+                      cursor: "pointer",
+                      textAlign: "left",
+                      color: "inherit",
+                      font: "inherit",
+                    }}
+                  >
+                    <span className="row" style={{ gap: 10 }}>
                       <strong>Step {s.step}</strong>
                       <span className="tiny muted">{fmtTime(s.at)}</span>
                       <Chip tone="neutral">{s["1_event"] ?? "event"}</Chip>
-                    </div>
-                    <div className="row" style={{ gap: 8 }}>
+                    </span>
+                    <span className="row" style={{ gap: 8 }}>
                       <Chip tone={gate.permitted ? "ok" : "bad"}>{gate.permitted ? "permitted" : "blocked"}</Chip>
                       <Chip tone="info">{gate.enforced_action}</Chip>
-                      <button className="btn small" onClick={() => setOpen(isOpen ? null : s.step)}>
-                        {isOpen ? "Hide" : "Trace"}
-                      </button>
-                    </div>
-                  </div>
+                      <span className="btn small">{isOpen ? "Hide" : "Trace"}</span>
+                    </span>
+                  </button>
 
                   {isOpen && (
                     <div className="stack" style={{ gap: 10, marginTop: 10 }}>
@@ -161,9 +239,7 @@ export default function Trace() {
                         <span className="muted">5 · resulting state</span> <strong>{s["6_resulting_state"]}</strong>
                       </div>
                       {s.unresolved?.length ? (
-                        <div className="tiny muted">
-                          open questions: {s.unresolved.slice(0, 3).join("; ")}
-                        </div>
+                        <div className="tiny muted">open questions: {s.unresolved.slice(0, 3).join("; ")}</div>
                       ) : null}
                     </div>
                   )}

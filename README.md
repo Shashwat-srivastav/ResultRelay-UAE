@@ -143,6 +143,28 @@ paper/ResultRelay_ITU_paper.docx   the five-page submission paper (built by pape
 docs/audit-disposition.md   red-team findings re-tested against the current build
 ```
 
+## Interface
+
+The console is designed as an instrument panel for a regulator, not a startup dashboard: one lead
+question per screen, colour reserved for status, motion that shows a chain of custody.
+
+- **Review:** [`docs/design/01-critique.md`](docs/design/01-critique.md) — five review seats, ten
+  findings with measurements (including two contrast failures), and what was deliberately not done.
+- **Jobs:** [`docs/design/02-user-stories.md`](docs/design/02-user-stories.md) — quality officer, duty
+  biochemist, governance reviewer, evaluator; each story has an acceptance check.
+- **Direction:** [`docs/design/03-moodboard.html`](docs/design/03-moodboard.html) — palette with
+  measured contrast, type scale, motion curves, reference board.
+- **Decisions:** [`docs/design/04-decisions.md`](docs/design/04-decisions.md) — what each library does
+  and, more usefully, what it is forbidden to do.
+
+Stack: **GSAP** for the reveal/count-up language, **three.js** for the one scene that carries meaning
+(the pipeline, with the gate as a membrane and refused steps stopping at it), and **Magic UI patterns**
+(blur-fade, shine border, animated beam) re-implemented against local tokens rather than installed —
+the UI has to render in a sandbox with no network, so nothing is fetched from a CDN.
+
+Initial JS is ~246 kB gzipped 75; three.js is a separate lazy chunk (131 kB gzip) that only downloads
+when a scene mounts.
+
 ## Deployment boundary (read before hosting this)
 
 This build has **no authentication**. Every endpoint returns case data to anyone who can reach it.

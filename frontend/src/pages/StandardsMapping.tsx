@@ -1,3 +1,4 @@
+import { useReveal } from "../design/motion";
 import { useState } from "react";
 import { api } from "../api/client";
 import {
@@ -9,8 +10,10 @@ type Tab = "sources" | "search" | "gaps" | "y3172" | "readiness" | "profile";
 export default function StandardsMapping() {
   const [tab, setTab] = useState<Tab>("sources");
 
+  const reveal = useReveal<HTMLDivElement>([], 0.03);
+
   return (
-    <div className="stack">
+    <div className="stack" ref={reveal}>
       <Banner tone="info">
         <span>
           Requirements are classified before they are used. A clause from another jurisdiction is a{" "}

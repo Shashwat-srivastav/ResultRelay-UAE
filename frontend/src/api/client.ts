@@ -18,6 +18,7 @@ export const api = {
   cases: (qs = "") => req<any>(`/cases${qs}`),
   caseDetail: (id: string) => req<any>(`/cases/${id}`),
   caseAudit: (id: string) => req<any>(`/cases/${id}/audit`),
+  caseIntegrity: (id: string) => req<any>(`/cases/${id}/integrity`),
   caseBundle: (id: string) => req<any>(`/cases/${id}/bundle`),
   scenarios: () => req<any>("/scenarios"),
   startRun: (scenario_id: string, configuration: string) =>

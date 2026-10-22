@@ -1,14 +1,14 @@
 {
   "manifest_version": "1.0",
-  "generated_at": "2026-10-22T18:14:25.923585+00:00",
+  "generated_at": "2026-10-22T18:21:09.529420+00:00",
   "synthetic_data_only": true,
   "disclaimer": "Demonstration prototype with synthetic data. Not a clinical service and not evidence of clinical safety, effectiveness or regulatory compliance.",
   "knowledge_base": {
-    "built_at": "2026-10-22T18:10:59.426747+00:00",
-    "chunk_count": 61,
-    "index_sha256": "bc9ae3e738509b4210d88cab10a97c59b5fa3c1a0c1c4c5a672f126f01dcea8b",
+    "built_at": "2026-10-22T18:21:05.941207+00:00",
+    "chunk_count": 63,
+    "index_sha256": "dcbfca95322c3ab632f71e6b5bf5aaa0fd17187771c805b44f4a9d95b7e7a288",
     "verification": {
-      "verified": 61,
+      "verified": 63,
       "unverified": 0,
       "rejected": 0,
       "method": "Each quotation is normalised and required to appear as a contiguous substring of the declared source page. Wrong page or wrong wording is rejected and excluded from the index."
@@ -34,27 +34,6 @@
         "verification_status": "VERIFIED_OFFICIAL",
         "relevant_sections": "11.1; 11.1.1; 11.1.2; 11.1.3; 9.1.5(e); 9.1.5(f); 9.1.5(g); 9.3.3; 9.3.4; 9.3.6; 13.3; 13.4; 13.5; Appendix 3 (Genetics row)",
         "limitations": "Verified: 68 pages, issue/effective/revision dates and code match the PDF cover and page headers. Document contains no numeric acknowledgment clock, no retry rule and no fallback-channel rule for walk-in results; absence of such text in this document is not evidence that no such obligation exists elsewhere."
-      },
-      {
-        "source_id": "S2",
-        "title": "Dubai Health Authority licensing and standards index (Sheryan)",
-        "issuing_authority": "Dubai Health Authority",
-        "jurisdiction": "AE-DU",
-        "document_type": "Regulatory instrument index (web)",
-        "document_code": "Sheryan (DHA licensing portal)",
-        "version_or_issue": "continuously updated",
-        "publication_date": "n/a",
-        "effective_date": "n/a",
-        "revision_or_expiry_date": "unknown",
-        "official_url": "https://www.dha.gov.ae/en/healthregulation",
-        "retrieved_at": "2026-10-22",
-        "applicability": "Dubai-licensed health facilities; individual instruments not retrieved.",
-        "legal_or_guidance_status": "BINDING_REQUIREMENT (index only; individual instruments not retrieved)",
-        "license_or_reuse_notes": "Portal content is dynamically rendered; no document text was retrieved or quoted. Index entry only.",
-        "local_file_path": "(not committed) no excerpts - index entry only",
-        "verification_status": "NEEDS_VERIFICATION",
-        "relevant_sections": "",
-        "limitations": "Listed to record that Dubai regulates laboratory services through instruments this prototype did not retrieve. No excerpt from S2 exists, so nothing in the system cites it."
       },
       {
         "source_id": "AD1",
@@ -307,6 +286,27 @@
         "verification_status": "VERIFIED_OFFICIAL",
         "relevant_sections": "Introduction; Policy Objectives 1-7; Priorities & Key Components 2 (Safety), 4 (Data Privacy), 5 (Transparency), 6 (Human Oversight), 7 (Governance and Accountability), 12 (Commitment to Treaties and Applicable Laws)",
         "limitations": "Rendered text carries no printed page numbers, so excerpts are located by principle number only (page 1 sentinel). Classified OFFICIAL_GUIDANCE throughout: nothing here can become binding at the gate."
+      },
+      {
+        "source_id": "AD2",
+        "title": "Abu Dhabi Healthcare Information and Cyber Security Standard (ADHICS V2)",
+        "issuing_authority": "Department of Health - Abu Dhabi (DoH Information & Cyber Security Office)",
+        "jurisdiction": "AE-AZ",
+        "document_type": "Regulatory standard (cyber security)",
+        "document_code": "DOH/SD/ICSO/ADHICS/V2/2024",
+        "version_or_issue": "V2",
+        "publication_date": "2024-05",
+        "effective_date": "2024-08",
+        "revision_or_expiry_date": "2027-05",
+        "official_url": "https://www.doh.gov.ae/-/media/Feature/Resources/Standards/ADHICS-v2-standard.ashx",
+        "retrieved_at": "2026-10-22",
+        "applicability": "Any entity in the Emirate of Abu Dhabi that generates, accesses, stores, uses, processes or transmits health information. Comparator for a Dubai case; binding for an Abu Dhabi case.",
+        "legal_or_guidance_status": "BINDING_REQUIREMENT (within Abu Dhabi); OUT-OF-JURISDICTION COMPARATOR for a Dubai case",
+        "license_or_reuse_notes": "Published by DoH for free download. Minimal quotation only; full text not redistributed. doh.gov.ae fails at TLS for scripted clients from some networks; retrieved by rendering.",
+        "local_file_path": "knowledge_base/.sources/AD2.txt",
+        "verification_status": "VERIFIED_OFFICIAL",
+        "relevant_sections": "1 (Standard Scope); 2.30 (Data integrity, definitions). 692 controls across 11 domains in total, of which only the two relied on are quoted.",
+        "limitations": "Only scope and the integrity definition are excerpted - enough to establish that a cyber instrument applies and to ground tamper-evidence, not enough to claim ADHICS conformance. The rendered text has no printed pagination, so sections are cited by number."
       }
     ]
   },
@@ -446,6 +446,40 @@
       "jurisdiction": "AE-AZ",
       "excerpt_status": "VERIFIED_AGAINST_SOURCE",
       "text_sha256": "625de3917c8e6341"
+    },
+    {
+      "chunk_id": "AD2-1-scope",
+      "source_id": "AD2",
+      "section": "1 (Standard Scope), (a)",
+      "printed_pages": [
+        1,
+        1
+      ],
+      "pdf_pages": [
+        1,
+        1
+      ],
+      "claim_classification": "BINDING_REQUIREMENT",
+      "jurisdiction": "AE-AZ",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "6486b85d467d5202"
+    },
+    {
+      "chunk_id": "AD2-2.30-data-integrity",
+      "source_id": "AD2",
+      "section": "2.30 (Data integrity, definitions)",
+      "printed_pages": [
+        1,
+        1
+      ],
+      "pdf_pages": [
+        1,
+        1
+      ],
+      "claim_classification": "BINDING_REQUIREMENT",
+      "jurisdiction": "AE-AZ",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "276d446569c4fff1"
     },
     {
       "chunk_id": "F1-8.1-src",
@@ -1722,6 +1756,18 @@
         "evidence_of_existence": "Deterministic mode is the default; the sandbox analogy is used only to describe containment, and is labelled as an analogy",
         "demonstrating_test": "Not implemented - the adviser is disabled, so containment is designed and untested",
         "limitations": "Art. 13 of Federal Law 2/2019 governs where such a model may run, which Y.3172 does not address. The residency question is recorded in R16 and GR-13's sibling row, and remains open."
+      },
+      {
+        "mapping_id": "Y12",
+        "framework_concept": "Governance / audit (traceability of ML application behaviour)",
+        "framework_definition_source": "ITU-T Y.3172 (06/2019) \u00a76.3 and \u00a78.3 (ML application lifecycle and governance)",
+        "implemented_component": "Per-step decision trace published as ordered artefacts; two-configuration comparison of the same scenario and seed",
+        "code_location": "backend/app/api/routes.py::run_trace ; frontend/src/pages/Trace.tsx ; frontend/src/pages/Compare.tsx",
+        "inputs": "Run id; optional second configuration",
+        "outputs": "Ordered artefacts: event, evidence, proposals with derived confidence, gate decision, transition, resulting state",
+        "evidence_of_existence": "Trace JSON produced for every run; the compare view shows the citation difference between configurations rather than the final state",
+        "demonstrating_test": "backend/tests/test_api.py (trace endpoint shape)",
+        "limitations": "Artefacts, not reasoning. No retention policy on traces beyond the in-process run registry."
       }
     ],
     "ai_readiness": [
@@ -1886,12 +1932,12 @@
         "framework_dimension": "Cross-cutting",
         "framework_index": "Generative AI governance",
         "source_reference": "Report 2.0 (GenAI content index)",
-        "implemented_capability": "No generative model is invoked. The advisory boundary is implemented and tested: a model may propose, is refused if offshore or ungrounded, and can never change a gate decision",
-        "code_location": "backend/app/advisers/ (base, residency, guard, stub) ; backend/app/orchestration/gate.py::enforce (advisory attached after the decision)",
-        "evidence": "15 adviser tests including one that asserts the gate decision is byte-identical with and without an accepted proposal; the boundary is closed by default (enable_llm=False)",
-        "demonstrating_test": "backend/tests/test_adviser.py (15 tests)",
+        "implemented_capability": "Containment for any model proposal: proposals are classified PRODUCT_DESIGN_CONTROL, must cite resolvable chunk ids from the case jurisdiction, and are recorded alongside - never instead of - the deterministic decision",
+        "code_location": "backend/app/advisers/guard.py ; backend/app/advisers/base.py ; backend/app/orchestration/gate.py",
+        "evidence": "A valid proposal is stamped ADVISORY_ONLY; a foreign-citation or unresolvable proposal is REJECTED_*; the gate records adviser_input but its decision is unchanged",
+        "demonstrating_test": "backend/tests/test_adviser.py (containment, hostile proposal, gate invariance)",
         "status": "PARTIAL",
-        "limitations": "No model client is implemented, by design: the only adviser is a deterministic stub used to exercise containment. Generative-AI behaviour is therefore untested - what is tested is the guard."
+        "limitations": "The containment layer is real and tested; the model is not running. No generator model is wired to it in this build, so the GenAI governance dimension is addressed structurally, not demonstrated with a live model."
       },
       {
         "mapping_id": "R15",
@@ -1910,18 +1956,66 @@
         "framework_dimension": "Data",
         "framework_index": "Cross-border data and model placement",
         "source_reference": "Federal Law 2/2019 Art. 13 and Art. 24 (U1)",
-        "implemented_capability": "Enforced at the advisory boundary: an out-of-country endpoint is refused with Art. 13/24 cited, and a named Health Authority resolution is the only route to an offshore endpoint",
-        "code_location": "backend/app/advisers/residency.py ; backend/tests/test_adviser.py",
-        "evidence": "classify() treats .ae and loopback as in-country and everything else as out-of-country; unknown is refused",
-        "demonstrating_test": "backend/tests/test_adviser.py::test_an_offshore_endpoint_is_refused_with_the_article_that_refuses_it ; test_a_named_resolution_is_the_only_route_out_of_the_country",
+        "implemented_capability": "Enforced at two boundaries: the advisory guard refuses an offshore endpoint before any data is shaped, and the model client refuses to construct against an endpoint outside the State",
+        "code_location": "backend/app/advisers/residency.py ; backend/app/advisers/llm.py ; backend/app/advisers/guard.py",
+        "evidence": "classify() treats .ae and loopback as in-country and everything else as out-of-country; unknown is refused; the client raises PermissionError at construction",
+        "demonstrating_test": "backend/tests/test_llm_adviser.py::test_an_offshore_endpoint_is_refused_before_any_data_is_shaped ; tests/test_adviser.py (residency cases)",
         "status": "PARTIAL",
-        "limitations": "The check is on the endpoint string, not on traffic; it cannot see DNS, proxies or a model bundled into a desktop app. The 25-year retention and patient-feedback duties remain unimplemented (GR-13, GR-14)."
+        "limitations": "Residency is checked at the guard and enforced by the transport refusing to run while disabled; but because no live endpoint is configured, the check has never been exercised against a real outbound request. The DNS/proxy/bundled-model blind spot remains."
+      },
+      {
+        "mapping_id": "R17",
+        "framework_dimension": "Cross-cutting",
+        "framework_index": "Traceability and explainability",
+        "source_reference": "UAE AI Charter P5 (Transparency) and P7 (Governance and Accountability) - OFFICIAL_GUIDANCE; ITU AI Readiness Report 2.0 (transparency theme)",
+        "implemented_capability": "Every step is published as ordered artefacts: event, retrieved evidence with claim class, per-agent proposal with derived confidence and its basis, gate conditions and invariant, transition, resulting state",
+        "code_location": "backend/app/api/routes.py::run_trace ; frontend/src/pages/Trace.tsx ; GET /api/runs/{id}/trace",
+        "evidence": "Traces are generated from the run itself; the page runs any scenario under two configurations side by side and flags citations outside the case jurisdiction",
+        "demonstrating_test": "tests/test_api.py (trace endpoint) ; tests/test_adviser.py::test_the_gate_decision_is_identical_with_and_without_an_adviser",
+        "status": "IMPLEMENTED",
+        "limitations": "Artefacts, not reasoning. Raw model chain-of-thought is deliberately not published: it is unverifiable and invites trust in prose over evidence."
+      },
+      {
+        "mapping_id": "R18",
+        "framework_dimension": "AI Policy",
+        "framework_index": "Non-binding national guidance distinguished from law",
+        "source_reference": "UAE AI Charter (June 2024) P6 (human oversight) and P12 (defers to sectoral law) - OFFICIAL_GUIDANCE; UAE AI Strategy 2031 (U5)",
+        "implemented_capability": "Every excerpt carries a claim class; guidance-class material can inform retrieval and explanation but can never satisfy a binding condition or authorise a fallback channel",
+        "code_location": "knowledge_base/excerpts/*.yaml ; backend/app/kb/ingest.py ; backend/app/state_machine/transitions.py",
+        "evidence": "U5 excerpts are classified OFFICIAL_GUIDANCE; ingestion refuses an authorisation declaration from guidance or comparator class",
+        "demonstrating_test": "backend/tests/test_fallback_authorisation.py (parametrised over OFFICIAL_GUIDANCE / GLOBAL_COMPARATOR / PRODUCT_DESIGN_CONTROL)",
+        "status": "IMPLEMENTED",
+        "limitations": "Classification is authored per excerpt. Nothing machine-checks that a document really is guidance rather than law, so the class is only as good as the source review behind it."
+      },
+      {
+        "mapping_id": "R19",
+        "framework_dimension": "Data",
+        "framework_index": "Integrity and tamper-evidence of the decision record",
+        "source_reference": "DoH ADHICS V2/2024 \u00a72.30 (data must not be altered or destroyed in an unauthorised manner) - binding in Abu Dhabi, comparator for Dubai",
+        "implemented_capability": "Append-only hash-chained audit log, revision lineage, and a reconciliation endpoint that replays persisted transitions against the stored state",
+        "code_location": "backend/app/audit/log.py ; backend/app/api/routes.py::case_integrity",
+        "evidence": "Editing, deleting or reordering an entry breaks verification; divergence between store and replay is reported, never repaired",
+        "demonstrating_test": "backend/tests/test_audit.py ; backend/tests/test_api.py::test_divergence_between_store_and_replay_is_reported_not_repaired",
+        "status": "IMPLEMENTED",
+        "limitations": "Tamper-evident, not tamper-proof: an attacker with write access can rewrite the whole chain. No external anchoring or witness."
+      },
+      {
+        "mapping_id": "R20",
+        "framework_dimension": "AI Policy",
+        "framework_index": "Patient access to, and correction of, their record",
+        "source_reference": "Federal Law 2/2019 Art. 5 and 6 (U1); DHA HISHD/PP-08 \u00a74.5.1, \u00a74.9.10 (U4) - right to view and request correction",
+        "implemented_capability": "Nothing. The system models the provider's communication duty and a patient's acknowledgment, but no patient-facing route exists to inspect or contest the record.",
+        "code_location": "\u2014",
+        "evidence": "Searched the corpus and the routes: no endpoint, page or scenario implements a patient access or correction request",
+        "demonstrating_test": "\u2014",
+        "status": "NOT_IMPLEMENTED",
+        "limitations": "A real deployment would need this before any patient-facing use. Recorded as absent rather than mapped to an adjacent feature."
       }
     ]
   },
   "evaluation": {
-    "run_started": "2026-10-22T18:11:02.406291+00:00",
-    "run_finished": "2026-10-22T18:11:02.674265+00:00",
+    "run_started": "2026-10-22T18:21:09.190184+00:00",
+    "run_finished": "2026-10-22T18:21:09.466886+00:00",
     "scenario_count": 7,
     "run_count": 28,
     "summary": {
@@ -1944,7 +2038,7 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 6.3
+          "mean_wall_ms": 6.7
         },
         "policy_blind": {
           "label": "Policy-blind baseline (no knowledge base)",
@@ -1964,7 +2058,7 @@
           "mean_provenance_completeness": 0.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 2.3
+          "mean_wall_ms": 2.2
         },
         "retrieval_only": {
           "label": "Citation-only RAG baseline",
@@ -1984,7 +2078,7 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 5.4
+          "mean_wall_ms": 5.6
         },
         "static_rules": {
           "label": "Conventional deterministic rules baseline",
@@ -2004,7 +2098,7 @@
           "mean_provenance_completeness": 0.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 2.2
+          "mean_wall_ms": 2.4
         }
       },
       "by_scenario": {

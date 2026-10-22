@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ResultRelay — mood board</title>
+<style>
+  :root{
+    --bg:#f4f6f8; --panel:#fff; --ink:#0f151b; --ink2:#39434f; --ink3:#5d6875;
+    --line:#dfe4ea; --line2:#eceff3;
+    --accent:#0b6b5f; --accent-lift:#12a08d; --accent-soft:#e6f2ef;
+    --ok:#0b6b5f; --warn:#8a5300; --bad:#a3242b; --info:#1f4e79;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55}
+  .wrap{max-width:1180px;margin:0 auto;padding:40px 28px 80px}
+  header{margin-bottom:34px}
+  .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:650}
+  h1{font-size:34px;line-height:1.15;letter-spacing:-.025em;margin:8px 0 10px;font-weight:680}
+  .lede{color:var(--ink2);max-width:70ch;font-size:15px}
+  h2{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin:44px 0 14px;font-weight:700}
+  .grid{display:grid;gap:14px}
+  .g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .card h3{margin:0 0 6px;font-size:14px;font-weight:650}
+  .card p{margin:0;color:var(--ink2);font-size:13px}
+  .sw{height:64px;border-radius:10px;border:1px solid rgba(0,0,0,.06);display:flex;align-items:flex-end;padding:8px;color:#fff;font-size:11px;font-family:var(--mono)}
+  .swlight{color:var(--ink)}
+  .row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line2)}
+  .row:last-child{border-bottom:0}
+  .k{font-family:var(--mono);font-size:12px;color:var(--ink3);min-width:130px}
+  .chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:600;border:1px solid transparent}
+  .c-ok{background:var(--accent-soft);color:var(--ok);border-color:#cfe6e0}
+  .c-warn{background:#fdf3e2;color:var(--warn);border-color:#f0dcbb}
+  .c-bad{background:#fbeceb;color:var(--bad);border-color:#f2cfcd}
+  .c-neutral{background:#f2f4f7;color:var(--ink2);border-color:#e3e8ee}
+  .c-info{background:#eaf1f8;color:var(--info);border-color:#d3e2f0}
+  .type{display:flex;align-items:baseline;gap:14px;padding:8px 0;border-bottom:1px solid var(--line2)}
+  .type:last-child{border-bottom:0}
+  .type .m{font-family:var(--mono);font-size:11px;color:var(--ink3);min-width:96px}
+  .curve{height:56px}
+  .ref{border-left:2px solid var(--accent);padding-left:12px}
+  .ref b{display:block;font-size:13px}
+  .ref span{color:var(--ink3);font-size:12px}
+  .no{display:flex;gap:10px;padding:8px 0;color:var(--ink2);font-size:13px}
+  .no b{color:var(--bad);font-weight:600}
+  .field{position:relative;overflow:hidden;border-radius:14px;border:1px solid var(--line);background:
+    radial-gradient(120% 90% at 20% 0%,#0d1b22 0%,#0b1218 55%,#080d12 100%)}
+  .field canvas{display:block;width:100%;height:230px}
+  .field .cap{position:absolute;left:16px;bottom:14px;color:#8fa3b3;font-size:11.5px;font-family:var(--mono)}
+  .legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .beam{height:2px;background:linear-gradient(90deg,transparent,var(--accent-lift),transparent);animation:sweep 3.4s linear infinite}
+  @keyframes sweep{0%{opacity:.15}50%{opacity:.9}100%{opacity:.15}}
+  .tick{font-variant-numeric:tabular-nums}
+  footer{margin-top:56px;color:var(--ink3);font-size:12px;border-top:1px solid var(--line);padding-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">ResultRelay · design direction</div>
+    <h1>An instrument panel for a regulator,<br>not a dashboard for a startup.</h1>
+    <p class="lede">One accent. Colour only where it means something. Density that earns its space.
+      Motion that shows a chain of custody rather than decorating a page. The product's credibility is
+      its willingness to show what it refused to do — so every screen carries its own limits, adjacent
+      to its claims.</p>
+  </header>
+
+  <h2>01 — Reference board</h2>
+  <div class="grid g3">
+    <div class="card ref"><b>Stripe Dashboard</b><span>Hierarchy by typography and whitespace, not colour. Colour reserved for status. Microcopy carries the trust.</span></div>
+    <div class="card ref"><b>Linear</b><span>Density without clutter; separate "doing" from "analysing"; every row is a live object with six states.</span></div>
+    <div class="card ref"><b>Vercel</b><span>One question, one answer above the fold; logs one click deeper. Status as a dot, never a paint bucket.</span></div>
+    <div class="card ref"><b>GSAP</b><span>One curve, three durations, timelines that can be scrubbed and context-reverted. <code>matchMedia()</code> for reduced motion.</span></div>
+    <div class="card ref"><b>Magic UI</b><span>Borrowed patterns, not dependency: blur-fade, number ticker, shine border, animated beam, dot pattern — re-implemented in the local token system.</span></div>
+    <div class="card ref"><b>three.js</b><span>Spent once, on the pipeline, where position encodes sequence and the gate is a membrane you can see a step stop at.</span></div>
+  </div>
+
+  <h2>02 — Palette (measured, WCAG AA)</h2>
+  <div class="grid g4">
+    <div><div class="sw" style="background:#0b6b5f">accent 5.6:1 on soft</div><div class="row"><span class="k">--accent</span><span>#0b6b5f</span></div></div>
+    <div><div class="sw" style="background:#12a08d">lift · decorative only</div><div class="row"><span class="k">--accent-lift</span><span>#12a08d</span></div></div>
+    <div><div class="sw" style="background:#0d1419">sidebar · 12.9:1 text</div><div class="row"><span class="k">--shell</span><span>#0d1419</span></div></div>
+    <div><div class="sw swlight" style="background:#f4f6f8;border-color:#dfe4ea">canvas</div><div class="row"><span class="k">--bg</span><span>#f4f6f8</span></div></div>
+  </div>
+  <p style="color:var(--ink3);font-size:12px;margin:10px 0 0">
+    Status tokens are the only saturated colours in the product. Sidebar label was 3.64:1 (fail) → now 5.9:1.
+  </p>
+  <div class="legend">
+    <span class="chip c-ok">permitted · verified</span>
+    <span class="chip c-warn">needs a human</span>
+    <span class="chip c-bad">refused by the gate</span>
+    <span class="chip c-info">comparator / out of jurisdiction</span>
+    <span class="chip c-neutral">configuration · metadata</span>
+  </div>
+
+  <h2>03 — Type scale</h2>
+  <div class="card">
+    <div class="type"><span class="m">40 / 1.05</span><span style="font-size:40px;letter-spacing:-.03em;font-weight:680">Lead metric</span></div>
+    <div class="type"><span class="m">28 / 1.15</span><span style="font-size:28px;letter-spacing:-.02em;font-weight:660">Screen title</span></div>
+    <div class="type"><span class="m">16 / 1.4</span><span style="font-size:16px;font-weight:600">Section heading</span></div>
+    <div class="type"><span class="m">14 / 1.55</span><span>Body copy and table cells — the working size</span></div>
+    <div class="type"><span class="m">12.5 / 1.5</span><span style="font-size:12.5px;color:var(--ink2)">Secondary and labels — never smaller for anything actionable</span></div>
+    <div class="type"><span class="m">mono 12</span><span class="mono" style="font-family:var(--mono);font-size:12px">S1 §11.1.1 · p40 · sha256 bc9ae3e7</span></div>
+  </div>
+  <p style="color:var(--ink3);font-size:12px;margin:10px 0 0">All numerals tabular. Nothing italic in data.</p>
+
+  <h2>04 — Motion language</h2>
+  <div class="grid g3">
+    <div class="card"><h3>Curve</h3><svg class="curve" viewBox="0 0 200 56"><path d="M4 50 C 60 50, 90 6, 196 6" fill="none" stroke="#0b6b5f" stroke-width="2.5"/></svg><p><code>power2.out</code> — arrives, then settles. No bounce anywhere in a product about compliance.</p></div>
+    <div class="card"><h3>Durations</h3><div class="row"><span class="k">120 ms</span><span>state change, hover</span></div><div class="row"><span class="k">200 ms</span><span>panel, disclosure</span></div><div class="row"><span class="k">320 ms</span><span>view transition, stagger unit 40 ms</span></div></div>
+    <div class="card"><h3>Parity</h3><p>Every timeline has a <code>prefers-reduced-motion</code> branch: opacity only, 90 ms, no transform. GSAP <code>matchMedia()</code> swaps the branch and reverts cleanly on change.</p></div>
+  </div>
+
+  <h2>05 — The one 3-D moment</h2>
+  <div class="field">
+    <canvas id="field" width="1120" height="230"></canvas>
+    <div class="cap">event → evidence → proposal → gate → transition → state</div>
+  </div>
+  <p style="color:var(--ink3);font-size:12px;margin:10px 0 0">
+    Steps sit on a receding line; the gate is the plane they must cross. A step that was refused stops at
+    the membrane. Clicking a node moves the page to that step's artefacts — the scene is navigation.
+  </p>
+
+  <h2>06 — What was rejected</h2>
+  <div class="card">
+    <div class="no"><b>✕</b><span><b>Glassmorphism / neon / meteors.</b> A governance instrument wrapped in spectacle argues against its own disclaimer.</span></div>
+    <div class="no"><b>✕</b><span><b>A 3-D hero with floating particles.</b> three.js would then be decoration, and decoration in this product is a credibility cost.</span></div>
+    <div class="no"><b>✕</b><span><b>Dark mode in this pass.</b> One theme done properly; two half-done themes would double the contrast debt.</span></div>
+    <div class="no"><b>✕</b><span><b>Icon-only nav.</b> The domain vocabulary (gate, invariant, acknowledgment) is the product; icons would erase it.</span></div>
+    <div class="no"><b>✕</b><span><b>Animated counters on every number.</b> A ticker implies live data; most of these numbers are computed once per build.</span></div>
+  </div>
+
+  <footer>
+    Measured contrast, GSAP 3 timelines, three.js scene, Magic UI patterns ported to local tokens —
+    no CDN, no remote fonts, so the board and the product render identically offline.
+  </footer>
+</div>
+
+<script>
+// A small, dependency-free still of the pipeline field. The product uses three.js; this board stays
+// self-contained so it previews in a sandbox with no network.
+(function () {
+  const c = document.getElementById('field'); if (!c) return;
+  const ctx = c.getContext('2d');
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = c.width, h = c.height;
+  c.width = w * dpr; c.height = h * dpr; c.style.width = '100%'; c.style.height = '230px';
+  ctx.scale(dpr, dpr);
+  const labels = ['event', 'evidence', 'proposal', 'gate', 'transition', 'state'];
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let t = 0;
+  function frame() {
+    ctx.clearRect(0, 0, w, h);
+    const cy = h * 0.46;
+    // receding rail
+    const g = ctx.createLinearGradient(60, 0, w - 60, 0);
+    g.addColorStop(0, 'rgba(143,163,179,0.08)');
+    g.addColorStop(0.5, 'rgba(18,160,141,0.35)');
+    g.addColorStop(1, 'rgba(143,163,179,0.08)');
+    ctx.strokeStyle = g; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(60, cy); ctx.lineTo(w - 60, cy); ctx.stroke();
+    // gate membrane between proposal and gate
+    const gx = 60 + (w - 120) * 0.62;
+    const mg = ctx.createLinearGradient(gx, cy - 70, gx, cy + 70);
+    mg.addColorStop(0, 'rgba(18,160,141,0)');
+    mg.addColorStop(0.5, 'rgba(18,160,141,0.5)');
+    mg.addColorStop(1, 'rgba(18,160,141,0)');
+    ctx.strokeStyle = mg; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(gx, cy - 70); ctx.lineTo(gx, cy + 70); ctx.stroke();
+    // nodes
+    labels.forEach((label, i) => {
+      const x = 60 + (w - 120) * (i / (labels.length - 1)) * 0.96 + 8;
+      const pulse = reduce ? 0.6 : 0.55 + 0.45 * Math.sin(t / 32 + i);
+      const isGate = label === 'gate';
+      ctx.beginPath();
+      ctx.arc(x, cy, isGate ? 7 : 5, 0, Math.PI * 2);
+      ctx.fillStyle = isGate ? `rgba(18,160,141,${pulse})` : `rgba(207,216,224,${isGate ? 1 : 0.75})`;
+      ctx.fill();
+      ctx.fillStyle = 'rgba(143,163,179,0.85)';
+      ctx.font = '11px ui-monospace, Menlo, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, cy + 26);
+    });
+    // travelling signal
+    if (!reduce) {
+      const p = ((t / 2) % 120) / 120;
+      const x = 60 + (w - 120) * 0.96 * p;
+      ctx.beginPath(); ctx.arc(x, cy, 3, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(18,160,141,0.95)'; ctx.fill();
+    }
+    t++;
+    if (!reduce) requestAnimationFrame(frame);
+  }
+  frame();
+})();
+</script>
+</body>
+</html>

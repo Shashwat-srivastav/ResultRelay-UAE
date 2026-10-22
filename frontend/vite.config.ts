@@ -8,6 +8,16 @@ export default defineConfig({
   build: {
     outDir: "../backend/app/static/app",
     emptyOutDir: true,
+    // three.js is one lazy chunk (525 kB raw / 131 kB gzip) that no user pays for until the 3-D
+    // scene mounts. The initial app chunk is ~246 kB, which is the number that matters.
+    chunkSizeWarningLimit: 560,
+    rollupOptions: {
+      output: {
+        // three.js and GSAP are large and change rarely; splitting them keeps the app chunk small and
+        // lets the 3-D scene arrive after first paint (it is also lazily imported).
+        manualChunks: { three: ["three"], motion: ["gsap"] },
+      },
+    },
   },
   server: {
     host: "0.0.0.0",

@@ -270,3 +270,164 @@ hr.sep { border: 0; border-top: 1px solid var(--line-2); margin: 12px 0; }
 /* Keep four configuration columns readable in the evaluation matrix. */
 .matrix-table td, .matrix-table th { white-space: normal; }
 .matrix-table td > div.row { flex-wrap: wrap; }
+
+/* ============================================================================
+   Design system v2 — applied after the review in docs/design/01-critique.md
+   Additions only: every v1 class above still works, so no page is left unstyled.
+   ========================================================================= */
+
+:root {
+  /* Contrast fixes (measured, WCAG AA). v1 values in comments. */
+  --ink-3: #5d6875;          /* was #6b7684 — 4.31:1 on --bg, failed */
+  --ink-4: #7b8694;          /* disabled / decorative only, never body text */
+  --nav-label: #8b97a3;      /* was #61707d — 3.64:1 on shell, failed */
+  --bg: #f4f6f8;
+  --shell: #0d1419;
+
+  /* Type scale */
+  --fs-11: 11.5px; --fs-12: 12.5px; --fs-13: 13px; --fs-14: 14px;
+  --fs-16: 16px; --fs-20: 20px; --fs-28: 28px; --fs-40: 40px;
+  --track-tight: -0.025em;
+
+  /* Spacing */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px;
+
+  /* Elevation */
+  --e1: 0 1px 2px rgba(16,22,29,.05);
+  --e2: 0 1px 2px rgba(16,22,29,.05), 0 8px 24px rgba(16,22,29,.04);
+  --e3: 0 2px 6px rgba(16,22,29,.07), 0 18px 44px rgba(16,22,29,.09);
+
+  /* Motion: one curve, three durations */
+  --ease: cubic-bezier(.22,.61,.36,1);
+  --t-fast: 120ms; --t-base: 200ms; --t-slow: 320ms;
+}
+
+/* ---------- type ---------- */
+.num, .metric-value, td.num, .tnum { font-variant-numeric: tabular-nums; }
+.display { font-size: var(--fs-40); line-height: 1.05; letter-spacing: var(--track-tight); font-weight: 680; }
+.title-lg { font-size: var(--fs-28); line-height: 1.15; letter-spacing: -0.02em; font-weight: 660; }
+.label { font-size: var(--fs-11); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); font-weight: 700; }
+.body-2 { color: var(--ink-2); font-size: var(--fs-13); }
+
+/* ---------- focus + keyboard ---------- */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.sidebar :focus-visible { outline-color: #8ef0dc; outline-offset: 2px; }
+.skip-link {
+  position: absolute; left: 12px; top: -48px; z-index: 60;
+  background: var(--ink); color: #fff; padding: 8px 14px; border-radius: 8px;
+  font-size: 13px; font-weight: 600; transition: top var(--t-fast) var(--ease);
+}
+.skip-link:focus,
+.skip-link:focus-visible { top: 12px; }
+
+/* ---------- shell ---------- */
+.nav-label { color: var(--nav-label); }
+.nav-item { transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease); }
+.brand-mark { box-shadow: 0 0 0 1px rgba(142,240,220,.18) inset; }
+
+/* Shell status rail: what the system is, at a glance, every screen. */
+.shell-status {
+  margin-top: auto; border-top: 1px solid rgba(255,255,255,.07); padding-top: 12px;
+  display: flex; flex-direction: column; gap: 7px; font-size: var(--fs-11);
+}
+.shell-status .row-s { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #9aa7b3; }
+.shell-status b { color: #dfe7ee; font-weight: 600; }
+
+/* ---------- cards & rows ---------- */
+.lead-card {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+  padding: 22px 24px; box-shadow: var(--e2); position: relative; overflow: hidden;
+}
+.lead-card::after {
+  content: ""; position: absolute; inset: 0 auto 0 0; width: 3px;
+  background: linear-gradient(180deg, var(--accent-lift), var(--accent));
+}
+.lead-split { display: grid; grid-template-columns: 1.15fr 1fr; gap: 22px; align-items: center; }
+@media (max-width: 900px) { .lead-split { grid-template-columns: 1fr; } }
+.lead-note { color: var(--ink-2); font-size: var(--fs-13); max-width: 46ch; }
+
+.metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media (max-width: 900px) { .metric-row { grid-template-columns: 1fr; } }
+.metric-sm { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 13px 15px; }
+.metric-sm .k { font-size: var(--fs-11); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); font-weight: 700; }
+.metric-sm .v { font-size: var(--fs-20); font-weight: 660; letter-spacing: -0.02em; margin-top: 3px; font-variant-numeric: tabular-nums; }
+.metric-sm .s { font-size: var(--fs-12); color: var(--ink-3); margin-top: 2px; }
+
+/* Interactive rows: a row that leads somewhere must say so. */
+tr.rowlink { cursor: pointer; transition: background var(--t-fast) var(--ease); }
+tr.rowlink:hover { background: #f7faf9; }
+tr.rowlink:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+tr.rowlink .go { opacity: 0; transform: translateX(-3px); transition: opacity var(--t-fast) var(--ease), transform var(--t-fast) var(--ease); }
+tr.rowlink:hover .go, tr.rowlink:focus-visible .go { opacity: 1; transform: none; }
+
+/* Status legend, shown where colour first appears. */
+.legend { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.legend .chip { cursor: default; }
+
+/* ---------- magic-ui derived surfaces (local implementation) ---------- */
+.blur-fade { animation: blurFade var(--t-slow) var(--ease) both; }
+@keyframes blurFade { from { opacity: 0; filter: blur(4px); transform: translateY(4px); } to { opacity: 1; filter: none; transform: none; } }
+
+.dotpattern {
+  background-image: radial-gradient(rgba(16,22,29,.14) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.panel-glow { position: relative; }
+.panel-glow::before {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px;
+  background: linear-gradient(120deg, rgba(18,160,141,.55), rgba(18,160,141,0) 35%, rgba(18,160,141,0) 65%, rgba(18,160,141,.35));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+}
+
+.beam { position: relative; height: 1px; background: var(--line); overflow: visible; }
+.beam::after {
+  content: ""; position: absolute; top: -1px; height: 3px; width: 34%;
+  background: linear-gradient(90deg, transparent, var(--accent-lift), transparent);
+  animation: beamMove 3.6s var(--ease) infinite;
+}
+@keyframes beamMove { 0% { left: -34%; opacity: .1; } 50% { opacity: .95; } 100% { left: 100%; opacity: .1; } }
+
+.shine { position: relative; overflow: hidden; }
+.shine::after {
+  content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.42), transparent);
+  transform: skewX(-12deg); animation: shineSweep 5.5s var(--ease) infinite;
+}
+@keyframes shineSweep { 0% { left: -60%; } 55%, 100% { left: 130%; } }
+
+/* ---------- 3-D pipeline ---------- */
+.pipeline3d {
+  position: relative; border-radius: 14px; overflow: hidden;
+  background: radial-gradient(120% 120% at 18% 0%, #10202a 0%, #0b1218 58%, #070b10 100%);
+  border: 1px solid #17222b; min-height: 170px;
+}
+.pipeline3d canvas { display: block; width: 100%; height: 170px; }
+.pipeline3d .cap {
+  position: absolute; left: 14px; top: 11px; font-family: var(--mono); font-size: var(--fs-11);
+  color: #7f93a3; letter-spacing: .06em; text-transform: uppercase;
+}
+.pipeline3d .hint { position: absolute; right: 14px; top: 11px; font-size: var(--fs-11); color: #6d7f8d; }
+
+/* ---------- step timeline (trace) ---------- */
+.step-rail { display: flex; gap: 6px; flex-wrap: wrap; }
+.step-pip {
+  border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 5px 9px;
+  font-size: var(--fs-12); font-family: var(--mono); color: var(--ink-2); cursor: pointer;
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.step-pip:hover { border-color: #cbd5dd; }
+.step-pip[aria-current="true"] { background: var(--accent-soft); border-color: #b9dcd4; color: #084e45; font-weight: 600; }
+
+/* ---------- accessibility: reduced motion parity ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important; scroll-behavior: auto !important;
+  }
+  .beam::after, .shine::after { display: none; }
+}
