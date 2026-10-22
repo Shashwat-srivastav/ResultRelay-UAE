@@ -106,3 +106,61 @@ def test_the_default_transport_refuses_to_contact_anything():
 
 def test_json_extraction_happens_outside_any_judgement():
     assert json.loads(_first_json_object('prefix {"a": {"b": 1}} suffix')) == {"a": {"b": 1}}
+
+
+# --------------------------------------------------------------------------- switches agree
+def test_the_documented_switch_actually_enables_the_boundary(monkeypatch):
+    """RESULTRELAY_ADVISE is what the README tells an operator to set.
+
+    It used to be read by the engine while the guard and /api/health read
+    RESULTRELAY_ENABLE_LLM, so the documented switch opened a path the health endpoint still
+    reported as closed. One switch, or the report is fiction.
+    """
+    import importlib
+
+    from app.core import config as config_module
+
+    monkeypatch.delenv("RESULTRELAY_ENABLE_LLM", raising=False)
+    monkeypatch.setenv("RESULTRELAY_ADVISE", "1")
+    importlib.reload(config_module)
+    try:
+        assert config_module.settings.enable_llm is True
+    finally:
+        monkeypatch.delenv("RESULTRELAY_ADVISE", raising=False)
+        importlib.reload(config_module)
+
+
+def test_the_legacy_switch_still_works_and_default_is_closed(monkeypatch):
+    import importlib
+
+    from app.core import config as config_module
+
+    monkeypatch.delenv("RESULTRELAY_ADVISE", raising=False)
+    monkeypatch.delenv("RESULTRELAY_ENABLE_LLM", raising=False)
+    importlib.reload(config_module)
+    assert config_module.settings.enable_llm is False
+
+    monkeypatch.setenv("RESULTRELAY_ENABLE_LLM", "1")
+    importlib.reload(config_module)
+    try:
+        assert config_module.settings.enable_llm is True
+    finally:
+        monkeypatch.delenv("RESULTRELAY_ENABLE_LLM", raising=False)
+        importlib.reload(config_module)
+
+
+def test_health_distinguishes_enabled_from_connected(monkeypatch):
+    import dataclasses
+
+    from app.api import routes
+
+    # settings is a frozen dataclass; swap the object rather than mutate it.
+    monkeypatch.setattr(routes, "settings", dataclasses.replace(routes.settings, enable_llm=False))
+    monkeypatch.delenv("RESULTRELAY_ADVISE_URL", raising=False)
+    assert routes._advisory_status() == "closed"
+
+    monkeypatch.setattr(routes, "settings", dataclasses.replace(routes.settings, enable_llm=True))
+    assert "no adviser endpoint" in routes._advisory_status()
+
+    monkeypatch.setenv("RESULTRELAY_ADVISE_URL", "http://localhost:11434/v1")
+    assert routes._advisory_status() == "open (advisory only)"

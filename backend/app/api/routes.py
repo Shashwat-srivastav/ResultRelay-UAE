@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import uuid
 from dataclasses import asdict
 from datetime import datetime, timezone
@@ -256,7 +257,7 @@ def health() -> dict[str, Any]:
         # Declared, not enforced. Any hosted deployment with real data must add authentication first.
         "authentication_enabled": settings.authentication_enabled,
         "advisory_boundary": {
-            "status": "closed" if not settings.enable_llm else "open (advisory only)",
+            "status": _advisory_status(),
             "can_change_a_decision": False,
             "residency_rule": "Federal Law 2/2019 Art. 13 - out-of-country processing refused without a Health Authority resolution",
             "containment_tests": "backend/tests/test_adviser.py",
@@ -265,6 +266,20 @@ def health() -> dict[str, Any]:
         "settings": describe(),
         "disclaimer": settings.disclaimer,
     }
+
+
+def _advisory_status() -> str:
+    """Report the boundary that actually exists, not the one the switch implies.
+
+    "enabled" and "enabled with an endpoint" are different states: the first produces a DISABLED
+    advisory record at run time, the second can produce a real one. Collapsing them is how a health
+    endpoint ends up contradicting the engine.
+    """
+    if not settings.enable_llm:
+        return "closed"
+    if not os.environ.get("RESULTRELAY_ADVISE_URL"):
+        return "enabled, but no adviser endpoint is configured (advisories report DISABLED)"
+    return "open (advisory only)"
 
 
 @router.get("/meta/state-machine")

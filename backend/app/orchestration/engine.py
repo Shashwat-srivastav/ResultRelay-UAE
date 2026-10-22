@@ -28,6 +28,7 @@ from app.agents.audit_governance import AuditGovernanceAgent
 from app.agents.base import Agent
 from app.agents.escalation import EscalationCoordinator
 from app.agents.lab_workflow import LabWorkflowAgent
+from app.core.config import settings
 from app.agents.network_delivery import NetworkDeliveryAgent
 from app.agents.policy_applicability import PolicyApplicabilityAgent
 from app.audit.log import AuditLog
@@ -776,7 +777,7 @@ class Orchestrator:
             block_on_jurisdiction_violation=rt.config.applicability_filter,
         )
         advisory = None
-        if os.environ.get("RESULTRELAY_ADVISE") == "1":
+        if settings.enable_llm:
             from app.advisers import advise
 
             adviser = configure_adviser()
@@ -787,7 +788,7 @@ class Orchestrator:
                 adviser=adviser,
                 endpoint=os.environ.get("RESULTRELAY_ADVISE_URL"),
                 resolution_ref=os.environ.get("RESULTRELAY_RESIDENCY_RESOLUTION") or None,
-                enabled=True if adviser is not None else False,
+                enabled=settings.enable_llm,
             )
             result["advisory"] = advisory.as_dict()
         if rt.config.use_invariants:

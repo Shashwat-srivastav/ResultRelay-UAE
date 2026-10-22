@@ -1,10 +1,10 @@
 {
   "manifest_version": "1.0",
-  "generated_at": "2026-10-22T18:19:03.488636+00:00",
+  "generated_at": "2026-10-22T18:20:12.336672+00:00",
   "synthetic_data_only": true,
   "disclaimer": "Demonstration prototype with synthetic data. Not a clinical service and not evidence of clinical safety, effectiveness or regulatory compliance.",
   "knowledge_base": {
-    "built_at": "2026-10-22T18:18:59.875676+00:00",
+    "built_at": "2026-10-22T18:20:08.738086+00:00",
     "chunk_count": 63,
     "index_sha256": "dcbfca95322c3ab632f71e6b5bf5aaa0fd17187771c805b44f4a9d95b7e7a288",
     "verification": {
@@ -1932,12 +1932,12 @@
         "framework_dimension": "Cross-cutting",
         "framework_index": "Generative AI governance",
         "source_reference": "Report 2.0 (GenAI content index)",
-        "implemented_capability": "No generative model is invoked. The advisory boundary is implemented and tested: a model may propose, is refused if offshore or ungrounded, and can never change a gate decision",
-        "code_location": "backend/app/advisers/ (base, residency, guard, stub) ; backend/app/orchestration/gate.py::enforce (advisory attached after the decision)",
-        "evidence": "15 adviser tests including one that asserts the gate decision is byte-identical with and without an accepted proposal; the boundary is closed by default (enable_llm=False)",
-        "demonstrating_test": "backend/tests/test_adviser.py (15 tests)",
+        "implemented_capability": "Containment for any model proposal: proposals are classified PRODUCT_DESIGN_CONTROL, must cite resolvable chunk ids from the case jurisdiction, and are recorded alongside - never instead of - the deterministic decision",
+        "code_location": "backend/app/advisers/guard.py ; backend/app/advisers/base.py ; backend/app/orchestration/gate.py",
+        "evidence": "A valid proposal is stamped ADVISORY_ONLY; a foreign-citation or unresolvable proposal is REJECTED_*; the gate records adviser_input but its decision is unchanged",
+        "demonstrating_test": "backend/tests/test_adviser.py (containment, hostile proposal, gate invariance)",
         "status": "PARTIAL",
-        "limitations": "No model client is implemented, by design: the only adviser is a deterministic stub used to exercise containment. Generative-AI behaviour is therefore untested - what is tested is the guard."
+        "limitations": "The containment layer is real and tested; the model is not running. No generator model is wired to it in this build, so the GenAI governance dimension is addressed structurally, not demonstrated with a live model."
       },
       {
         "mapping_id": "R15",
@@ -1960,8 +1960,8 @@
         "code_location": "backend/app/advisers/residency.py ; backend/app/advisers/llm.py ; backend/app/advisers/guard.py",
         "evidence": "classify() treats .ae and loopback as in-country and everything else as out-of-country; unknown is refused; the client raises PermissionError at construction",
         "demonstrating_test": "backend/tests/test_llm_adviser.py::test_an_offshore_endpoint_is_refused_before_any_data_is_shaped ; tests/test_adviser.py (residency cases)",
-        "status": "IMPLEMENTED",
-        "limitations": "Checks the endpoint string, not traffic: it cannot see DNS, a proxy, or a model bundled into a desktop app. No in-country endpoint is configured in this build, so the control is tested but not exercised live."
+        "status": "PARTIAL",
+        "limitations": "Residency is checked at the guard and enforced by the transport refusing to run while disabled; but because no live endpoint is configured, the check has never been exercised against a real outbound request. The DNS/proxy/bundled-model blind spot remains."
       },
       {
         "mapping_id": "R17",
@@ -1981,7 +1981,7 @@
         "framework_index": "Non-binding national guidance distinguished from law",
         "source_reference": "UAE AI Charter (June 2024) P6 (human oversight) and P12 (defers to sectoral law) - OFFICIAL_GUIDANCE; UAE AI Strategy 2031 (U5)",
         "implemented_capability": "Every excerpt carries a claim class; guidance-class material can inform retrieval and explanation but can never satisfy a binding condition or authorise a fallback channel",
-        "code_location": "knowledge_base/excerpts/*.yaml (claim_classification) ; backend/app/kb/ingest.py ; backend/app/state_machine/transitions.py (basis token)",
+        "code_location": "knowledge_base/excerpts/*.yaml ; backend/app/kb/ingest.py ; backend/app/state_machine/transitions.py",
         "evidence": "U5 excerpts are classified OFFICIAL_GUIDANCE; ingestion refuses an authorisation declaration from guidance or comparator class",
         "demonstrating_test": "backend/tests/test_fallback_authorisation.py (parametrised over OFFICIAL_GUIDANCE / GLOBAL_COMPARATOR / PRODUCT_DESIGN_CONTROL)",
         "status": "IMPLEMENTED",
@@ -2014,8 +2014,8 @@
     ]
   },
   "evaluation": {
-    "run_started": "2026-10-22T18:19:03.150761+00:00",
-    "run_finished": "2026-10-22T18:19:03.428719+00:00",
+    "run_started": "2026-10-22T18:20:11.984513+00:00",
+    "run_finished": "2026-10-22T18:20:12.277667+00:00",
     "scenario_count": 7,
     "run_count": 28,
     "summary": {
@@ -2038,7 +2038,7 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 6.5
+          "mean_wall_ms": 7.0
         },
         "policy_blind": {
           "label": "Policy-blind baseline (no knowledge base)",
@@ -2078,7 +2078,7 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 5.6
+          "mean_wall_ms": 6.1
         },
         "static_rules": {
           "label": "Conventional deterministic rules baseline",

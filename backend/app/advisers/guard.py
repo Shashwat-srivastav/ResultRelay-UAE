@@ -42,7 +42,7 @@ def advise(
             status=AdvisoryStatus.DISABLED,
             mode="DETERMINISTIC",
             reason=(
-                "the model boundary is closed (RESULTRELAY_ENABLE_LLM is off and no adviser was supplied); "
+                "the model boundary is closed (RESULTRELAY_ADVISE is off and no adviser was supplied); "
                 "the deterministic agent set produced the proposal. This is the shipped configuration."
             ),
             checks=("adviser boundary: closed",),

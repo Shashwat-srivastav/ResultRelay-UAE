@@ -44,9 +44,12 @@ class Settings:
     #: No outbound network call is made by the running application. The simulated transport is
     #: the only "network" the workflow can talk to.
     allow_outbound_network: bool = _flag("RESULTRELAY_ALLOW_NETWORK", False)
-    #: The deterministic agent set is the shipped behaviour. Enabling an LLM would make the
+    #: The deterministic agent set is the shipped behaviour. Enabling an adviser would make the
     #: system non-reproducible and would put model text next to policy text; it is off.
-    enable_llm: bool = _flag("RESULTRELAY_ENABLE_LLM", False)
+    #: ``RESULTRELAY_ADVISE`` is the documented switch; ``RESULTRELAY_ENABLE_LLM`` is kept as an
+    #: alias because older docs and the guard message name it. Two independent switches let
+    #: /api/health report "closed" while the engine produced advisories, which is a lie either way.
+    enable_llm: bool = _flag("RESULTRELAY_ADVISE", False) or _flag("RESULTRELAY_ENABLE_LLM", False)
     #: Demo mode trims the UI to the walkthrough path. It changes presentation, never gating.
     demo_mode: bool = _flag("RESULTRELAY_DEMO", False)
     #: Refuse to start if the knowledge base failed verification on the most recent build.

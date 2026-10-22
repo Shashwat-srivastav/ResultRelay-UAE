@@ -47,7 +47,8 @@ build: manifest
 	cd $(FRONTEND) && npm run build
 
 dev: build
-	cd $(BACKEND) && $(PY) -m uvicorn app.main:app --host 0.0.0.0 --port $${PORT:-8000}
+	@echo "dev server on $${RESULTRELAY_HOST:-127.0.0.1}:$${PORT:-8000} (the API has no authentication)"
+	cd $(BACKEND) && $(PY) -m uvicorn app.main:app --host $${RESULTRELAY_HOST:-127.0.0.1} --port $${PORT:-8000}
 
 check: verify test eval
 

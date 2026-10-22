@@ -234,6 +234,9 @@ that a genetic result may not go to the patient, and that a clause belongs to an
 ## 5b. The advisory boundary (a model may propose, never decide)
 
 `backend/app/advisers/` is the only place a model is allowed to exist, and by default nothing does.
+One switch governs it: `RESULTRELAY_ADVISE=1` (`RESULTRELAY_ENABLE_LLM` is accepted as a legacy alias).
+`/api/health` distinguishes *enabled* from *enabled and connected*, because an operator reading
+"open" while the engine records `DISABLED` would be reading fiction.
 
 ```
 case snapshot ──► advisers.guard.advise() ──► AdvisoryRecord ──► gate.enforce(advisory=...)
@@ -244,7 +247,7 @@ case snapshot ──► advisers.guard.advise() ──► AdvisoryRecord ──�
 
 | check | rule | failure status |
 |---|---|---|
-| boundary | closed unless `RESULTRELAY_ENABLE_LLM` is set *and* an adviser is supplied | `DISABLED` |
+| boundary | closed unless `RESULTRELAY_ADVISE=1` *and* an in-country endpoint is configured | `DISABLED` |
 | residency | Art. 13: out-of-country endpoints refused unless a named Health Authority resolution is recorded | `REFUSED_RESIDENCY` |
 | citations resolve | every cited chunk id must exist in the corpus | `REJECTED_UNGROUNDED` |
 | citations apply | every cited chunk must be from the applicable jurisdiction set (Dubai + federal for a Dubai case) | `REJECTED_OUT_OF_JURISDICTION` |
