@@ -1,8 +1,9 @@
 {
-  "built_at": "2026-10-22T18:15:07.558683+00:00",
-  "chunk_count": 61,
+  "built_at": "2026-10-22T18:16:32.838889+00:00",
+  "chunk_count": 63,
   "sources": [
     "AD1",
+    "AD2",
     "F1",
     "F2",
     "G1",
@@ -17,11 +18,11 @@
     "U5"
   ],
   "verification": {
-    "verified": 61,
+    "verified": 63,
     "unverified": 0,
     "mismatch": 0,
     "counts_by_status": {
-      "VERIFIED_AGAINST_SOURCE": 61
+      "VERIFIED_AGAINST_SOURCE": 63
     },
     "details": [
       {
@@ -71,6 +72,18 @@
         "source_id": "AD1",
         "status": "VERIFIED_AGAINST_SOURCE",
         "detail": "matched contiguous text on PDF page(s) 14-14"
+      },
+      {
+        "chunk_id": "AD2-1-scope",
+        "source_id": "AD2",
+        "status": "VERIFIED_AGAINST_SOURCE",
+        "detail": "matched contiguous text on PDF page(s) 1-1"
+      },
+      {
+        "chunk_id": "AD2-2.30-data-integrity",
+        "source_id": "AD2",
+        "status": "VERIFIED_AGAINST_SOURCE",
+        "detail": "matched contiguous text on PDF page(s) 1-1"
       },
       {
         "chunk_id": "F1-8.1-src",
@@ -394,7 +407,7 @@
     "cache_path": "/home/user/resultrelay/knowledge_base/.sources",
     "cache_present": true
   },
-  "index_sha256": "bc9ae3e738509b4210d88cab10a97c59b5fa3c1a0c1c4c5a672f126f01dcea8b",
+  "index_sha256": "dcbfca95322c3ab632f71e6b5bf5aaa0fd17187771c805b44f4a9d95b7e7a288",
   "chunks": [
     {
       "chunk_id": "AD1-PP.11.2.intro",
@@ -634,6 +647,67 @@
       "authorises_fallback": false,
       "support_note": "Uses \"shall\". This is the closest comparator concept to a verified human acknowledgment, and it exists only for verbal/telephone transmission.",
       "text_sha256": "625de3917c8e6341"
+    },
+    {
+      "chunk_id": "AD2-1-scope",
+      "source_id": "AD2",
+      "title": "Abu Dhabi Healthcare Information and Cyber Security Standard (ADHICS V2)",
+      "issuer": "Department of Health - Abu Dhabi (DoH Information & Cyber Security Office)",
+      "jurisdiction": "AE-AZ",
+      "document_version": "V2",
+      "section_id": "1 (Standard Scope), (a)",
+      "page_start": 1,
+      "page_end": 1,
+      "pdf_page_start": 1,
+      "pdf_page_end": 1,
+      "publication_date": "2024-05",
+      "effective_date": "2024-08",
+      "source_type": "Regulatory standard (cyber security)",
+      "applicability": "Any entity in the Emirate of Abu Dhabi that generates, accesses, stores, uses, processes or transmits health information. Comparator for a Dubai case; binding for an Abu Dhabi case.",
+      "claim_classification": "BINDING_REQUIREMENT",
+      "text": "Any health sector (referred to as \"entity\") including but not limited to, Healthcare Facility, Payer, Service Provider in the Emirate of Abu Dhabi that generate, access, store, use, process and/or transmit health information.",
+      "source_url": "https://www.doh.gov.ae/-/media/Feature/Resources/Standards/ADHICS-v2-standard.ashx",
+      "verification_status": "(not committed) knowledge_base/excerpts/AD2_adhics_v2.yaml",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "topics": [
+        "cybersecurity",
+        "scope",
+        "applicability",
+        "abu_dhabi"
+      ],
+      "authorises_fallback": false,
+      "support_note": "Binds any Abu Dhabi entity that transmits health information. For a Dubai case it is a comparator and can never be enforced; for an Abu Dhabi case it is binding. The register records both.",
+      "text_sha256": "6486b85d467d5202"
+    },
+    {
+      "chunk_id": "AD2-2.30-data-integrity",
+      "source_id": "AD2",
+      "title": "Abu Dhabi Healthcare Information and Cyber Security Standard (ADHICS V2)",
+      "issuer": "Department of Health - Abu Dhabi (DoH Information & Cyber Security Office)",
+      "jurisdiction": "AE-AZ",
+      "document_version": "V2",
+      "section_id": "2.30 (Data integrity, definitions)",
+      "page_start": 1,
+      "page_end": 1,
+      "pdf_page_start": 1,
+      "pdf_page_end": 1,
+      "publication_date": "2024-05",
+      "effective_date": "2024-08",
+      "source_type": "Regulatory standard (cyber security)",
+      "applicability": "Any entity in the Emirate of Abu Dhabi that generates, accesses, stores, uses, processes or transmits health information. Comparator for a Dubai case; binding for an Abu Dhabi case.",
+      "claim_classification": "BINDING_REQUIREMENT",
+      "text": "Data must not be altered or destroyed in an unauthorized manner and accuracy and consistency must be preserved regardless of changes.",
+      "source_url": "https://www.doh.gov.ae/-/media/Feature/Resources/Standards/ADHICS-v2-standard.ashx",
+      "verification_status": "(not committed) knowledge_base/excerpts/AD2_adhics_v2.yaml",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "topics": [
+        "integrity",
+        "audit",
+        "tamper_evidence"
+      ],
+      "authorises_fallback": false,
+      "support_note": "The Abu Dhabi basis for a tamper-evident record: unauthorised alteration is the thing to be prevented, and consistency must survive changes - which is what an append-only hash chain and revision lineage provide. Comparator material for a Dubai case.",
+      "text_sha256": "276d446569c4fff1"
     },
     {
       "chunk_id": "F1-8.1-src",

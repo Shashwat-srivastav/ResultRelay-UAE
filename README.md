@@ -101,7 +101,7 @@ official document ──fetch──▶ page-marked text ──verify──▶ ex
 - Every excerpt carries a claim class. Only `BINDING_REQUIREMENT` can block an action, and for a
   Dubai case only Dubai sources carry that class.
 
-Current build: **56 excerpts across 13 documents, 56 verified, 0 unverified, 0 rejected.**
+Current build: **63 excerpts across 14 documents, 63 verified, 0 unverified, 0 rejected.**
 
 The same figures are exported to `frontend/public/data/manifest.json` and served at
 `/data/manifest.json`, so the claims can be checked with `curl` and `jq` without running the
@@ -132,7 +132,7 @@ evaluation/
   expected_actions/         independently authored acceptable outcomes
   report.md, results/       generated artefacts
 knowledge_base/
-  source_register.csv      13 sources, with licence and verification status
+  source_register.csv      14 sources, with licence and verification status
   excerpts/*.yaml           minimal necessary quotations
   gap_register.csv          12 documented gaps
   mappings/                 ITU-T Y.3172 and AI-readiness self-assessment
@@ -143,6 +143,16 @@ paper/ResultRelay_ITU_paper.docx   the five-page submission paper (built by pape
 docs/audit-disposition.md   red-team findings re-tested against the current build
 ```
 
+## Deployment boundary (read before hosting this)
+
+This build has **no authentication**. Every endpoint returns case data to anyone who can reach it.
+
+- `make dev` binds `127.0.0.1` by default. Widening it is an explicit act: `RESULTRELAY_HOST=0.0.0.0`.
+- Cross-origin access is closed by default. If a separate front-end host is used, name it:
+  `RESULTRELAY_CORS_ORIGINS=https://host`.
+- `/api/health` states `authentication_enabled: false` so the boundary is declared, not assumed.
+- **Do not host this with real patient data.** It is a single-tenant demonstration over synthetic cases.
+
 ## The advisory boundary
 
 A model may propose; it may never decide. `backend/app/advisers/` holds the containment wrapper:
@@ -150,7 +160,24 @@ the boundary is closed by default, an out-of-country endpoint is refused under F
 Art. 13 unless a named Health Authority resolution is recorded, a proposal citing material outside
 the applicable jurisdiction is rejected, and the deterministic gate computes its decision before it
 sees the proposal at all. `backend/tests/test_adviser.py` asserts the decision is unchanged when an
-accepted proposal is attached. No model client ships in the tree.
+accepted proposal is attached.
+
+A model client *does* ship (`backend/app/advisers/llm.py`) — an OpenAI-compatible adapter that is
+**not connected to anything by default**: its transport refuses, and the only endpoints it will
+accept are loopback or `.ae`. Enable it against an in-country server:
+
+```bash
+RESULTRELAY_ADVISE=1 \
+RESULTRELAY_ADVISE_URL=http://localhost:11434/v1 \
+RESULTRELAY_ADVISE_MODEL=qwen2.5 \
+make dev
+```
+
+An offshore endpoint such as `https://api.openai.com/v1` is refused at construction time under
+Federal Law 2/2019 Art. 13 (processing health data outside the State), with Art. 24's
+AED 500,000–700,000 penalty cited in the refusal — unless a named Health Authority resolution is
+recorded in `RESULTRELAY_RESIDENCY_RESOLUTION`. In the shipped configuration no model runs, and the
+Decision-trace page says so per step rather than implying otherwise.
 
 ## Honest limitations
 

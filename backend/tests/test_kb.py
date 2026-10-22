@@ -74,8 +74,17 @@ def test_only_the_local_and_federal_layers_can_be_binding_for_a_dubai_case(index
         c["jurisdiction"] for c in index_payload["chunks"]
         if c["claim_classification"] == "BINDING_REQUIREMENT"
     }
-    assert binding == {"AE-DU", "AE-FED"}
-    assert "AE-AZ" not in binding and "GLOBAL" not in binding
+    # Abu Dhabi material is binding *in Abu Dhabi* - that is what makes it a real comparator. What
+    # must never happen is a global body being binding anywhere, or an out-of-jurisdiction clause
+    # reaching a Dubai case (asserted by the applicability-filter test below).
+    assert binding <= {"AE-DU", "AE-AZ", "AE-FED"}
+    assert "GLOBAL" not in binding
+    dubai_binding = {
+        c["jurisdiction"] for c in index_payload["chunks"]
+        if c["claim_classification"] == "BINDING_REQUIREMENT"
+        and c["jurisdiction"] in retriever.applicable_jurisdictions("AE-DU")
+    }
+    assert dubai_binding == {"AE-DU", "AE-FED"}
 
 
 def test_federal_law_is_applicable_to_a_dubai_case_but_dubai_policy_is_not_federal():

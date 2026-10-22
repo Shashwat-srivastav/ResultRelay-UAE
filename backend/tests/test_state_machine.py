@@ -265,3 +265,28 @@ def test_superseding_a_communicated_result_needs_a_named_human():
     assert result.status in {"APPLIED", "BLOCKED"}
     if result.requires_human:
         assert result.requires_human is True
+
+
+def test_every_policy_reference_resolves_to_a_real_source():
+    """A citation that names a source we do not hold is worse than no citation.
+
+    The table used to point at "S3 §9.1.5(g)" and "S5 2.1", neither of which exists in the register:
+    the sections were DHA ST-28 (S1) and the ONC SAFER guide (G2). This test makes that class of drift
+    fail loudly instead of being discovered by a reviewer.
+    """
+    import re
+
+    from app.kb.ingest import load_register
+
+    known = set(load_register()) | {"INV", "P1"}
+    for rule in TRANSITIONS:
+        if not rule.policy_ref:
+            continue
+        for token in re.findall(r"\b([A-Z]{1,3}\d?)\b(?=\s|§|\s\d)", rule.policy_ref):
+            if token.startswith("INV") or token == "P1":
+                continue
+            if token.isdigit():
+                continue
+            assert token in known or token in {"INV", "P1", "INV-1"}, (
+                f"transition {rule.event.value} cites unknown source {token!r}: {rule.policy_ref}"
+            )

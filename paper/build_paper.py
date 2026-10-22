@@ -150,6 +150,8 @@ table(doc, [
     ["Federal Law 2/2019, Art. 20", "National", "Retention of at least 25 years from the last procedure."],
     ["DHA HISHD/PP-12 §4.6.1", "Dubai", "Restates the 25-year floor as an entity duty; longer retention reserved to the Medical Director."],
     ["DHA HISHD/PP-08 §4.5.1, §4.9.10", "Dubai", "Accuracy at record level; entities must provide a way for patients to report inaccurate information."],
+    ["DoH ADHICS V2/2024, §1 and §2.30", "Abu Dhabi", "Binds any Abu Dhabi entity transmitting health information; data must not be altered or destroyed in an unauthorised manner — the basis for tamper-evidence. Comparator for a Dubai case."],
+    ["UAE AI Charter (June 2024), P6 and P12", "National (guidance)", "Human judgment and oversight over AI is treated as irreplaceable; the Charter defers to sectoral law. Classified OFFICIAL_GUIDANCE, so it can shape a design but never authorise an action."],
 ], widths=[4.2, 2.6, 9.6])
 add_para(doc, "Table 1. Instruments that bear on a patient result message, by layer.", size=8, italic=True, space_after=6)
 add_para(doc,
@@ -179,12 +181,20 @@ add_para(doc,
     "disagreement; the gate converts a proposal into a state-machine event and enforces cross-cutting "
     "invariants. The gate never reads an agent's free-text rationale.")
 add_para(doc,
-    "Advisory boundary. A model may propose, never decide. The wrapper refuses to run at all unless "
-    "the boundary is opened; refuses an endpoint classified outside the State absent a named Health "
-    "Authority resolution (Art. 13/24); rejects proposals citing chunk ids that do not exist or that "
-    "cannot bind the case jurisdiction; and stamps whatever survives as PRODUCT_DESIGN_CONTROL. The "
+    "Advisory boundary. A model may propose, never decide. An OpenAI-compatible client is implemented "
+    "and disconnected by default: its transport refuses, and its constructor rejects any endpoint "
+    "outside the State under Art. 13, citing Art. 24's penalty, unless a named Health Authority "
+    "resolution is recorded. The guard rejects proposals citing chunk ids that do not exist or that "
+    "cannot bind the case jurisdiction, and stamps whatever survives as PRODUCT_DESIGN_CONTROL. The "
     "gate computes its decision first and receives the advisory record afterwards — a test asserts the "
-    "decision is identical with and without an accepted proposal.")
+    "decision is identical with and without an accepted proposal. In this build no model is running.")
+add_para(doc,
+    "Decision traces. Every step is published as ordered artefacts — event, retrieved evidence with "
+    "claim class, each agent's proposal with its derived confidence and the basis for it, the gate's "
+    "conditions and invariant, the transition, the resulting state. Raw model reasoning is deliberately "
+    "not published: it is unverifiable, and a reader should be able to check an artefact rather than "
+    "trust a paragraph. The same page runs any scenario under two configurations side by side, which "
+    "is how the citation difference becomes visible rather than asserted.")
 add_para(doc,
     "Evaluation. Seven hand-authored scenarios are run against four configurations: the full system, "
     "a policy-blind baseline with no corpus, a citation-only retrieval baseline, and conventional "
@@ -260,10 +270,15 @@ add_para(doc,
     f"file, and {MAPPING_COUNT} mapping rows tie framework concepts to code locations with a "
     "demonstrating test or an explicit NOT_IMPLEMENTED.")
 add_para(doc,
-    "One known defect is open and unpatched at the time of submission: the applicability agent's "
-    "fallback path does not parse negation, so a clause that forbids an alternative channel can be "
-    "read as authorising it. It is recorded in the project's own audit and appears here rather than "
-    "being left to a reviewer to find.")
+    "Two defects found by our own red-team pass are now closed, and the closure is the more useful "
+    "result to report. Fallback authorisation used to be a keyword test, which read \"under no "
+    "circumstances shall an alternative channel be used\" as permission; it is now a boolean declared "
+    "on the excerpt, with ingestion refusing the declaration on guidance or comparator material and "
+    "the gate demanding the basis token that only such a declaration produces. Idempotency keys used "
+    "to include an attempt counter, making every send unique by construction; the key now identifies "
+    "the message, and the transport suppresses a duplicate only when the earlier attempt did not time "
+    "out. One defect remains open: the evaluation cannot support a claim beyond internal consistency, "
+    "because the scenarios were written by the team that built the engine.")
 
 # ---------------------------------------------------------------- 6
 heading(doc, "6.  Limitations and threats to validity")

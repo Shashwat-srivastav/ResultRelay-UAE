@@ -1,14 +1,14 @@
 {
   "manifest_version": "1.0",
-  "generated_at": "2026-10-22T18:15:11.044891+00:00",
+  "generated_at": "2026-10-22T18:16:36.403012+00:00",
   "synthetic_data_only": true,
   "disclaimer": "Demonstration prototype with synthetic data. Not a clinical service and not evidence of clinical safety, effectiveness or regulatory compliance.",
   "knowledge_base": {
-    "built_at": "2026-10-22T18:15:07.558683+00:00",
-    "chunk_count": 61,
-    "index_sha256": "bc9ae3e738509b4210d88cab10a97c59b5fa3c1a0c1c4c5a672f126f01dcea8b",
+    "built_at": "2026-10-22T18:16:32.838889+00:00",
+    "chunk_count": 63,
+    "index_sha256": "dcbfca95322c3ab632f71e6b5bf5aaa0fd17187771c805b44f4a9d95b7e7a288",
     "verification": {
-      "verified": 61,
+      "verified": 63,
       "unverified": 0,
       "rejected": 0,
       "method": "Each quotation is normalised and required to appear as a contiguous substring of the declared source page. Wrong page or wrong wording is rejected and excluded from the index."
@@ -34,27 +34,6 @@
         "verification_status": "VERIFIED_OFFICIAL",
         "relevant_sections": "11.1; 11.1.1; 11.1.2; 11.1.3; 9.1.5(e); 9.1.5(f); 9.1.5(g); 9.3.3; 9.3.4; 9.3.6; 13.3; 13.4; 13.5; Appendix 3 (Genetics row)",
         "limitations": "Verified: 68 pages, issue/effective/revision dates and code match the PDF cover and page headers. Document contains no numeric acknowledgment clock, no retry rule and no fallback-channel rule for walk-in results; absence of such text in this document is not evidence that no such obligation exists elsewhere."
-      },
-      {
-        "source_id": "S2",
-        "title": "Dubai Health Authority licensing and standards index (Sheryan)",
-        "issuing_authority": "Dubai Health Authority",
-        "jurisdiction": "AE-DU",
-        "document_type": "Regulatory instrument index (web)",
-        "document_code": "Sheryan (DHA licensing portal)",
-        "version_or_issue": "continuously updated",
-        "publication_date": "n/a",
-        "effective_date": "n/a",
-        "revision_or_expiry_date": "unknown",
-        "official_url": "https://www.dha.gov.ae/en/healthregulation",
-        "retrieved_at": "2026-10-22",
-        "applicability": "Dubai-licensed health facilities; individual instruments not retrieved.",
-        "legal_or_guidance_status": "BINDING_REQUIREMENT (index only; individual instruments not retrieved)",
-        "license_or_reuse_notes": "Portal content is dynamically rendered; no document text was retrieved or quoted. Index entry only.",
-        "local_file_path": "(not committed) no excerpts - index entry only",
-        "verification_status": "NEEDS_VERIFICATION",
-        "relevant_sections": "",
-        "limitations": "Listed to record that Dubai regulates laboratory services through instruments this prototype did not retrieve. No excerpt from S2 exists, so nothing in the system cites it."
       },
       {
         "source_id": "AD1",
@@ -307,6 +286,27 @@
         "verification_status": "VERIFIED_OFFICIAL",
         "relevant_sections": "Introduction; Policy Objectives 1-7; Priorities & Key Components 2 (Safety), 4 (Data Privacy), 5 (Transparency), 6 (Human Oversight), 7 (Governance and Accountability), 12 (Commitment to Treaties and Applicable Laws)",
         "limitations": "Rendered text carries no printed page numbers, so excerpts are located by principle number only (page 1 sentinel). Classified OFFICIAL_GUIDANCE throughout: nothing here can become binding at the gate."
+      },
+      {
+        "source_id": "AD2",
+        "title": "Abu Dhabi Healthcare Information and Cyber Security Standard (ADHICS V2)",
+        "issuing_authority": "Department of Health - Abu Dhabi (DoH Information & Cyber Security Office)",
+        "jurisdiction": "AE-AZ",
+        "document_type": "Regulatory standard (cyber security)",
+        "document_code": "DOH/SD/ICSO/ADHICS/V2/2024",
+        "version_or_issue": "V2",
+        "publication_date": "2024-05",
+        "effective_date": "2024-08",
+        "revision_or_expiry_date": "2027-05",
+        "official_url": "https://www.doh.gov.ae/-/media/Feature/Resources/Standards/ADHICS-v2-standard.ashx",
+        "retrieved_at": "2026-10-22",
+        "applicability": "Any entity in the Emirate of Abu Dhabi that generates, accesses, stores, uses, processes or transmits health information. Comparator for a Dubai case; binding for an Abu Dhabi case.",
+        "legal_or_guidance_status": "BINDING_REQUIREMENT (within Abu Dhabi); OUT-OF-JURISDICTION COMPARATOR for a Dubai case",
+        "license_or_reuse_notes": "Published by DoH for free download. Minimal quotation only; full text not redistributed. doh.gov.ae fails at TLS for scripted clients from some networks; retrieved by rendering.",
+        "local_file_path": "knowledge_base/.sources/AD2.txt",
+        "verification_status": "VERIFIED_OFFICIAL",
+        "relevant_sections": "1 (Standard Scope); 2.30 (Data integrity, definitions). 692 controls across 11 domains in total, of which only the two relied on are quoted.",
+        "limitations": "Only scope and the integrity definition are excerpted - enough to establish that a cyber instrument applies and to ground tamper-evidence, not enough to claim ADHICS conformance. The rendered text has no printed pagination, so sections are cited by number."
       }
     ]
   },
@@ -446,6 +446,40 @@
       "jurisdiction": "AE-AZ",
       "excerpt_status": "VERIFIED_AGAINST_SOURCE",
       "text_sha256": "625de3917c8e6341"
+    },
+    {
+      "chunk_id": "AD2-1-scope",
+      "source_id": "AD2",
+      "section": "1 (Standard Scope), (a)",
+      "printed_pages": [
+        1,
+        1
+      ],
+      "pdf_pages": [
+        1,
+        1
+      ],
+      "claim_classification": "BINDING_REQUIREMENT",
+      "jurisdiction": "AE-AZ",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "6486b85d467d5202"
+    },
+    {
+      "chunk_id": "AD2-2.30-data-integrity",
+      "source_id": "AD2",
+      "section": "2.30 (Data integrity, definitions)",
+      "printed_pages": [
+        1,
+        1
+      ],
+      "pdf_pages": [
+        1,
+        1
+      ],
+      "claim_classification": "BINDING_REQUIREMENT",
+      "jurisdiction": "AE-AZ",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "276d446569c4fff1"
     },
     {
       "chunk_id": "F1-8.1-src",
@@ -1920,8 +1954,8 @@
     ]
   },
   "evaluation": {
-    "run_started": "2026-10-22T18:15:10.715570+00:00",
-    "run_finished": "2026-10-22T18:15:10.987688+00:00",
+    "run_started": "2026-10-22T18:16:36.074380+00:00",
+    "run_finished": "2026-10-22T18:16:36.346013+00:00",
     "scenario_count": 7,
     "run_count": 28,
     "summary": {
@@ -1944,7 +1978,7 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 6.3
+          "mean_wall_ms": 6.4
         },
         "policy_blind": {
           "label": "Policy-blind baseline (no knowledge base)",
@@ -1964,7 +1998,7 @@
           "mean_provenance_completeness": 0.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 2.2
+          "mean_wall_ms": 2.3
         },
         "retrieval_only": {
           "label": "Citation-only RAG baseline",
@@ -1984,7 +2018,7 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 5.6
+          "mean_wall_ms": 5.5
         },
         "static_rules": {
           "label": "Conventional deterministic rules baseline",
@@ -2004,7 +2038,7 @@
           "mean_provenance_completeness": 0.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 2.3
+          "mean_wall_ms": 2.4
         }
       },
       "by_scenario": {

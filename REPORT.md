@@ -100,7 +100,7 @@ performance.
 
 ## 7. Standards position
 
-Thirteen documents were retrieved and parsed; **56 quotations are machine-verified against the
+Fourteen documents were retrieved and parsed; **63 quotations are machine-verified against the
 source text (0 unverified, 0 rejected at the last build)**. Ingestion refuses to index an excerpt
 whose words cannot be found on the page the register claims, so the counts above are a build
 assertion, not an estimate.
@@ -145,7 +145,38 @@ from every Dubai case — the one layer that binds. `app/kb/retriever.py::JURISD
 widens a case upwards (Dubai → Dubai + federal) and never downwards, so a federal case is not
 governed by a Dubai policy, and Abu Dhabi and global material stay comparator-only.
 
-### 7.3 Where the evidence runs out
+### 7.3 The cybersecurity and AI-governance layer
+
+Two further national instruments are now in the corpus, closing the largest hole a UAE reviewer would
+have found first:
+
+* **DoH ADHICS V2/2024** (Abu Dhabi cyber security standard) — binds any Abu Dhabi entity that
+  transmits health information, and defines data integrity as data that "must not be altered or
+  destroyed in an unauthorized manner". That is the comparator behind the append-only audit chain; it
+  is binding in Abu Dhabi and never enforceable for a Dubai case.
+* **The UAE AI Charter (June 2024)** — national *guidance*, not legislation. Principle 6 states that
+  "the irreplaceable value of human judgment and human oversight over AI" is the point; Principle 12
+  defers to sectoral law. Both are classified `OFFICIAL_GUIDANCE` throughout, which means the gate can
+  never promote them to a rule: they shape the design, they do not authorise an action.
+
+### 7.4 Where the model is allowed to run
+
+Federal Law 2/2019 Article 13 prohibits storing, *processing*, generating or transferring health data
+outside the State without a Health Authority resolution, and Article 24 prices the breach at
+AED 500,000–700,000. "Processing" is enumerated, so an inference call is inside the prohibition even
+when nothing is stored. The consequence is architectural rather than documentary:
+
+* `app/advisers/llm.py` refuses to construct a client pointed at an endpoint outside the State;
+* the refusal cites Articles 13 and 24, and names the resolution mechanism as the only route out;
+* `app/advisers/guard.py` additionally rejects any proposal whose citations do not resolve, or that
+  leans on a clause which cannot bind the case jurisdiction;
+* the deterministic gate computes its decision first and receives the advisory record afterwards, so
+  a proposal can be inspected and overruled but never enforced.
+
+In the shipped build no model runs at all. That is a limitation of this deployment, not a claim about
+the design: the client, the guard and the trace are implemented and tested against hostile output.
+
+### 7.5 Where the evidence runs out
 
 The decisive finding is still an absence. No retrieved instrument sets a numeric acknowledgment
 clock, a retry count or a fallback-channel rule for walk-in results. The Dubai laboratory standard

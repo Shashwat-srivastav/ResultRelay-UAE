@@ -1,0 +1,33 @@
+# Abu Dhabi — Healthcare Information and Cyber Security Standard, ADHICS V2 (DOH/SD/ICSO/ADHICS/V2/2024)
+# DoH is the health-sector regulator for the Emirate of Abu Dhabi. This is the cybersecurity instrument
+# whose absence the review flagged: a health-communication system was being designed with no cyber
+# authority in its corpus at all.
+source_id: AD2
+excerpts:
+  - chunk_id: AD2-1-scope
+    section_id: "1 (Standard Scope), (a)"
+    page_start: 1
+    page_end: 1
+    claim_classification: BINDING_REQUIREMENT
+    topics: [cybersecurity, scope, applicability, abu_dhabi]
+    text: >-
+      Any health sector (referred to as "entity") including but not limited to, Healthcare Facility,
+      Payer, Service Provider in the Emirate of Abu Dhabi that generate, access, store, use, process
+      and/or transmit health information.
+    support_note: >-
+      Binds any Abu Dhabi entity that transmits health information. For a Dubai case it is a comparator
+      and can never be enforced; for an Abu Dhabi case it is binding. The register records both.
+
+  - chunk_id: AD2-2.30-data-integrity
+    section_id: "2.30 (Data integrity, definitions)"
+    page_start: 1
+    page_end: 1
+    claim_classification: BINDING_REQUIREMENT
+    topics: [integrity, audit, tamper_evidence]
+    text: >-
+      Data must not be altered or destroyed in an unauthorized manner and accuracy and consistency
+      must be preserved regardless of changes.
+    support_note: >-
+      The Abu Dhabi basis for a tamper-evident record: unauthorised alteration is the thing to be
+      prevented, and consistency must survive changes - which is what an append-only hash chain and
+      revision lineage provide. Comparator material for a Dubai case.

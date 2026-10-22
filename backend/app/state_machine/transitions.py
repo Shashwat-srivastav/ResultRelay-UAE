@@ -435,7 +435,7 @@ TRANSITIONS: tuple[TransitionRule, ...] = (
         CaseState.TRANSPORT_ACCEPTED,
         g_always,
         "Provider accepted the message. Delivery is NOT established.",
-        policy_ref="S5 2.1 (comparator); INV-1",
+        policy_ref="G2 2.1 (comparator); INV-1",
     ),
     TransitionRule(
         (CaseState.TRANSMISSION_ATTEMPTED, CaseState.TRANSPORT_ACCEPTED),
@@ -513,7 +513,7 @@ TRANSITIONS: tuple[TransitionRule, ...] = (
             g_not_a_correction(ctx),
         ),
         "A named human acknowledged the current revision with established provenance.",
-        policy_ref="P1 institutional profile (acknowledgment requirement); S5 2.1 (comparator)",
+        policy_ref="P1 institutional profile (acknowledgment requirement); G2 2.1 (comparator)",
         requires_human=True,
     ),
     TransitionRule(
@@ -532,7 +532,7 @@ TRANSITIONS: tuple[TransitionRule, ...] = (
         CaseState.CORRECTION_PENDING,
         g_correction_reference,
         "A newer revision supersedes the communicated one; bound messages become stale.",
-        policy_ref="S3 §9.1.5(g); S2 §13.4 not applicable",
+        policy_ref="S1 §9.1.5(g); S1 §13.4 not applicable",
     ),
     TransitionRule(
         (CaseState.RESULT_FINALIZED, CaseState.TRANSMISSION_QUEUED, CaseState.TRANSMISSION_ATTEMPTED,
@@ -543,7 +543,7 @@ TRANSITIONS: tuple[TransitionRule, ...] = (
         CaseState.CORRECTION_PENDING,
         g_correction_reference,
         "Correction received while a communication is in flight: pending messages are invalidated.",
-        policy_ref="S3 §9.1.5(g)",
+        policy_ref="S1 §9.1.5(g)",
     ),
     TransitionRule(
         (CaseState.CORRECTION_PENDING,),
@@ -551,7 +551,7 @@ TRANSITIONS: tuple[TransitionRule, ...] = (
         CaseState.CORRECTED_RESULT_DELIVERY_PENDING,
         g_transmission_preconditions,
         "A reviewed correction task may open a *new* communication workflow for the corrected revision.",
-        policy_ref="S3 §9.1.5(g); P1",
+        policy_ref="S1 §9.1.5(g); P1",
         requires_human=True,
         requires_approval=True,
     ),
@@ -561,7 +561,7 @@ TRANSITIONS: tuple[TransitionRule, ...] = (
         CaseState.TRANSMISSION_ATTEMPTED,
         g_transmission_preconditions,
         "Release the corrected revision to the transport adapter.",
-        policy_ref="S3 §9.1.5(g); S1 §11.1.1",
+        policy_ref="S1 §9.1.5(g); S1 §11.1.1",
         requires_approval=True,
     ),
     TransitionRule(
@@ -583,7 +583,7 @@ TRANSITIONS: tuple[TransitionRule, ...] = (
         CaseState.SUPERSEDED,
         g_correction_reference,
         "Superseded revision retained for history; not deleted.",
-        policy_ref="S3 §9.1.5(g) 'both the original and corrected reports must be maintained'",
+        policy_ref="S1 §9.1.5(g) - both the original and corrected reports must be maintained",
     ),
     # --- escalation ------------------------------------------------------
     TransitionRule(
