@@ -1,10 +1,10 @@
 {
   "manifest_version": "1.0",
-  "generated_at": "2026-10-22T18:20:12.336672+00:00",
+  "generated_at": "2026-10-22T18:21:09.529420+00:00",
   "synthetic_data_only": true,
   "disclaimer": "Demonstration prototype with synthetic data. Not a clinical service and not evidence of clinical safety, effectiveness or regulatory compliance.",
   "knowledge_base": {
-    "built_at": "2026-10-22T18:20:08.738086+00:00",
+    "built_at": "2026-10-22T18:21:05.941207+00:00",
     "chunk_count": 63,
     "index_sha256": "dcbfca95322c3ab632f71e6b5bf5aaa0fd17187771c805b44f4a9d95b7e7a288",
     "verification": {
@@ -2014,8 +2014,8 @@
     ]
   },
   "evaluation": {
-    "run_started": "2026-10-22T18:20:11.984513+00:00",
-    "run_finished": "2026-10-22T18:20:12.277667+00:00",
+    "run_started": "2026-10-22T18:21:09.190184+00:00",
+    "run_finished": "2026-10-22T18:21:09.466886+00:00",
     "scenario_count": 7,
     "run_count": 28,
     "summary": {
@@ -2038,7 +2038,7 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 7.0
+          "mean_wall_ms": 6.7
         },
         "policy_blind": {
           "label": "Policy-blind baseline (no knowledge base)",
@@ -2058,7 +2058,7 @@
           "mean_provenance_completeness": 0.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 2.4
+          "mean_wall_ms": 2.2
         },
         "retrieval_only": {
           "label": "Citation-only RAG baseline",
@@ -2078,7 +2078,7 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 6.1
+          "mean_wall_ms": 5.6
         },
         "static_rules": {
           "label": "Conventional deterministic rules baseline",

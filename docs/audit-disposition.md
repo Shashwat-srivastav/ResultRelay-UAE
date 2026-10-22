@@ -9,7 +9,7 @@ and which are still open.
 **Rule for this table: a finding is `FIXED` only if a test or a reproduction now returns the safe
 result. "We changed the wording" is `PARTIAL` at best.**
 
-Last verified: 2026-10-22 (second pass), `make check` green — 157 tests, evaluation 7/7 – 27/27,
+Last verified: 2026-10-22 (second pass), `make check` green — 160 tests, evaluation 7/7 – 27/27,
 14 sources / 63 verified excerpts.
 
 **Update after the fix pass.** Rows below marked `FIXED` now have a test or a reproduction that
@@ -29,7 +29,7 @@ half-closed (the client exists, no model is running), and H-3 is mitigated rathe
 | **H-2** | Event provenance is caller-trusted (`result_revision_id`, `_establishes_receipt`) | **FIXED** | Guard reads `attempt.receipt_recorded`, written only by `apply_event` after the guard passes; `_establishes_receipt` is gone. `tests/test_state_machine.py` covers both the duplicate case and the adapter-belief case that made the old flag necessary. |
 | **H-3** | In-memory runtime is the de-facto source of truth; persistence is post-hoc | **PARTIAL** | Still in memory, but now checkable: `GET /api/cases/{id}/integrity` replays transitions, verifies the chain and reports divergence (2 tests, including a deliberately corrupted row). |
 | **H-4** | Idempotency key defeats its own dedupe (includes attempt index) | **FIXED** | `engine.py` now keys on `case:revision:channel:purpose`; `tests/test_idempotency.py` proves suppression on success and a new attempt after a timeout. |
-| **H-5** | No git repository | **FIXED** | `git init` done; three commits with a coherent narrative; 122 tracked files; `.gitignore` excludes the DB, the source cache and build output. Not pushed to a public remote — no credentials in this environment. |
+| **H-5** | No git repository | **FIXED** | `git init` done; a linear history with a coherent narrative; every commit message says what changed and why; `.gitignore` excludes the DB, the source cache and build output. Not pushed to a public remote — no credentials in this environment. |
 | **H-6** | Registration appears closed | **CANNOT VERIFY HERE** | An organisational fact outside the workspace. Unchanged and urgent. |
 | **H-7** | Evaluation cannot support the claims it headlines | **OPEN (now stated, not solved)** | The matrix is unchanged: `static_rules` 26/27 (96%), n=7, no held-out set, no false-hold metric. The mitigation applied is disclosure: the paper's Table 2 publishes the rules baseline beside the full system and says in §4 that only S6 separates the configurations and only for `retrieval_only`. |
 | **H-8** | "Chain-of-thought tracing" requirement unaddressed | **FIXED** | `/api/runs/{id}/trace` + Decision-trace page. Rationales remain capped at 1200 chars, deliberately: a trace of artefacts, not a reasoning dump. |
@@ -42,7 +42,7 @@ half-closed (the client exists, no model is running), and H-3 is mitigated rathe
 | Hardcoded agent confidences | **FIXED** — derived from checks/citations/unresolved, with the basis published per assessment |
 | `mode: Literal["DETERMINISTIC","LLM"]` declares an unreachable capability | **PARTIAL** — the value is now reachable via `RESULTRELAY_ADVISE=1` + an in-country endpoint, still off by default |
 | `MAX_RUNS` eviction | **FIXED** — evicts to the bound and asserts it holds |
-| Readiness rows resting on absent capabilities | **FIXED** — R11 (sandbox) and R12 (human oversight) relabelled `PARTIAL` with the reason stated; R14/R16 already `PARTIAL`; R06 evidence count corrected (37 → 157 tests) |
+| Readiness rows resting on absent capabilities | **FIXED** — R11 (sandbox) and R12 (human oversight) relabelled `PARTIAL` with the reason stated; R14/R16 now `PARTIAL` with the containment layer and the residency check cited; R06 evidence count corrected (37 → 157 tests) |
 | S2 registered with zero excerpts | **FIXED** — row deleted rather than left as a claim without evidence |
 | No relevance floor in the policy agent | **FIXED** — `POLICY_MIN_SCORE = 1.0`, so "no clause matched" is now a possible, honest answer |
 
