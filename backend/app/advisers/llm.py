@@ -15,7 +15,6 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from typing import Any, Protocol
-from urllib.parse import urlparse
 
 from app.advisers.base import AdvisoryProposal
 from app.advisers.residency import authorise
@@ -85,12 +84,13 @@ class OpenAICompatibleAdviser:
     name: str = "openai-compatible"
 
     def __post_init__(self) -> None:
+        # One rule, one implementation. This used to repeat the country-suffix test that
+        # ``residency.authorise`` already applies, so the two could disagree after any edit; the
+        # client now asks the residency module and refuses on its answer alone (audit finding M-5).
         decision = authorise(self.base_url, self.resolution_ref)
         if not decision.permitted:
             raise PermissionError(decision.reason)
-        host = urlparse(self.base_url).hostname or ""
-        if host not in {"localhost", "127.0.0.1", "::1"} and not host.endswith(".ae"):
-            raise PermissionError(f"endpoint host {host!r} is not inside the State")
+        self.residency_decision = decision
 
     def _url(self) -> str:
         return self.base_url.rstrip("/") + self.endpoint

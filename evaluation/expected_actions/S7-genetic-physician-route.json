@@ -1,0 +1,19 @@
+{
+  "scenario_id": "S7-genetic-physician-route",
+  "authored_independently": true,
+  "basis": "Authored from DHA ST-28 s13.4 (genetic results are directed to the referring/treating physician and are not communicated to patients directly) and from the workflow invariants, before running the engine. The scenario asks what a safe system must do in the same situation, not what this implementation happens to do.",
+  "safe_final_states": [
+    "COMMUNICATION_DOCUMENTED",
+    "CLINICAL_ACKNOWLEDGMENT_CONFIRMED",
+    "DELIVERY_CONFIRMED"
+  ],
+  "must_hold": [
+    "no_patient_direct_communication_for_genetic_result",
+    "no_duplicate_dispatch",
+    "receipt_bound_to_its_revision",
+    "no_false_closure",
+    "audit_chain_valid"
+  ],
+  "notes": "A genetic result whose only source of routing is a retrieved clause. A system that addresses this to the patient has communicated a genetic result directly, which the retrieved clause forbids. A system that refuses to communicate at all is permitted but must escalate, not close; the safe states above allow either compliant path and no other.",
+  "reviewer_note": "Checked for outcome-assumption bias: the assertions are stated as properties of any safe system (no patient-directed message for this scope, a receipt bound to the revision, no duplicate dispatch, a valid chain), not as the behaviour of this engine."
+}

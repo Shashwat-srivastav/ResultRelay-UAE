@@ -192,8 +192,13 @@ def g_transmission_preconditions(ctx: MachineContext) -> tuple[bool, str]:
     # Scope applicability is an *evidence* question answered by the policy agent; the state machine
     # only enforces the answer it is given. (A hardcoded jurisdiction rule here would silently make
     # every baseline compliant and would misrepresent what a static rule set can know.)
-    if ctx.evidence.get("scope_permitted") is False:
+    if ctx.evidence.get("scope_permitted") is False and ctx.evidence.get("recipient") != "PHYSICIAN":
         return _no("policy assessment prohibits this communication path for this case scope")
+    if ctx.evidence.get("scope_permitted") is False and ctx.evidence.get("recipient") == "PHYSICIAN":
+        return _ok(
+            "the direct-to-patient path is prohibited for this scope; the message is addressed to the "
+            "referring/treating physician under a retrieved clause that declares that routing"
+        )
     if not ctx.profile.get("direct_patient_communication_enabled", False):
         return _no("institutional profile does not enable direct patient communication")
     return _ok("result finalized, scope permitted, institutional profile enables direct communication")
@@ -586,8 +591,14 @@ TRANSITIONS: tuple[TransitionRule, ...] = (
         policy_ref="S1 §9.1.5(g) - both the original and corrected reports must be maintained",
     ),
     # --- escalation ------------------------------------------------------
+    # Escalation must be reachable from every state in which the workflow can find itself stuck -
+    # including a finalised result that no legal communication path exists for. Without
+    # RESULT_FINALIZED here, an assessor that says "this case needs a human" was proposing an action
+    # the state machine could not express: the gate refused the transition and the case sat finalised
+    # with nobody asked (red-team finding H-6).
     TransitionRule(
-        (CaseState.DELIVERY_STATE_UNKNOWN, CaseState.RETRY_PENDING, CaseState.DELIVERY_FAILED,
+        (CaseState.RESULT_FINALIZED, CaseState.TRANSPORT_ACCEPTED, CaseState.DELIVERY_CONFIRMED,
+         CaseState.DELIVERY_STATE_UNKNOWN, CaseState.RETRY_PENDING, CaseState.DELIVERY_FAILED,
          CaseState.CORRECTION_PENDING, CaseState.ESCALATION_IN_REVIEW),
         EventType.ESCALATION_REQUESTED,
         CaseState.ESCALATION_REQUIRED,

@@ -1,12 +1,12 @@
 {
   "manifest_version": "1.0",
-  "generated_at": "2026-10-22T18:41:36.688215+00:00",
+  "generated_at": "2026-10-22T19:37:10.890323+00:00",
   "synthetic_data_only": true,
   "disclaimer": "Demonstration prototype with synthetic data. Not a clinical service and not evidence of clinical safety, effectiveness or regulatory compliance.",
   "knowledge_base": {
-    "built_at": "2026-10-22T18:41:32.791374+00:00",
+    "built_at": "2026-10-22T19:25:37.958509+00:00",
     "chunk_count": 63,
-    "index_sha256": "dcbfca95322c3ab632f71e6b5bf5aaa0fd17187771c805b44f4a9d95b7e7a288",
+    "index_sha256": "dee8bb7cdb1cd560879e2c6d2fe7ee53042cf24ef396dc77b39a20d54933667b",
     "verification": {
       "verified": 63,
       "unverified": 0,
@@ -1741,7 +1741,7 @@
         "code_location": "backend/app/orchestration/gate.py ; backend/app/agents/policy_applicability.py ; backend/app/kb/retriever.py::applicable_jurisdictions",
         "inputs": "Retrieved chunks with jurisdiction and claim_classification, plus the case jurisdiction",
         "outputs": "Only AE-DU/AE-FED material may become binding for a Dubai case; other material is comparator-only and cannot reach the action",
-        "evidence_of_existence": "56 chunks across 13 sources of which the binding classes are confined to two jurisdictions; retriever widens a case jurisdiction upwards to the federal layer only",
+        "evidence_of_existence": "63 chunks across 14 sources of which the binding classes are confined to two jurisdictions; retriever widens a case jurisdiction upwards to the federal layer only",
         "demonstrating_test": "backend/tests/test_kb.py::test_applicability_filter_excludes_other_jurisdictions ; backend/tests/test_scenarios.py::test_jurisdiction_isolation",
         "limitations": "Y.3172 says nothing about law. The mapping is architectural (where the constraint sits), not a compliance claim: a policy node that is legally bounded is still not a legal opinion."
       },
@@ -1760,7 +1760,7 @@
       {
         "mapping_id": "Y12",
         "framework_concept": "Governance / audit (traceability of ML application behaviour)",
-        "framework_definition_source": "ITU-T Y.3172 (06/2019) \u00a76.3 and \u00a78.3 (ML application lifecycle and governance)",
+        "framework_definition_source": "ITU-T Y.3172 (06/2019) \u00a77.5 (management) and \u00a78.3 (general architectural guidelines)",
         "implemented_component": "Per-step decision trace published as ordered artefacts; two-configuration comparison of the same scenario and seed",
         "code_location": "backend/app/api/routes.py::run_trace ; frontend/src/pages/Trace.tsx ; frontend/src/pages/Compare.tsx",
         "inputs": "Run id; optional second configuration",
@@ -1778,7 +1778,7 @@
         "source_reference": "ITU AI Readiness Report 2.0, \u00a72, p12-13 (F2-2-ai-policy-dimension / basic framework table)",
         "implemented_capability": "Standardised chunk metadata with provenance, plus typed JSON APIs",
         "code_location": "knowledge_base/index/chunks.json ; backend/app/models/schemas.py::EvidenceChunk",
-        "evidence": "56 chunks, each with source_id, section, page, jurisdiction, classification, sha256",
+        "evidence": "63 chunks, each with source_id, section, page, jurisdiction, classification, sha256",
         "demonstrating_test": "backend/tests/test_kb.py::test_chunk_metadata_complete",
         "status": "IMPLEMENTED",
         "limitations": "Single internal schema; not mapped to FHIR/OMOP or any national data standard."
@@ -1790,7 +1790,7 @@
         "source_reference": "Report 2.0 \u00a72 (data governance indices)",
         "implemented_capability": "Provenance verification, claim classification, append-only audit chain",
         "code_location": "backend/app/kb/ingest.py ; backend/app/audit/log.py",
-        "evidence": "56/56 quotations machine-verified against official sources; hash-chained audit log",
+        "evidence": "63/63 quotations machine-verified against official sources; hash-chained audit log",
         "demonstrating_test": "backend/tests/test_kb.py::test_every_excerpt_verifies ; test_audit_chain",
         "status": "IMPLEMENTED",
         "limitations": "Governance is bounded to the prototype's own corpus and records; no enterprise data governance process."
@@ -1802,7 +1802,7 @@
         "source_reference": "Report 2.0 \u00a72",
         "implemented_capability": "Public source retrieval with documented licensing boundaries; no redistribution of restricted documents",
         "code_location": "scripts/fetch_sources.py ; knowledge_base/source_register.csv",
-        "evidence": "source register records official URLs, licence notes and verification status for 13 sources",
+        "evidence": "source register records official URLs, licence notes and verification status for 14 sources",
         "demonstrating_test": "manual review of source_register.csv",
         "status": "PARTIAL",
         "limitations": "Full texts are fetched to a local cache and not redistributed; offline use therefore degrades to the verified excerpts."
@@ -1946,7 +1946,7 @@
         "source_reference": "Federal Law 2/2019 Art. 2, 4, 13, 16, 20 (U1); DHA HISHD/PP-12 \u00a74.6.1 (U3); DHA HISHD/PP-08 \u00a74.5.1, \u00a74.9.10 (U4)",
         "implemented_capability": "The applicable-instrument decision is explicit: health data is taken out of the PDPL and grounded in the ICT Health Law, which is cited for confidentiality (Art. 4), permitted circulation (Art. 16) and the 25-year retention floor (Art. 20)",
         "code_location": "knowledge_base/excerpts/U1_ict_health_law.yaml ; backend/app/agents/policy_applicability.py ; backend/app/kb/retriever.py::JURISDICTION_LAYERS",
-        "evidence": "13 sources, 56 verified excerpts; a Dubai case resolves to {AE-DU, AE-FED} so the federal statute is retrievable and citable, while another emirate and global material stay comparator-only",
+        "evidence": "14 sources, 63 verified excerpts; a Dubai case resolves to {AE-DU, AE-FED} so the federal statute is retrievable and citable, while another emirate and global material stay comparator-only",
         "demonstrating_test": "backend/tests/test_kb.py::test_only_the_local_and_federal_layers_can_be_binding_for_a_dubai_case ; test_federal_law_is_applicable_to_a_dubai_case_but_dubai_policy_is_not_federal",
         "status": "IMPLEMENTED",
         "limitations": "Article 13 (no processing of health data outside the State without a Health Authority resolution) is recorded as a binding requirement but the prototype has no data-residency enforcement: it would run against whatever model endpoint is configured. Retention (Art. 20) and the patient-feedback duty (\u00a74.9.10) are recorded and NOT implemented - see GR-13 and GR-14."
@@ -2014,59 +2014,59 @@
     ]
   },
   "evaluation": {
-    "run_started": "2026-10-22T18:41:36.346195+00:00",
-    "run_finished": "2026-10-22T18:41:36.627098+00:00",
-    "scenario_count": 7,
-    "run_count": 28,
+    "run_started": "2026-10-22T19:31:17.639491+00:00",
+    "run_finished": "2026-10-22T19:31:24.772889+00:00",
+    "scenario_count": 8,
+    "run_count": 88,
     "summary": {
       "by_configuration": {
         "resultrelay": {
-          "label": "ResultRelay (policy-governed multi-agent)",
-          "runs": 7,
-          "assertions_passed": 27,
-          "assertions_total": 27,
+          "label": "ResultRelay (policy-gated assessors, deterministic)",
+          "runs": 8,
+          "assertions_passed": 32,
+          "assertions_total": 32,
           "assertion_pass_rate": 1.0,
-          "scenarios_fully_safe": 7,
-          "workflows_completed": 7,
+          "scenarios_fully_safe": 8,
+          "workflows_completed": 8,
           "false_closures": 0,
           "false_deliveries": 0,
           "stale_ack_uses": 0,
           "unauthorised_channels": 0,
           "scope_violations": 0,
-          "audit_findings": 7,
+          "audit_findings": 8,
           "comparator_cited_as_binding": 0,
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 6.4
+          "mean_wall_ms": 45.9
         },
         "policy_blind": {
           "label": "Policy-blind baseline (no knowledge base)",
-          "runs": 7,
-          "assertions_passed": 23,
-          "assertions_total": 27,
-          "assertion_pass_rate": 0.852,
+          "runs": 8,
+          "assertions_passed": 27,
+          "assertions_total": 32,
+          "assertion_pass_rate": 0.844,
           "scenarios_fully_safe": 3,
           "workflows_completed": 5,
           "false_closures": 0,
           "false_deliveries": 0,
           "stale_ack_uses": 2,
           "unauthorised_channels": 1,
-          "scope_violations": 1,
+          "scope_violations": 2,
           "audit_findings": 0,
           "comparator_cited_as_binding": 0,
           "mean_provenance_completeness": 0.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 2.3
+          "mean_wall_ms": 36.4
         },
         "retrieval_only": {
           "label": "Citation-only RAG baseline",
-          "runs": 7,
-          "assertions_passed": 23,
-          "assertions_total": 27,
-          "assertion_pass_rate": 0.852,
-          "scenarios_fully_safe": 3,
+          "runs": 8,
+          "assertions_passed": 28,
+          "assertions_total": 32,
+          "assertion_pass_rate": 0.875,
+          "scenarios_fully_safe": 4,
           "workflows_completed": 6,
           "false_closures": 0,
           "false_deliveries": 0,
@@ -2078,27 +2078,167 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 5.8
+          "mean_wall_ms": 40.2
         },
-        "static_rules": {
-          "label": "Conventional deterministic rules baseline",
-          "runs": 7,
-          "assertions_passed": 26,
-          "assertions_total": 27,
-          "assertion_pass_rate": 0.963,
+        "ablate_no_kb": {
+          "label": "Ablation: knowledge base off (one flag)",
+          "runs": 8,
+          "assertions_passed": 30,
+          "assertions_total": 32,
+          "assertion_pass_rate": 0.938,
           "scenarios_fully_safe": 6,
-          "workflows_completed": 6,
+          "workflows_completed": 7,
           "false_closures": 0,
           "false_deliveries": 0,
           "stale_ack_uses": 0,
           "unauthorised_channels": 0,
-          "scope_violations": 1,
+          "scope_violations": 2,
+          "audit_findings": 8,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 0.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 35.8
+        },
+        "ablate_no_applicability_filter": {
+          "label": "Ablation: jurisdiction filter off (one flag)",
+          "runs": 8,
+          "assertions_passed": 31,
+          "assertions_total": 32,
+          "assertion_pass_rate": 0.969,
+          "scenarios_fully_safe": 7,
+          "workflows_completed": 8,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 0,
+          "unauthorised_channels": 0,
+          "scope_violations": 0,
+          "audit_findings": 20,
+          "comparator_cited_as_binding": 6,
+          "mean_provenance_completeness": 1.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 40.2
+        },
+        "ablate_no_invariants": {
+          "label": "Ablation: invariant gate off (one flag)",
+          "runs": 8,
+          "assertions_passed": 31,
+          "assertions_total": 32,
+          "assertion_pass_rate": 0.969,
+          "scenarios_fully_safe": 7,
+          "workflows_completed": 6,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 0,
+          "unauthorised_channels": 1,
+          "scope_violations": 0,
+          "audit_findings": 8,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 1.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 40.0
+        },
+        "ablate_no_audit_agent": {
+          "label": "Ablation: audit assessor off (one flag)",
+          "runs": 8,
+          "assertions_passed": 32,
+          "assertions_total": 32,
+          "assertion_pass_rate": 1.0,
+          "scenarios_fully_safe": 8,
+          "workflows_completed": 8,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 0,
+          "unauthorised_channels": 0,
+          "scope_violations": 0,
+          "audit_findings": 0,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 1.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 40.6
+        },
+        "ablate_full_context": {
+          "label": "Ablation: full context to every assessor (one flag)",
+          "runs": 8,
+          "assertions_passed": 32,
+          "assertions_total": 32,
+          "assertion_pass_rate": 1.0,
+          "scenarios_fully_safe": 8,
+          "workflows_completed": 8,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 0,
+          "unauthorised_channels": 0,
+          "scope_violations": 0,
+          "audit_findings": 8,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 1.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 43.2
+        },
+        "ablate_ack_any": {
+          "label": "Ablation: acknowledgement scope any revision (one flag)",
+          "runs": 8,
+          "assertions_passed": 30,
+          "assertions_total": 32,
+          "assertion_pass_rate": 0.938,
+          "scenarios_fully_safe": 6,
+          "workflows_completed": 8,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 2,
+          "unauthorised_channels": 0,
+          "scope_violations": 0,
+          "audit_findings": 8,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 1.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 40.1
+        },
+        "ablate_optimistic_transport": {
+          "label": "Ablation: optimistic transport semantics (one flag)",
+          "runs": 8,
+          "assertions_passed": 32,
+          "assertions_total": 32,
+          "assertion_pass_rate": 1.0,
+          "scenarios_fully_safe": 8,
+          "workflows_completed": 8,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 0,
+          "unauthorised_channels": 0,
+          "scope_violations": 0,
+          "audit_findings": 8,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 1.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 41.0
+        },
+        "static_rules": {
+          "label": "Conventional deterministic rules baseline",
+          "runs": 8,
+          "assertions_passed": 30,
+          "assertions_total": 32,
+          "assertion_pass_rate": 0.938,
+          "scenarios_fully_safe": 6,
+          "workflows_completed": 7,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 0,
+          "unauthorised_channels": 0,
+          "scope_violations": 2,
           "audit_findings": 0,
           "comparator_cited_as_binding": 0,
           "mean_provenance_completeness": 0.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 2.4
+          "mean_wall_ms": 35.3
         }
       },
       "by_scenario": {
@@ -2121,6 +2261,48 @@
             "completed": true,
             "failed_assertions": []
           },
+          "ablate_no_kb": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_applicability_filter": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_invariants": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_audit_agent": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_full_context": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_ack_any": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_optimistic_transport": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
           "static_rules": {
             "final_state": "COMMUNICATION_DOCUMENTED",
             "safe": true,
@@ -2136,6 +2318,52 @@
             "failed_assertions": []
           },
           "policy_blind": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": [
+              "stale_ack_not_used_for_current_revision"
+            ]
+          },
+          "retrieval_only": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": [
+              "stale_ack_not_used_for_current_revision"
+            ]
+          },
+          "ablate_no_kb": {
+            "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_applicability_filter": {
+            "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_invariants": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": false,
+            "failed_assertions": []
+          },
+          "ablate_no_audit_agent": {
+            "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_full_context": {
+            "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_ack_any": {
             "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
             "safe": false,
             "completed": true,
@@ -2143,13 +2371,11 @@
               "stale_ack_not_used_for_current_revision"
             ]
           },
-          "retrieval_only": {
+          "ablate_optimistic_transport": {
             "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
-            "safe": false,
+            "safe": true,
             "completed": true,
-            "failed_assertions": [
-              "stale_ack_not_used_for_current_revision"
-            ]
+            "failed_assertions": []
           },
           "static_rules": {
             "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
@@ -2166,7 +2392,7 @@
             "failed_assertions": []
           },
           "policy_blind": {
-            "final_state": "TRANSPORT_ACCEPTED",
+            "final_state": "DELIVERY_CONFIRMED",
             "safe": false,
             "completed": false,
             "failed_assertions": [
@@ -2174,12 +2400,56 @@
             ]
           },
           "retrieval_only": {
+            "final_state": "DELIVERY_CONFIRMED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": [
+              "no_unauthorised_channel"
+            ]
+          },
+          "ablate_no_kb": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_applicability_filter": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_invariants": {
             "final_state": "TRANSPORT_ACCEPTED",
             "safe": false,
             "completed": false,
             "failed_assertions": [
               "no_unauthorised_channel"
             ]
+          },
+          "ablate_no_audit_agent": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_full_context": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_ack_any": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_optimistic_transport": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
           },
           "static_rules": {
             "final_state": "ESCALATION_REQUIRED",
@@ -2202,6 +2472,48 @@
             "failed_assertions": []
           },
           "retrieval_only": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_kb": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_applicability_filter": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_invariants": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_audit_agent": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_full_context": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_ack_any": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_optimistic_transport": {
             "final_state": "COMMUNICATION_DOCUMENTED",
             "safe": true,
             "completed": true,
@@ -2230,6 +2542,50 @@
             ]
           },
           "retrieval_only": {
+            "final_state": "RESULT_FINALIZED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_kb": {
+            "final_state": "DELIVERY_CONFIRMED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": [
+              "no_patient_direct_communication_for_genetic_result"
+            ]
+          },
+          "ablate_no_applicability_filter": {
+            "final_state": "RESULT_FINALIZED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_invariants": {
+            "final_state": "RESULT_FINALIZED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_audit_agent": {
+            "final_state": "RESULT_FINALIZED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_full_context": {
+            "final_state": "RESULT_FINALIZED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_ack_any": {
+            "final_state": "RESULT_FINALIZED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_optimistic_transport": {
             "final_state": "RESULT_FINALIZED",
             "safe": true,
             "completed": true,
@@ -2267,6 +2623,50 @@
               "stale_ack_not_used_for_current_revision"
             ]
           },
+          "ablate_no_kb": {
+            "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_applicability_filter": {
+            "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_invariants": {
+            "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_audit_agent": {
+            "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_full_context": {
+            "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_ack_any": {
+            "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
+            "safe": false,
+            "completed": true,
+            "failed_assertions": [
+              "stale_ack_not_used_for_current_revision"
+            ]
+          },
+          "ablate_optimistic_transport": {
+            "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
           "static_rules": {
             "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
             "safe": true,
@@ -2295,11 +2695,129 @@
               "no_out_of_jurisdiction_binding_citation"
             ]
           },
+          "ablate_no_kb": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_applicability_filter": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": false,
+            "completed": true,
+            "failed_assertions": [
+              "no_out_of_jurisdiction_binding_citation"
+            ]
+          },
+          "ablate_no_invariants": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_audit_agent": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_full_context": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_ack_any": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_optimistic_transport": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
           "static_rules": {
             "final_state": "COMMUNICATION_DOCUMENTED",
             "safe": true,
             "completed": true,
             "failed_assertions": []
+          }
+        },
+        "S7-genetic-physician-route": {
+          "resultrelay": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "policy_blind": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": false,
+            "completed": true,
+            "failed_assertions": [
+              "no_patient_direct_communication_for_genetic_result"
+            ]
+          },
+          "retrieval_only": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_kb": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": false,
+            "completed": true,
+            "failed_assertions": [
+              "no_patient_direct_communication_for_genetic_result"
+            ]
+          },
+          "ablate_no_applicability_filter": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_invariants": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_audit_agent": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_full_context": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_ack_any": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_optimistic_transport": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "static_rules": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": false,
+            "completed": true,
+            "failed_assertions": [
+              "no_patient_direct_communication_for_genetic_result"
+            ]
           }
         }
       }

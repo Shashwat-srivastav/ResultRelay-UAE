@@ -9,7 +9,9 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from fastapi import FastAPI
+import secrets
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -41,6 +43,34 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+
+#: Endpoints that stay reachable without a key. They carry no case data: /api/health reports build
+#: and corpus state, /api/docs is the schema. Everything else is closed when a key is configured.
+OPEN_PREFIXES = ("/api/health", "/api/docs", "/api/openapi.json")
+
+
+@app.middleware("http")
+async def _require_api_key(request: Request, call_next):  # noqa: ANN001, ANN201
+    """Refuse /api requests that do not carry the configured key.
+
+    The build has no user accounts, no sessions and no roles: a single shared key is a boundary, not
+    an authorisation model, and it is described that way in the README. What it does buy is that the
+    case registry is not readable by anything that can reach the port, which is what the deployment
+    section used to have to apologise for (audit findings M-6 and H-7).
+    """
+    required = os.environ.get("RESULTRELAY_API_KEY", "").strip()
+    path = request.url.path
+    if required and path.startswith("/api") and not path.startswith(OPEN_PREFIXES):
+        supplied = request.headers.get("X-API-Key", "")
+        # Constant-time comparison: a byte-by-byte comparison of a secret leaks its prefix.
+        if not supplied or not secrets.compare_digest(supplied, required):
+            return JSONResponse(
+                status_code=401,
+                content={"detail": "missing or invalid X-API-Key"},
+                headers={"WWW-Authenticate": "ApiKey"},
+            )
+    return await call_next(request)
+
 
 app.include_router(router)
 

@@ -5,6 +5,18 @@ import {
 } from "../ui";
 import type { Run, Step } from "../types";
 
+/** The number is a check/citation heuristic (audit finding M-1): say so where it is rendered. */
+function supportTooltip(a: Step["agents"][number]): string {
+  const basis =
+    a.data && typeof a.data.confidence_basis === "string"
+      ? a.data.confidence_basis
+      : "derived: checks, citations, unresolved questions (heuristic)";
+  return (
+    "Support score in [0,1] - a heuristic from the number of checks performed, citations available " +
+    "and questions left open. It is not a probability and not model certainty. Basis: " + basis
+  );
+}
+
 export default function Simulator() {
   const scen = useAsync<any>(() => api.scenarios(), []);
   const [scenarioId, setScenarioId] = useState<string>("");
@@ -102,7 +114,7 @@ export default function Simulator() {
         </span>
       </Banner>
 
-      <Panel title="Run a scenario" hint="7 scenarios · 4 configurations">
+      <Panel title="Run a scenario" hint="8 scenarios · 11 configurations">
         <div className="grid cols-4" style={{ alignItems: "end" }}>
           <div className="field" style={{ gridColumn: "span 2" }}>
             <label htmlFor="scenario">Scenario</label>
@@ -376,7 +388,9 @@ function StepCard({ s, open, onToggle }: { s: Step; open: boolean; onToggle: () 
                     <h3 style={{ fontSize: 12.5 }}>{a.agent_id}</h3>
                     <Chip tone={statusTone(a.assessment_status)}>{a.assessment_status}</Chip>
                   </div>
-                  <span className="tiny muted">conf {a.confidence.toFixed(2)}</span>
+                  <span className="tiny muted" title={supportTooltip(a)}>
+                    support {a.confidence.toFixed(2)} (heuristic)
+                  </span>
                 </div>
                 <div className="panel-body" style={{ padding: "10px 12px" }}>
                   <div className="row-wrap" style={{ marginBottom: 6 }}>

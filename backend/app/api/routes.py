@@ -15,9 +15,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 from pydantic import BaseModel, Field
-from sqlalchemy import func, select
+from sqlalchemy import delete, func, select
 
 from app.api import runs as run_registry
 from app.audit.log import verify_entries
@@ -35,6 +35,7 @@ from app.models.db import (
     EventRow,
     ReceiptRow,
     RevisionRow,
+    RunRow,
     TransitionRow,
     get_case,
     list_cases,
@@ -137,28 +138,25 @@ def _persist(rt) -> None:
                 assert row is not None
                 row.status = rev["status"]
 
-        existing_events = {r.event_id for r in s.scalars(select(EventRow).where(EventRow.case_id == rt.case_id))}
+        existing_events = {r.event_id for r in s.scalars(select(EventRow).where(EventRow.run_id == rt.run_id))}
         for ev in rt.events:
             if ev["event_id"] not in existing_events:
                 s.add(EventRow(**{k: ev[k] for k in ("event_id", "case_id", "run_id", "seq", "at", "kind", "actor", "source_layer", "summary")},
                                 payload=json.dumps(ev.get("payload", {}), default=str)))
 
+        # Transitions are rewritten for this run on every persist. The previous version deduped
+        # on (case_id, step, trigger, state) and omitted run_id, so a second run of the same
+        # scenario wrote no transitions at all and the case's replay diverged from its store row
+        # (red-team finding C-2). Rewriting the run's own rows is idempotent by construction.
+        s.execute(delete(TransitionRow).where(TransitionRow.run_id == rt.run_id))
         for tr in rt.transitions:
-            key = (rt.case_id, tr.get("step"), tr.get("trigger_event"), tr.get("resulting_state"))
-            exists = s.scalar(select(func.count()).select_from(TransitionRow).where(
-                TransitionRow.case_id == rt.case_id,
-                TransitionRow.step == int(tr.get("step") or 0),
-                TransitionRow.trigger_event == str(tr.get("trigger_event")),
-                TransitionRow.resulting_state == str(tr.get("resulting_state")),
+            s.add(TransitionRow(
+                case_id=rt.case_id, run_id=rt.run_id, step=int(tr.get("step") or 0),
+                prior_state=tr["prior_state"], resulting_state=tr["resulting_state"],
+                trigger_event=tr["trigger_event"], status=tr["status"], actor=tr.get("actor", "SYSTEM"),
+                reason=str(tr.get("reason", ""))[:2000], invariant=tr.get("invariant"),
+                policy_refs=str(tr.get("policy_refs", ""))[:250], at=tr.get("at", ""),
             ))
-            if not exists:
-                s.add(TransitionRow(
-                    case_id=rt.case_id, run_id=rt.run_id, step=int(tr.get("step") or 0),
-                    prior_state=tr["prior_state"], resulting_state=tr["resulting_state"],
-                    trigger_event=tr["trigger_event"], status=tr["status"], actor=tr.get("actor", "SYSTEM"),
-                    reason=str(tr.get("reason", ""))[:2000], invariant=tr.get("invariant"),
-                    policy_refs=str(tr.get("policy_refs", ""))[:250], at=tr.get("at", ""),
-                ))
 
         for a in rt.network.attempts:
             # Runtime attempt ids restart at AT-1 for every run, so the store keys them by run.
@@ -227,7 +225,13 @@ def _persist(rt) -> None:
                         consumed_by_decision=agent["agent_id"] in ("policy_applicability", "lab_workflow"),
                     ))
 
-        existing_audit = s.scalar(select(func.count()).select_from(AuditRow).where(AuditRow.run_id == rt.run_id)) or 0
+        existing_audit = s.scalar(
+            select(func.count()).select_from(AuditRow).where(AuditRow.run_id == rt.run_id)
+        ) or 0
+        if existing_audit > len(rt.audit.entries if rt.audit else []):
+            # A rebuilt runtime must not leave stale entries behind: rewrite the run's chain.
+            s.execute(delete(AuditRow).where(AuditRow.run_id == rt.run_id))
+            existing_audit = 0
         for entry in (rt.audit.entries if rt.audit else [])[existing_audit:]:
             s.add(AuditRow(run_id=entry.run_id, case_id=entry.case_id, seq=entry.seq, at=entry.at,
                            event=entry.event, actor=entry.actor, summary=entry.summary,
@@ -245,9 +249,21 @@ def _persist(rt) -> None:
 
 @router.get("/health")
 def health() -> dict[str, Any]:
+    integrity = retriever.corpus_integrity()
     kb = retriever.retrieval_manifest()
+    # The build-time summary is kept for continuity, but the live check is what a reader should
+    # trust: it is recomputed from the chunks being served and compared with the committed pin
+    # (red-team finding H-3).
+    kb["integrity"] = {
+        k: integrity[k] for k in (
+            "ok", "reason", "chunk_count", "recomputed_sha256", "pinned_sha256",
+            "hash_matches_pin", "declared_matches_recomputed", "quotes_checked",
+            "quotes_verified", "quote_mismatches", "checked_at",
+        )
+    }
     return {
-        "status": "ok",
+        "status": "ok" if integrity["ok"] else "degraded",
+        "policy_corpus_verified": integrity["ok"],
         "synthetic_data_only": settings.synthetic_data_only,
         "real_network_access": REAL_NETWORK_ACCESS,
         "real_ehr_integration": False,
@@ -460,12 +476,15 @@ def case_detail(case_id: str) -> dict[str, Any]:
 
 @router.get("/cases/{case_id}/integrity")
 def case_integrity(case_id: str) -> dict[str, Any]:
-    """Reconcile the store against its own audit chain.
+    """Reconcile the store against its own audit chain, **per run**.
 
     The runtime is held in memory and persisted after each step, so a crash between two steps can
-    leave the store and the chain disagreeing. Rather than assume they agree, this endpoint rebuilds
-    the state by replaying the persisted transitions, then compares that with what the case row
-    says and verifies the hash chain. A mismatch is reported, never repaired silently.
+    leave the store and the chain disagreeing. This endpoint rebuilds each run's state by replaying
+    that run's persisted transitions and verifies that run's hash chain separately.
+
+    Verifying the whole case as one chain was wrong: audit sequence numbers restart at one for every
+    run, so a replayed scenario reported a broken chain for both runs (red-team finding C-2). A case
+    may legitimately hold several runs (``reset_case=false``), and each is its own chain.
     """
     s = session()
     try:
@@ -473,60 +492,89 @@ def case_integrity(case_id: str) -> dict[str, Any]:
         if case is None:
             raise HTTPException(404, f"case {case_id} not found")
         transitions = s.scalars(
-            select(TransitionRow).where(TransitionRow.case_id == case_id).order_by(TransitionRow.step)
+            select(TransitionRow).where(TransitionRow.case_id == case_id)
+            .order_by(TransitionRow.run_id, TransitionRow.step)
         ).all()
         audit_rows = s.scalars(
-            select(AuditRow).where(AuditRow.case_id == case_id).order_by(AuditRow.seq)
+            select(AuditRow).where(AuditRow.case_id == case_id)
+            .order_by(AuditRow.run_id, AuditRow.seq)
         ).all()
-        entries = [
-            {
-                "seq": r.seq, "at": r.at, "run_id": r.run_id, "case_id": r.case_id, "event": r.event,
-                "actor": r.actor, "summary": r.summary, "payload": json.loads(r.payload or "{}"),
-                "prev_hash": r.prev_hash, "hash": r.hash, "kb_index_sha256": r.kb_index_sha256 or "",
-            }
-            for r in audit_rows
-        ]
-        chain_ok, broken = verify_entries(entries)
 
-        replayed = transitions[0].prior_state if transitions else case.current_state
-        for t in transitions:
-            if t.status != "APPLIED":
-                continue
-            if t.prior_state != replayed:
-                break
-            replayed = t.resulting_state
-
-        applied = [t for t in transitions if t.status == "APPLIED"]
-        # Each applied transition must start where the previous one finished. A gap means a step was
-        # never persisted, which is the crash window the runtime-in-memory design leaves open.
-        contiguous = all(
-            applied[i].resulting_state == applied[i + 1].prior_state for i in range(len(applied) - 1)
-        )
-
+        run_ids = sorted({t.run_id for t in transitions} | {a.run_id for a in audit_rows})
+        per_run: list[dict[str, Any]] = []
         findings: list[str] = []
-        if not chain_ok:
-            findings.append(f"audit chain broken at sequence(s) {broken}")
-        if replayed != case.current_state:
-            findings.append(
-                f"store says {case.current_state} but replaying the persisted transitions yields {replayed}"
+        broken_all: list[int] = []
+        replayed_for_case = case.current_state
+
+        for run_id in run_ids:
+            run_transitions = [t for t in transitions if t.run_id == run_id]
+            run_audit = [a for a in audit_rows if a.run_id == run_id]
+            entries = [
+                {
+                    "seq": r.seq, "at": r.at, "run_id": r.run_id, "case_id": r.case_id,
+                    "event": r.event, "actor": r.actor, "summary": r.summary,
+                    "payload": json.loads(r.payload or "{}"), "prev_hash": r.prev_hash,
+                    "hash": r.hash, "kb_index_sha256": r.kb_index_sha256 or "",
+                }
+                for r in run_audit
+            ]
+            chain_ok, broken = verify_entries(entries)
+            if not chain_ok:
+                broken_all.extend(broken)
+                findings.append(f"run {run_id}: audit chain broken at sequence(s) {broken}")
+
+            applied = [t for t in run_transitions if t.status == "APPLIED"]
+            replayed = applied[0].prior_state if applied else (
+                run_transitions[0].prior_state if run_transitions else case.current_state
             )
-        if not contiguous:
-            findings.append("persisted transitions are not contiguous: a step is missing from the store")
-        if audit_rows and transitions and len(audit_rows) < len(transitions):
+            for t in applied:
+                replayed = t.resulting_state
+            contiguous = all(
+                applied[i].resulting_state == applied[i + 1].prior_state
+                for i in range(len(applied) - 1)
+            )
+            if not contiguous:
+                findings.append(f"run {run_id}: persisted transitions are not contiguous")
+            if run_audit and run_transitions and len(run_audit) < len(run_transitions):
+                findings.append(
+                    f"run {run_id}: {len(run_transitions) - len(run_audit)} transition(s) "
+                    "have no corresponding audit entry"
+                )
+            if run_id == case.run_id:
+                replayed_for_case = replayed
+
+            per_run.append({
+                "run_id": run_id,
+                "chain_valid": chain_ok,
+                "broken_sequences": broken,
+                "transition_count": len(run_transitions),
+                "audit_entry_count": len(run_audit),
+                "replayed_state": replayed,
+                "contiguous": contiguous,
+            })
+
+        if replayed_for_case != case.current_state:
             findings.append(
-                f"{len(transitions) - len(audit_rows)} transition(s) have no corresponding audit entry"
+                f"store says {case.current_state} but replaying the persisted transitions yields "
+                f"{replayed_for_case}"
+            )
+        if len(per_run) > 1:
+            findings.append(
+                f"this case holds {len(per_run)} runs; each run has its own chain and is verified "
+                "separately"
             )
 
         return {
             "case_id": case_id,
             "store_state": case.current_state,
-            "replayed_state": replayed,
+            "replayed_state": replayed_for_case,
             "transition_count": len(transitions),
             "audit_entry_count": len(audit_rows),
-            "chain_valid": chain_ok,
-            "broken_sequences": broken,
+            "chain_valid": not broken_all,
+            "broken_sequences": broken_all,
+            "runs": per_run,
             "findings": findings,
-            "reconciled": not findings,
+            "reconciled": not [f for f in findings if "holds" not in f],
             "note": (
                 "Reconciliation is a read-only comparison. Divergence between the store and the chain "
                 "is reported as a finding; it is never corrected automatically."
@@ -601,7 +649,99 @@ def case_bundle(case_id: str) -> dict[str, Any]:
 class StartRun(BaseModel):
     scenario_id: str
     configuration: str = Field(default="resultrelay")
+    #: True (default) gives every run its own case row, so a replay is a separate case rather than
+    #: history merged into the case it is replaying (red-team finding H-2). False appends the run
+    #: to the most recent case for the same scenario and configuration.
     reset_case: bool = True
+
+
+class StepRequest(BaseModel):
+    #: Optional caller-supplied idempotency key. A retried request with the same key returns the
+    #: first response and does not advance the run (red-team finding C-1).
+    request_id: str | None = None
+
+
+def _record_run(rt, cursor: int | None = None, total_steps: int | None = None) -> None:
+    """Persist the run's cursor so it survives eviction and restart (H-7)."""
+    s = session()
+    try:
+        row = s.get(RunRow, rt.run_id)
+        if row is None:
+            row = RunRow(
+                run_id=rt.run_id, scenario_id=rt.scenario_id, configuration=rt.config.name,
+                case_id=rt.case_id, cursor=int(cursor or 0), total_steps=int(total_steps or 0),
+                state=rt.state.value,
+            )
+            s.add(row)
+        if cursor is not None:
+            row.cursor = int(cursor)
+        if total_steps is not None:
+            row.total_steps = int(total_steps)
+        row.state = rt.state.value
+        row.updated_at = datetime.now(timezone.utc).isoformat()
+        s.commit()
+    finally:
+        s.close()
+
+
+def _rebuild_run(run_id: str) -> dict[str, Any] | None:
+    """Rebuild an evicted run by deterministic replay of its durable cursor.
+
+    Sound because the engine is a pure function of (scenario, configuration, ordered events): the
+    evaluation harness already asserts that a second execution produces an identical signature.
+    """
+    s = session()
+    try:
+        row = s.get(RunRow, run_id)
+        if row is None:
+            return None
+        scenario_id, config_name, case_id, cursor = (
+            row.scenario_id, row.configuration, row.case_id, int(row.cursor or 0)
+        )
+    finally:
+        s.close()
+    try:
+        scenario = load_scenario(scenario_id)
+    except FileNotFoundError:
+        return None
+    if config_name not in CONFIGS:
+        return None
+    rt = build_runtime(scenario, config_name, run_id, case_id=case_id)
+    orch = Orchestrator(rt)
+    for spec in scenario["steps"][:cursor]:
+        orch.step(spec)
+    entry = {
+        "runtime": rt,
+        "orchestrator": orch,
+        "scenario": scenario,
+        "cursor": cursor,
+        "total_steps": len(scenario["steps"]),
+        "idempotent": {},
+        "busy": 0,
+        "resumed": True,
+    }
+    run_registry.put(run_id, entry)
+    return entry
+
+
+def _entry(run_id: str) -> dict[str, Any] | None:
+    """The registry entry, rebuilt from the store when it has been evicted."""
+    entry = run_registry.get(run_id)
+    if entry is None:
+        entry = _rebuild_run(run_id)
+    return entry
+
+
+def _idempotent_response(entry: dict[str, Any], key: str | None, response: dict[str, Any]) -> dict[str, Any]:
+    """Record and replay the response for an idempotent step request."""
+    if not key:
+        return response
+    cache = entry.setdefault("idempotent", {})
+    cache[key] = response
+    if len(cache) > 128:  # bounded: the registry is a demo, not a queue
+        for stale in list(cache)[:-128]:
+            cache.pop(stale, None)
+    return response
 
 
 @router.get("/scenarios")
@@ -620,49 +760,83 @@ def start_run(body: StartRun) -> dict[str, Any]:
     except FileNotFoundError as exc:
         raise HTTPException(404, str(exc)) from exc
     run_id = f"RUN-{uuid.uuid4().hex[:10]}"
-    # The same scenario is meant to be replayed under each configuration and compared, so the
-    # case is keyed by scenario *and* configuration rather than letting the last run win.
     base_case_id = scenario.get("case_id") or f"SYN-{scenario['scenario_id']}"
-    rt = build_runtime(
-        scenario, body.configuration, run_id, case_id=f"{base_case_id}-{body.configuration}"
-    )
+    case_id = f"{base_case_id}-{body.configuration}"
+    if body.reset_case:
+        # Every run gets its own case. Replaying a scenario therefore produces a new case instead
+        # of appending to the one being replayed (red-team finding H-2).
+        case_id = f"{case_id}-{run_id.rsplit('-', 1)[-1]}"
+    else:
+        previous = get_case(case_id)
+        if previous is not None:
+            case_id = previous["case_id"]
+    rt = build_runtime(scenario, body.configuration, run_id, case_id=case_id)
     orch = Orchestrator(rt)
-    run_registry.put(run_id, {"runtime": rt, "orchestrator": orch, "scenario": scenario, "cursor": 0})
+    run_registry.put(run_id, {
+        "runtime": rt, "orchestrator": orch, "scenario": scenario, "cursor": 0,
+        "total_steps": len(scenario["steps"]), "idempotent": {}, "busy": 0,
+    })
+    _record_run(rt, cursor=0, total_steps=len(scenario["steps"]))
     _persist(rt)
     return {"run": serialise_runtime(rt), "events_remaining": len(scenario["steps"])}
 
 
 @router.post("/runs/{run_id}/step")
-def step_run(run_id: str) -> dict[str, Any]:
-    entry = run_registry.get(run_id)
-    if entry is None:
-        raise HTTPException(404, "run not found in this server process; start a new run")
-    scenario = entry["scenario"]
-    cursor = entry["cursor"]
-    if cursor >= len(scenario["steps"]):
-        return {"done": True, "run": serialise_runtime(entry["runtime"])}
-    spec = scenario["steps"][cursor]
-    result = entry["orchestrator"].step(spec)
-    entry["cursor"] = cursor + 1
-    _persist(entry["runtime"])
-    return {
-        "done": entry["cursor"] >= len(scenario["steps"]),
-        "step": serialise_step(result),
-        "run": serialise_runtime(entry["runtime"]),
-        "progress": {"released": entry["cursor"], "total": len(scenario["steps"])},
-    }
+def step_run(run_id: str, request: Request, body: StepRequest | None = None) -> dict[str, Any]:
+    """Release exactly one event.
+
+    The whole read-modify-write cycle runs under the run's lock, and a caller-supplied
+    idempotency key makes a retried request return its first response instead of consuming the
+    next event (red-team findings C-1 and A3).
+    """
+    idem_key = request.headers.get("Idempotency-Key") or (body.request_id if body else None)
+    if idem_key:
+        idem_key = str(idem_key)[:200]
+    with run_registry.run_lock(run_id):
+        entry = _entry(run_id)
+        if entry is None:
+            raise HTTPException(404, "run not found in this registry or store; start a new run")
+        if idem_key and idem_key in entry.get("idempotent", {}):
+            return entry["idempotent"][idem_key]
+        scenario = entry["scenario"]
+        cursor = entry["cursor"]
+        if cursor >= len(scenario["steps"]):
+            return _idempotent_response(entry, idem_key, {
+                "done": True, "run": serialise_runtime(entry["runtime"]),
+            })
+        entry["busy"] = entry.get("busy", 0) + 1
+        try:
+            spec = scenario["steps"][cursor]
+            result = entry["orchestrator"].step(spec)
+            entry["cursor"] = cursor + 1
+            _record_run(entry["runtime"], cursor=entry["cursor"])
+            _persist(entry["runtime"])
+        finally:
+            entry["busy"] = max(0, entry.get("busy", 1) - 1)
+        return _idempotent_response(entry, idem_key, {
+            "done": entry["cursor"] >= len(scenario["steps"]),
+            "step": serialise_step(result),
+            "run": serialise_runtime(entry["runtime"]),
+            "progress": {"released": entry["cursor"], "total": len(scenario["steps"])},
+        })
 
 
 @router.post("/runs/{run_id}/play")
 def play_run(run_id: str) -> dict[str, Any]:
-    entry = run_registry.get(run_id)
-    if entry is None:
-        raise HTTPException(404, "run not found")
-    while entry["cursor"] < len(entry["scenario"]["steps"]):
-        entry["orchestrator"].step(entry["scenario"]["steps"][entry["cursor"]])
-        entry["cursor"] += 1
-    _persist(entry["runtime"])
-    return {"run": serialise_runtime(entry["runtime"])}
+    with run_registry.run_lock(run_id):
+        entry = _entry(run_id)
+        if entry is None:
+            raise HTTPException(404, "run not found in this registry or store")
+        entry["busy"] = entry.get("busy", 0) + 1
+        try:
+            while entry["cursor"] < len(entry["scenario"]["steps"]):
+                entry["orchestrator"].step(entry["scenario"]["steps"][entry["cursor"]])
+                entry["cursor"] += 1
+            _record_run(entry["runtime"], cursor=entry["cursor"])
+            _persist(entry["runtime"])
+        finally:
+            entry["busy"] = max(0, entry.get("busy", 1) - 1)
+        return {"run": serialise_runtime(entry["runtime"])}
 
 
 @router.get("/runs")
@@ -684,9 +858,9 @@ def list_runs() -> list[dict[str, Any]]:
 
 @router.get("/runs/{run_id}")
 def get_run(run_id: str) -> dict[str, Any]:
-    entry = run_registry.get(run_id)
+    entry = _entry(run_id)
     if entry is None:
-        raise HTTPException(404, "run not found in this server process")
+        raise HTTPException(404, "run not found in this registry or store")
     return serialise_runtime(entry["runtime"])
 
 
@@ -700,7 +874,7 @@ def run_trace(run_id: str) -> dict[str, Any]:
     published: it is unverifiable, it invites a reader to trust prose over evidence, and in the
     shipped configuration there is no model to reason in the first place.
     """
-    entry = run_registry.get(run_id)
+    entry = _entry(run_id)
     if entry is None:
         raise HTTPException(404, f"run {run_id} not found")
     rt = entry["runtime"]
@@ -713,6 +887,9 @@ def run_trace(run_id: str) -> dict[str, Any]:
                 "action": a.get("recommended_action"),
                 "status": a.get("assessment_status"),
                 "confidence": a.get("confidence"),
+                # Named at the source: a bare number labelled "confidence" reads as a probability;
+                # this one is a check/citation heuristic (audit finding M-1).
+                "confidence_label": "support score (heuristic, not a probability)",
                 "confidence_basis": (a.get("data") or {}).get("confidence_basis"),
                 "citations": [c.get("source_id") + " " + str(c.get("section")) for c in (a.get("applicable_sources") or [])],
                 "unresolved": a.get("conditions_unresolved") or [],
@@ -757,9 +934,9 @@ def run_trace(run_id: str) -> dict[str, Any]:
 @router.get("/runs/{run_id}/audit")
 def audit_bundle(run_id: str) -> dict[str, Any]:
     """Reproducible audit bundle: scenario, configuration, event stream, decisions, chain."""
-    entry = run_registry.get(run_id)
+    entry = _entry(run_id)
     if entry is None:
-        raise HTTPException(404, "run not found in this server process")
+        raise HTTPException(404, "run not found in this registry or store")
     rt = entry["runtime"]
     ok, broken = rt.audit.verify_chain() if rt.audit else (False, [])
     return {
@@ -789,7 +966,7 @@ def audit_bundle(run_id: str) -> dict[str, Any]:
 @router.get("/channels")
 def channels(run_id: str | None = None) -> dict[str, Any]:
     if run_id:
-        entry = run_registry.get(run_id)
+        entry = _entry(run_id)
         if entry is None:
             raise HTTPException(404, "run not found")
         return {"channels": entry["runtime"].network.channel_manifest(), "synthetic": True}

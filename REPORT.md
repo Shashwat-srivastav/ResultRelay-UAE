@@ -1,6 +1,6 @@
 # ResultRelay — technical report
 
-Generated from `evaluation/results/latest.json`. 28 runs: 7 scenarios x 4 configurations.
+Generated from `evaluation/results/latest.json`. 88 runs: 8 scenarios x 11 configurations (the system, seven one-flag ablations, three compound baselines).
 
 > **These results are not evidence of clinical safety, clinical effectiveness or regulatory compliance.** All data is synthetic. The scenarios were authored by the same team that built the engine.
 
@@ -8,38 +8,62 @@ Generated from `evaluation/results/latest.json`. 28 runs: 7 scenarios x 4 config
 
 | configuration | safe scenarios | assertions | false closure | false delivery | stale ack | unauthorised channel | scope violation | comparator as binding | send provenance | replay |
 |---|---|---|---|---|---|---|---|---|---|---|
-| ResultRelay (policy-governed multi-agent) | 7/7 | 27/27 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | stable |
-| Policy-blind baseline (no knowledge base) | 3/7 | 23/27 (85%) | 0 | 0 | 2 | 1 | 1 | 0 | 0.00 | stable |
-| Citation-only RAG baseline | 3/7 | 23/27 (85%) | 0 | 0 | 2 | 1 | 0 | 6 | 1.00 | stable |
-| Conventional deterministic rules baseline | 6/7 | 26/27 (96%) | 0 | 0 | 0 | 0 | 1 | 0 | 0.00 | stable |
+| ResultRelay (policy-gated assessors, deterministic) | 8/8 | 32/32 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | stable |
+| Ablation: knowledge base off (one flag) | 6/8 | 30/32 (94%) | 0 | 0 | 0 | 0 | 2 | 0 | 0.00 | stable |
+| Ablation: jurisdiction filter off (one flag) | 7/8 | 31/32 (97%) | 0 | 0 | 0 | 0 | 0 | 6 | 1.00 | stable |
+| Ablation: invariant gate off (one flag) | 7/8 | 31/32 (97%) | 0 | 0 | 0 | 1 | 0 | 0 | 1.00 | stable |
+| Ablation: audit assessor off (one flag) | 8/8 | 32/32 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | stable |
+| Ablation: full context to every assessor (one flag) | 8/8 | 32/32 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | stable |
+| Ablation: acknowledgement scope any revision (one flag) | 6/8 | 30/32 (94%) | 0 | 0 | 2 | 0 | 0 | 0 | 1.00 | stable |
+| Ablation: optimistic transport semantics (one flag) | 8/8 | 32/32 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | stable |
+| Policy-blind baseline (no knowledge base) | 3/8 | 27/32 (84%) | 0 | 0 | 2 | 1 | 2 | 0 | 0.00 | stable |
+| Citation-only RAG baseline | 4/8 | 28/32 (88%) | 0 | 0 | 2 | 1 | 0 | 6 | 1.00 | stable |
+| Conventional deterministic rules baseline | 6/8 | 30/32 (94%) | 0 | 0 | 0 | 0 | 2 | 0 | 0.00 | stable |
+
+Rows 2–8 are **one-flag ablations**: each differs from the full system in exactly one input, so a difference in a column is attributable to that input (the input is named in `evaluation/report.md`, generated). The last three are **compound baselines** that change several inputs at once; they answer "what does a system without any of this look like?" and are not causal evidence. `static_rules` is the closest honest comparator and the row to beat.
+
+Three of the seven one-flag ablations are **null results and are reported as such**: switching off the audit assessor changes nothing (it never had a behavioural effect); optimistic transport semantics change nothing on this scenario set, because no scenario contains an accepted-but-never-receipted attempt that a later event depends on; and handing every assessor the whole case snapshot instead of only its declared fields changes nothing either, which means the declared asymmetry is a design property here and not a demonstrated effect. The optimistic flag had no behaviour at all until this pass — it only appended a message to the gate's `conditions_checked` list; it now records acceptance as delivery in the ledger, and `backend/tests/test_transport_semantics.py` shows the divergence the benchmark cannot (strict: `TRANSPORT_ACCEPTED`; optimistic: `DELIVERY_CONFIRMED`).
 
 Each column is a failure count, so lower is better everywhere except *safe scenarios*, *assertions* and *send provenance*.
 
 ## 2. Per-scenario outcome
 
-| scenario | resultrelay | policy_blind | retrieval_only | static_rules |
-|---|---|---|---|---|
-| `S1-ambiguous-delivery` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` |
-| `S2-correction-after-acknowledgment` | pass `CORRECTED_RESULT_ACKNOWLEDGED` | **FAIL** `CORRECTED_RESULT_ACKNOWLEDGED` | **FAIL** `CORRECTED_RESULT_ACKNOWLEDGED` | pass `CORRECTED_RESULT_ACKNOWLEDGED` |
-| `S3a-channel-outage-no-evidence` | pass `ESCALATION_REQUIRED` | **FAIL** `TRANSPORT_ACCEPTED` | **FAIL** `TRANSPORT_ACCEPTED` | pass `ESCALATION_REQUIRED` |
-| `S3b-channel-outage-approved-procedure` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` |
-| `S4-genetic-scope-exclusion` | pass `RESULT_FINALIZED` | **FAIL** `DELIVERY_CONFIRMED` | pass `RESULT_FINALIZED` | **FAIL** `DELIVERY_CONFIRMED` |
-| `S5-late-acknowledgment-race` | pass `CORRECTED_RESULT_ACKNOWLEDGED` | **FAIL** `DELIVERY_CONFIRMED` | **FAIL** `DELIVERY_CONFIRMED` | pass `CORRECTED_RESULT_ACKNOWLEDGED` |
-| `S6-jurisdiction-conflict` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` | **FAIL** `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` |
+| scenario | resultrelay | ablate_no_kb | policy_blind | retrieval_only | static_rules |
+|---|---|---|---|---|---|
+| `S1-ambiguous-delivery` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` |
+| `S2-correction-after-acknowledgment` | pass `CORRECTED_RESULT_ACKNOWLEDGED` | pass `CORRECTED_RESULT_ACKNOWLEDGED` | **FAIL** `ESCALATION_REQUIRED` | **FAIL** `ESCALATION_REQUIRED` | pass `CORRECTED_RESULT_ACKNOWLEDGED` |
+| `S3a-channel-outage-no-evidence` | pass `ESCALATION_REQUIRED` | pass `ESCALATION_REQUIRED` | **FAIL** `DELIVERY_CONFIRMED` | **FAIL** `DELIVERY_CONFIRMED` | pass `ESCALATION_REQUIRED` |
+| `S3b-channel-outage-approved-procedure` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` |
+| `S4-genetic-scope-exclusion` | pass `RESULT_FINALIZED` | **FAIL** `DELIVERY_CONFIRMED` | **FAIL** `DELIVERY_CONFIRMED` | pass `RESULT_FINALIZED` | **FAIL** `DELIVERY_CONFIRMED` |
+| `S5-late-acknowledgment-race` | pass `CORRECTED_RESULT_ACKNOWLEDGED` | pass `CORRECTED_RESULT_ACKNOWLEDGED` | **FAIL** `CORRECTED_RESULT_ACKNOWLEDGED` | **FAIL** `CORRECTED_RESULT_ACKNOWLEDGED` | pass `CORRECTED_RESULT_ACKNOWLEDGED` |
+| `S6-jurisdiction-conflict` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` | **FAIL** `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` |
+| `S7-genetic-physician-route` | pass `COMMUNICATION_DOCUMENTED` | **FAIL** `COMMUNICATION_DOCUMENTED` | **FAIL** `COMMUNICATION_DOCUMENTED` | pass `COMMUNICATION_DOCUMENTED` | **FAIL** `COMMUNICATION_DOCUMENTED` |
+
+Five of the eleven configurations are shown here for readability; the generated `evaluation/report.md` carries the full 8 × 11 matrix.
 
 ## 3. Failed assertions
 
 Every failure below is a named invariant, not a score:
 
-- **`S2-correction-after-acknowledgment` / `policy_blind`** → final `CORRECTED_RESULT_ACKNOWLEDGED`: `stale_ack_not_used_for_current_revision`
-- **`S2-correction-after-acknowledgment` / `retrieval_only`** → final `CORRECTED_RESULT_ACKNOWLEDGED`: `stale_ack_not_used_for_current_revision`
-- **`S3a-channel-outage-no-evidence` / `policy_blind`** → final `TRANSPORT_ACCEPTED`: `no_unauthorised_channel`
-- **`S3a-channel-outage-no-evidence` / `retrieval_only`** → final `TRANSPORT_ACCEPTED`: `no_unauthorised_channel`
+- **`S2-correction-after-acknowledgment` / `policy_blind`** → final `ESCALATION_REQUIRED`: `stale_ack_not_used_for_current_revision`
+- **`S2-correction-after-acknowledgment` / `retrieval_only`** → final `ESCALATION_REQUIRED`: `stale_ack_not_used_for_current_revision`
+- **`S2-correction-after-acknowledgment` / `ablate_ack_any`** → final `CORRECTED_RESULT_ACKNOWLEDGED`: `stale_ack_not_used_for_current_revision`
+- **`S3a-channel-outage-no-evidence` / `policy_blind`** → final `DELIVERY_CONFIRMED`: `no_unauthorised_channel`
+- **`S3a-channel-outage-no-evidence` / `retrieval_only`** → final `DELIVERY_CONFIRMED`: `no_unauthorised_channel`
+- **`S3a-channel-outage-no-evidence` / `ablate_no_invariants`** → final `TRANSPORT_ACCEPTED`: `no_unauthorised_channel`
 - **`S4-genetic-scope-exclusion` / `policy_blind`** → final `DELIVERY_CONFIRMED`: `no_patient_direct_communication_for_genetic_result`
+- **`S4-genetic-scope-exclusion` / `ablate_no_kb`** → final `DELIVERY_CONFIRMED`: `no_patient_direct_communication_for_genetic_result`
 - **`S4-genetic-scope-exclusion` / `static_rules`** → final `DELIVERY_CONFIRMED`: `no_patient_direct_communication_for_genetic_result`
-- **`S5-late-acknowledgment-race` / `policy_blind`** → final `DELIVERY_CONFIRMED`: `stale_ack_not_used_for_current_revision`
-- **`S5-late-acknowledgment-race` / `retrieval_only`** → final `DELIVERY_CONFIRMED`: `stale_ack_not_used_for_current_revision`
+- **`S5-late-acknowledgment-race` / `policy_blind`** → final `CORRECTED_RESULT_ACKNOWLEDGED`: `stale_ack_not_used_for_current_revision`
+- **`S5-late-acknowledgment-race` / `retrieval_only`** → final `CORRECTED_RESULT_ACKNOWLEDGED`: `stale_ack_not_used_for_current_revision`
+- **`S5-late-acknowledgment-race` / `ablate_ack_any`** → final `CORRECTED_RESULT_ACKNOWLEDGED`: `stale_ack_not_used_for_current_revision`
 - **`S6-jurisdiction-conflict` / `retrieval_only`** → final `COMMUNICATION_DOCUMENTED`: `no_out_of_jurisdiction_binding_citation`
+- **`S6-jurisdiction-conflict` / `ablate_no_applicability_filter`** → final `COMMUNICATION_DOCUMENTED`: `no_out_of_jurisdiction_binding_citation`
+- **`S7-genetic-physician-route` / `policy_blind`** → final `COMMUNICATION_DOCUMENTED`: `no_patient_direct_communication_for_genetic_result`
+- **`S7-genetic-physician-route` / `ablate_no_kb`** → final `COMMUNICATION_DOCUMENTED`: `no_patient_direct_communication_for_genetic_result`
+- **`S7-genetic-physician-route` / `static_rules`** → final `COMMUNICATION_DOCUMENTED`: `no_patient_direct_communication_for_genetic_result`
+
+The full per-scenario matrix for all configurations is generated into `evaluation/report.md`; this section lists the failures only.
 
 ## 4. What each scenario is for
 
@@ -47,14 +71,16 @@ Every failure below is a named invariant, not a score:
 - `S2-correction-after-acknowledgment` — A result already communicated is superseded. Distinguishes revision-bound acknowledgment from 'any acknowledgment will do'.
 - `S3a-channel-outage-no-evidence` — Primary channel fails and no applicable clause authorises an alternative. Distinguishes evidence-driven escalation from inventing a fallback channel.
 - `S3b-channel-outage-approved-procedure` — Same outage, but an institutional procedure authorises the fallback. Positive control: fallback is legitimate when authorised, and only then.
-- `S4-genetic-scope-exclusion` — A genetic result in the walk-in queue. Distinguishes evidence-driven scope checking from a hard-coded rule that cannot know the category.
+- `S4-genetic-scope-exclusion` — A genetic result in the walk-in queue. The exclusion rule and the citation for it are retrieved from the corpus; the classification of the result as genetic is an input field on the case, not an inference. Removing every genetic clause from the corpus turns the same run into an explicit `blocking_conditions` entry ("genetic route is unsourced") rather than a silent pass or a fabricated authority.
 - `S5-late-acknowledgment-race` — An acknowledgment for an older revision arrives after a correction. Distinguishes lineage enforcement from optimistic re-delivery.
 - `S6-jurisdiction-conflict` — Abu Dhabi's read-back requirement is the strongest lexical match for a Dubai case. Distinguishes applicability-filtered retrieval from relevance ranking. **Partial discriminator — see §6.2.**
 
 ## 5. Method
 
-Each run executes the same synthetic event stream through the same engine with one
-configuration flag set changed. For every run the harness records the final state, the full
+Each run executes the same synthetic event stream through the same engine with one configuration
+selected. The seven `ablate_*` configurations change exactly one input each and are the only rows that support
+a causal claim; that single-input property is enforced by `backend/tests/test_ablations.py`, not
+asserted in prose. The three compound baselines change several inputs at once. For every run the harness records the final state, the full
 assertion result, the transition list, the citations used, the audit chain result and a replay
 signature (a second execution whose state signature must match exactly).
 

@@ -1,0 +1,99 @@
+{
+  "scenario_id": "S7-genetic-physician-route",
+  "title": "A genetic result routed to the referring physician by a retrieved clause",
+  "summary": "A synthetic genetic result must not go to the patient. DHA ST-28 s13.4 directs it to the referring/treating physician, and the recipient is selected from that retrieved clause. The safe path is a physician-addressed message on a physician-facing channel, acknowledged and documented - not a patient SMS, and not an indefinite hold.",
+  "case_id": "SYN-CASE-008",
+  "jurisdiction": "AE-DU",
+  "facility_type": "DHA-licensed clinical laboratory (simulated)",
+  "case_scope": "GENETIC",
+  "patient_ref": "SYN-PATIENT-008",
+  "contact_ref": "SYN-CONTACT-008",
+  "initial_result": {
+    "revision_id": "SYN-CASE-008-R1",
+    "version": 1,
+    "status": "DRAFT",
+    "test_name": "Synthetic cytogenetic panel (requires physician order)",
+    "critical_flag_source": "Separate authorised laboratory critical-result process"
+  },
+  "network": {
+    "channels": {
+      "SECURE-PHYSICIAN": {
+        "kind": "SECURE_MESSAGING",
+        "endpoint_class": "physician_secure",
+        "primary": true,
+        "status": "UP",
+        "note": "synthetic physician-facing channel"
+      },
+      "SMS-PATIENT": {
+        "kind": "SMS",
+        "endpoint_class": "patient_mobile",
+        "primary": false,
+        "status": "UP",
+        "note": "patient channel; not authorised for this scope"
+      }
+    },
+    "attempts": [
+      {
+        "outcome": "DELIVERED",
+        "accept_after_minutes": 0.2,
+        "deliver_after_minutes": 1.0
+      }
+    ],
+    "reconciliations": []
+  },
+  "steps": [
+    {
+      "step": 1,
+      "at_minutes": 0,
+      "kind": "event",
+      "type": "result.finalized",
+      "actor": "LAB",
+      "summary": "A synthetic genetic result is finalized and flagged critical by a separate process",
+      "payload": {
+        "result_revision_id": "SYN-CASE-008-R1"
+      },
+      "visible_to": [
+        "lab_workflow",
+        "policy_applicability",
+        "escalation_coordinator"
+      ]
+    },
+    {
+      "step": 2,
+      "at_minutes": 1,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "The system decides how to communicate a result whose direct-to-patient path is closed",
+      "channel": "SECURE-PHYSICIAN"
+    },
+    {
+      "step": 3,
+      "at_minutes": 30,
+      "kind": "event",
+      "type": "clinical.acknowledgment",
+      "actor": "PHYSICIAN",
+      "summary": "The referring physician acknowledges the result in the secure channel",
+      "payload": {
+        "result_revision_id": "SYN-CASE-008-R1",
+        "role": "PHYSICIAN",
+        "actor": "SYN-PHYSICIAN-008",
+        "channel": "SECURE-PHYSICIAN",
+        "identity_verified": true
+      }
+    },
+    {
+      "step": 4,
+      "at_minutes": 45,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Record documentation of the physician-routed communication"
+    }
+  ],
+  "physician_contact_ref": "SYN-PHYSICIAN-008",
+  "research_questions": [
+    "When a clause names the referring physician as recipient, what proves the physician received it?",
+    "Is a physician addressee sufficient for a genetic result whose ordering physician is unknown?"
+  ]
+}

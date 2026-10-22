@@ -9,6 +9,7 @@ These tests are the acceptance test the review asked for.
 from __future__ import annotations
 
 import json
+import os
 import tempfile
 from pathlib import Path
 
@@ -40,6 +41,10 @@ def _run_with_injected(text_suffix: str, *, declare: bool = False):
 
     original = retriever.INDEX_PATH
     retriever.INDEX_PATH = tmp
+    # This test injects a poisoned corpus on purpose. The runtime now refuses to serve an index that
+    # does not match the committed pin, so the experiment declares itself unverified explicitly -
+    # exactly the escape hatch an adversarial experiment should have to use.
+    os.environ["RESULTRELAY_ALLOW_UNVERIFIED_KB"] = "1"
     retriever.reload_index()
     try:
         scenario = load_scenario("S3a-channel-outage-no-evidence")
@@ -53,6 +58,7 @@ def _run_with_injected(text_suffix: str, *, declare: bool = False):
         return runtime, policy
     finally:
         retriever.INDEX_PATH = original
+        os.environ.pop("RESULTRELAY_ALLOW_UNVERIFIED_KB", None)
         retriever.reload_index()
 
 
@@ -74,14 +80,16 @@ def test_the_positive_control_still_authorises_when_the_clause_declares_it():
 @pytest.mark.parametrize("value", ["true", 1, "yes"])
 def test_a_non_boolean_declaration_is_refused(value):
     with pytest.raises(ValueError, match="must be a boolean"):
-        _declared_flag({"authorises_fallback": value}, chunk_id="X-1")
+        _declared_flag({"authorises_fallback": value}, field="authorises_fallback", chunk_id="X-1")
 
 
 @pytest.mark.parametrize("classification", ["OFFICIAL_GUIDANCE", "GLOBAL_COMPARATOR", "PRODUCT_DESIGN_CONTROL"])
 def test_guidance_and_comparators_cannot_authorise_an_action(classification):
     with pytest.raises(ValueError, match="cannot authorise an action"):
         _declared_flag(
-            {"authorises_fallback": True, "claim_classification": classification}, chunk_id="X-2"
+            {"authorises_fallback": True, "claim_classification": classification},
+            field="authorises_fallback",
+            chunk_id="X-2",
         )
 
 

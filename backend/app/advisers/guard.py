@@ -14,6 +14,8 @@ It returns an :class:`AdvisoryRecord`, never an action.
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 from app.advisers.base import AdvisoryProposal, AdvisoryRecord, AdvisoryStatus, Adviser
 from app.advisers.residency import authorise
 from app.core.config import settings
@@ -59,8 +61,12 @@ def advise(
             endpoint=endpoint,
             checks=("residency: refused",),
         )
-    checks.append(f"residency: {decision.residency.value}")
+    checks.append(f"residency: {decision.residency.value} ({decision.asserted_by})")
     checks.append(decision.reason)
+    if decision.nominal:
+        checks.append(
+            "residency is nominal: it rests on the endpoint name only, and a name is not a location (M-5)"
+        )
 
     try:
         proposal = adviser.propose(jurisdiction=jurisdiction, situation=situation, evidence=evidence)
@@ -74,6 +80,17 @@ def advise(
             endpoint=endpoint,
             checks=tuple(checks),
         )
+
+    if isinstance(proposal, AdvisoryProposal) and proposal.confidence is not None:
+        # A model that returns 9.9 must not be recorded as nine hundred per cent confident. The value
+        # is a self-report, not a probability, and it is labelled as such wherever it is shown (M-1).
+        try:
+            clamped = min(1.0, max(0.0, float(proposal.confidence)))
+        except (TypeError, ValueError):
+            clamped = 0.0
+        if clamped != proposal.confidence:
+            checks.append(f"confidence {proposal.confidence!r} clamped to {clamped}")
+            proposal = replace(proposal, confidence=clamped)
 
     if not isinstance(proposal, AdvisoryProposal) or proposal.candidate_action.value not in _ALLOWED:
         return AdvisoryRecord(
@@ -123,7 +140,26 @@ def advise(
             checks=tuple(checks),
         )
 
+    # A citation must also be one of the chunks the adviser was actually shown. Checking only that
+    # the id exists somewhere in the corpus let a model cite a clause it never read (M-4).
+    supplied = {str(c.get("chunk_id")) for c in evidence if c.get("chunk_id")}
+    uncited = [cid for cid in proposal.citation_chunk_ids if cid not in supplied]
+    if uncited:
+        return AdvisoryRecord(
+            status=AdvisoryStatus.REJECTED_UNGROUNDED,
+            mode="ADVISORY",
+            reason=(
+                f"proposal cites chunk id(s) that were not in the evidence it was given: {uncited}. "
+                "Reading a clause out of the corpus is not the same as being shown it."
+            ),
+            policy_refs=decision.policy_refs,
+            residency=decision.residency.value,
+            endpoint=endpoint,
+            checks=tuple(checks),
+        )
+
     checks.append("citations resolve to corpus chunks inside the applicable jurisdiction set")
+    checks.append("citations are restricted to the evidence supplied to the adviser")
     return AdvisoryRecord(
         status=AdvisoryStatus.ADVISORY_ONLY,
         mode="ADVISORY",

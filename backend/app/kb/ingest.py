@@ -84,19 +84,33 @@ _TRANSLATE = {
 }
 
 
-def _declared_flag(excerpt: dict[str, Any], *, chunk_id: str) -> bool:
-    """Read a boolean authorisation declared on an excerpt, refusing anything ambiguous."""
-    if "authorises_fallback" not in excerpt:
+def _declared_flag(
+    excerpt: dict[str, Any],
+    *,
+    field: str,
+    chunk_id: str,
+    allowed_classes: set[str] | None = None,
+) -> bool:
+    """Read a boolean attribute declared on an excerpt, refusing anything ambiguous.
+
+    Attributes that decide who receives a result or whether an alternative channel may be used are
+    *declared by the author and verified against the source text*, never inferred from the wording.
+    A keyword test cannot tell "shall be directed to the physician" from "shall not be directed to
+    the physician" (audit finding H-1), and an inferred recipient is a fabricated legal conclusion
+    wearing a citation.
+    """
+    if field not in excerpt:
         return False
-    value = excerpt["authorises_fallback"]
+    value = excerpt[field]
     if not isinstance(value, bool):
         raise ValueError(
-            f"{chunk_id}: authorises_fallback must be a boolean, got {type(value).__name__}. "
+            f"{chunk_id}: {field} must be a boolean, got {type(value).__name__}. "
             "An authorisation is declared, never inferred."
         )
-    if value and excerpt.get("claim_classification") not in {"BINDING_REQUIREMENT", "INSTITUTIONAL_PROCEDURE"}:
+    classes = allowed_classes or {"BINDING_REQUIREMENT", "INSTITUTIONAL_PROCEDURE"}
+    if value and excerpt.get("claim_classification") not in classes:
         raise ValueError(
-            f"{chunk_id}: authorises_fallback is claimed by a {excerpt.get('claim_classification')} "
+            f"{chunk_id}: {field} is claimed by a {excerpt.get('claim_classification')} "
             "excerpt. Guidance and comparators may shape a design; they cannot authorise an action."
         )
     return value
@@ -243,7 +257,17 @@ def build_chunks(strict: bool = True) -> tuple[list[dict[str, Any]], dict[str, A
             # Explicit, author-declared authorisation. Deliberately not derived from the text: a
             # keyword test cannot tell "an alternative channel shall be used" from "under no
             # circumstances shall an alternative channel be used" (audit finding H-1).
-            "authorises_fallback": _declared_flag(excerpt, chunk_id=excerpt["chunk_id"]),
+            "authorises_fallback": _declared_flag(
+                excerpt, field="authorises_fallback", chunk_id=excerpt["chunk_id"]
+            ),
+            # Declared, source-verified recipient routing. The policy assessor may only choose a
+            # physician-addressed message when a retrieved clause carries this flag; when no such
+            # chunk is retrieved the recipient is the patient and the scope gate applies. That is
+            # what makes the genetic-routing behaviour depend on retrieval rather than on a branch
+            # in the agent (audit finding H-4): delete the clause and the route disappears.
+            "routes_to_physician": _declared_flag(
+                excerpt, field="routes_to_physician", chunk_id=excerpt["chunk_id"]
+            ),
             "support_note": " ".join(str(excerpt.get("support_note", "")).split()),
             "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest()[:16],
         }
@@ -276,6 +300,13 @@ def write_index(chunks: list[dict[str, Any]], summary: dict[str, Any]) -> dict[s
         "chunks": chunks,
     }
     INDEX_PATH.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    # The pin is what the runtime checks against. It is deliberately a separate file: a hash stored
+    # inside the index it covers is edited along with the index and proves nothing
+    # (red-team finding H-3). Regenerating the pin here makes a corpus change an explicit,
+    # reviewable act in version control rather than a silent edit of derived data.
+    (INDEX_PATH.parent / "pinned.sha256").write_text(
+        payload["index_sha256"] + "\n", encoding="utf-8"
+    )
     return payload
 
 

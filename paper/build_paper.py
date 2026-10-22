@@ -26,12 +26,22 @@ EXCERPT_COUNT = len(manifest["excerpts"])
 GAP_COUNT = len(manifest["gaps"])
 MAPPING_COUNT = sum(len(v) for v in manifest["mappings"].values())
 STATS = results["summary"]
+# Derived, never hand-typed: a hard-coded "28 runs" caption is how the counts drifted last time.
+RUN_COUNT = results["run_count"]
+SCEN_COUNT = results["scenario_count"]
+CONF_COUNT = len(results["configurations"])
+# Assertion totals are counted from the expected-action files, so the caption cannot drift from them.
+SPECS = {
+    f.stem: json.loads(f.read_text())
+    for f in sorted((ROOT / "evaluation" / "expected_actions").glob("*.json"))
+}
+ASSERTION_COUNT = sum(len(v["must_hold"]) for v in SPECS.values())
 
 def _cfg_row(key):
     r = STATS["by_configuration"][key]
     return [
         r["label"],
-        f"{r['scenarios_fully_safe']}/7",
+        f"{r['scenarios_fully_safe']}/{r['runs']}",
         f"{r['assertions_passed']}/{r['assertions_total']}",
         str(r["false_closures"]),
         str(r["stale_ack_uses"]),
@@ -99,7 +109,7 @@ add_para(doc, "All data synthetic. Not a medical device. Not evidence of clinica
 # ---------------------------------------------------------------- abstract
 heading(doc, "Abstract")
 add_para(doc,
-    "Health AI projects in the UAE usually begin with a model and reach for a privacy statute. For "
+    "Health AI projects in the UAE usually begin with a model and reach for a privacy statute; for "
     "patient data that order is wrong twice over. Federal Decree-Law No. 45 of 2021 (PDPL) excludes "
     "health personal data that is already subject to sectoral legislation (Art. 3(e)), and the "
     "instrument that does govern — Federal Law No. 2 of 2019 on the Use of ICT in Health Fields — "
@@ -160,8 +170,7 @@ add_para(doc,
     "processing identifiable results: research and care are different bases. Second, Art. 13 covers "
     "processing, so inference at an offshore endpoint is inside the prohibition even where nothing is "
     "stored; a hosted model is a legal question before it is an architecture choice. Third, Art. 20 "
-    "sets a floor but no disposal rule, so 'keep everything forever' is not compliance either — it is "
-    "the absence of a policy.")
+    "sets a retention floor but no disposal rule, so keeping everything forever is also non-compliance.")
 
 # ---------------------------------------------------------------- 3
 heading(doc, "3.  Method")
@@ -186,25 +195,30 @@ add_para(doc,
     "outside the State under Art. 13, citing Art. 24's penalty, unless a named Health Authority "
     "resolution is recorded. The guard rejects proposals citing chunk ids that do not exist or that "
     "cannot bind the case jurisdiction, and stamps whatever survives as PRODUCT_DESIGN_CONTROL. The "
-    "gate computes its decision first and receives the advisory record afterwards — a test asserts the "
-    "decision is identical with and without an accepted proposal. In this build no model is running.")
+    "gate decides first and receives the advisory record afterwards; a test asserts the decision is "
+    "identical with and without an accepted proposal. No model runs in this build.")
 add_para(doc,
     "Decision traces. Every step is published as ordered artefacts — event, retrieved evidence with "
     "claim class, each agent's proposal with its derived confidence and the basis for it, the gate's "
     "conditions and invariant, the transition, the resulting state. Raw model reasoning is deliberately "
-    "not published: it is unverifiable, and a reader should be able to check an artefact rather than "
-    "trust a paragraph. The same page runs any scenario under two configurations side by side, which "
-    "is how the citation difference becomes visible rather than asserted.")
+    "not published, and that is a position rather than an omission: a transcript of a model's private "
+    "reasoning is neither checkable nor stable, so the reasoning artefact published instead is this "
+    "decision trace - the evidence retrieved, the rule applied, the invariant that fired and the state "
+    "reached, reproducible by re-running the scenario. The same page runs any scenario under two "
+    "configurations side by side, which is how the citation difference becomes visible rather than "
+    "asserted.")
 add_para(doc,
-    "Evaluation. Seven hand-authored scenarios are run against four configurations: the full system, "
-    "a policy-blind baseline with no corpus, a citation-only retrieval baseline, and conventional "
+    f"Evaluation. Eight hand-authored scenarios are run against eleven configurations: the full system, "
+    "seven one-flag ablations that each differ from it in exactly one input, and three compound baselines - a "
+    "policy-blind baseline with no corpus, a citation-only retrieval baseline, and conventional "
     "deterministic rules. Expected outcomes were authored separately from the engine, and each is "
-    "marked as such.")
+    "marked as such. Three of the ablations are null results and are reported as such: an ablation that "
+    "changes nothing is a fact about the system, not a gap in the table.")
 
 # Regenerate the figure from the manifest first: a hand-kept PNG is how the counts drifted before.
 import subprocess, sys
 subprocess.run([sys.executable, str(ROOT / "paper" / "make_figure.py")], check=True)
-doc.add_picture(str(ROOT / "paper" / "figure1_pipeline.png"), width=Cm(16.4))
+doc.add_picture(str(ROOT / "paper" / "figure1_pipeline.png"), width=Cm(14.0))
 doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
 add_para(doc, "Figure 1. Where the constraints sit. The corpus and the jurisdiction layer bound what the "
               "agents may cite; the gate decides; the adviser is downstream of the corpus and upstream of "
@@ -216,7 +230,11 @@ heading(doc, "4.  Results")
 keys = list(STATS["by_configuration"].keys())
 table(doc, [["Configuration", "Safe", "Assertions", "False closure", "Stale ack", "Provenance"]]
       + [_cfg_row(k) for k in keys], widths=[6.0, 1.6, 2.4, 2.4, 1.8, 2.2])
-add_para(doc, "Table 2. Evaluation matrix, 28 runs (7 scenarios × 4 configurations).", size=8, italic=True, space_after=6)
+add_para(doc, f"Table 2. Evaluation matrix, {RUN_COUNT} runs ({SCEN_COUNT} scenarios × {CONF_COUNT} "
+              "configurations). Seven rows are one-flag ablations: each differs from the full system in exactly one "
+              "input. Three of them change no assertion at all, and that is reported rather than removed; "
+              "a null result is a fact about the system, not a gap in the table.", size=8,
+         italic=True, space_after=6)
 add_para(doc,
     "The full system passes every assertion; the baselines fail on the distinctions the corpus was "
     "built to supply — a transport acceptance treated as closure, a stale acknowledgment resolving a "
@@ -231,8 +249,10 @@ table(doc, [
     ["S4 genetic scope exclusion", "a result scope that may not go directly to the patient", "3"],
     ["S5 late acknowledgment race", "an acknowledgment bound to the wrong revision", "4"],
     ["S6 jurisdiction conflict", "an Abu Dhabi clause offered as authority for a Dubai case", "3"],
+    ["S7 physician-routed genetic result", "the recipient is chosen from a retrieved clause, not a case field", "5"],
 ], widths=[4.4, 10.6, 1.4])
-add_para(doc, "Table 3. The seven scenarios: 27 assertions in total.", size=8, italic=True, space_after=6)
+add_para(doc, f"Table 3. The eight scenarios: {ASSERTION_COUNT} assertions in total, authored separately "
+              "from the engine.", size=8, italic=True, space_after=6)
 add_para(doc,
     "Each scenario is also run in the three baselines. The separation is uneven and is reported as "
     "such: S1 discriminates the full system from both retrieval-only and rules baselines, while S6 "
@@ -325,3 +345,29 @@ for i, ref in enumerate(refs, 1):
 
 doc.save(OUT)
 print("wrote", OUT, OUT.stat().st_size, "bytes")
+
+# Length is measured, not asserted (audit finding M-10). The estimator cannot reproduce the official
+# ITU template - which is not in this repository - so it reports a band and this build fails only if
+# even the optimistic end of that band exceeds the 5-page target.
+import measure_length  # noqa: E402  (same directory; imported after the document exists)
+
+m = measure_length.measure()
+measure_length.OUT.write_text(
+    "# Report length\n\n"
+    "Computed by `paper/measure_length.py` from `paper/ResultRelay_ITU_paper.docx`. **This is an "
+    "estimate, not a render**: the workspace has no LibreOffice/Word/LaTeX, so the page count the "
+    "official ITU template will produce cannot be measured here. The estimator wraps every paragraph "
+    "with real font metrics at the document's own page geometry, measures each table with its declared "
+    "column widths and adds the figure at its placed height. Honest band: +/-0.5 page.\n\n"
+    "```json\n" + json.dumps(m, indent=2) + "\n```\n\n"
+    f"Body text is {m['words']} words with {m['tables']} tables and {m['figures']} figure. Estimated "
+    f"length {m['estimated_pages']} pages (band {m['estimated_pages_band'][0]}-"
+    f"{m['estimated_pages_band'][1]}). Against the event's 5-page target this is "
+    + ("**within budget on the estimate and on its band**" if m["estimated_pages_band"][1] <= 5.0
+       else "**at risk: the band crosses the 5-page limit**")
+    + "; the official template is not in this repository, so the real render remains NOT_VERIFIED.\n"
+)
+print("length:", m["estimated_pages"], "pages (band", m["estimated_pages_band"], ")")
+if m["estimated_pages_band"][1] > 5.0:
+    print("FAIL: the length band crosses the 5-page target; cut before submitting")
+    raise SystemExit(1)

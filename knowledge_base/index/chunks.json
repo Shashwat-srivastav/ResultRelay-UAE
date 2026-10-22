@@ -1,5 +1,5 @@
 {
-  "built_at": "2026-10-22T18:41:32.791374+00:00",
+  "built_at": "2026-10-22T19:25:37.958509+00:00",
   "chunk_count": 63,
   "sources": [
     "AD1",
@@ -407,7 +407,7 @@
     "cache_path": "/home/user/resultrelay/knowledge_base/.sources",
     "cache_present": true
   },
-  "index_sha256": "dcbfca95322c3ab632f71e6b5bf5aaa0fd17187771c805b44f4a9d95b7e7a288",
+  "index_sha256": "dee8bb7cdb1cd560879e2c6d2fe7ee53042cf24ef396dc77b39a20d54933667b",
   "chunks": [
     {
       "chunk_id": "AD1-PP.11.2.intro",
@@ -436,6 +436,7 @@
         "responsible_clinician"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Abu Dhabi requires an immediate-notification procedure aimed at a responsible clinician - a different recipient model from DHA's walk-in patient. Comparability only.",
       "text_sha256": "d3046838915fcfe0"
     },
@@ -466,6 +467,7 @@
         "outpatient"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Shows a comparator jurisdiction delegating channel choice to the facility rather than mandating a channel.",
       "text_sha256": "8f898a3907944ce5"
     },
@@ -497,6 +499,7 @@
         "acknowledgment"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "The closest comparator evidence for a read-back/understanding concept. Still addresses a clinician recipient, and is written as \"should\". The sentence continues with the single word \"accurately\" at the top of page 14; the quotation is truncated here so that it verifies contiguously against the PDF text layer.",
       "text_sha256": "a9402338808df0bf"
     },
@@ -526,6 +529,7 @@
         "amended_report"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Requires a written correction process with prompt regeneration of the corrected report.",
       "text_sha256": "0a3599556b7f5d59"
     },
@@ -555,6 +559,7 @@
         "re_communication"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "The strongest comparator evidence that a correction triggers its own re-communication duty - stronger than the Dubai instrument retrieved here.",
       "text_sha256": "cfa035fe4998de57"
     },
@@ -585,6 +590,7 @@
         "versioning"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Explicit version-identification requirement for both the original and the correction.",
       "text_sha256": "6ac1fae55088f9fc"
     },
@@ -615,6 +621,7 @@
         "documentation"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Read-back regime exists in policy for verbal results, in the Abu Dhabi instrument.",
       "text_sha256": "f39015f92fffa12f"
     },
@@ -645,6 +652,7 @@
         "understanding"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Uses \"shall\". This is the closest comparator concept to a verified human acknowledgment, and it exists only for verbal/telephone transmission.",
       "text_sha256": "625de3917c8e6341"
     },
@@ -676,6 +684,7 @@
         "abu_dhabi"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Binds any Abu Dhabi entity that transmits health information. For a Dubai case it is a comparator and can never be enforced; for an Abu Dhabi case it is binding. The register records both.",
       "text_sha256": "6486b85d467d5202"
     },
@@ -706,6 +715,7 @@
         "tamper_evidence"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "The Abu Dhabi basis for a tamper-evident record: unauthorised alteration is the thing to be prevented, and consistency must survive changes - which is what an append-only hash chain and revision lineage provide. Comparator material for a Dubai case.",
       "text_sha256": "276d446569c4fff1"
     },
@@ -736,6 +746,7 @@
         "mapping"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Mapping target for event ingestion only; used descriptively.",
       "text_sha256": "dd853bf3cb6856ae"
     },
@@ -766,6 +777,7 @@
         "mapping"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Mapping target for the event store collector.",
       "text_sha256": "d85e91bb287a26fd"
     },
@@ -796,6 +808,7 @@
         "mapping"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Mapping target for normalisation, schema validation and scope tagging of events.",
       "text_sha256": "5087f5f9e5911f74"
     },
@@ -826,6 +839,7 @@
         "mapping"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Mapping target for the deterministic/agent assessment layer.",
       "text_sha256": "fa6a664173007cf4"
     },
@@ -857,6 +871,7 @@
         "guardrail"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "The strongest structural analogy in Y.3172 for ResultRelay's deterministic gate - policy is applied to model output before action.",
       "text_sha256": "7fe7180278c503ba"
     },
@@ -888,6 +903,7 @@
         "transport"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Mapping target for the simulated transport adapter that selects an authorised channel.",
       "text_sha256": "b3efe18b6f4ace5b"
     },
@@ -918,6 +934,7 @@
         "mapping"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Mapping target for the synthetic patient endpoint and supervisor queue.",
       "text_sha256": "01da8d71f6dcefa4"
     },
@@ -948,6 +965,7 @@
         "mapping"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Mapping target for the orchestration engine.",
       "text_sha256": "49445be132328685"
     },
@@ -979,6 +997,7 @@
         "mapping"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Verifies the published AI Policy dimension and its three indices. Mapping target for the policy/governance perspective.",
       "text_sha256": "e9cbfb2307028b1f"
     },
@@ -1011,6 +1030,7 @@
         "mapping"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "The only verified anchor for open-source and standards mapping in Report 2.0. Note the published index list here differs slightly from the summary table (which omits GenAI Content) - recorded as a source-internal inconsistency.",
       "text_sha256": "158cf7f846808ac2"
     },
@@ -1041,6 +1061,7 @@
         "provenance"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Used to frame provenance-oriented data handling as a readiness-relevant capability, not as a score.",
       "text_sha256": "b3bdd9c1f7964a37"
     },
@@ -1071,6 +1092,7 @@
         "caregiver"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Comparator states the objective in terms of a responsible licensed caregiver and an organisation-established time frame.",
       "text_sha256": "7b90fa231ee96fc6"
     },
@@ -1102,6 +1124,7 @@
         "accountability"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Important negative finding for the gap register - the comparator does NOT set a numeric time limit; it requires the organisation to define one in writing.",
       "text_sha256": "92dd8a40a35712d9"
     },
@@ -1132,6 +1155,7 @@
         "timeliness"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Requires measurement of timeliness, which presupposes recordable timestamps at reporting.",
       "text_sha256": "bad39a32a2591b53"
     },
@@ -1162,6 +1186,7 @@
         "state_separation"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Directly supports separating \"reported\" from \"acknowledged\" as distinct tracked states. Inline citation markers (e.g. \".10,29\") are omitted from the quotation for readability; this is disclosed rather than silently trimmed.",
       "text_sha256": "602182ea463f144c"
     },
@@ -1193,6 +1218,7 @@
         "versioning"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Comparator requires a distinct notification event and a visible amended flag for corrections, separate from the original communication. Inline citation marker \".32\" omitted.",
       "text_sha256": "9e3ab0a99b59feb5"
     },
@@ -1223,6 +1249,7 @@
         "direct_contact"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Escalation of a correction to direct contact is conditioned on clinical significance - i.e. the comparator delegates a clinical judgement that ResultRelay must route to a human rather than infer.",
       "text_sha256": "a5a1d826e85e5e73"
     },
@@ -1253,6 +1280,7 @@
         "accountability"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Supports the design choice of a named responsible role rather than an anonymous queue.",
       "text_sha256": "f8c7c3304b65b402"
     },
@@ -1283,6 +1311,7 @@
         "queue"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "FHIR Task models a work item with a status - not delivery of a message nor human acknowledgment of clinical content.",
       "text_sha256": "623d6e94ac1b4336"
     },
@@ -1312,6 +1341,7 @@
         "task_status"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "The rendered R5 HTML truncates the required binding with \"+\"; only the first four values appear verbatim and are quoted here, with the remainder of the Task Status value set not asserted. Interpretation (flagged as interpretation, not quote) - \"completed\" describes the task, not evidence that a human understood a result.",
       "text_sha256": "91e88b78b37e5f28"
     },
@@ -1342,6 +1372,7 @@
         "interoperability"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Supports append-only task history and shared workflow state as an interoperability pattern.",
       "text_sha256": "90c85bfebfdc695f"
     },
@@ -1372,6 +1403,7 @@
         "concurrency"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Confirms that concurrent workflow updates are a recognised interoperability problem with a defined actor responsibility.",
       "text_sha256": "60f006216e29b738"
     },
@@ -1402,6 +1434,7 @@
         "physician_order"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Establishes that walk-in testing is limited to a permitted list, i.e. a scope boundary exists.",
       "text_sha256": "87fb7816fd010dff"
     },
@@ -1432,6 +1465,7 @@
         "patient_communication"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "The only walk-in-specific critical-result sentence in the instrument. It does not define delivery, acknowledgment, or timing.",
       "text_sha256": "a0620358fec4773d"
     },
@@ -1462,6 +1496,7 @@
         "patient_wording"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Uses \"should\", not \"shall\". Classified as guidance, and it is the sourced basis for patient-facing wording.",
       "text_sha256": "f3f5eb2848031a62"
     },
@@ -1492,6 +1527,7 @@
         "documentation"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Requires a record of the communication. Does not specify what constitutes sufficient evidence of receipt.",
       "text_sha256": "883f911cd5e7345b"
     },
@@ -1521,6 +1557,7 @@
         "laboratory_policy"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "The instrument delegates mechanism design to the laboratory's own policy - a key point for the gap register.",
       "text_sha256": "f7914e845bf9ac11"
     },
@@ -1550,6 +1587,7 @@
         "laboratory_policy"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Timing is delegated to internal policy; no numeric clock appears in the instrument itself.",
       "text_sha256": "a6e95d09803aed9b"
     },
@@ -1580,6 +1618,7 @@
         "retention"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Requires a revised identifier, a correction timestamp, and retention of both versions.",
       "text_sha256": "7386b6bed37af8c1"
     },
@@ -1610,6 +1649,7 @@
         "integrity"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Electronic reporting and integrity of the signatory are addressed; transport delivery semantics are not.",
       "text_sha256": "0ec3ea64e5e62748"
     },
@@ -1640,6 +1680,7 @@
         "electronic_report"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Security obligation exists but is unspecified in detail; carries over to any alternative channel decision.",
       "text_sha256": "d3f2d1ccfe0dd1a2"
     },
@@ -1669,6 +1710,7 @@
         "health_records"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Retention is cross-referenced to a separate DHA instrument not reviewed in this build.",
       "text_sha256": "d3cc4eb39188bea1"
     },
@@ -1699,6 +1741,7 @@
         "scope"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Genetic results carry a distinct clinical pathway requirement.",
       "text_sha256": "3af117e6d5bef2cd"
     },
@@ -1729,6 +1772,7 @@
         "scope_exclusion"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": true,
       "support_note": "Directly contradicts a generic walk-in patient-communication path for genetic results. This is the scope-exclusion anchor for Scenario 3.",
       "text_sha256": "2feee50905cfc60d"
     },
@@ -1759,6 +1803,7 @@
         "treatment"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Reinforces that ResultRelay must never interpret or advise treatment.",
       "text_sha256": "60ae64fc9fe313b9"
     },
@@ -1789,6 +1834,7 @@
         "genetic"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Appendix 3 corroborates that genetic testing is not a walk-in permitted category, so \u00a711.1 cannot apply to it.",
       "text_sha256": "01a617d831ff2e58"
     },
@@ -1820,6 +1866,7 @@
         "permitted_use"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Federal obligation on any ICT use in health fields. \"Circulation\" is defined in Article 1 to include sending, disclosing and publishing - so a result notification is circulation.",
       "text_sha256": "1c080a74f19aa9e3"
     },
@@ -1851,6 +1898,7 @@
         "health_data"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Federal basis for the append-only audit log and for revision lineage: amendment must be authorised and attributable, which is what the hash chain and revisions provide.",
       "text_sha256": "63024e188d9fa6e6"
     },
@@ -1882,6 +1930,7 @@
         "ai_processing"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "The clause that makes model placement a compliance question: \"process\" is listed, so sending health data to an offshore model endpoint is processing outside the State unless a resolution authorises it.",
       "text_sha256": "e1bc13254dbb5864"
     },
@@ -1913,6 +1962,7 @@
         "consent"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Governs circulation of patient information and lists five exceptions (insurers, research, public health, judicial, health-authority inspection). Communicating a result to the patient for health purposes is the permitted path; disclosure to anyone else needs written approval or an exception.",
       "text_sha256": "09cdf67da0558c73"
     },
@@ -1944,6 +1994,7 @@
         "documentation"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "A hard retention floor. The prototype stores communication records in a single SQLite file with no retention policy, so this is an open implementation gap (GR-13), not a satisfied requirement.",
       "text_sha256": "1b217127fb85c9d7"
     },
@@ -1974,6 +2025,7 @@
         "enforcement"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Quantifies the exposure created by Article 13, which is why the design treats the model endpoint as a governed resource rather than a configuration detail.",
       "text_sha256": "f0b7aa293d3b0c79"
     },
@@ -2005,6 +2057,7 @@
         "instrument_selection"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "The reason a laboratory must not cite PDPL consent mechanics for result notification: health data governed by other legislation is outside this Decree-Law, and in the UAE that legislation is the ICT Health Law (U1). This is the \"relevant but not applicable\" case the filter exists for.",
       "text_sha256": "cf06b7b00aa5279e"
     },
@@ -2035,6 +2088,7 @@
         "definitions"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Confirms that laboratory results are health data of the most sensitive kind, whichever instrument ultimately governs them. Used to size the handling requirements, not to pick the instrument.",
       "text_sha256": "be55269d76901f41"
     },
@@ -2065,6 +2119,7 @@
         "health_information_assets"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Dubai restates the federal 25-year floor as an entity obligation. A communication record is a health information asset, so retention applies to the audit trail and the message log, not only to the laboratory result.",
       "text_sha256": "355dff4badba10b8"
     },
@@ -2095,6 +2150,7 @@
         "accountability"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Places the retention decision with a named human role. Supports the design rule that retention and disclosure decisions are institutional, not algorithmic.",
       "text_sha256": "0ec38c77e3a8b695"
     },
@@ -2125,6 +2181,7 @@
         "corrections"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "The accuracy obligation a corrected result is meant to restore, and the reason a correction must supersede rather than overwrite: the record has to stay truthful about both versions.",
       "text_sha256": "48c63694e6c4bfc2"
     },
@@ -2155,6 +2212,7 @@
         "quality"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "A Dubai requirement that the patient can raise an inaccuracy. The prototype has no inbound patient-reporting path: an acknowledgment channel is not a correction channel (GR-14).",
       "text_sha256": "dc3bae647b0f1863"
     },
@@ -2186,6 +2244,7 @@
         "human_oversight"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "National expectation for AI safety. It is guidance: the gate treats it as a design input that can shape a control, never as a rule that authorises or forbids an action.",
       "text_sha256": "4d73495658a27e30"
     },
@@ -2216,6 +2275,7 @@
         "accountability"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "The national basis for the architecture decision that a model may propose but a deterministic gate decides: human judgement is described as irreplaceable, not as an optional review layer.",
       "text_sha256": "c93f797d224b2844"
     },
@@ -2246,6 +2306,7 @@
         "audit"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "Supports the append-only audit trail and the requirement that every consequential action be attributable. Guidance again: the audit trail is a design control, not a quoted obligation.",
       "text_sha256": "d0975d6e058d5c4b"
     },
@@ -2276,6 +2337,7 @@
         "decision_trace"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "The nearest national basis for publishing ordered decision traces (proposal -> gate -> transition -> evidence) rather than an opaque model output.",
       "text_sha256": "bb7658472d27aaad"
     },
@@ -2306,6 +2368,7 @@
         "instrument_selection"
       ],
       "authorises_fallback": false,
+      "routes_to_physician": false,
       "support_note": "The Charter itself defers to sectoral law. For a health workflow that means Federal Law 2/2019, not the Charter: the same deferral pattern as PDPL Article 3(e), which is why instrument resolution cannot be skipped.",
       "text_sha256": "012af16b93c6c094"
     }

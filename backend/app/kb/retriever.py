@@ -4,7 +4,7 @@ A small BM25 implementation, on purpose:
 
 * no embedding service means no network dependency, no key handling and no non-determinism in an
   evaluation that claims replayability;
-* the corpus is ~44 verified excerpts, where the ranking is dominated by the applicability
+* the corpus is 63 verified excerpts, where the ranking is dominated by the applicability
   filter, not by semantic similarity.
 
 The applicability filter is the load-bearing part and is deliberately separate from scoring:
@@ -15,10 +15,13 @@ never apply; ``scope="all"`` returns both, and the caller owns the distinction.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
+import os
 import re
 from collections import Counter
+from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Iterable
@@ -79,8 +82,128 @@ class BM25:
         return total, matched
 
 
+#: The committed pin for the served index. It lives beside the index but is *not* the index: a
+#: hash stored inside the file it protects proves nothing, because editing the file edits the hash
+#: with it (red-team finding H-3).
+PIN_PATH = INDEX_PATH.parent / "pinned.sha256"
+
+
+def compute_index_sha256(chunks: list[dict[str, Any]]) -> str:
+    return hashlib.sha256(json.dumps(chunks, sort_keys=True).encode("utf-8")).hexdigest()
+
+
+def _deep_quote_check(chunks: list[dict[str, Any]]) -> tuple[int, list[dict[str, Any]]]:
+    """Re-check every excerpt against the cached source text.
+
+    This is the same check ``app.kb.ingest`` performs when it builds the index, run again against
+    what is actually being served. Without it the health endpoint repeated a build-time summary
+    from a mutable file and reported 63/63 verified for a corpus that had been tampered with.
+    """
+    from app.kb.ingest import load_pages, verify_excerpt  # local import: ingest imports this module
+
+    pages_cache: dict[str, dict[int, str] | None] = {}
+    mismatches: list[dict[str, Any]] = []
+    verified = 0
+    for chunk in chunks:
+        source_id = chunk.get("source_id", "")
+        if source_id not in pages_cache:
+            pages_cache[source_id] = load_pages(source_id)
+        status, detail = verify_excerpt(chunk, pages_cache[source_id])
+        if status == "VERIFIED_AGAINST_SOURCE":
+            verified += 1
+        else:
+            mismatches.append({"chunk_id": chunk.get("chunk_id"), "status": status, "detail": detail})
+    return verified, mismatches
+
+
 @lru_cache(maxsize=1)
+def corpus_integrity(index_path: str | None = None) -> dict[str, Any]:
+    """Live integrity state of the served corpus.
+
+    Three independent checks, all recomputed here rather than read from the file's own claims:
+    the chunk list hashes to the committed pin, every excerpt still matches the cached source text,
+    and the count matches. ``ok`` is what callers gate on.
+    """
+    path = Path(index_path) if index_path else INDEX_PATH
+    pin_path = path.parent / "pinned.sha256"
+    report: dict[str, Any] = {
+        "index_path": str(path),
+        "pin_path": str(pin_path),
+        "chunk_count": 0,
+        "declared_sha256": "",
+        "recomputed_sha256": "",
+        "pinned_sha256": "",
+        "hash_matches_pin": False,
+        "declared_matches_recomputed": False,
+        "quotes_checked": 0,
+        "quotes_verified": 0,
+        "quote_mismatches": [],
+        "checked_at": datetime.now(timezone.utc).isoformat(),
+        "ok": False,
+        "reason": "",
+    }
+    if not path.exists():
+        report["reason"] = f"index not found at {path}"
+        return report
+
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    chunks = payload.get("chunks", [])
+    declared = str(payload.get("index_sha256") or "")
+    recomputed = compute_index_sha256(chunks)
+    pinned = pin_path.read_text(encoding="utf-8").strip() if pin_path.exists() else ""
+
+    verified, mismatches = _deep_quote_check(chunks)
+
+    report.update({
+        "chunk_count": len(chunks),
+        "declared_sha256": declared,
+        "recomputed_sha256": recomputed,
+        "pinned_sha256": pinned,
+        "hash_matches_pin": bool(pinned) and recomputed == pinned,
+        "declared_matches_recomputed": bool(declared) and declared == recomputed,
+        "quotes_checked": len(chunks),
+        "quotes_verified": verified,
+        "quote_mismatches": mismatches,
+    })
+
+    problems = []
+    if not pinned:
+        problems.append(
+            "no pinned index hash: the served corpus cannot be shown to be the reviewed one "
+            "(run `make kb` to write knowledge_base/index/pinned.sha256)"
+        )
+    elif recomputed != pinned:
+        problems.append(
+            f"served index hash {recomputed[:16]}… does not match the pinned hash {pinned[:16]}…"
+        )
+    if mismatches:
+        problems.append(f"{len(mismatches)} excerpt(s) no longer match the cached source text")
+    report["ok"] = not problems
+    report["reason"] = "; ".join(problems)
+    return report
+
+
 def _load_index(index_path: str | None = None) -> BM25:
+    """Load the index, refusing to serve a corpus that fails verification.
+
+    The corpus is the authority in this system, so a corpus that silently changed under the code is
+    a worse failure than an unavailable service. ``RESULTRELAY_ALLOW_UNVERIFIED_KB=1`` exists for
+    demos of an unverified corpus and is reported as such by ``/api/health``.
+    """
+    if index_path is None:
+        integrity = corpus_integrity()
+        if not integrity["ok"] and not os.environ.get("RESULTRELAY_ALLOW_UNVERIFIED_KB"):
+            raise RuntimeError(
+                "the policy index failed verification and will not be served: "
+                + integrity["reason"]
+                + ". Rebuild with `make kb`, or set RESULTRELAY_ALLOW_UNVERIFIED_KB=1 to run an "
+                "explicitly unverified corpus (the health endpoint will say so)."
+            )
+    return _load_index_uncached(index_path)
+
+
+@lru_cache(maxsize=1)
+def _load_index_uncached(index_path: str | None = None) -> BM25:
     path = Path(index_path) if index_path else INDEX_PATH
     if not path.exists():
         raise FileNotFoundError(
@@ -92,27 +215,22 @@ def _load_index(index_path: str | None = None) -> BM25:
 
 
 def reload_index() -> None:
-    _load_index.cache_clear()
-    _index_sha256_cached.cache_clear()
-
-
-@lru_cache(maxsize=1)
-def _index_sha256_cached(path_str: str) -> str:
-    path = Path(path_str)
-    if not path.exists():
-        return ""
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    return str(payload.get("index_sha256") or "")
+    corpus_integrity.cache_clear()
+    _load_index_uncached.cache_clear()
 
 
 def index_sha256() -> str:
-    """Hash of the policy index in force.
+    """Hash of the policy corpus actually being served.
 
-    Recorded on every audit entry so that a decision can be tied to the corpus that produced it.
-    Before this, the index was a single mutable file with no version pin: rebuilding it silently
-    changed what past decisions would be made from (audit item A8).
+    Recomputed from the chunks in force, so it changes the moment the served content changes.
+    Recorded on every audit entry so a decision can be tied to the corpus that produced it
+    (audit item A8); the pinned file is what makes tampering visible (red-team finding H-3).
     """
-    return _index_sha256_cached(str(INDEX_PATH))
+    try:
+        payload = json.loads(INDEX_PATH.read_text(encoding="utf-8"))
+        return compute_index_sha256(payload.get("chunks", []))
+    except (FileNotFoundError, json.JSONDecodeError):
+        return ""
 
 
 #: Jurisdictions that bind a case, layered rather than exclusive.

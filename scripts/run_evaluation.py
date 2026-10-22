@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run the full scenario x configuration matrix and write the report.
 
-    python scripts/run_evaluation.py                 # all 7 scenarios x 4 configurations
+    python scripts/run_evaluation.py                 # all scenarios x all configurations
     python scripts/run_evaluation.py --config resultrelay policy_blind
     python scripts/run_evaluation.py --scenario S4-genetic-scope-exclusion -v
 

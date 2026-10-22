@@ -61,8 +61,6 @@ class Settings:
     #: Bind address for the development server. Loopback unless explicitly widened; exposing the
     #: unauthenticated API on a routable interface is a deployment decision, not a default.
     host: str = os.environ.get("RESULTRELAY_HOST", "127.0.0.1")
-    #: Declared, not enforced: this build has no authentication and must not be hosted with real data.
-    authentication_enabled: bool = False
 
     synthetic_data_only: bool = True
     disclaimer: str = (
@@ -70,6 +68,17 @@ class Settings:
         "device, and not evidence of clinical safety, effectiveness or regulatory compliance."
     )
     extra: dict[str, str] = field(default_factory=dict)
+
+    @property
+    def authentication_enabled(self) -> bool:
+        """True when an API key is configured.
+
+        Read from the environment on each call rather than at import: a credential is not a build
+        input, and /api/health must describe the process that is answering, not the one that started.
+        An unset key means the API is open, which is the documented local-demo boundary and is
+        reported as such.
+        """
+        return bool(os.environ.get("RESULTRELAY_API_KEY", "").strip())
 
     @property
     def cors_origin_list(self) -> list[str]:

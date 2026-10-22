@@ -129,6 +129,10 @@ excerpts:
     page_end: 42
     claim_classification: BINDING_REQUIREMENT
     topics: [genetic, recipient, scope_exclusion]
+    # Declared routing, verified against the quoted sentence above: this clause names the
+    # referring/treating physician as the recipient. The policy assessor may select a
+    # physician-addressed message only when this chunk is retrieved.
+    routes_to_physician: true
     text: >-
       Genetic results shall not be communicated to the patients directly. The results shall be
       directed to the referring/treating Physician.

@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import Any
 
 from app.agents.base import Agent, assessment_confidence, citation, scope_view
+from app.kb.retriever import search
 from app.models.schemas import (
     AgentAssessment,
     AssessmentStatus,
@@ -18,11 +19,19 @@ from app.models.schemas import (
 
 AGENT_ID = "lab_workflow"
 
+#: The question this agent asks the corpus when a correction is in play.
+CORRECTION_QUERY = "correcting erroneous result revised original and corrected reports maintained"
+#: Relevance floor, matching the policy agent: below it the honest answer is "nothing retrieved".
+POLICY_MIN_SCORE = 1.0
+
 
 class LabWorkflowAgent(Agent):
     agent_id = AGENT_ID
     allowed_fields = (
         "case_id",
+        # Which corpus layer can bind the case. It cannot see contact details, channel state or
+        # transport outcomes, and it still may not authorise an exceptional action.
+        "jurisdiction",
         "case_scope",
         "current_revision_id",
         "revisions",
@@ -54,17 +63,31 @@ class LabWorkflowAgent(Agent):
                 unresolved.append(f"corrected result references unknown revision {supersedes}")
             else:
                 checked.append(f"correction lineage resolved: {supersedes} -> {current}")
-            sources.append(
-                {
-                    "chunk_id": "S1-9.1.5.g",
-                    "source_id": "S1",
-                    "section_id": "9.1.5(g)",
-                    "page_start": 29,
-                    "claim_classification": "BINDING_REQUIREMENT",
-                    "text": "The laboratory shall have a mechanism for correcting erroneous result in a manner that identifies the corrected result as revised and the date and time of correction.",
-                    "score": 0.0,
-                }
+            # Retrieved, not remembered. The previous version appended a literal dict for
+            # S1 9.1.5(g) with ``score: 0.0`` and never called the retriever, so the citation was
+            # printed whether or not the clause was in the corpus at all (red-team finding H-1).
+            correction_hits = search(
+                CORRECTION_QUERY,
+                jurisdiction=view.get("jurisdiction", "AE-DU"),
+                scope="applicable",
+                top_k=3,
+                min_score=POLICY_MIN_SCORE,
             )
+            correction_clauses = [
+                c for c in correction_hits.chunks
+                if c.source_id == "S1" and "correction" in (c.topics or [])
+            ]
+            if correction_clauses:
+                sources.append(correction_clauses[0].model_dump())
+                checked.append(
+                    f"correction clause retrieved: {correction_clauses[0].source_id} "
+                    f"{correction_clauses[0].section_id}"
+                )
+            else:
+                unresolved.append(
+                    "no applicable clause on correcting erroneous results was retrieved; the "
+                    "correction duty is unsourced for this case"
+                )
 
         # 2. Stale-event detection: an event for an older revision must not advance the case.
         if ev_rev and current and ev_rev != current:
@@ -109,7 +132,10 @@ class LabWorkflowAgent(Agent):
                 "event_revision": ev_rev,
                 "confidence_basis": confidence_basis,
                 # Lineage and stale-revision defects block closure; they also drive escalation.
-                "blocking_conditions": [u for u in unresolved if "revision" in u or "supersede" in u],
+                "blocking_conditions": [
+                    u for u in unresolved
+                    if "revision" in u or "supersede" in u or "correction duty is unsourced" in u
+                ],
             },
             context_scope=list(self.allowed_fields),
         )

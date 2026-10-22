@@ -23,6 +23,7 @@ from sqlalchemy import (
     String,
     Text,
     create_engine,
+    event,
     select,
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
@@ -210,6 +211,28 @@ class EvaluationRunRow(Base):
     summary: Mapped[str] = mapped_column(Text, default="{}")
 
 
+class RunRow(Base):
+    """A run's durable cursor.
+
+    The runtime lives in memory for progressive stepping, but the cursor must survive eviction
+    and restart, otherwise a case can be stepped to an arbitrary point and then abandoned with
+    no way back (red-team finding H-7). The runtime is rebuilt from the scenario by replaying
+    ``cursor`` steps, which is sound because the engine is deterministic.
+    """
+
+    __tablename__ = "runs"
+
+    run_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    scenario_id: Mapped[str] = mapped_column(String(64), index=True)
+    configuration: Mapped[str] = mapped_column(String(32), index=True)
+    case_id: Mapped[str] = mapped_column(String(96), index=True)
+    cursor: Mapped[int] = mapped_column(Integer, default=0)
+    total_steps: Mapped[int] = mapped_column(Integer, default=0)
+    state: Mapped[str] = mapped_column(String(64), default="")
+    created_at: Mapped[str] = mapped_column(String(40), default=_now)
+    updated_at: Mapped[str] = mapped_column(String(40), default=_now)
+
+
 _engine = None
 _Session: sessionmaker | None = None
 
@@ -219,7 +242,26 @@ def get_engine(db_path: Path | str | None = None):
     if _engine is None or db_path is not None:
         path = Path(db_path or DB_PATH)
         path.parent.mkdir(parents=True, exist_ok=True)
-        _engine = create_engine(f"sqlite:///{path}", future=True)
+        _engine = create_engine(
+            f"sqlite:///{path}",
+            future=True,
+            # A demo server must never hang on a held lock: fail or wait a bounded time instead
+            # (red-team finding H-7: default pooling with no timeout wedged every DB-backed route).
+            connect_args={"timeout": 5.0, "check_same_thread": False},
+            pool_size=10,
+            max_overflow=10,
+            pool_timeout=5.0,
+            pool_pre_ping=True,
+        )
+
+        @event.listens_for(_engine, "connect")
+        def _sqlite_pragmas(dbapi_conn, _record):  # noqa: ANN001 - SQLAlchemy hook signature
+            cur = dbapi_conn.cursor()
+            cur.execute("PRAGMA journal_mode=WAL")
+            cur.execute("PRAGMA synchronous=NORMAL")
+            cur.execute("PRAGMA busy_timeout=5000")
+            cur.execute("PRAGMA foreign_keys=ON")
+            cur.close()
         Base.metadata.create_all(_engine)
         _Session = sessionmaker(bind=_engine, future=True, expire_on_commit=False)
     return _engine

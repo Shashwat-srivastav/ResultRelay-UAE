@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Any
 
 from app.evaluation.metrics import compute
-from app.orchestration.engine import CONFIGS, load_scenario, run_scenario
+from app.orchestration.engine import CONFIGS, RuntimeConfig, load_scenario, run_scenario
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 SCENARIO_DIR = REPO_ROOT / "evaluation" / "scenarios"
@@ -183,6 +183,31 @@ def _summarise(runs: list[dict[str, Any]], configurations: list[str]) -> dict[st
     return {"by_configuration": by_config, "by_scenario": per_scenario}
 
 
+#: Inputs of RuntimeConfig that describe a configuration rather than change its behaviour.
+_NOT_A_FLAG = {"name", "label", "description", "ablation_of"}
+
+
+def changed_inputs(name: str) -> dict[str, tuple[Any, Any]]:
+    """Which runtime inputs differ between ``name`` and the full configuration.
+
+    Returns ``{field: (full_value, this_value)}``. For a one-flag ablation this has exactly one
+    entry, which is the only thing that makes a row-by-row difference attributable (audit finding
+    H-4): a baseline that changes six inputs at once cannot say which of them mattered.
+    """
+    full = CONFIGS["resultrelay"]
+    if name not in CONFIGS or name == "resultrelay":
+        return {}
+    other = CONFIGS[name]
+    diffs: dict[str, tuple[Any, Any]] = {}
+    for field_name in RuntimeConfig.__dataclass_fields__:
+        if field_name in _NOT_A_FLAG:
+            continue
+        left, right = getattr(full, field_name), getattr(other, field_name)
+        if left != right:
+            diffs[field_name] = (left, right)
+    return diffs
+
+
 def write_markdown(report: dict[str, Any], path: Path) -> Path:
     s = report["summary"]["by_configuration"]
     lines: list[str] = []
@@ -192,18 +217,69 @@ def write_markdown(report: dict[str, Any], path: Path) -> Path:
     lines.append("> All data is synthetic. These results are **not** evidence of clinical safety, clinical "
                  "effectiveness, or regulatory compliance.\n")
 
-    lines.append("## Headline comparison\n")
-    lines.append("| Configuration | Safe scenarios | Assertions passed | False closures | False deliveries | Stale-ack uses | Unauthorised channels | Scope violations | Comparator cited as binding | Transmission provenance | Replay stable |")
-    lines.append("|---|---|---|---|---|---|---|---|---|---|---|")
-    for name, row in s.items():
-        lines.append(
-            f"| {row['label']} | {row['scenarios_fully_safe']}/{row['runs']} | "
-            f"{row['assertions_passed']}/{row['assertions_total']} ({row['assertion_pass_rate']:.0%}) | "
-            f"{row['false_closures']} | {row['false_deliveries']} | {row['stale_ack_uses']} | "
-            f"{row['unauthorised_channels']} | {row['scope_violations']} | "
-            f"{row['comparator_cited_as_binding']} | "
-            f"{row['mean_provenance_completeness']:.2f} | {'yes' if row['replay_reproducible'] else 'no'} |"
+    def row(name: str) -> str:
+        r = s[name]
+        return (
+            f"| {r['label']} | {r['scenarios_fully_safe']}/{r['runs']} | "
+            f"{r['assertions_passed']}/{r['assertions_total']} ({r['assertion_pass_rate']:.0%}) | "
+            f"{r['false_closures']} | {r['false_deliveries']} | {r['stale_ack_uses']} | "
+            f"{r['unauthorised_channels']} | {r['scope_violations']} | "
+            f"{r['comparator_cited_as_binding']} | "
+            f"{r['mean_provenance_completeness']:.2f} | {'yes' if row_replay(name) else 'no'} |"
         )
+
+    def row_replay(name: str) -> bool:
+        return bool(s[name]["replay_reproducible"])
+
+    header = (
+        "| Configuration | Safe scenarios | Assertions passed | False closures | False deliveries | "
+        "Stale-ack uses | Unauthorised channels | Scope violations | Comparator cited as binding | "
+        "Transmission provenance | Replay stable |"
+    )
+    rule = "|---|---|---|---|---|---|---|---|---|---|---|"
+
+    ablations = [n for n in s if CONFIGS[n].ablation_of == "resultrelay"]
+    compounds = [n for n in s if n not in ablations and n != "resultrelay"]
+
+    lines.append("## How to read this table\n")
+    lines.append(
+        "The rows answer two different questions and are separated for that reason.\n\n"
+        "**One-flag ablations** differ from `ResultRelay` in exactly one runtime input. A difference "
+        "in a column is therefore attributable to that input, and the table below names which one. "
+        "This is the only part of the report that supports a causal claim about a single mechanism.\n\n"
+        "**Compound baselines** change several inputs at once. They answer \"what does a system "
+        "without any of this look like?\" and nothing finer: a difference between a compound baseline "
+        "and the full configuration cannot be attributed to any one of its parts. `static_rules` is the "
+        "closest honest comparator - a competent hand-written rule set - and it is the row to beat.\n"
+    )
+
+    lines.append("### One-flag ablations (primary evidence)\n")
+    lines.append(header)
+    lines.append(rule)
+    lines.append(row("resultrelay"))
+    for name in ablations:
+        lines.append(row(name))
+    lines.append("\n| Ablation | Single input changed | Full configuration | Ablation | Isolates |")
+    lines.append("|---|---|---|---|---|")
+    for name in ablations:
+        diffs = changed_inputs(name)
+        field_name, (full_value, this_value) = next(iter(diffs.items()))
+        lines.append(
+            f"| {CONFIGS[name].label} | `{field_name}` | `{full_value}` | `{this_value}` | "
+            f"{CONFIGS[name].description} |"
+        )
+
+    lines.append("\n### Compound baselines (secondary; not causal evidence)\n")
+    lines.append(header)
+    lines.append(rule)
+    for name in compounds:
+        lines.append(row(name))
+    lines.append("\n| Baseline | Inputs that differ from the full configuration |")
+    lines.append("|---|---|")
+    for name in compounds:
+        diffs = changed_inputs(name)
+        listed = ", ".join(f"`{k}`" for k in diffs)
+        lines.append(f"| {CONFIGS[name].label} | {len(diffs)}: {listed} |")
 
     lines.append("\n## Per-scenario outcome\n")
     configs = list(report["configurations"].keys())

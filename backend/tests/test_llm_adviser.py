@@ -14,7 +14,23 @@ import pytest
 from app.advisers import advise
 from app.advisers.base import AdvisoryStatus
 from app.advisers.llm import OpenAICompatibleAdviser, RefusingTransport, _first_json_object
+from app.kb import retriever
 from app.models.schemas import RecommendedAction
+
+
+def _evidence(*chunk_ids: str) -> list[dict]:
+    """The evidence an adviser is shown, by chunk id. Citing something requires being shown it."""
+    by_id = {c["chunk_id"]: c for c in retriever.all_chunks()}
+    return [
+        {
+            "chunk_id": by_id[cid]["chunk_id"],
+            "source_id": by_id[cid]["source_id"],
+            "section_id": by_id[cid]["section_id"],
+            "jurisdiction": by_id[cid]["jurisdiction"],
+            "text": by_id[cid]["text"],
+        }
+        for cid in chunk_ids
+    ]
 
 
 class FakeTransport:
@@ -84,7 +100,7 @@ def test_a_provider_failure_is_recorded_as_no_advice_not_as_authority():
 
 def test_a_valid_model_proposal_is_recorded_as_advisory_only():
     adviser, _ = _adviser(_body("SEND_PRIMARY", ["S1-11.1.1"]))
-    record = advise(jurisdiction="AE-DU", situation="send", evidence=[], adviser=adviser,
+    record = advise(jurisdiction="AE-DU", situation="send", evidence=_evidence("S1-11.1.1"), adviser=adviser,
                     enabled=True, endpoint="http://localhost:11434/v1")
     assert record.status is AdvisoryStatus.ADVISORY_ONLY
     assert record.as_dict()["classification"] == "PRODUCT_DESIGN_CONTROL"
@@ -92,7 +108,7 @@ def test_a_valid_model_proposal_is_recorded_as_advisory_only():
 
 def test_a_model_citing_a_foreign_clause_is_rejected_by_the_guard_not_by_trust():
     adviser, _ = _adviser(_body("SEND_PRIMARY", ["AD1-PP.11.2.d"]))
-    record = advise(jurisdiction="AE-DU", situation="send", evidence=[], adviser=adviser,
+    record = advise(jurisdiction="AE-DU", situation="send", evidence=_evidence("AD1-PP.11.2.d"), adviser=adviser,
                     enabled=True, endpoint="http://localhost:11434/v1")
     assert record.status is AdvisoryStatus.REJECTED_OUT_OF_JURISDICTION
 

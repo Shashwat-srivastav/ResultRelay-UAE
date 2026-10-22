@@ -21,9 +21,22 @@ class Agent(Protocol):
     def assess(self, view: dict[str, Any]) -> AgentAssessment: ...
 
 
+#: Sentinel used by the ``ablate_full_context`` configuration. It lives in the snapshot rather than
+#: in each agent so that exactly one input changes when the asymmetry is ablated; if it were a
+#: per-agent parameter the ablation would be a code change and not a configuration.
+UNRESTRICTED = "_context_unrestricted"
+
+
 def scope_view(snapshot: dict[str, Any], allowed: tuple[str, ...]) -> dict[str, Any]:
     """Return only the permitted fields. Absent fields are absent, not null - this keeps the
-    audit record honest about what the agent could and could not know."""
+    audit record honest about what the agent could and could not know.
+
+    ``ablate_full_context`` sets :data:`UNRESTRICTED`, which hands every agent the whole snapshot.
+    That is the configuration the information-asymmetry claim is measured against; without such a
+    configuration the claim is an assertion about code shape rather than a measured effect.
+    """
+    if snapshot.get(UNRESTRICTED):
+        return {k: v for k, v in snapshot.items() if k != UNRESTRICTED}
     return {k: snapshot[k] for k in allowed if k in snapshot}
 
 

@@ -15,6 +15,7 @@ Design constraints that mirror the real failure modes we are testing:
 from __future__ import annotations
 
 import hashlib
+import threading
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from typing import Any
@@ -42,6 +43,9 @@ class TransportAttempt:
     channel: str
     result_revision_id: str
     created_at: str
+    #: Who the message was addressed to. The transport does not care; the record does, because
+    #: "the patient was informed" and "the physician was informed" are different claims.
+    recipient: str | None = None
     accepted: bool = False
     accepted_at: str | None = None
     delivered: bool = False
@@ -69,6 +73,11 @@ class SimulatedNetwork:
     reconciliation_plan: list[dict[str, Any]] = field(default_factory=list)
     attempts: list[TransportAttempt] = field(default_factory=list)
     ledger: list[dict[str, Any]] = field(default_factory=list)
+    #: Guard the idempotency check and the attempt append. The step endpoint already serialises
+    #: per run, so this is defence in depth: the invariant belongs to the transport, and a transport
+    #: that can create two attempts for one key under concurrency is wrong on its own terms
+    #: (red-team finding C-1).
+    _lock: threading.RLock = field(default_factory=threading.RLock, repr=False, compare=False)
 
     # -- channel state ----------------------------------------------------
     def channel_status(self, channel_id: str) -> str:
@@ -101,6 +110,7 @@ class SimulatedNetwork:
         idempotency_key: str,
         at_minutes: float,
         content_digest: str | None = None,
+        recipient: str | None = None,
     ) -> TransportAttempt:
         """Idempotent send, with provider semantics.
 
@@ -108,6 +118,26 @@ class SimulatedNetwork:
         not told us it received anything, so a retry after TIMEOUT/FAILED is a genuine new attempt -
         suppressing it would strand the case with no way to reach the patient.
         """
+        with self._lock:
+            return self._send_locked(
+                channel=channel,
+                result_revision_id=result_revision_id,
+                idempotency_key=idempotency_key,
+                at_minutes=at_minutes,
+                content_digest=content_digest,
+                recipient=recipient,
+            )
+
+    def _send_locked(
+        self,
+        *,
+        channel: str,
+        result_revision_id: str,
+        idempotency_key: str,
+        at_minutes: float,
+        content_digest: str | None = None,
+        recipient: str | None = None,
+    ) -> TransportAttempt:
         for existing in self.attempts:
             if existing.idempotency_key == idempotency_key and existing.outcome not in {"TIMEOUT", "FAILED"}:
                 existing.duplicate_suppressed = True
@@ -130,6 +160,7 @@ class SimulatedNetwork:
             result_revision_id=result_revision_id,
             created_at=sim_time(at_minutes),
             provider_ref="SIM-" + hashlib.sha256(idempotency_key.encode()).hexdigest()[:10],
+            recipient=recipient,
         )
         self.attempts.append(attempt)
         self.ledger.append(
@@ -140,6 +171,7 @@ class SimulatedNetwork:
                 "attempt_id": attempt.attempt_id,
                 "idempotency_key": idempotency_key,
                 "content_digest": content_digest,
+                "recipient": recipient,
             }
         )
 
@@ -203,6 +235,35 @@ class SimulatedNetwork:
         return attempt
 
     # -- reconciliation ---------------------------------------------------
+    def record_acceptance_as_delivery(self, attempt_id: str, at_minutes: float) -> dict[str, Any]:
+        """Model a legacy adapter that treats provider acceptance as delivery.
+
+        This is the defect the strict semantics exist to prevent, reproduced on purpose so that the
+        comparison in ``evaluation/report.md`` compares behaviour rather than a label. It is only
+        reachable from a configuration whose ``transport_semantics`` is ``optimistic``; the shipped
+        configuration never calls it. The write is recorded in the ledger, so a reviewer can see the
+        conflation happening rather than infer it.
+        """
+        attempt = next((a for a in self.attempts if a.attempt_id == attempt_id), None)
+        if attempt is None:
+            return {"attempt_id": attempt_id, "result": "NO_SUCH_ATTEMPT", "conflated": False}
+        if attempt.delivered:
+            return {"attempt_id": attempt_id, "result": "ALREADY_DELIVERED", "conflated": False}
+        if not attempt.accepted:
+            return {"attempt_id": attempt_id, "result": "NOT_ACCEPTED", "conflated": False}
+        attempt.delivered = True
+        attempt.delivered_at = sim_time(at_minutes)
+        attempt.delivered_at_minutes = at_minutes
+        self.ledger.append(
+            {
+                "at": sim_time(at_minutes),
+                "event": "ACCEPTANCE_RECORDED_AS_DELIVERY",
+                "attempt_id": attempt_id,
+                "note": "optimistic transport semantics: provider acceptance was recorded as endpoint delivery",
+            }
+        )
+        return {"attempt_id": attempt_id, "result": "CONFLATED", "conflated": True}
+
     def reconcile(self, attempt_id: str, at_minutes: float) -> dict[str, Any]:
         """Resolve an unknown outcome by querying the provider ledger."""
         attempt = next((a for a in self.attempts if a.attempt_id == attempt_id), None)

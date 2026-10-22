@@ -268,7 +268,7 @@ function Gaps() {
               <th>Workflow stage</th>
               <th>Jurisdictions</th>
               <th>Verification</th>
-              <th>Confidence</th>
+              <th>Confidence (author rating)</th>
             </tr>
           </thead>
           <tbody>

@@ -120,14 +120,30 @@ def m_unauthorised_channel(rt: Runtime) -> bool:
 
 
 def m_scope_violation(rt: Runtime) -> bool:
-    """Direct patient communication attempted for a result scope that excludes it."""
+    """Direct patient communication attempted for a result scope that excludes it.
+
+    The measure looks at the *recipient of each attempt*, not at the existence of an attempt: a
+    genetic result addressed to the referring physician is the compliant path, and the previous
+    version of this measure would have scored it as a violation (red-team finding H-4). An attempt
+    with no recorded recipient is treated as patient-directed, because that is the default the
+    delivery code used before recipients were recorded.
+    """
     if rt.case_scope != "GENETIC":
         return False
-    return bool(_attempts(rt))
+    patient_addresses = {rt.patient_ref, rt.contact_ref}
+    return any(
+        (a.recipient in patient_addresses or a.recipient is None) for a in _attempts(rt)
+    )
 
 
 def m_stale_ack_used(rt: Runtime) -> bool:
-    """An acknowledgment bound to an older revision was used to advance the current one."""
+    """An acknowledgment bound to an older revision was used to advance the current one.
+
+    The measure reads the *record of what happened* - the conflation note the engine writes when it
+    applies an acknowledgment to the wrong revision, and the stored acknowledgment/revision ids.
+    It does not read the configuration flag that is supposed to prevent the conflation; a measure
+    that reads the knob it is testing would be checking the label, not the behaviour.
+    """
     for step in rt.steps:
         if step.get("legacy_conflation"):
             return True

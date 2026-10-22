@@ -28,7 +28,7 @@ things that are adjacent: *accepted* versus *delivered*, *delivered* versus *ack
                             │                   │           │      │
         ┌───────────────────┴───┐   ┌───────────┴────┐  ┌───┴──────┐
         │ knowledge base        │   │ transport      │  │ REST API │
-        │ 44 verified excerpts  │   │ simulator      │  │ + React  │
+        │ 63 verified excerpts  │   │ simulator      │  │ + React  │
         │ BM25 + scope filter   │   │ (no network)   │  │ UI       │
         └───────────────────────┘   └────────────────┘  └──────────┘
 ```
@@ -205,7 +205,8 @@ elsewhere in the document. Excerpts that fail are excluded from the index, so re
 cite them. Sources are fetched at build time into `~/.cache/resultrelay/sources` from the issuing
 bodies and are not redistributed; only minimal necessary quotations are committed.
 
-Current state: **44 excerpts, 44 verified, 0 unverified, 0 rejected.**
+Current state: **63 excerpts, 63 verified, 0 unverified, 0 rejected**, pinned by
+`knowledge_base/index/pinned.sha256` and re-verified at load (0.17 s).
 
 ITU-T Y.3172 §8.1 is used descriptively to name the components (source, collection, preprocessing,
 model, policy, decision, sink). No conformance claim is made, and the mapping file records two
@@ -213,23 +214,37 @@ requirements as `NOT IMPLEMENTED` rather than stretching them.
 
 ---
 
-## 5. The four configurations
+## 5. The configurations
 
-The same engine runs four ways so that a reviewer can see which control is doing the work. They
-are not strawmen: each is a plausible way to build this system.
+The same engine runs eleven ways so that a reviewer can see which control is doing the work. Seven are
+one-flag ablations: each differs from the full system in exactly one input, which is the only shape
+of comparison that supports a causal sentence. Three are compound baselines, kept because they show
+what a system without any of this looks like.
 
 | configuration | knowledge base | applicability filter | invariants | acknowledgment scope | transport semantics |
 |---|---|---|---|---|---|
 | `resultrelay` | yes | yes | yes | revision-bound | strict |
-| `policy_blind` | no | n/a | no | any | optimistic |
-| `retrieval_only` | yes | **no** | no | any | optimistic |
-| `static_rules` | no | n/a | yes | revision-bound | strict |
+| `ablate_no_kb` | **no** | yes | yes | revision-bound | strict |
+| `ablate_no_applicability_filter` | yes | **no** | yes | revision-bound | strict |
+| `ablate_no_invariants` | yes | yes | **no** | revision-bound | strict |
+| `ablate_no_audit_agent` | yes | yes | yes (4 assessors) | revision-bound | strict |
+| `ablate_full_context` | yes | yes | yes | revision-bound | strict (no field filtering) |
+| `ablate_ack_any` | yes | yes | yes | **any** | strict |
+| `ablate_optimistic_transport` | yes | yes | yes | revision-bound | **optimistic** |
+| `policy_blind` (compound) | no | n/a | no | any | optimistic |
+| `retrieval_only` (compound) | yes | no | no | any | optimistic |
+| `static_rules` (compound) | no | n/a | yes | revision-bound | strict |
 
 `static_rules` is the fair comparison: a competent hand-coded rules engine. It gets the ordering
 and the acknowledgment binding right and fails only where hard-coded rules cannot know something —
 that a genetic result may not go to the patient, and that a clause belongs to another jurisdiction.
 
----
+Three ablations produce no difference on the eight scenarios (`ablate_no_audit_agent`,
+`ablate_full_context`, `ablate_optimistic_transport`) and all three are reported as null results. The optimistic-transport flag
+had no behaviour at all until it was implemented: it changed a gate message and nothing else. It now
+records provider acceptance as delivery in the transport ledger, and a constructed
+accepted-without-receipt case diverges (strict `TRANSPORT_ACCEPTED`, optimistic
+`DELIVERY_CONFIRMED`) — see `backend/tests/test_transport_semantics.py`.
 
 ## 5b. The advisory boundary (a model may propose, never decide)
 

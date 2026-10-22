@@ -113,6 +113,7 @@ class EvidenceChunk(BaseModel):
     #: itself authorises an alternative channel; the policy agent reads this field instead of
     #: pattern-matching the text (see the H-1 finding in docs/audit-disposition.md).
     authorises_fallback: bool = False
+    routes_to_physician: bool = False
     topics: list[str] = Field(default_factory=list)
     score: float | None = None
     matched_terms: list[str] = Field(default_factory=list)

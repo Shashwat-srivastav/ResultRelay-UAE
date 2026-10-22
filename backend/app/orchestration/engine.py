@@ -64,12 +64,19 @@ class RuntimeConfig:
     transport_semantics: str  # strict | optimistic
     agents: tuple[str, ...]
     description: str
+    #: When False, every agent is handed the whole snapshot and the declared-scope filter is
+    #: bypassed. Ablating this is the only way to measure whether declared asymmetry does anything.
+    asymmetric_context: bool = True
+    #: Set on one-flag ablations: the configuration they differ from by exactly one input. A
+    #: benchmark that changes six things at once cannot attribute a difference to any of them
+    #: (red-team finding H-4).
+    ablation_of: str | None = None
 
 
 CONFIGS: dict[str, RuntimeConfig] = {
     "resultrelay": RuntimeConfig(
         name="resultrelay",
-        label="ResultRelay (policy-governed multi-agent)",
+        label="ResultRelay (policy-gated assessors, deterministic)",
         use_kb=True,
         applicability_filter=True,
         use_invariants=True,
@@ -112,6 +119,106 @@ CONFIGS: dict[str, RuntimeConfig] = {
             "keeps the naive delivery/acknowledgment conflation."
         ),
     ),
+
+    # --- one-flag ablations -------------------------------------------------
+    #
+    # Each differs from ``resultrelay`` in exactly one input, so the table can attribute a
+    # difference to a variable. The compound baselines above are kept because they answer a
+    # different question ("what does a system without any of this look like?"), but they are not
+    # evidence for any single claim and are labelled as compound.
+    "ablate_no_kb": RuntimeConfig(
+        name="ablate_no_kb",
+        label="Ablation: knowledge base off (one flag)",
+        use_kb=False,
+        applicability_filter=True,
+        use_invariants=True,
+        use_audit_agent=True,
+        acknowledgement_scope="revision",
+        transport_semantics="strict",
+        agents=("lab_workflow", "policy_applicability", "network_delivery", "escalation_coordinator", "audit_governance"),
+        description="ResultRelay with the gate's evidence requirement removed; retrieval still runs.",
+        ablation_of="resultrelay",
+    ),
+    "ablate_no_applicability_filter": RuntimeConfig(
+        name="ablate_no_applicability_filter",
+        label="Ablation: jurisdiction filter off (one flag)",
+        use_kb=True,
+        applicability_filter=False,
+        use_invariants=True,
+        use_audit_agent=True,
+        acknowledgement_scope="revision",
+        transport_semantics="strict",
+        agents=("lab_workflow", "policy_applicability", "network_delivery", "escalation_coordinator", "audit_governance"),
+        description="Retrieves across jurisdictions and presents the highest-scoring clause as governing.",
+        ablation_of="resultrelay",
+    ),
+    "ablate_no_invariants": RuntimeConfig(
+        name="ablate_no_invariants",
+        label="Ablation: invariant gate off (one flag)",
+        use_kb=True,
+        applicability_filter=True,
+        use_invariants=False,
+        use_audit_agent=True,
+        acknowledgement_scope="revision",
+        transport_semantics="strict",
+        agents=("lab_workflow", "policy_applicability", "network_delivery", "escalation_coordinator", "audit_governance"),
+        description="Proposals are executed as proposed: the deterministic gate is replaced by a naive one.",
+        ablation_of="resultrelay",
+    ),
+    "ablate_no_audit_agent": RuntimeConfig(
+        name="ablate_no_audit_agent",
+        label="Ablation: audit assessor off (one flag)",
+        use_kb=True,
+        applicability_filter=True,
+        use_invariants=True,
+        use_audit_agent=False,
+        acknowledgement_scope="revision",
+        transport_semantics="strict",
+        agents=("lab_workflow", "policy_applicability", "network_delivery", "escalation_coordinator", "audit_governance"),
+        description="The fifth assessor is skipped (the engine already gates it on this flag).",
+        ablation_of="resultrelay",
+    ),
+    "ablate_full_context": RuntimeConfig(
+        name="ablate_full_context",
+        label="Ablation: full context to every assessor (one flag)",
+        use_kb=True,
+        applicability_filter=True,
+        use_invariants=True,
+        use_audit_agent=True,
+        acknowledgement_scope="revision",
+        transport_semantics="strict",
+        agents=("lab_workflow", "policy_applicability", "network_delivery", "escalation_coordinator", "audit_governance"),
+        description="Every assessor sees the whole case snapshot, so no assessor has to work from less information than another.",
+        ablation_of="resultrelay",
+        asymmetric_context=False,
+    ),
+    "ablate_ack_any": RuntimeConfig(
+        name="ablate_ack_any",
+        label="Ablation: acknowledgement scope any revision (one flag)",
+        use_kb=True,
+        applicability_filter=True,
+        use_invariants=True,
+        use_audit_agent=True,
+        acknowledgement_scope="any",
+        transport_semantics="strict",
+        agents=("lab_workflow", "policy_applicability", "network_delivery", "escalation_coordinator", "audit_governance"),
+        description="Any acknowledgment closes the case, including one for a superseded revision.",
+        ablation_of="resultrelay",
+    ),
+    "ablate_optimistic_transport": RuntimeConfig(
+        name="ablate_optimistic_transport",
+        label="Ablation: optimistic transport semantics (one flag)",
+        use_kb=True,
+        applicability_filter=True,
+        use_invariants=True,
+        use_audit_agent=True,
+        acknowledgement_scope="revision",
+        transport_semantics="optimistic",
+        agents=("lab_workflow", "policy_applicability", "network_delivery", "escalation_coordinator", "audit_governance"),
+        description="A provider acceptance is treated as delivery; the unknown state is never entered.",
+        ablation_of="resultrelay",
+    ),
+
     "static_rules": RuntimeConfig(
         name="static_rules",
         label="Conventional deterministic rules baseline",
@@ -165,6 +272,12 @@ class Runtime:
     audit: AuditLog | None = None
     patient_ref: str = "SYN-PATIENT-001"
     contact_ref: str = "SYN-CONTACT-001"
+    #: Where a physician-addressed message goes. Only used when a retrieved clause declares that
+    #: routing; the recipient is never inferred from the case (red-team finding H-4).
+    physician_contact_ref: str = "SYN-PHYSICIAN-001"
+    #: The recipient the policy evidence selected for this step ("PATIENT" or "PHYSICIAN").
+    recipient: str = "PATIENT"
+    recipient_basis: dict[str, Any] | None = None
 
     def revision_ids(self) -> list[str]:
         return [r["revision_id"] for r in self.revisions]
@@ -339,6 +452,10 @@ class Orchestrator:
         if visible_to:
             allowed = [a for a in allowed if a in visible_to]
         snap = self.snapshot(event)
+        if not rt.config.asymmetric_context:
+            from app.agents.base import UNRESTRICTED
+
+            snap[UNRESTRICTED] = True
         results: list[AgentAssessment] = []
         policy_result = None
         for agent_id in allowed:
@@ -439,6 +556,21 @@ class Orchestrator:
                 last.channel if (action is RecommendedAction.RETRY_SAME_CHANNEL and last)
                 else rt.network.primary_channel()
             )
+            recipient = rt.physician_contact_ref if rt.recipient == "PHYSICIAN" else rt.contact_ref
+            if rt.recipient == "PHYSICIAN":
+                # A physician-addressed message may not travel over a patient-facing channel.
+                channel_meta = rt.network.channels.get(authorised_channel, {})
+                endpoint_class = str(channel_meta.get("endpoint_class", ""))
+                if not endpoint_class.startswith("physician"):
+                    return {
+                        "tool": "transport.send", "attempt_id": None,
+                        "outcome": "NO_PHYSICIAN_CHANNEL", "transitions": [],
+                        "note": (
+                            f"the evidence routes this result to the referring physician, but the "
+                            f"authorised channel {authorised_channel!r} is {endpoint_class or 'unclassified'} "
+                            "and cannot carry it; a physician-facing channel is required"
+                        ),
+                    }
             if channel and channel != authorised_channel:
                 return {
                     "tool": "transport.send",
@@ -487,6 +619,7 @@ class Orchestrator:
                 idempotency_key=key,
                 at_minutes=at_minutes,
                 content_digest=_content_digest(rt.current_revision_id or ""),
+                recipient=recipient,
             )
             if attempt.accepted:
                 applied.append(self.apply_event(
@@ -509,14 +642,26 @@ class Orchestrator:
                      "result_revision_id": rt.current_revision_id, "actor": "NETWORK",
                      "at": sim_time(at_minutes)}, step=step))
             if rt.config.transport_semantics == "optimistic" and attempt.accepted and not attempt.delivered:
-                if rt.audit:
-                    rt.audit.append(
-                        event="legacy.conflation",
-                        actor="SYSTEM",
-                        summary="LEGACY CONFLATION: provider acceptance recorded as delivery in this configuration",
-                        payload={"attempt_id": attempt.attempt_id},
-                        at=sim_time(at_minutes),
-                    )
+                # The baseline this configuration is supposed to represent records acceptance as
+                # delivery. Until now the flag only wrote an audit note and changed no state, so the
+                # "optimistic" rows of the comparison produced identical behaviour to the strict ones
+                # and the ablation proved nothing (audit finding H-4). The conflation is now applied
+                # to the ledger and then to the state machine, exactly as a naive adapter would.
+                conflated = rt.network.record_acceptance_as_delivery(attempt.attempt_id, at_minutes)
+                if conflated.get("conflated"):
+                    applied.append(self.apply_event(
+                        {"type": "transport.delivery_receipt", "attempt_id": attempt.attempt_id,
+                         "result_revision_id": rt.current_revision_id, "actor": "NETWORK",
+                         "_establishes_receipt": True,
+                         "at": sim_time(at_minutes)}, step=step))
+                    if rt.audit:
+                        rt.audit.append(
+                            event="legacy.conflation",
+                            actor="SYSTEM",
+                            summary="LEGACY CONFLATION: provider acceptance recorded as delivery in this configuration",
+                            payload={"attempt_id": attempt.attempt_id},
+                            at=sim_time(at_minutes),
+                        )
             return {"tool": "transport.send", "attempt_id": attempt.attempt_id,
                     "outcome": attempt.outcome, "transitions": applied,
                     "duplicate_suppressed": attempt.duplicate_suppressed}
@@ -759,12 +904,31 @@ class Orchestrator:
         result["policy_retrieval"] = (policy.data if policy else None)
 
         # 3. Resolve and gate.
-        proposal, trace = resolve_proposals(assessments)
+        proposal, trace, resolution = resolve_proposals(assessments)
         result["proposal_trace"] = trace
+        result["proposal_resolution"] = resolution
         result["proposed_action"] = proposal.value
+        if resolution["conflict"]:
+            # A contested step is a fact worth keeping: it is the only place where the agents'
+            # different information shows up as a disagreement rather than as corroboration.
+            rt.audit.append(
+                event="proposal.contested",
+                actor="ORCHESTRATOR",
+                summary=(
+                    "assessors proposed different actions; "
+                    f"chosen {resolution['chosen']} by safety-first precedence"
+                ),
+                payload=resolution,
+                at=event.get("at"),
+            )
 
+        # The recipient is an evidence output, not a property of the case: the delivery code reads it
+        # from here rather than deciding for itself who is allowed to receive the result.
+        rt.recipient = (policy.data.get("recipient") if policy else "PATIENT") or "PATIENT"
+        rt.recipient_basis = (policy.data.get("recipient_basis") if policy else None)
         evidence = {
             "scope_permitted": (policy.data.get("scope_permitted") if policy else True),
+            "recipient": rt.recipient,
             "fallback_authorised": (policy.data.get("fallback_authorised") if policy else False),
             "fallback_evidence_refs": (policy.data.get("fallback_evidence_refs") if policy else []),
             "fallback_authorisation_basis": (policy.data.get("fallback_authorisation_basis") if policy else None),
@@ -1075,6 +1239,7 @@ def build_runtime(
         network=network,
         patient_ref=scenario.get("patient_ref", "SYN-PATIENT-001"),
         contact_ref=scenario.get("contact_ref", "SYN-CONTACT-001"),
+        physician_contact_ref=scenario.get("physician_contact_ref", "SYN-PHYSICIAN-001"),
     )
     rt.audit = AuditLog(run_id, case_id)
     if scenario.get("initial_result"):

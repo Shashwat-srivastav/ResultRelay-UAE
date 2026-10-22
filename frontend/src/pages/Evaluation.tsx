@@ -62,7 +62,7 @@ export default function Evaluation() {
         hint={report ? `${report.run_count ?? "—"} runs · finished ${fmtTime(report.run_finished)}` : "no results loaded"}
         action={
           <button className="btn primary small" onClick={runAll} disabled={running}>
-            {running ? <Spinner /> : "Run 7 × 4 matrix"}
+            {running ? <Spinner /> : "Run the matrix"}
           </button>
         }
       >
@@ -70,7 +70,7 @@ export default function Evaluation() {
         {latest.loading && !report && <Skeleton height={120} />}
         {!report && !latest.loading && !latest.error && (
           <Empty>
-            No evaluation has been run in this deployment. Press “Run 7 × 4 matrix”; it takes a few seconds and
+            No evaluation has been run in this deployment. Press “Run the matrix”; it takes a few seconds and
             rewrites <span className="mono">evaluation/report.md</span>.
           </Empty>
         )}

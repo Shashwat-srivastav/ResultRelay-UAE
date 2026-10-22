@@ -79,15 +79,53 @@ def _proposal_order(action: RecommendedAction) -> int:
     return order.get(action, 7)
 
 
-def resolve_proposals(assessments: list[AgentAssessment]) -> tuple[RecommendedAction, list[str]]:
-    """Resolve disagreement deterministically: safety-first ordering, ties broken by agent id."""
-    proposals = [(a.recommended_action, a.agent_id) for a in assessments if a.recommended_action != RecommendedAction.NO_ACTION]
+#: The rule by which a contested step is decided. It is a fixed precedence over actions, not over
+#: agents, so no agent can win a disagreement by being listed first or by being called last.
+RESOLUTION_RULE = (
+    "safety-first precedence over proposed actions (escalate > hold for evidence/reconcile > verify/"
+    "document > await acknowledgment/correction > fallback > retry/send); ties broken by agent id"
+)
+
+
+def resolve_proposals(
+    assessments: list[AgentAssessment],
+) -> tuple[RecommendedAction, list[str], dict[str, Any]]:
+    """Resolve disagreement deterministically and *record* it.
+
+    The earlier version returned only the winner and a flat trace, so a step on which the agents
+    disagreed was indistinguishable in the record from a step on which they agreed. Disagreement is
+    the thing the event asks these agents to produce, so it is now a first-class artefact: which
+    agents proposed what, which proposals were outvoted, and the rule that decided it.
+    """
+    proposals = [
+        (a.recommended_action, a.agent_id)
+        for a in assessments
+        if a.recommended_action != RecommendedAction.NO_ACTION
+    ]
     if not proposals:
-        return RecommendedAction.NO_ACTION, ["no agent proposed an action"]
+        return RecommendedAction.NO_ACTION, ["no agent proposed an action"], {
+            "rule": RESOLUTION_RULE,
+            "proposals": [],
+            "chosen": RecommendedAction.NO_ACTION.value,
+            "dissent": [],
+            "conflict": False,
+        }
     ranked = sorted(proposals, key=lambda p: (_proposal_order(p[0]), p[1]))
     chosen = ranked[0][0]
     trace = [f"{aid} -> {act.value}" for act, aid in ranked]
-    return chosen, trace
+    dissent = [{"agent_id": aid, "proposed": act.value} for act, aid in ranked[1:]]
+    distinct = sorted({act.value for act, _ in ranked})
+    resolution = {
+        "rule": RESOLUTION_RULE,
+        "proposals": [{"agent_id": aid, "proposed": act.value} for act, aid in ranked],
+        "chosen": chosen.value,
+        "dissent": dissent,
+        # A "conflict" means at least two different actions were on the table. Two agents proposing
+        # the same action is corroboration, not disagreement, and is recorded separately.
+        "conflict": len(distinct) > 1,
+        "corroboration": len(distinct) == 1 and len(ranked) > 1,
+    }
+    return chosen, trace, resolution
 
 
 def _enforce(
@@ -142,7 +180,20 @@ def _enforce(
             )
 
     # --- 2b. Applicability / scope decision from evidence (not from a hardcoded rule) ------
-    if proposal in (RecommendedAction.SEND_PRIMARY, RecommendedAction.RETRY_SAME_CHANNEL,
+    if (
+        proposal in (RecommendedAction.SEND_PRIMARY, RecommendedAction.RETRY_SAME_CHANNEL)
+        and ctx.evidence.get("scope_permitted") is False
+        and ctx.evidence.get("recipient") == "PHYSICIAN"
+    ):
+        # The prohibition is on who receives the result, not on communicating at all. The recipient
+        # is set by the policy assessor from a retrieved clause that declares it, and the gate can
+        # only ever see that structured value - it never parses prose (red-team finding H-4).
+        checked.append(
+            "scope gate: direct patient communication is prohibited for this scope; the message is "
+            "addressed to the referring/treating physician under a retrieved clause that declares "
+            "that routing"
+        )
+    elif proposal in (RecommendedAction.SEND_PRIMARY, RecommendedAction.RETRY_SAME_CHANNEL,
                     RecommendedAction.PROPOSE_FALLBACK) and ctx.evidence.get("scope_permitted") is False:
         blocked.append(
             "the policy assessment establishes that direct patient communication is not permitted for "
