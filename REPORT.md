@@ -1,6 +1,6 @@
 # ResultRelay — technical report
 
-Generated from `evaluation/results/latest.json` (2026-10-22 17:32:21 UTC). 28 runs: 7 scenarios x 4 configurations.
+Generated from `evaluation/results/latest.json`. 28 runs: 7 scenarios x 4 configurations.
 
 > **These results are not evidence of clinical safety, clinical effectiveness or regulatory compliance.** All data is synthetic. The scenarios were authored by the same team that built the engine.
 
@@ -134,7 +134,10 @@ decoration:
 * **Art. 13** prohibits storing, processing, generating or transforming health data outside the
   State without a Health Authority resolution, and **Art. 24** sets a AED 500,000–700,000 penalty
   for breach. "Process" is enumerated. A hosted model endpoint outside the UAE is therefore a legal
-  question, not an infrastructure preference — recorded as R16 and left unimplemented.
+  question, not an infrastructure preference — recorded as R16 and enforced at the boundary: the
+  advisory client refuses to construct against an endpoint outside the State (Art. 13 cited), and the
+  guard rejects any proposal leaning on a clause that cannot bind the case jurisdiction. What no code
+  can enforce is the provider's own data handling; that remains a contract question.
 * **Art. 20** sets a 25-year retention floor. The prototype keeps every record forever, which
   satisfies a floor but is not a retention policy; recorded as GR-13.
 
@@ -187,7 +190,7 @@ record; it does not define what proves the communication happened.
 
 ## 8. Open gaps
 
-The gap register holds 14 documented gaps: 3 source ambiguity, 3 insufficient evidence, 3 candidate policy gap, 1 source conflict, 2 implementation gap, 1 interoperability gap.
+The gap register holds 14 documented gaps: 3 source ambiguities, 3 insufficient-evidence entries, 4 candidate policy gaps, 1 source conflict entry, 2 implementation gaps and 1 interoperability gap.
 
 | gap | class | question |
 |---|---|---|
@@ -202,9 +205,9 @@ The gap register holds 14 documented gaps: 3 source ambiguity, 3 insufficient ev
 | GR-09 | CANDIDATE_POLICY_GAP | What must a laboratory do to verify that a contact number belongs to the patient before sending a critical result? |
 | GR-10 | INTEROPERABILITY_GAP | Do existing interoperability standards model a patient acknowledgment of a critical walk-in result as a first-class event? |
 | GR-11 | INSUFFICIENT_EVIDENCE | How long must the communication record for a walk-in critical result be retained, and in what form? |
-| GR-13 | IMPLEMENTATION_GAP | How long must the communication record be kept, and who may purge it? (Art. 20 sets 25 years; the build keeps everything and has no disposal rule) |
-| GR-14 | CANDIDATE_POLICY_GAP | How does a patient raise, and how does the laboratory receive, a report that a communicated result is wrong? (DHA §4.9.10 requires the intake; the product has none) |
 | GR-12 | CANDIDATE_POLICY_GAP | What should happen when the delivery outcome of a critical-result message is unknown? |
+| GR-13 | IMPLEMENTATION_GAP | How long must the communication record for a notified critical result be kept, and who decides when it may be purged? |
+| GR-14 | CANDIDATE_POLICY_GAP | How does a patient raise, and how does the laboratory receive, a report that a communicated result is wrong? |
 
 The `CANDIDATE_POLICY_GAP` entries are the ones a facility would need to resolve before production
 use; `GR-04` (fallback channel unauthorised and undefined) is still the strongest candidate for

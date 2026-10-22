@@ -250,7 +250,11 @@ def health() -> dict[str, Any]:
         "synthetic_data_only": settings.synthetic_data_only,
         "real_network_access": REAL_NETWORK_ACCESS,
         "real_ehr_integration": False,
-        "llm_provider": "disabled (deterministic mode)",
+        "llm_provider": (
+            "openai-compatible (advisory only)" if settings.enable_llm else "disabled (deterministic mode)"
+        ),
+        # Declared, not enforced. Any hosted deployment with real data must add authentication first.
+        "authentication_enabled": settings.authentication_enabled,
         "advisory_boundary": {
             "status": "closed" if not settings.enable_llm else "open (advisory only)",
             "can_change_a_decision": False,
