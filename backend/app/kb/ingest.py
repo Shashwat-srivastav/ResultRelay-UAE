@@ -84,6 +84,24 @@ _TRANSLATE = {
 }
 
 
+def _declared_flag(excerpt: dict[str, Any], *, chunk_id: str) -> bool:
+    """Read a boolean authorisation declared on an excerpt, refusing anything ambiguous."""
+    if "authorises_fallback" not in excerpt:
+        return False
+    value = excerpt["authorises_fallback"]
+    if not isinstance(value, bool):
+        raise ValueError(
+            f"{chunk_id}: authorises_fallback must be a boolean, got {type(value).__name__}. "
+            "An authorisation is declared, never inferred."
+        )
+    if value and excerpt.get("claim_classification") not in {"BINDING_REQUIREMENT", "INSTITUTIONAL_PROCEDURE"}:
+        raise ValueError(
+            f"{chunk_id}: authorises_fallback is claimed by a {excerpt.get('claim_classification')} "
+            "excerpt. Guidance and comparators may shape a design; they cannot authorise an action."
+        )
+    return value
+
+
 def normalise(text: str) -> str:
     text = unicodedata.normalize("NFKC", text)
     for src, dst in _TRANSLATE.items():
@@ -222,6 +240,10 @@ def build_chunks(strict: bool = True) -> tuple[list[dict[str, Any]], dict[str, A
             "verification_status": f"(not committed) {excerpt['_file']}",
             "excerpt_status": status,
             "topics": excerpt.get("topics", []),
+            # Explicit, author-declared authorisation. Deliberately not derived from the text: a
+            # keyword test cannot tell "an alternative channel shall be used" from "under no
+            # circumstances shall an alternative channel be used" (audit finding H-1).
+            "authorises_fallback": _declared_flag(excerpt, chunk_id=excerpt["chunk_id"]),
             "support_note": " ".join(str(excerpt.get("support_note", "")).split()),
             "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest()[:16],
         }

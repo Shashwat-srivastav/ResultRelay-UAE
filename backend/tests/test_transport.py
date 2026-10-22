@@ -47,13 +47,21 @@ def test_timeout_produces_no_delivery_evidence(network):
     assert "not evidence of failure" in note
 
 
-def test_same_idempotency_key_never_creates_a_second_message(network):
-    first = network.send(channel="SMS-PATIENT", result_revision_id="R1", idempotency_key="K1", at_minutes=0)
-    second = network.send(channel="SMS-PATIENT", result_revision_id="R1", idempotency_key="K1", at_minutes=5)
+def test_same_idempotency_key_never_creates_a_second_delivered_message(network):
+    """Provider semantics, not counter semantics (audit H-4).
 
-    assert second.attempt_id == first.attempt_id
-    assert second.duplicate_suppressed is True
-    assert len(network.attempts) == 1
+    The first send times out, so the provider has told us nothing; a retry with the same key is a
+    genuine new attempt. Once an attempt is accepted, the same key is suppressed.
+    """
+    first = network.send(channel="SMS-PATIENT", result_revision_id="R1", idempotency_key="K1", at_minutes=0)
+    assert first.outcome == "TIMEOUT"
+    retry = network.send(channel="SMS-PATIENT", result_revision_id="R1", idempotency_key="K1", at_minutes=5)
+    assert retry.attempt_id != first.attempt_id, "a timed-out attempt must not suppress the retry"
+
+    # the second attempt is the one the plan delivers; a third send with the same key is suppressed
+    third = network.send(channel="SMS-PATIENT", result_revision_id="R1", idempotency_key="K1", at_minutes=6)
+    assert third.attempt_id == retry.attempt_id
+    assert third.duplicate_suppressed is True
     assert any(e["event"] == "SEND_SUPPRESSED_DUPLICATE" for e in network.ledger)
 
 

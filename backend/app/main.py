@@ -15,6 +15,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.api.routes import router
+from app.core.config import settings
 from app.models.db import get_engine
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -33,7 +34,10 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # demonstration prototype; no credentials are used or issued
+    # The UI is served by this same app, so no cross-origin access is needed. A wildcard here would
+    # let any page on the internet read every case in the registry without authentication (audit
+    # finding H-9). Origins must be named explicitly if a separate front-end host is ever used.
+    allow_origins=settings.cors_origin_list,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )

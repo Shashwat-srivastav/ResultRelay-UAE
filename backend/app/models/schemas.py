@@ -109,6 +109,10 @@ class EvidenceChunk(BaseModel):
     pdf_page_start: int | None = None
     pdf_page_end: int | None = None
     support_note: str = ""
+    #: Declared on the excerpt, never inferred from its words. True only where the quoted clause
+    #: itself authorises an alternative channel; the policy agent reads this field instead of
+    #: pattern-matching the text (see the H-1 finding in docs/audit-disposition.md).
+    authorises_fallback: bool = False
     topics: list[str] = Field(default_factory=list)
     score: float | None = None
     matched_terms: list[str] = Field(default_factory=list)

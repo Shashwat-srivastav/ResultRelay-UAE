@@ -119,6 +119,7 @@ def test_duplicate_receipt_is_refused_on_the_same_attempt():
                 result_revision_id="R1",
                 transport_accepted=True,
                 delivery_receipt=True,
+                receipt_recorded=True,
                 last_outcome="DELIVERED",
             )
         ],
@@ -127,6 +128,33 @@ def test_duplicate_receipt_is_refused_on_the_same_attempt():
     result = evaluate(ctx, EventType.TRANSPORT_DELIVERY_RECEIPT)
     assert result.status == "BLOCKED"
     assert "INV-5" in result.reason
+
+
+def test_an_adapters_belief_that_delivery_happened_is_not_a_recorded_receipt():
+    """The adapter's delivery plan and a provider receipt are different facts (audit H-2).
+
+    The simulator sets ``delivery_receipt`` when its plan says the message arrived. That must not
+    make the *first* real receipt look like a duplicate, or the case can never record delivery.
+    """
+    ctx = _ctx(
+        CaseState.TRANSMISSION_ATTEMPTED,
+        attempts=[
+            Attempt(
+                attempt_id="ATT-002",
+                idempotency_key="K2",
+                channel="SMS-PATIENT",
+                result_revision_id="R1",
+                transport_accepted=True,
+                delivery_receipt=True,       # adapter believes it arrived
+                receipt_recorded=False,      # no receipt event has been applied yet
+                last_outcome="DELIVERED",
+            )
+        ],
+        event={"attempt_id": "ATT-002"},
+    )
+    result = evaluate(ctx, EventType.TRANSPORT_DELIVERY_RECEIPT)
+    assert result.status == "APPLIED"
+    assert "matches attempt ATT-002" in result.reason
 
 
 def test_no_closure_while_a_condition_is_unresolved():

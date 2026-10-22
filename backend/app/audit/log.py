@@ -28,6 +28,8 @@ class AuditEntry:
     actor: str
     summary: str
     payload: dict[str, Any] = field(default_factory=dict)
+    #: Hash of the policy corpus in force when the entry was written (see retriever.index_sha256).
+    kb_index_sha256: str = ""
     prev_hash: str = ""
     hash: str = ""
 
@@ -44,6 +46,8 @@ class AuditLog:
 
     def append(self, *, event: str, actor: str, summary: str, payload: dict[str, Any] | None = None,
                at: str | None = None) -> AuditEntry:
+        from app.kb.retriever import index_sha256
+
         body = {
             "seq": len(self.entries) + 1,
             "at": at or datetime.now(timezone.utc).isoformat(),
@@ -51,6 +55,9 @@ class AuditLog:
             "case_id": self.case_id,
             "event": event,
             "actor": actor,
+            # Which version of the policy corpus was in force when this record was written. Without
+            # it a decision cannot be reconstructed after the index is rebuilt (audit item A8).
+            "kb_index_sha256": index_sha256(),
             "summary": summary,
             "payload": payload or {},
         }
@@ -85,6 +92,9 @@ def verify_entries(entries: list[dict[str, Any]]) -> tuple[bool, list[int]]:
             "actor": entry["actor"],
             "summary": entry["summary"],
             "payload": entry.get("payload") or {},
+            # Included in the digest, so the corpus a decision was made from cannot be edited after
+            # the fact any more than the decision itself can.
+            "kb_index_sha256": entry.get("kb_index_sha256") or "",
         }
         expected = hashlib.sha256((prev + _canonical(body)).encode("utf-8")).hexdigest()
         if entry.get("prev_hash") != prev or entry.get("hash") != expected:

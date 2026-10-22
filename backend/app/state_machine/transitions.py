@@ -48,6 +48,9 @@ class Attempt:
     result_revision_id: str
     transport_accepted: bool = False
     delivery_receipt: bool = False
+    #: A delivery *receipt event* has been applied. Distinct from ``delivery_receipt``, which is the
+    #: adapter's own belief that the message arrived (the simulator's delivery plan sets it).
+    receipt_recorded: bool = False
     last_outcome: str = "UNKNOWN"  # UNKNOWN | ACCEPTED | DELIVERED | FAILED
     reconciled: bool = False
     duplicate_suppressed: bool = False
@@ -105,8 +108,15 @@ class MachineContext:
         for this jurisdiction, or from an explicitly recorded institutional procedure.
         """
         ev = self.evidence or {}
-        if ev.get("fallback_authorised") is True and ev.get("fallback_evidence_refs"):
-            return True, "authorised by verified evidence: " + ", ".join(ev["fallback_evidence_refs"])
+        # The boolean alone is not enough. It must be accompanied by the refs it rests on *and* the
+        # basis token that only a declared excerpt field produces, so that an agent (deterministic or
+        # otherwise) cannot manufacture authorisation by setting a flag.
+        if (
+            ev.get("fallback_authorised") is True
+            and ev.get("fallback_evidence_refs")
+            and ev.get("fallback_authorisation_basis") == "DECLARED_EXCERPT_FIELD"
+        ):
+            return True, "authorised by a clause that declares it: " + ", ".join(ev["fallback_evidence_refs"])
         if self.profile.get("fallback_channel_approved") is True:
             ref = self.profile.get("fallback_procedure_ref", "institutional procedure (unreferenced)")
             return True, f"authorised by institutional procedure {ref}"
@@ -204,8 +214,9 @@ def g_receipt_matches_attempt(ctx: MachineContext) -> tuple[bool, str]:
             "confirm delivery of the current one (INV-6/INV-8)"
         )
     via_reconciliation = bool(ctx.event.get("reconciliation"))
-    establishes = bool(ctx.event.get("_establishes_receipt"))
-    if attempt.delivery_receipt and not via_reconciliation and not establishes:
+    # The event payload cannot assert its own novelty: the attempt's stored state decides whether
+    # this is a first receipt or a repeat. (Audit finding H-2.)
+    if attempt.receipt_recorded and not via_reconciliation:
         return _no("duplicate receipt for an attempt already marked delivered (INV-5 idempotency)")
     if via_reconciliation and not attempt.reconciled:
         return _no("reconciliation outcome reported before the reconciliation was recorded")

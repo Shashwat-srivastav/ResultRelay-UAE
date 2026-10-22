@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from app.agents.base import Agent, citation, scope_view
+from app.agents.base import Agent, assessment_confidence, citation, scope_view
 from app.models.schemas import (
     AgentAssessment,
     AssessmentStatus,
@@ -87,6 +87,9 @@ class LabWorkflowAgent(Agent):
             action = RecommendedAction.NO_ACTION
             status = AssessmentStatus.OK
 
+        confidence, confidence_basis = assessment_confidence(
+            checks=len(checked), unresolved=len(unresolved), citations=len(sources)
+        )
         return AgentAssessment(
             agent_id=self.agent_id,
             case_id=view.get("case_id", "unknown"),
@@ -95,7 +98,7 @@ class LabWorkflowAgent(Agent):
             applicable_sources=[citation(c, ClaimClassification.BINDING_REQUIREMENT) for c in sources],
             conditions_checked=checked,
             conditions_unresolved=unresolved,
-            confidence=0.9 if not unresolved else 0.6,
+            confidence=confidence,
             requires_human_review=bool(unresolved),
             concise_rationale=(
                 f"Revision {current} is current. " + ("; ".join(unresolved) if unresolved else
@@ -104,7 +107,7 @@ class LabWorkflowAgent(Agent):
             data={
                 "current_revision": current,
                 "event_revision": ev_rev,
-                "confidence_basis": "deterministic rule coverage",
+                "confidence_basis": confidence_basis,
                 # Lineage and stale-revision defects block closure; they also drive escalation.
                 "blocking_conditions": [u for u in unresolved if "revision" in u or "supersede" in u],
             },

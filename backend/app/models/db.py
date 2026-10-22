@@ -196,6 +196,8 @@ class AuditRow(Base):
     prev_hash: Mapped[str] = mapped_column(String(64))
     hash: Mapped[str] = mapped_column(String(64))
     payload: Mapped[str] = mapped_column(Text, default="{}")
+    #: Policy-corpus hash in force when the entry was written (empty for pre-A8 rows).
+    kb_index_sha256: Mapped[str] = mapped_column(String(64), default="", server_default="")
 
 
 class EvaluationRunRow(Base):

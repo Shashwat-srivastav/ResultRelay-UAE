@@ -231,6 +231,7 @@ def _persist(rt) -> None:
             s.add(AuditRow(run_id=entry.run_id, case_id=entry.case_id, seq=entry.seq, at=entry.at,
                            event=entry.event, actor=entry.actor, summary=entry.summary,
                            prev_hash=entry.prev_hash, hash=entry.hash,
+                           kb_index_sha256=entry.kb_index_sha256,
                            payload=json.dumps(entry.payload, default=str)))
         s.commit()
     finally:
@@ -452,6 +453,8 @@ def case_audit(case_id: str) -> dict[str, Any]:
                 "seq": r.seq, "at": r.at, "run_id": r.run_id, "case_id": r.case_id, "event": r.event,
                 "actor": r.actor, "summary": r.summary, "payload": json.loads(r.payload or "{}"),
                 "prev_hash": r.prev_hash, "hash": r.hash,
+                "kb_index_sha256": r.kb_index_sha256 or "",
+                "kb_index_sha256": r.kb_index_sha256 or "",
             }
             for r in rows
         ]

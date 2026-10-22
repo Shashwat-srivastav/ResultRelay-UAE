@@ -93,6 +93,26 @@ def _load_index(index_path: str | None = None) -> BM25:
 
 def reload_index() -> None:
     _load_index.cache_clear()
+    _index_sha256_cached.cache_clear()
+
+
+@lru_cache(maxsize=1)
+def _index_sha256_cached(path_str: str) -> str:
+    path = Path(path_str)
+    if not path.exists():
+        return ""
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return str(payload.get("index_sha256") or "")
+
+
+def index_sha256() -> str:
+    """Hash of the policy index in force.
+
+    Recorded on every audit entry so that a decision can be tied to the corpus that produced it.
+    Before this, the index was a single mutable file with no version pin: rebuilding it silently
+    changed what past decisions would be made from (audit item A8).
+    """
+    return _index_sha256_cached(str(INDEX_PATH))
 
 
 #: Jurisdictions that bind a case, layered rather than exclusive.

@@ -34,6 +34,15 @@ STAGE_QUERIES = {
 }
 
 
+#: Relevance floor for policy retrieval.
+#:
+#: ``min_score=0`` meant the top-k chunks were always cited, whether or not they had anything to do
+#: with the question — the "irrelevant evidence scores highly" failure in the audit (C2/C9). A small
+#: positive floor makes an empty result possible, and an empty result is the honest answer when the
+#: corpus does not address the question.
+POLICY_MIN_SCORE = 1.0
+
+
 class PolicyApplicabilityAgent(Agent):
     agent_id = AGENT_ID
     allowed_fields = (
@@ -127,16 +136,20 @@ class PolicyApplicabilityAgent(Agent):
                 )
 
         # --- fallback authorisation (INV-9) -------------------------------
-        fallback_hits = search(STAGE_QUERIES["fallback"], jurisdiction=jurisdiction, scope="applicable", top_k=3)
-        fallback_authorised = False
-        for c in fallback_hits.chunks:
-            text = c.text.lower()
-            if ("alternative" in text or "other channel" in text or "fallback" in text) and "shall" in text:
-                fallback_authorised = True
+        # An alternative channel is authorised only by a clause that *declares* it in the corpus,
+        # never by words that happen to co-occur. The previous implementation asked whether the text
+        # contained "alternative"/"other channel"/"fallback" together with "shall", which is true of
+        # a prohibition as well as a permission (audit finding H-1).
+        fallback_hits = search(STAGE_QUERIES["fallback"], jurisdiction=jurisdiction, scope="applicable",
+                               top_k=5, min_score=POLICY_MIN_SCORE)
+        fallback_chunks = [c for c in fallback_hits.chunks if getattr(c, "authorises_fallback", False)]
+        fallback_authorised = bool(fallback_chunks)
         checked.append(
-            "fallback check: no applicable clause authorises an alternative channel for walk-in results"
-            if not fallback_authorised
-            else "fallback check: an applicable clause authorises an alternative channel"
+            f"fallback check: {len(fallback_chunks)} applicable clause(s) declare an authorisation for an "
+            "alternative channel"
+            if fallback_authorised
+            else "fallback check: no applicable clause declares an authorisation for an alternative "
+                 "channel; absence of a prohibition is not permission"
         )
 
         # --- status -------------------------------------------------------
@@ -174,9 +187,10 @@ class PolicyApplicabilityAgent(Agent):
             data={
                 "scope_permitted": scope_permitted,
                 "fallback_authorised": fallback_authorised,
-                "fallback_evidence_refs": [
-                    f"{c.source_id} {c.section_id}" for c in fallback_hits.chunks if fallback_authorised
-                ],
+                "fallback_evidence_refs": [f"{c.source_id} {c.section_id}" for c in fallback_chunks],
+                # A token the gate can require, so that a future agent cannot authorise a fallback
+                # merely by setting the boolean above.
+                "fallback_authorisation_basis": "DECLARED_EXCERPT_FIELD" if fallback_authorised else None,
                 "comparators_retrieved": [
                     {"source_id": c.source_id, "section": c.section_id, "jurisdiction": c.jurisdiction}
                     for c in comparators.chunks

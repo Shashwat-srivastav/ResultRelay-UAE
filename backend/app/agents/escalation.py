@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from app.agents.base import Agent, scope_view
+from app.agents.base import Agent, assessment_confidence, scope_view
 from app.models.schemas import AgentAssessment, AssessmentStatus, RecommendedAction
 
 AGENT_ID = "escalation_coordinator"
@@ -98,6 +98,9 @@ class EscalationCoordinator(Agent):
             )
 
         escalate = bool(reasons)
+        confidence, confidence_basis = assessment_confidence(
+            checks=len(checked), unresolved=len(reasons), citations=0
+        )
         return AgentAssessment(
             agent_id=self.agent_id,
             case_id=view.get("case_id", "unknown"),
@@ -109,7 +112,7 @@ class EscalationCoordinator(Agent):
             applicable_sources=[],
             conditions_checked=checked,
             conditions_unresolved=reasons,
-            confidence=0.8,
+            confidence=confidence,
             requires_human_review=escalate,
             concise_rationale=(
                 "Escalation to the configured responsible role is required: " + "; ".join(reasons[:2])
@@ -117,6 +120,7 @@ class EscalationCoordinator(Agent):
                 else "No human decision is required at this step."
             ),
             data={
+                "confidence_basis": confidence_basis,
                 "escalation_role": (timers.get("escalation_role") or "SUPERVISOR"),
                 "escalation_after_minutes": timers.get("escalation_after_minutes"),
                 "basis": "PRODUCT_DESIGN_CONTROL",

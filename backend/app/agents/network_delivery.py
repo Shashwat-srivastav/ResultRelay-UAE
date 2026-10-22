@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from app.agents.base import Agent, scope_view
+from app.agents.base import Agent, assessment_confidence, scope_view
 from app.models.schemas import AgentAssessment, AssessmentStatus, RecommendedAction
 
 AGENT_ID = "network_delivery"
@@ -95,6 +95,9 @@ class NetworkDeliveryAgent(Agent):
                 "a channel outage does not authorise an alternative recipient or channel (INV-9)"
             )
 
+        confidence, confidence_basis = assessment_confidence(
+            checks=len(checked), unresolved=len(unresolved), citations=0
+        )
         return AgentAssessment(
             agent_id=self.agent_id,
             case_id=view.get("case_id", "unknown"),
@@ -103,7 +106,7 @@ class NetworkDeliveryAgent(Agent):
             applicable_sources=[],
             conditions_checked=checked,
             conditions_unresolved=unresolved,
-            confidence=0.85,
+            confidence=confidence,
             requires_human_review=bool(unreconciled) or bool(primary_down),
             concise_rationale="; ".join(checked[-2:]) if checked else "no transport activity observed",
             data={
@@ -113,6 +116,7 @@ class NetworkDeliveryAgent(Agent):
                 "unknown": len(unknown),
                 "unreconciled": len(unreconciled),
                 "failed": len(failed),
+                "confidence_basis": confidence_basis,
                 "duplicates_suppressed": len(suppressed),
                 "primary_channel_down": bool(primary_down),
                 "blocking_conditions": unresolved,

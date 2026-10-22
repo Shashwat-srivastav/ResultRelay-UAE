@@ -47,6 +47,10 @@ class TransportAttempt:
     delivered: bool = False
     delivered_at: str | None = None
     delivered_at_minutes: float | None = None
+    #: Set only when a delivery *receipt event* has been applied for this attempt. The simulator's
+    #: own delivery plan is the adapter's knowledge; a receipt is the provider telling the case.
+    #: Conflating the two is what made the duplicate-receipt guard depend on a caller-supplied flag.
+    receipt_recorded: bool = False
     failed: bool = False
     failure_reason: str | None = None
     outcome: str = "PENDING"  # PENDING | ACCEPTED | DELIVERED | FAILED | TIMEOUT | UNKNOWN
@@ -98,9 +102,14 @@ class SimulatedNetwork:
         at_minutes: float,
         content_digest: str | None = None,
     ) -> TransportAttempt:
-        """Idempotent send. The same key never produces a second message."""
+        """Idempotent send, with provider semantics.
+
+        A repeated key never produces a second *delivered* message. But a provider that timed out has
+        not told us it received anything, so a retry after TIMEOUT/FAILED is a genuine new attempt -
+        suppressing it would strand the case with no way to reach the patient.
+        """
         for existing in self.attempts:
-            if existing.idempotency_key == idempotency_key:
+            if existing.idempotency_key == idempotency_key and existing.outcome not in {"TIMEOUT", "FAILED"}:
                 existing.duplicate_suppressed = True
                 self.ledger.append(
                     {

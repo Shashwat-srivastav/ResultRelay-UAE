@@ -37,6 +37,26 @@ def citation(chunk: dict[str, Any], claim_type: ClaimClassification | None = Non
     )
 
 
+def assessment_confidence(
+    *, checks: int, unresolved: int, citations: int = 0, floor: float = 0.3, ceiling: float = 0.95
+) -> tuple[float, str]:
+    """Confidence derived from what the agent actually has, not from a constant.
+
+    The audit's finding was blunt: three agents returned literal constants (0.75, 0.85, 0.9/0.6), so
+    the field carried no information at all. This function makes the number a function of the checks
+    performed, the questions left open and the citations available, and returns the basis string so
+    a reader can see how it was produced. It is still a heuristic, not a calibrated probability, and
+    is disclosed as such wherever it appears.
+    """
+    raw = 0.45 + 0.05 * checks + 0.08 * citations - 0.12 * unresolved
+    value = round(max(floor, min(ceiling, raw)), 2)
+    basis = (
+        f"derived: {checks} check(s), {citations} citation(s), {unresolved} unresolved; "
+        f"heuristic, not a calibrated probability"
+    )
+    return value, basis
+
+
 def support_score(chunks: list[dict[str, Any]], ceiling: float = 15.0) -> float:
     """A transparent heuristic, not a calibrated probability.
 

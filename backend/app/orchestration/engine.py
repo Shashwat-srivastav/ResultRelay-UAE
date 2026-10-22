@@ -176,6 +176,7 @@ class Runtime:
                 result_revision_id=a.result_revision_id,
                 transport_accepted=a.accepted,
                 delivery_receipt=a.delivered,
+                receipt_recorded=a.receipt_recorded,
                 last_outcome=a.outcome,
                 reconciled=a.reconciled,
                 duplicate_suppressed=a.duplicate_suppressed,
@@ -195,6 +196,20 @@ class Runtime:
             )
             for a in self.acknowledgments
         ]
+
+
+def _parse_minutes(at: Any) -> float | None:
+    """Parse a simulated timestamp (``HH:MM`` or ISO) back to minutes since day start."""
+    if at is None:
+        return None
+    text = str(at)
+    if "T" in text:
+        text = text.split("T", 1)[1][:5]
+    try:
+        hh, mm = text.split(":")[:2]
+        return int(hh) * 60 + int(mm)
+    except (ValueError, AttributeError):
+        return None
 
 
 def _now() -> str:
@@ -359,6 +374,24 @@ class Orchestrator:
             "policy_refs": result.policy_ref or "",
         }
         self.rt.transitions.append(row)
+        if result.applied and evt_type is EventType.TRANSPORT_DELIVERY_RECEIPT:
+            attempt = next(
+                (a for a in self.rt.network.attempts if a.attempt_id == event.get("attempt_id")), None
+            )
+            if attempt is not None and not attempt.receipt_recorded:
+                attempt.receipt_recorded = True
+                attempt.delivered = True
+                attempt.accepted = True
+                attempt.outcome = "DELIVERED"
+                attempt.delivered_at = event.get("at")
+                attempt.delivered_at_minutes = _parse_minutes(event.get("at"))
+                self.rt.network.ledger.append({
+                    "at": event.get("at"),
+                    "event": "ENDPOINT_DELIVERY_RECEIPT",
+                    "attempt_id": attempt.attempt_id,
+                    "channel": attempt.channel,
+                    "note": "applied after the transition guard verified the attempt and revision",
+                })
         assert self.rt.audit is not None
         self.rt.audit.append(
             event="state.transition." + result.status.lower(),
@@ -418,8 +451,14 @@ class Orchestrator:
                         "outcome": "NOT_AUTHORISED", "transitions": applied,
                         "note": "state machine did not authorise a transmission at this point"}
 
-            attempt_index = len(rt.network.attempts)
-            key = f"{rt.case_id}:{rt.current_revision_id}:{channel}:{attempt_index}"
+            # The key identifies the *message*, not the send. Including an attempt counter made every
+            # send unique by construction, so the transport's duplicate suppression could never fire
+            # (audit finding H-4). A retry of the same message on the same channel reuses this key,
+            # which is what lets a provider suppress a duplicate; the state machine, not the key,
+            # decides whether a retry is allowed at all.
+            supersedes = any(r.get("supersedes_revision_id") for r in rt.revisions)
+            purpose = "CORRECTED_RESULT" if supersedes else "RESULT_NOTIFICATION"
+            key = f"{rt.case_id}:{rt.current_revision_id}:{channel}:{purpose}"
             attempt = rt.network.send(
                 channel=channel,
                 result_revision_id=rt.current_revision_id or "",
@@ -560,27 +599,14 @@ class Orchestrator:
             notes["acknowledgment"] = ack["ack_id"]
 
         if et == EventType.TRANSPORT_DELIVERY_RECEIPT.value:
+            # Recording "delivered" here would pre-empt the transition guard, which is the only
+            # component allowed to decide whether this receipt is news. The side effect is applied
+            # in apply_event, after the guard has run against the attempt's stored state.
             attempt = next((a for a in rt.network.attempts if a.attempt_id == event.get("attempt_id")), None)
-            if attempt is None:
-                notes["receipt"] = "unmatched: no attempt with that id"
-            else:
-                if not attempt.delivered:
-                    attempt.delivered = True
-                    attempt.accepted = True
-                    attempt.outcome = "DELIVERED"
-                    attempt.delivered_at = event.get("at")
-                    attempt.delivered_at_minutes = at_minutes
-                    # This event is the one establishing the receipt, so the duplicate-receipt
-                    # guard must not treat it as a repeat.
-                    event["_establishes_receipt"] = True
-                    rt.network.ledger.append({
-                        "at": event.get("at"),
-                        "event": "LATE_ENDPOINT_DELIVERY_RECEIPT",
-                        "attempt_id": attempt.attempt_id,
-                        "channel": attempt.channel,
-                        "note": "receipt arrived after the case had already entered an uncertain state",
-                    })
-                notes["receipt"] = f"matched attempt {attempt.attempt_id}"
+            notes["receipt"] = (
+                "unmatched: no attempt with that id" if attempt is None
+                else f"pending guard: attempt {attempt.attempt_id}"
+            )
 
         if et == EventType.ESCALATION_RESOLVED.value:
             if rt.escalations:
@@ -719,6 +745,7 @@ class Orchestrator:
             "scope_permitted": (policy.data.get("scope_permitted") if policy else True),
             "fallback_authorised": (policy.data.get("fallback_authorised") if policy else False),
             "fallback_evidence_refs": (policy.data.get("fallback_evidence_refs") if policy else []),
+            "fallback_authorisation_basis": (policy.data.get("fallback_authorisation_basis") if policy else None),
         }
         gate_cfg = GateConfig(
             enforce_invariants=rt.config.use_invariants,

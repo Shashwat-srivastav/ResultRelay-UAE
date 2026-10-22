@@ -1,6 +1,6 @@
 # ResultRelay evaluation report
 
-Generated: 2026-10-22T18:04:57.653821+00:00  
+Generated: 2026-10-22T18:11:02.674265+00:00  
 Runs: 28 (7 scenarios x 4 configurations)
 
 > All data is synthetic. These results are **not** evidence of clinical safety, clinical effectiveness, or regulatory compliance.
@@ -23,7 +23,7 @@ Runs: 28 (7 scenarios x 4 configurations)
 | S3a-channel-outage-no-evidence | PASS `ESCALATION_REQUIRED` | FAIL `TRANSPORT_ACCEPTED` | FAIL `TRANSPORT_ACCEPTED` | PASS `ESCALATION_REQUIRED` |
 | S3b-channel-outage-approved-procedure | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` |
 | S4-genetic-scope-exclusion | PASS `RESULT_FINALIZED` | FAIL `DELIVERY_CONFIRMED` | PASS `RESULT_FINALIZED` | FAIL `DELIVERY_CONFIRMED` |
-| S5-late-acknowledgment-race | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | FAIL `DELIVERY_CONFIRMED` | FAIL `DELIVERY_CONFIRMED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` |
+| S5-late-acknowledgment-race | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | FAIL `CORRECTED_RESULT_ACKNOWLEDGED` | FAIL `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` |
 | S6-jurisdiction-conflict | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` |
 
 ## Failed assertions by run
@@ -34,8 +34,8 @@ Runs: 28 (7 scenarios x 4 configurations)
 - **S3a-channel-outage-no-evidence / retrieval_only** -> final `TRANSPORT_ACCEPTED`: no_unauthorised_channel
 - **S4-genetic-scope-exclusion / policy_blind** -> final `DELIVERY_CONFIRMED`: no_patient_direct_communication_for_genetic_result
 - **S4-genetic-scope-exclusion / static_rules** -> final `DELIVERY_CONFIRMED`: no_patient_direct_communication_for_genetic_result
-- **S5-late-acknowledgment-race / policy_blind** -> final `DELIVERY_CONFIRMED`: stale_ack_not_used_for_current_revision
-- **S5-late-acknowledgment-race / retrieval_only** -> final `DELIVERY_CONFIRMED`: stale_ack_not_used_for_current_revision
+- **S5-late-acknowledgment-race / policy_blind** -> final `CORRECTED_RESULT_ACKNOWLEDGED`: stale_ack_not_used_for_current_revision
+- **S5-late-acknowledgment-race / retrieval_only** -> final `CORRECTED_RESULT_ACKNOWLEDGED`: stale_ack_not_used_for_current_revision
 - **S6-jurisdiction-conflict / retrieval_only** -> final `COMMUNICATION_DOCUMENTED`: no_out_of_jurisdiction_binding_citation
 
 ## Caveats

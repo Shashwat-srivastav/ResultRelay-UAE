@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from app.agents.base import Agent, scope_view
+from app.agents.base import Agent, assessment_confidence, scope_view
 from app.kb.retriever import all_chunks
 from app.models.schemas import (
     AgentAssessment,
@@ -82,6 +82,9 @@ class AuditGovernanceAgent(Agent):
         if gate and not gate_grounded:
             findings.append("gate decision recorded without a reason")
 
+        confidence, confidence_basis = assessment_confidence(
+            checks=len(checked), unresolved=len(findings), citations=0
+        )
         return AgentAssessment(
             agent_id=self.agent_id,
             case_id=view.get("case_id", "unknown"),
@@ -90,12 +93,13 @@ class AuditGovernanceAgent(Agent):
             applicable_sources=[],
             conditions_checked=checked,
             conditions_unresolved=findings,
-            confidence=0.75,
+            confidence=confidence,
             requires_human_review=bool(findings),
             concise_rationale=(
                 "Audit findings: " + "; ".join(findings[:3]) if findings
                 else "All consequential proposals are traceable to verified sources or declared design controls."
             ),
-            data={"findings": findings, "gate_grounded": gate_grounded},
+            data={"findings": findings, "gate_grounded": gate_grounded,
+                  "confidence_basis": confidence_basis},
             context_scope=list(self.allowed_fields),
         )

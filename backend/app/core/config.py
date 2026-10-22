@@ -52,12 +52,25 @@ class Settings:
     #: Refuse to start if the knowledge base failed verification on the most recent build.
     require_verified_kb: bool = _flag("RESULTRELAY_REQUIRE_VERIFIED_KB", True)
 
+    #: Comma-separated list of allowed browser origins. Empty by default: the UI is same-origin, and
+    #: a wildcard would expose every case to any page the operator visits.
+    cors_origins: str = os.environ.get("RESULTRELAY_CORS_ORIGINS", "")
+    #: Bind address for the development server. Loopback unless explicitly widened; exposing the
+    #: unauthenticated API on a routable interface is a deployment decision, not a default.
+    host: str = os.environ.get("RESULTRELAY_HOST", "127.0.0.1")
+    #: Declared, not enforced: this build has no authentication and must not be hosted with real data.
+    authentication_enabled: bool = False
+
     synthetic_data_only: bool = True
     disclaimer: str = (
         "Demonstration prototype using synthetic data. Not a clinical service, not a medical "
         "device, and not evidence of clinical safety, effectiveness or regulatory compliance."
     )
     extra: dict[str, str] = field(default_factory=dict)
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
 
 
 settings = Settings()
@@ -71,6 +84,8 @@ def describe() -> dict[str, object]:
         "enable_llm": settings.enable_llm,
         "demo_mode": settings.demo_mode,
         "require_verified_kb": settings.require_verified_kb,
+        "authentication_enabled": settings.authentication_enabled,
+        "cors_origins": settings.cors_origins or "(same-origin only)",
         "db_path": str(settings.db_path),
         "kb_dir": str(settings.kb_dir),
         "source_cache_present": settings.source_cache.exists(),
