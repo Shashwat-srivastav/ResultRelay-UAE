@@ -1,0 +1,103 @@
+# ITU-T Y.3172 (06/2019) §8.1 — mapping framework only, no conformance claim.
+source_id: F1
+# Y.3172 has six front-matter pages: printed page N is PDF page N+6.
+# page_start records the printed page (what an evaluator sees); pdf_page_start is used for verification.
+excerpts:
+  - chunk_id: F1-8.1-src
+    section_id: "8.1 (SRC)"
+    page_start: 14
+    page_end: 15
+    pdf_page_start: 20
+    pdf_page_end: 21
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [architecture, input, mapping]
+    text: >-
+      SRC (source): This node is the source of data that can be used as input to the ML pipeline.
+    support_note: Mapping target for event ingestion only; used descriptively.
+
+  - chunk_id: F1-8.1-c
+    section_id: "8.1 (C)"
+    page_start: 14
+    page_end: 15
+    pdf_page_start: 20
+    pdf_page_end: 21
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [architecture, collection, mapping]
+    text: >-
+      C (collector): This node is responsible for collecting data from one or more SRC nodes.
+    support_note: Mapping target for the event store collector.
+
+  - chunk_id: F1-8.1-pp
+    section_id: "8.1 (PP)"
+    page_start: 15
+    page_end: 15
+    pdf_page_start: 21
+    pdf_page_end: 21
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [architecture, preprocessing, mapping]
+    text: >-
+      PP (preprocessor): This node is responsible for cleaning data, aggregating data or performing any
+      other preprocessing needed for the data to be in a suitable form so that the ML model can consume it.
+    support_note: Mapping target for normalisation, schema validation and scope tagging of events.
+
+  - chunk_id: F1-8.1-m
+    section_id: "8.1 (M)"
+    page_start: 15
+    page_end: 15
+    pdf_page_start: 21
+    pdf_page_end: 21
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [architecture, model, mapping]
+    text: >-
+      M (model): This is a machine learning model, in a form which is usable in a machine learning pipeline.
+    support_note: Mapping target for the deterministic/agent assessment layer.
+
+  - chunk_id: F1-8.1-p
+    section_id: "8.1 (P)"
+    page_start: 15
+    page_end: 15
+    pdf_page_start: 21
+    pdf_page_end: 21
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [architecture, policy, mapping, guardrail]
+    text: >-
+      P (policy): This node enables the application of policies to the output of the model node.
+    support_note: The strongest structural analogy in Y.3172 for ResultRelay's deterministic gate - policy is applied to model output before action.
+
+  - chunk_id: F1-8.1-d
+    section_id: "8.1 (D)"
+    page_start: 15
+    page_end: 15
+    pdf_page_start: 21
+    pdf_page_end: 21
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [architecture, distribution, mapping, transport]
+    text: >-
+      D (distributor): This node is responsible for identifying the SINK(s) and distributing the output of
+      the M node to the corresponding SINK nodes.
+    support_note: Mapping target for the simulated transport adapter that selects an authorised channel.
+
+  - chunk_id: F1-8.1-sink
+    section_id: "8.1 (SINK)"
+    page_start: 15
+    page_end: 15
+    pdf_page_start: 21
+    pdf_page_end: 21
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [architecture, sink, mapping]
+    text: >-
+      SINK: This node is the target of the ML output on which it takes action.
+    support_note: Mapping target for the synthetic patient endpoint and supervisor queue.
+
+  - chunk_id: F1-3.2.2-mlfo
+    section_id: "3.2.2 (MLFO)"
+    page_start: 2
+    page_end: 2
+    pdf_page_start: 8
+    pdf_page_end: 8
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [architecture, orchestration, mapping]
+    text: >-
+      machine learning function orchestrator (MLFO): A logical node with functionalities that manage and
+      orchestrate the nodes in a machine learning pipeline.
+    support_note: Mapping target for the orchestration engine.

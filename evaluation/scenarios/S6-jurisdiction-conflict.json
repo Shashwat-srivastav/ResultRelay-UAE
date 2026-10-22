@@ -1,0 +1,47 @@
+{
+  "scenario_id": "S6-jurisdiction-conflict",
+  "title": "A highly relevant source from another jurisdiction",
+  "summary": "A Dubai walk-in case runs while the Abu Dhabi clinical laboratory standard is present in the corpus. The Abu Dhabi clauses are lexically more explicit about critical-result notification and read-back than the Dubai walk-in clause, so a relevance-ranked retriever surfaces them first. They must be classified as an out-of-jurisdiction comparator, cited as such, and never used as the governing rule.",
+  "case_id": "SYN-CASE-007",
+  "jurisdiction": "AE-DU",
+  "facility_type": "DHA-licensed walk-in clinical laboratory (simulated)",
+  "case_scope": "WALK_IN",
+  "patient_ref": "SYN-PATIENT-007",
+  "contact_ref": "SYN-CONTACT-007",
+  "initial_result": {
+    "revision_id": "SYN-CASE-007-R1",
+    "version": 1,
+    "status": "DRAFT",
+    "test_name": "Synthetic analyte E (walk-in permitted panel)",
+    "critical_flag_source": "Separate authorised laboratory critical-result process"
+  },
+  "network": {
+    "channels": {
+      "SMS-PATIENT": {"kind": "SMS", "endpoint_class": "patient_mobile", "primary": true, "status": "UP"},
+      "PHONE-CALL": {"kind": "VOICE", "endpoint_class": "patient_mobile", "primary": false, "status": "UP"}
+    },
+    "attempts": [{"outcome": "DELIVERED", "accept_after_minutes": 0.2, "deliver_after_minutes": 0.8}],
+    "reconciliations": []
+  },
+  "steps": [
+    {"step": 1, "at_minutes": 0, "kind": "event", "type": "result.finalized", "actor": "LAB",
+     "summary": "Revision 1 finalized for a Dubai walk-in patient",
+     "payload": {"result_revision_id": "SYN-CASE-007-R1"},
+     "visible_to": ["lab_workflow", "policy_applicability", "network_delivery", "escalation_coordinator"]},
+    {"step": 2, "at_minutes": 3, "kind": "event", "type": "policy.source_updated", "actor": "POLICY",
+     "summary": "An Abu Dhabi standard enters the available source set and must be classified before use",
+     "payload": {"source_id": "AD1", "note": "comparator presence test"},
+     "visible_to": ["policy_applicability"]},
+    {"step": 3, "at_minutes": 5, "kind": "action", "type": "system.action", "actor": "SYSTEM",
+     "summary": "Decide on the governing rule and communicate", "channel": "SMS-PATIENT"},
+    {"step": 4, "at_minutes": 20, "kind": "event", "type": "clinical.acknowledgment", "actor": "HUMAN",
+     "summary": "Patient acknowledges revision 1",
+     "payload": {"result_revision_id": "SYN-CASE-007-R1", "role": "PATIENT", "actor": "SYN-PATIENT-007", "identity_verified": true}},
+    {"step": 5, "at_minutes": 21, "kind": "action", "type": "system.action", "actor": "SYSTEM",
+     "summary": "Record the communication"}
+  ],
+  "research_questions": [
+    "How does a Dubai walk-in laboratory evidence the recipient of a critical result when no ordering physician exists?",
+    "Is a read-back requirement applicable to a walk-in patient SMS communication in Dubai?"
+  ]
+}

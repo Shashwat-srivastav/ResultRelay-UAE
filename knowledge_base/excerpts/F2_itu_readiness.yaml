@@ -1,0 +1,45 @@
+# ITU AI Readiness Report 2.0 (January 2026) — mapping framework only, no readiness score claimed.
+# Printed page labels differ from physical PDF pages by two (front matter), so both are recorded.
+source_id: F2
+excerpts:
+  - chunk_id: F2-2-ai-policy-dimension
+    section_id: "2 / AI Policy dimension"
+    page_start: 16
+    page_end: 16
+    pdf_page_start: 18
+    pdf_page_end: 18
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [readiness, dimensions, policy, mapping]
+    text: >-
+      The AI Policy dimension evaluates the maturity of institutional frameworks essential for trustworthy
+      and responsible AI ecosystems. We selected AI Policy and Regulation, Regulatory Quality, and
+      Implementation as they collectively represent the indispensable triad for accountable AI systems.
+    support_note: Verifies the published AI Policy dimension and its three indices. Mapping target for the policy/governance perspective.
+
+  - chunk_id: F2-2-innovation-dimension
+    section_id: "2 / Innovation Ecosystem dimension"
+    page_start: 15
+    page_end: 15
+    pdf_page_start: 17
+    pdf_page_end: 17
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [readiness, dimensions, open_source, standards, mapping]
+    text: >-
+      The Innovation Ecosystem assesses the broader environment that nurtures and accelerates the
+      advancement and adoption of Artificial Intelligence. It focuses on the critical inputs and
+      collaborative dynamics that transform research into tangible progress and practical applications.
+      We examine six key dimensions: standards, Engagement in Open source, R&D, investment, GenAI
+      Content, and AI Technology market size.
+    support_note: The only verified anchor for open-source and standards mapping in Report 2.0. Note the published index list here differs slightly from the summary table (which omits GenAI Content) - recorded as a source-internal inconsistency.
+
+  - chunk_id: F2-2-data-dimension
+    section_id: "2 / Data dimension"
+    page_start: 13
+    page_end: 13
+    pdf_page_start: 15
+    pdf_page_end: 15
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [readiness, data, provenance]
+    text: >-
+      The Data dimension evaluates foundational data readiness for AI development and deployment.
+    support_note: Used to frame provenance-oriented data handling as a readiness-relevant capability, not as a score.

@@ -1,0 +1,96 @@
+# Abu Dhabi (HAAD, predecessor name of the Department of Health) — Clinical Laboratory Standards v1.0
+# OUT-OF-JURISDICTION COMPARATOR for any Dubai-scoped case. Never treated as Dubai law.
+source_id: AD1
+excerpts:
+  - chunk_id: AD1-PP.11.2.intro
+    section_id: "PP.11.2"
+    page_start: 13
+    page_end: 13
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [critical_result, notification, responsible_clinician]
+    text: >-
+      The director has defined in writing, a procedure for immediate notification of the responsible
+      clinician when specific critical results indicate that the patient's situation is life-threatening.
+    support_note: Abu Dhabi requires an immediate-notification procedure aimed at a responsible clinician - a different recipient model from DHA's walk-in patient. Comparability only.
+
+  - chunk_id: AD1-PP.11.2.c
+    section_id: "PP.11.2(c)"
+    page_start: 13
+    page_end: 13
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [critical_result, notification_channel, outpatient]
+    text: >-
+      The means of notifying the clinician of these critical values is defined. For inpatients, the
+      process might be notifying a responsible nurse who calls the physician. For outpatients, the
+      response may be to directly notify the physician.
+    support_note: Shows a comparator jurisdiction delegating channel choice to the facility rather than mandating a channel.
+
+  - chunk_id: AD1-PP.11.2.d
+    section_id: "PP.11.2(d)"
+    page_start: 13
+    page_end: 13
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [critical_result, documentation, read_back, acknowledgment]
+    text: >-
+      The notification is documented, including time and date called, and the identification of the
+      individual called. This individual should write down and read back the result to ensure that it
+      has been understood
+    support_note: The closest comparator evidence for a read-back/understanding concept. Still addresses a clinician recipient, and is written as "should". The sentence continues with the single word "accurately" at the top of page 14; the quotation is truncated here so that it verifies contiguously against the PDF text layer.
+
+
+  - chunk_id: AD1-PP.11.3.intro
+    section_id: "PP.11.3 (intro and item a)"
+    page_start: 14
+    page_end: 14
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [correction, amended_report]
+    text: >-
+      The laboratory has a written, defined process for correcting reported results, including the
+      following: a) When an incorrect result is reported, the corrected report is generated as promptly
+      as possible.
+    support_note: Requires a written correction process with prompt regeneration of the corrected report.
+
+  - chunk_id: AD1-PP.11.3.b
+    section_id: "PP.11.3(b)"
+    page_start: 14
+    page_end: 14
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [correction, re_communication]
+    text: >-
+      b) In such cases, the laboratory communicates directly with the ordering clinician or other
+      authorized qualified individual who can take action to avert maltreatment of the patient.
+    support_note: The strongest comparator evidence that a correction triggers its own re-communication duty - stronger than the Dubai instrument retrieved here.
+
+  - chunk_id: AD1-PP.11.3.c
+    section_id: "PP.11.3(c)"
+    page_start: 14
+    page_end: 14
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [correction, retention, versioning]
+    text: >-
+      c) The process includes maintenance of both the original and corrected reports, with identification
+      of each on all copies of the report.
+    support_note: Explicit version-identification requirement for both the original and the correction.
+
+  - chunk_id: AD1-PP.11.4.intro
+    section_id: "PP.11.4 (intro and item a)"
+    page_start: 14
+    page_end: 14
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [read_back, verbal_result, documentation]
+    text: >-
+      The director defines in a written policy requirements for giving or receiving verbal and telephone
+      orders or test results. These include requirements that: a) The complete verbal or telephone order or
+      test result shall be written down legibly and signed by the receiver of the order or test result.
+    support_note: Read-back regime exists in policy for verbal results, in the Abu Dhabi instrument.
+
+  - chunk_id: AD1-PP.11.4.b
+    section_id: "PP.11.4(b)"
+    page_start: 14
+    page_end: 14
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [read_back, acknowledgment, understanding]
+    text: >-
+      b) The complete verbal and telephone order or test result shall be read back by the receiver of the
+      order or test result.
+    support_note: Uses "shall". This is the closest comparator concept to a verified human acknowledgment, and it exists only for verbal/telephone transmission.

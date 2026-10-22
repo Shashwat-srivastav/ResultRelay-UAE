@@ -1,0 +1,32 @@
+# Dubai Health Authority — Policy for Health Information Assets Management
+# HISHD/PP-12, Issue 01, issued 2022-12-26, DHA Health Regulation Sector (Dubai).
+# Dubai-scoped institutional/regulatory policy: applies to DHA-licensed entities, not UAE-wide.
+source_id: U3
+excerpts:
+  - chunk_id: U3-4.6.1-retention
+    section_id: "4.6.1"
+    page_start: 18
+    page_end: 18
+    claim_classification: BINDING_REQUIREMENT
+    topics: [retention, records, health_information_assets]
+    text: >-
+      In general and as per ICT Health Law, HIA must be stored for at least Twenty five (25) years from
+      the date of the last health Procedure/Encounter of the Data Subject/ Patient.
+    support_note: >-
+      Dubai restates the federal 25-year floor as an entity obligation. A communication record is a
+      health information asset, so retention applies to the audit trail and the message log, not only
+      to the laboratory result.
+
+  - chunk_id: U3-4.6.1-retention-custodian
+    section_id: "4.6.1"
+    page_start: 18
+    page_end: 18
+    claim_classification: BINDING_REQUIREMENT
+    topics: [retention, governance, accountability]
+    text: >-
+      However, some HIA need more timeline for retention based on business/operational/legal
+      requirements. This decision must be taken by the Entity`s Executive leader/Medical Director with a
+      designated function to appraise HIA.
+    support_note: >-
+      Places the retention decision with a named human role. Supports the design rule that retention and
+      disclosure decisions are institutional, not algorithmic.

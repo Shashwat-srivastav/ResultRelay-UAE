@@ -1,0 +1,90 @@
+# United Arab Emirates — Federal Law No. (2) of 2019 on the Use of ICT in Health Fields
+# Federal, in force 2019. Applies to ALL health data held or circulated through ICT, including free zones.
+# This is the instrument that governs health data in the UAE; the PDPL (U2) excludes health data.
+# HTML/text source from the official legislation portal: printed page is a sentinel (1);
+# the article number is the locator.
+source_id: U1
+excerpts:
+  - chunk_id: U1-art4-confidentiality
+    section_id: "Article 4(1)"
+    page_start: 1
+    page_end: 1
+    claim_classification: BINDING_REQUIREMENT
+    topics: [confidentiality, health_data, circulation, permitted_use]
+    text: >-
+      To keep the confidentiality of health data and information by not allowing to circulate them in
+      cases other than the permitted.
+    support_note: >-
+      Federal obligation on any ICT use in health fields. "Circulation" is defined in Article 1 to
+      include sending, disclosing and publishing - so a result notification is circulation.
+
+  - chunk_id: U1-art4-integrity
+    section_id: "Article 4(2)"
+    page_start: 1
+    page_end: 1
+    claim_classification: BINDING_REQUIREMENT
+    topics: [integrity, correction, audit, health_data]
+    text: >-
+      To ensure the validity and credibility of the health data and information by keeping their safety
+      from the non-authorised damage, amendment, alteration, deletion or addition.
+    support_note: >-
+      Federal basis for the append-only audit log and for revision lineage: amendment must be
+      authorised and attributable, which is what the hash chain and revisions provide.
+
+  - chunk_id: U1-art13-localisation
+    section_id: "Article 13"
+    page_start: 1
+    page_end: 1
+    claim_classification: BINDING_REQUIREMENT
+    topics: [data_localisation, cross_border, infrastructure, ai_processing]
+    text: >-
+      It is not permissible to store, process, generate or transform the health data and information
+      outside State -which are related to the health services provided inside State- except in the case
+      where a resolution is issued from the Health Authority in coordination with the Ministry.
+    support_note: >-
+      The clause that makes model placement a compliance question: "process" is listed, so sending
+      health data to an offshore model endpoint is processing outside the State unless a resolution
+      authorises it.
+
+  - chunk_id: U1-art16-patient-information
+    section_id: "Article 16"
+    page_start: 1
+    page_end: 1
+    claim_classification: BINDING_REQUIREMENT
+    topics: [patient_information, confidentiality, disclosure, consent]
+    text: >-
+      Without violation to any applicable legislations, whoever circulates information related to the
+      patients must keep its confidentiality and not to use them except in the health purposes without
+      written approval from the patient, except in any of the following cases:
+    support_note: >-
+      Governs circulation of patient information and lists five exceptions (insurers, research, public
+      health, judicial, health-authority inspection). Communicating a result to the patient for health
+      purposes is the permitted path; disclosure to anyone else needs written approval or an exception.
+
+  - chunk_id: U1-art20-retention
+    section_id: "Article 20(1)(A)"
+    page_start: 1
+    page_end: 1
+    claim_classification: BINDING_REQUIREMENT
+    topics: [retention, records, audit, documentation]
+    text: >-
+      The keeping period shall commensurate with the need to the health data and information, provided
+      that the keeping period shall not be less than (25) twenty-five years from the last date of the
+      health procedure of the person concerned with such health data and information.
+    support_note: >-
+      A hard retention floor. The prototype stores communication records in a single SQLite file with no
+      retention policy, so this is an open implementation gap (GR-13), not a satisfied requirement.
+
+  - chunk_id: U1-art24-penalty
+    section_id: "Article 24"
+    page_start: 1
+    page_end: 1
+    claim_classification: BINDING_REQUIREMENT
+    topics: [penalty, data_localisation, enforcement]
+    text: >-
+      Whoever violates the provision of Article (13) of this Law shall be punished of a penalty of no
+      less than (500.000) five hundred thousand dirhams and no more than (700.000) seven hundred
+      thousand dirhams.
+    support_note: >-
+      Quantifies the exposure created by Article 13, which is why the design treats the model endpoint
+      as a governed resource rather than a configuration detail.

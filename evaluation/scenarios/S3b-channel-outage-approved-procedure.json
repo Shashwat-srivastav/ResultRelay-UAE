@@ -1,0 +1,55 @@
+{
+  "scenario_id": "S3b-channel-outage-approved-procedure",
+  "title": "Primary channel outage with an approved institutional fallback procedure",
+  "summary": "Same outage as S3a, but the facility profile records an approved fallback procedure. The system may now use the alternative channel - and must record which procedure authorised it. This variant exists to show the rule is configurable rather than hardcoded either way.",
+  "variant_of": "S3a-channel-outage-no-evidence",
+  "case_id": "SYN-CASE-004",
+  "jurisdiction": "AE-DU",
+  "facility_type": "DHA-licensed walk-in clinical laboratory (simulated)",
+  "case_scope": "WALK_IN",
+  "patient_ref": "SYN-PATIENT-004",
+  "contact_ref": "SYN-CONTACT-004",
+  "initial_result": {
+    "revision_id": "SYN-CASE-004-R1",
+    "version": 1,
+    "status": "DRAFT",
+    "test_name": "Synthetic analyte C (walk-in permitted panel)",
+    "critical_flag_source": "Separate authorised laboratory critical-result process"
+  },
+  "profile_overrides": {
+    "fallback_channel_approved": true,
+    "fallback_procedure_ref": "SYN-FAC-PROC-014 (synthetic facility procedure: SMS outage -> portal message + telephone callback)"
+  },
+  "network": {
+    "channels": {
+      "SMS-PATIENT": {"kind": "SMS", "endpoint_class": "patient_mobile", "primary": true, "status": "DOWN", "note": "simulated gateway outage"},
+      "PORTAL-PATIENT": {"kind": "PORTAL", "endpoint_class": "patient_portal", "primary": false, "status": "UP"},
+      "PHONE-CALL": {"kind": "VOICE", "endpoint_class": "patient_mobile", "primary": false, "status": "UP"}
+    },
+    "attempts": [
+      {"outcome": "TIMEOUT", "timeout_after_minutes": 2.0},
+      {"outcome": "DELIVERED", "accept_after_minutes": 0.4, "deliver_after_minutes": 1.5}
+    ],
+    "reconciliations": [{"attempt_id": null, "result": "FAILED", "note": "primary gateway rejected the request"}]
+  },
+  "steps": [
+    {"step": 1, "at_minutes": 0, "kind": "event", "type": "result.finalized", "actor": "LAB",
+     "summary": "Revision 1 finalized while the primary gateway is down",
+     "payload": {"result_revision_id": "SYN-CASE-004-R1"},
+     "visible_to": ["lab_workflow", "policy_applicability", "network_delivery", "escalation_coordinator"]},
+    {"step": 2, "at_minutes": 1, "kind": "action", "type": "system.action", "actor": "SYSTEM",
+     "summary": "Attempt the primary channel", "channel": "SMS-PATIENT"},
+    {"step": 3, "at_minutes": 30, "kind": "action", "type": "system.action", "actor": "SYSTEM",
+     "summary": "Reconcile the failed attempt"},
+    {"step": 4, "at_minutes": 45, "kind": "action", "type": "system.action", "actor": "SYSTEM",
+     "summary": "Use the approved fallback channel", "channel": "PORTAL-PATIENT"},
+    {"step": 5, "at_minutes": 60, "kind": "event", "type": "clinical.acknowledgment", "actor": "HUMAN",
+     "summary": "Patient acknowledges the message received on the portal",
+     "payload": {"result_revision_id": "SYN-CASE-004-R1", "role": "PATIENT", "actor": "SYN-PATIENT-004", "channel": "PORTAL-PATIENT", "identity_verified": true}},
+    {"step": 6, "at_minutes": 61, "kind": "action", "type": "system.action", "actor": "SYSTEM",
+     "summary": "Record the communication, citing the authorising procedure"}
+  ],
+  "research_questions": [
+    "Which body inside a facility can approve a fallback channel, and what must the record contain?"
+  ]
+}

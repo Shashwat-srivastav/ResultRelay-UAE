@@ -1,0 +1,111 @@
+{
+  "scenario_id": "S1-ambiguous-delivery",
+  "title": "Delivery attempt with an ambiguous outcome",
+  "summary": "A walk-in critical result is sent over the primary channel. The transport times out, the patient reports they cannot see any message, and reconciliation is inconclusive. The system must keep the delivery state explicitly unknown, avoid an uncontrolled duplicate, and escalate rather than claim the patient was informed.",
+  "case_id": "SYN-CASE-001",
+  "jurisdiction": "AE-DU",
+  "facility_type": "DHA-licensed walk-in clinical laboratory (simulated)",
+  "case_scope": "WALK_IN",
+  "patient_ref": "SYN-PATIENT-001",
+  "contact_ref": "SYN-CONTACT-001",
+  "initial_result": {
+    "revision_id": "SYN-CASE-001-R1",
+    "version": 1,
+    "status": "DRAFT",
+    "test_name": "Synthetic analyte A (walk-in permitted panel)",
+    "critical_flag_source": "Separate authorised laboratory critical-result process (not ResultRelay)"
+  },
+  "network": {
+    "channels": {
+      "SMS-PATIENT": {"kind": "SMS", "endpoint_class": "patient_mobile", "primary": true, "status": "UP", "note": "synthetic primary channel"},
+      "PORTAL-PATIENT": {"kind": "PORTAL", "endpoint_class": "patient_portal", "primary": false, "status": "UP", "note": "synthetic alternative channel, not approved as a fallback"},
+      "PHONE-CALL": {"kind": "VOICE", "endpoint_class": "patient_mobile", "primary": false, "status": "UP", "note": "synthetic voice channel"}
+    },
+    "attempts": [
+      {"outcome": "TIMEOUT", "timeout_after_minutes": 2.0},
+      {"outcome": "ACCEPTED", "accept_after_minutes": 0.3}
+    ],
+    "reconciliations": [
+      {"attempt_id": null, "result": "STILL_UNKNOWN", "note": "provider cannot determine whether the timed-out request was delivered"}
+    ]
+  },
+  "steps": [
+    {
+      "step": 1,
+      "at_minutes": 0,
+      "kind": "event",
+      "type": "result.finalized",
+      "actor": "LAB",
+      "summary": "Laboratory finalizes synthetic result revision 1, already flagged critical by a separate authorised process",
+      "payload": {"result_revision_id": "SYN-CASE-001-R1", "finalized_at": "2026-03-02T09:00:00Z"},
+      "visible_to": ["lab_workflow", "policy_applicability", "network_delivery", "escalation_coordinator"]
+    },
+    {
+      "step": 2,
+      "at_minutes": 1,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "ResultRelay decides whether to release the communication",
+      "channel": "SMS-PATIENT",
+      "visible_to": ["lab_workflow", "policy_applicability", "network_delivery", "escalation_coordinator"]
+    },
+    {
+      "step": 3,
+      "at_minutes": 25,
+      "kind": "event",
+      "type": "patient.callback_no_access",
+      "actor": "HUMAN",
+      "summary": "Patient calls the laboratory: no message has arrived on the registered number",
+      "payload": {"actor": "SYN-PATIENT-001 (identity verified at the front desk in this synthetic case)"},
+      "visible_to": ["network_delivery", "escalation_coordinator"]
+    },
+    {
+      "step": 4,
+      "at_minutes": 26,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "ResultRelay reconciles the timed-out attempt against the transport ledger before considering any retry"
+    },
+    {
+      "step": 5,
+      "at_minutes": 40,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "ResultRelay decides between a retry on the same channel, a fallback channel, or escalation",
+      "channel": "SMS-PATIENT"
+    },
+    {
+      "step": 6,
+      "at_minutes": 55,
+      "kind": "event",
+      "type": "transport.delivery_receipt",
+      "actor": "NETWORK",
+      "summary": "A late endpoint delivery receipt arrives for the second attempt",
+      "payload": {"attempt_id": "ATT-002", "result_revision_id": "SYN-CASE-001-R1"}
+    },
+    {
+      "step": 7,
+      "at_minutes": 70,
+      "kind": "event",
+      "type": "clinical.acknowledgment",
+      "actor": "HUMAN",
+      "summary": "Patient confirms they have read the message",
+      "payload": {"result_revision_id": "SYN-CASE-001-R1", "role": "PATIENT", "actor": "SYN-PATIENT-001", "channel": "SMS-PATIENT", "identity_verified": true}
+    },
+    {
+      "step": 8,
+      "at_minutes": 71,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "ResultRelay records the communication record required by the configured workflow"
+    }
+  ],
+  "research_questions": [
+    "Does any retrieved instrument distinguish a transport receipt from a patient acknowledgment for walk-in results?",
+    "If the primary channel is unavailable, what evidence would authorise an alternative channel for a walk-in patient?"
+  ]
+}

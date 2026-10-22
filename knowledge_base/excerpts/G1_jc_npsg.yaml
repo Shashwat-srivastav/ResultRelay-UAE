@@ -1,0 +1,40 @@
+# The Joint Commission — NPSG.02.03.01, Laboratory Program, effective January 2026 (GLOBAL COMPARATOR)
+source_id: G1
+excerpts:
+  - chunk_id: G1-npsg-02-03-01-rationale
+    section_id: "NPSG.02.03.01 (rationale)"
+    page_start: 1
+    page_end: 1
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [critical_result, timeliness, caregiver]
+    text: >-
+      Critical results of tests and diagnostic procedures fall significantly outside the normal range and
+      may indicate a life-threatening situation. The objective is to provide the responsible licensed
+      caregiver these results within an established time frame so that the patient can be promptly treated.
+    support_note: Comparator states the objective in terms of a responsible licensed caregiver and an organisation-established time frame.
+
+  - chunk_id: G1-npsg-02-03-01-ep1
+    section_id: "NPSG.02.03.01 EP 1"
+    page_start: 1
+    page_end: 1
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [critical_result, written_procedure, time_limit, accountability]
+    text: >-
+      Collaborate with organization leaders to develop and implement written procedures for managing the
+      critical results of tests and diagnostic procedures that address the following:
+      • The definition of critical results of tests and diagnostic procedures
+      • By whom and to whom critical results of tests and diagnostic procedures are reported
+      • The acceptable length of time between the availability and reporting of critical results of tests
+      and diagnostic procedures
+      Documentation is required.
+    support_note: Important negative finding for the gap register - the comparator does NOT set a numeric time limit; it requires the organisation to define one in writing.
+
+  - chunk_id: G1-npsg-02-03-01-ep3
+    section_id: "NPSG.02.03.01 EP 3"
+    page_start: 1
+    page_end: 1
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [critical_result, monitoring, timeliness]
+    text: >-
+      Evaluate the timeliness of reporting the critical results of tests and diagnostic procedures.
+    support_note: Requires measurement of timeliness, which presupposes recordable timestamps at reporting.

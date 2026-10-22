@@ -1,0 +1,195 @@
+{
+  "scenario_id": "S2-correction-after-acknowledgment",
+  "title": "Corrected result after a previous acknowledgment",
+  "summary": "Revision 1 is sent, delivered and acknowledged. A corrected revision 2 is then finalized while a reminder bound to revision 1 is still queued. A delayed acknowledgment for revision 1 arrives afterwards. The earlier acknowledgment must not be treated as satisfying the requirement for revision 2.",
+  "case_id": "SYN-CASE-002",
+  "jurisdiction": "AE-DU",
+  "facility_type": "DHA-licensed walk-in clinical laboratory (simulated)",
+  "case_scope": "WALK_IN",
+  "patient_ref": "SYN-PATIENT-002",
+  "contact_ref": "SYN-CONTACT-002",
+  "initial_result": {
+    "revision_id": "SYN-CASE-002-R1",
+    "version": 1,
+    "status": "DRAFT",
+    "test_name": "Synthetic analyte B (walk-in permitted panel)",
+    "critical_flag_source": "Separate authorised laboratory critical-result process"
+  },
+  "network": {
+    "channels": {
+      "SMS-PATIENT": {
+        "kind": "SMS",
+        "endpoint_class": "patient_mobile",
+        "primary": true,
+        "status": "UP"
+      },
+      "PORTAL-PATIENT": {
+        "kind": "PORTAL",
+        "endpoint_class": "patient_portal",
+        "primary": false,
+        "status": "UP"
+      },
+      "PHONE-CALL": {
+        "kind": "VOICE",
+        "endpoint_class": "patient_mobile",
+        "primary": false,
+        "status": "UP"
+      }
+    },
+    "attempts": [
+      {
+        "outcome": "DELIVERED",
+        "accept_after_minutes": 0.2,
+        "deliver_after_minutes": 0.9
+      },
+      {
+        "outcome": "DELIVERED",
+        "accept_after_minutes": 0.2,
+        "deliver_after_minutes": 0.9
+      }
+    ],
+    "reconciliations": []
+  },
+  "steps": [
+    {
+      "step": 1,
+      "at_minutes": 0,
+      "kind": "event",
+      "type": "result.finalized",
+      "actor": "LAB",
+      "summary": "Revision 1 finalized",
+      "payload": {
+        "result_revision_id": "SYN-CASE-002-R1"
+      },
+      "visible_to": [
+        "lab_workflow",
+        "policy_applicability",
+        "network_delivery",
+        "escalation_coordinator"
+      ]
+    },
+    {
+      "step": 2,
+      "at_minutes": 1,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Release revision 1 on the primary channel",
+      "channel": "SMS-PATIENT"
+    },
+    {
+      "step": 3,
+      "at_minutes": 12,
+      "kind": "event",
+      "type": "clinical.acknowledgment",
+      "actor": "HUMAN",
+      "summary": "Patient acknowledges revision 1",
+      "payload": {
+        "result_revision_id": "SYN-CASE-002-R1",
+        "role": "PATIENT",
+        "actor": "SYN-PATIENT-002",
+        "identity_verified": true
+      }
+    },
+    {
+      "step": 4,
+      "at_minutes": 13,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Record the communication for revision 1"
+    },
+    {
+      "step": 5,
+      "at_minutes": 90,
+      "kind": "event",
+      "type": "result.corrected",
+      "actor": "LAB",
+      "summary": "Corrected revision 2 finalized; reissued analyte value",
+      "payload": {
+        "result_revision_id": "SYN-CASE-002-R2",
+        "supersedes_revision_id": "SYN-CASE-002-R1",
+        "version": 2
+      },
+      "visible_to": [
+        "lab_workflow",
+        "policy_applicability",
+        "escalation_coordinator"
+      ]
+    },
+    {
+      "step": 6,
+      "at_minutes": 95,
+      "kind": "event",
+      "type": "clinical.acknowledgment",
+      "actor": "HUMAN",
+      "summary": "A delayed acknowledgment for revision 1 arrives after the correction",
+      "payload": {
+        "result_revision_id": "SYN-CASE-002-R1",
+        "role": "PATIENT",
+        "actor": "SYN-PATIENT-002",
+        "identity_verified": true
+      },
+      "visible_to": [
+        "lab_workflow",
+        "escalation_coordinator"
+      ]
+    },
+    {
+      "step": 7,
+      "at_minutes": 100,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Decide how to handle the correction task"
+    },
+    {
+      "step": 8,
+      "at_minutes": 105,
+      "kind": "event",
+      "type": "escalation.resolved",
+      "actor": "HUMAN",
+      "summary": "Named supervisor reviews the correction task and approves a new communication workflow for revision 2",
+      "payload": {
+        "actor": "SYN-SUPERVISOR-01",
+        "approve": "SEND_PRIMARY",
+        "approval_note": "Synthetic approval: correction reviewed, reissue to the same verified contact."
+      }
+    },
+    {
+      "step": 9,
+      "at_minutes": 110,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Communicate the corrected revision",
+      "channel": "SMS-PATIENT"
+    },
+    {
+      "step": 10,
+      "at_minutes": 130,
+      "kind": "event",
+      "type": "clinical.acknowledgment",
+      "actor": "HUMAN",
+      "summary": "Patient acknowledges the corrected revision 2",
+      "payload": {
+        "result_revision_id": "SYN-CASE-002-R2",
+        "role": "PATIENT",
+        "actor": "SYN-PATIENT-002",
+        "identity_verified": true
+      }
+    },
+    {
+      "step": 11,
+      "at_minutes": 131,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Close out the corrected-result workflow"
+    }
+  ],
+  "research_questions": [
+    "Do any retrieved instruments require re-communication after a correction, and if so to whom?",
+    "Is there any source that states whether a prior acknowledgment transfers to a corrected result?"
+  ]
+}

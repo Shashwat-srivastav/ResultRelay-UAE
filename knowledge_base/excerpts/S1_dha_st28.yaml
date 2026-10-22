@@ -1,0 +1,157 @@
+# Dubai Health Authority — Standards for Clinical Laboratory Services, Issue 2
+# Minimal necessary excerpts only. The full document is NOT redistributed.
+# Every quote below is verified against the official PDF by scripts/ingest_sources.py
+# (de-spaced substring match on the declared page). Quotes are transcribed to normal
+# word spacing where the PDF text layer breaks words.
+source_id: S1
+excerpts:
+  - chunk_id: S1-11.1
+    section_id: "11.1"
+    page_start: 39
+    page_end: 39
+    claim_classification: BINDING_REQUIREMENT
+    topics: [scope, walk_in_scope, physician_order]
+    text: >-
+      Licensed Clinical Laboratories may accept walk-in patients for specific laboratory tests
+      that do not require a physician's order. Refer to the list of services permitted elaborated
+      in Appendix 3.
+    support_note: Establishes that walk-in testing is limited to a permitted list, i.e. a scope boundary exists.
+
+  - chunk_id: S1-11.1.1
+    section_id: "11.1.1"
+    page_start: 40
+    page_end: 40
+    claim_classification: BINDING_REQUIREMENT
+    topics: [critical_result, reporting, patient_communication]
+    text: >-
+      Critical laboratory results shall be reported clearly to the patient.
+    support_note: The only walk-in-specific critical-result sentence in the instrument. It does not define delivery, acknowledgment, or timing.
+
+  - chunk_id: S1-11.1.2
+    section_id: "11.1.2"
+    page_start: 40
+    page_end: 40
+    claim_classification: OFFICIAL_GUIDANCE
+    topics: [critical_result, medical_advice, patient_wording]
+    text: >-
+      The laboratory should direct the patient to seek further medical advice.
+    support_note: Uses "should", not "shall". Classified as guidance, and it is the sourced basis for patient-facing wording.
+
+  - chunk_id: S1-11.1.3
+    section_id: "11.1.3"
+    page_start: 40
+    page_end: 40
+    claim_classification: BINDING_REQUIREMENT
+    topics: [record, communication_record, documentation]
+    text: >-
+      The laboratory shall keep record of the communication with the patient.
+    support_note: Requires a record of the communication. Does not specify what constitutes sufficient evidence of receipt.
+
+  - chunk_id: S1-9.1.5.e
+    section_id: "9.1.5(e)"
+    page_start: 29
+    page_end: 29
+    claim_classification: BINDING_REQUIREMENT
+    topics: [critical_result, laboratory_policy]
+    text: >-
+      The laboratory shall have a policy for identifying and reporting critical results.
+    support_note: The instrument delegates mechanism design to the laboratory's own policy - a key point for the gap register.
+
+  - chunk_id: S1-9.1.5.f
+    section_id: "9.1.5(f)"
+    page_start: 29
+    page_end: 29
+    claim_classification: BINDING_REQUIREMENT
+    topics: [turnaround_time, laboratory_policy]
+    text: >-
+      The laboratory shall ensure that the expected Turn Around Time for each test is well defined
+      in their internal policy.
+    support_note: Timing is delegated to internal policy; no numeric clock appears in the instrument itself.
+
+  - chunk_id: S1-9.1.5.g
+    section_id: "9.1.5(g)"
+    page_start: 29
+    page_end: 29
+    claim_classification: BINDING_REQUIREMENT
+    topics: [correction, amended_report, retention]
+    text: >-
+      The laboratory shall have a mechanism for correcting erroneous result in a manner that
+      identifies the corrected result as revised and the date and time of correction. Both the
+      original and corrected reports must be maintained and retrievable by the laboratory.
+    support_note: Requires a revised identifier, a correction timestamp, and retention of both versions.
+
+  - chunk_id: S1-9.3.3
+    section_id: "9.3.3"
+    page_start: 37
+    page_end: 37
+    claim_classification: BINDING_REQUIREMENT
+    topics: [electronic_report, signature, integrity]
+    text: >-
+      Laboratories sending reports electronically should include electronic signature of the
+      authorized signatory. Laboratories should be able to provide critical information required
+      by a physician on telephone.
+    support_note: Electronic reporting and integrity of the signatory are addressed; transport delivery semantics are not.
+
+  - chunk_id: S1-9.3.4
+    section_id: "9.3.4"
+    page_start: 37
+    page_end: 37
+    claim_classification: BINDING_REQUIREMENT
+    topics: [security, confidentiality, electronic_report]
+    text: >-
+      Provisions shall be made for securing electronic laboratory reports.
+    support_note: Security obligation exists but is unspecified in detail; carries over to any alternative channel decision.
+
+  - chunk_id: S1-9.3.6
+    section_id: "9.3.6"
+    page_start: 38
+    page_end: 38
+    claim_classification: BINDING_REQUIREMENT
+    topics: [retention, health_records]
+    text: >-
+      Patient Result Records and materials shall be retained aligned to the DHA Guidelines for
+      Managing Health Records.
+    support_note: Retention is cross-referenced to a separate DHA instrument not reviewed in this build.
+
+  - chunk_id: S1-13.3
+    section_id: "13.3"
+    page_start: 42
+    page_end: 42
+    claim_classification: BINDING_REQUIREMENT
+    topics: [genetic, consultant, scope]
+    text: >-
+      A Consultant/Specialist Physician shall be consulted before and after genetic testing.
+    support_note: Genetic results carry a distinct clinical pathway requirement.
+
+  - chunk_id: S1-13.4
+    section_id: "13.4"
+    page_start: 42
+    page_end: 42
+    claim_classification: BINDING_REQUIREMENT
+    topics: [genetic, recipient, scope_exclusion]
+    text: >-
+      Genetic results shall not be communicated to the patients directly. The results shall be
+      directed to the referring/treating Physician.
+    support_note: Directly contradicts a generic walk-in patient-communication path for genetic results. This is the scope-exclusion anchor for Scenario 3.
+
+  - chunk_id: S1-13.5
+    section_id: "13.5"
+    page_start: 42
+    page_end: 42
+    claim_classification: BINDING_REQUIREMENT
+    topics: [genetic, interpretation, treatment]
+    text: >-
+      Only the referring/treating Physician shall make recommendations or prescribe to the patient
+      any medication or healthcare products, based on the laboratory results.
+    support_note: Reinforces that ResultRelay must never interpret or advise treatment.
+
+  - chunk_id: S1-app3.genetics
+    section_id: "Appendix 3 (Genetics row)"
+    page_start: 65
+    page_end: 65
+    claim_classification: BINDING_REQUIREMENT
+    topics: [scope, walk_in_scope, genetic]
+    text: >-
+      Genetics
+      All tests under this category requires Prescription
+    support_note: Appendix 3 corroborates that genetic testing is not a walk-in permitted category, so §11.1 cannot apply to it.

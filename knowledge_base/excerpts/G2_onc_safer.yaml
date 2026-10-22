@@ -1,0 +1,47 @@
+# ONC (US) 2025 SAFER Guide: Test Results Reporting and Follow-Up (GLOBAL COMPARATOR)
+# Note: published page title says 2025; the PDF footer says August 2024.
+source_id: G2
+excerpts:
+  - chunk_id: G2-2.1
+    section_id: "Worksheet 2.1"
+    page_start: 6
+    page_end: 6
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [order_tracking, acknowledgment, state_separation]
+    text: >-
+      The EHR is able to track the status of all test-related orders and procedures associated with them
+      (e.g., specimen received and collected; test completed, reported, and acknowledged).
+    support_note: Directly supports separating "reported" from "acknowledged" as distinct tracked states. Inline citation markers (e.g. ".10,29") are omitted from the quotation for readability; this is disclosed rather than silently trimmed.
+
+  - chunk_id: G2-2.3.amendment-notification
+    section_id: "Worksheet 2.3"
+    page_start: 6
+    page_end: 6
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [correction, amended_report, notification, versioning]
+    text: >-
+      When test results are changed or amended, the ordering clinician and other clinicians responsible for
+      follow-up are notified electronically, and the changed results and amended flag should be clearly
+      visible in the EHR.
+    support_note: Comparator requires a distinct notification event and a visible amended flag for corrections, separate from the original communication. Inline citation marker ".32" omitted.
+
+  - chunk_id: G2-2.3.significant-change-direct-contact
+    section_id: "Worksheet 2.3"
+    page_start: 6
+    page_end: 6
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [correction, escalation, direct_contact]
+    text: >-
+      For clinically significant changes, the clinicians are also contacted directly.
+    support_note: Escalation of a correction to direct contact is conditioned on clinical significance - i.e. the comparator delegates a clinical judgement that ResultRelay must route to a human rather than infer.
+
+  - chunk_id: G2-2.4
+    section_id: "Worksheet 2.4"
+    page_start: 6
+    page_end: 6
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [responsibility, follow_up, accountability]
+    text: >-
+      Written policies specify unambiguous responsibility for test result follow-up with a shared
+      understanding of that responsibility among all involved in providing follow-up care.
+    support_note: Supports the design choice of a named responsible role rather than an anonymous queue.

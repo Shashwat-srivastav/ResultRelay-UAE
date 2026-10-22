@@ -1,0 +1,23 @@
+# HL7 FHIR R5 Task (GLOBAL COMPARATOR). HTML source: no page numbers, page=1 is a sentinel.
+source_id: G3
+excerpts:
+  - chunk_id: G3-task-queue
+    section_id: "Task (narrative)"
+    page_start: 1
+    page_end: 1
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [workflow_task, state_model, queue]
+    text: >-
+      The assignment of tasks into categories by type of task, type of performer and task status enable
+      the server to function as a queue of work items.
+    support_note: FHIR Task models a work item with a status - not delivery of a message nor human acknowledgment of clinical content.
+
+  - chunk_id: G3-task-status
+    section_id: "Task.status"
+    page_start: 1
+    page_end: 1
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [state_model, task_status]
+    text: >-
+      draft | requested | received | accepted |
+    support_note: The rendered R5 HTML truncates the required binding with "+"; only the first four values appear verbatim and are quoted here, with the remainder of the Task Status value set not asserted. Interpretation (flagged as interpretation, not quote) - "completed" describes the task, not evidence that a human understood a result.

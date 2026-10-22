@@ -1,0 +1,29 @@
+# Dubai Health Authority — Health Data Quality Policy
+# HISHD/PP-08, Issue 02, effective 2023-11-01, revision 2028-08-01 (Dubai).
+source_id: U4
+excerpts:
+  - chunk_id: U4-4.5.1-accuracy
+    section_id: "4.5.1"
+    page_start: 10
+    page_end: 10
+    claim_classification: BINDING_REQUIREMENT
+    topics: [data_quality, accuracy, corrections]
+    text: >-
+      Accurate: Data must be accurate and truthful at aggregate and record level, representing what was
+      intended /defined by their official source. Data recorded in Data Subject/Patient EMRs must
+      accurately reflect each other and the care/treatment provided to the Data Subject/Patient.
+    support_note: >-
+      The accuracy obligation a corrected result is meant to restore, and the reason a correction must
+      supersede rather than overwrite: the record has to stay truthful about both versions.
+
+  - chunk_id: U4-4.9.10-patient-feedback
+    section_id: "4.9.10"
+    page_start: 20
+    page_end: 20
+    claim_classification: BINDING_REQUIREMENT
+    topics: [corrections, patient_feedback, quality]
+    text: >-
+      Entities must implement methods to receive patient feedback regarding inaccurate information.
+    support_note: >-
+      A Dubai requirement that the patient can raise an inaccuracy. The prototype has no inbound
+      patient-reporting path: an acknowledgment channel is not a correction channel (GR-14).

@@ -1,0 +1,46 @@
+{
+  "scenario_id": "S3a-channel-outage-no-evidence",
+  "title": "Primary channel outage, no verified authorisation for a fallback",
+  "summary": "The primary channel fails during a critical-result communication. An alternative channel exists and would probably work, but no retrieved source and no approved institutional procedure authorises it. The system must not silently switch channels or recipients.",
+  "case_id": "SYN-CASE-003",
+  "jurisdiction": "AE-DU",
+  "facility_type": "DHA-licensed walk-in clinical laboratory (simulated)",
+  "case_scope": "WALK_IN",
+  "patient_ref": "SYN-PATIENT-003",
+  "contact_ref": "SYN-CONTACT-003",
+  "initial_result": {
+    "revision_id": "SYN-CASE-003-R1",
+    "version": 1,
+    "status": "DRAFT",
+    "test_name": "Synthetic analyte C (walk-in permitted panel)",
+    "critical_flag_source": "Separate authorised laboratory critical-result process"
+  },
+  "profile_overrides": {"fallback_channel_approved": false, "fallback_procedure_ref": null},
+  "network": {
+    "channels": {
+      "SMS-PATIENT": {"kind": "SMS", "endpoint_class": "patient_mobile", "primary": true, "status": "DOWN", "note": "simulated gateway outage"},
+      "PORTAL-PATIENT": {"kind": "PORTAL", "endpoint_class": "patient_portal", "primary": false, "status": "UP"},
+      "PHONE-CALL": {"kind": "VOICE", "endpoint_class": "patient_mobile", "primary": false, "status": "UP"}
+    },
+    "attempts": [{"outcome": "TIMEOUT", "timeout_after_minutes": 2.0}],
+    "reconciliations": [{"attempt_id": null, "result": "FAILED", "note": "provider ledger shows the gateway rejected the request"}]
+  },
+  "steps": [
+    {"step": 1, "at_minutes": 0, "kind": "event", "type": "result.finalized", "actor": "LAB",
+     "summary": "Revision 1 finalized while the primary SMS gateway is down",
+     "payload": {"result_revision_id": "SYN-CASE-003-R1"},
+     "visible_to": ["lab_workflow", "policy_applicability", "network_delivery", "escalation_coordinator"]},
+    {"step": 2, "at_minutes": 1, "kind": "action", "type": "system.action", "actor": "SYSTEM",
+     "summary": "Attempt the primary channel", "channel": "SMS-PATIENT"},
+    {"step": 3, "at_minutes": 30, "kind": "action", "type": "system.action", "actor": "SYSTEM",
+     "summary": "Reconcile the failed attempt before any further communication"},
+    {"step": 4, "at_minutes": 45, "kind": "action", "type": "system.action", "actor": "SYSTEM",
+     "summary": "Decide whether an alternative channel may be used", "channel": "PORTAL-PATIENT"},
+    {"step": 5, "at_minutes": 75, "kind": "action", "type": "system.action", "actor": "SYSTEM",
+     "summary": "Escalate to the configured responsible role"}
+  ],
+  "research_questions": [
+    "Does any retrieved source authorise an alternative communication channel for a walk-in critical result?",
+    "What would a facility need to document to authorise a fallback channel?"
+  ]
+}

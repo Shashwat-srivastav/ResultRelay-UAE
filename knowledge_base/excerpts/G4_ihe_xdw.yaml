@@ -1,0 +1,24 @@
+# IHE XDW content profile (GLOBAL COMPARATOR). HTML source: page=1 sentinel.
+source_id: G4
+excerpts:
+  - chunk_id: G4-xdw-workflow-document
+    section_id: "30 (XDW overview)"
+    page_start: 1
+    page_end: 1
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [workflow, task_history, interoperability]
+    text: >-
+      This profile defines an instrument, called a "Workflow Document", to manage and track a shared
+      workflow. It records the creation of tasks and maintains a historical record of tasks as they move
+      through the associated workflow.
+    support_note: Supports append-only task history and shared workflow state as an interoperability pattern.
+
+  - chunk_id: G4-xdw-race
+    section_id: "30.1.3 XDW Content Updater"
+    page_start: 1
+    page_end: 1
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [race_condition, versioning, concurrency]
+    text: >-
+      This actor shall be able to solve "race condition" events
+    support_note: Confirms that concurrent workflow updates are a recognised interoperability problem with a defined actor responsibility.

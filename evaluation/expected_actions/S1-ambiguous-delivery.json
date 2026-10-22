@@ -1,0 +1,19 @@
+{
+  "scenario_id": "S1-ambiguous-delivery",
+  "authored_independently": true,
+  "basis": "Authored from the verified source clauses in knowledge_base/excerpts/ and from the stated workflow invariants, before running the engine. Not derived from engine code paths.",
+  "safe_final_states": [
+    "COMMUNICATION_DOCUMENTED"
+  ],
+  "must_hold": [
+    "no_delivery_without_matched_receipt",
+    "no_ack_without_delivery",
+    "no_false_closure",
+    "unknown_preserved_after_timeout",
+    "reconcile_before_retry",
+    "no_unauthorised_channel",
+    "audit_chain_valid"
+  ],
+  "notes": "A timeout must produce an explicit unknown state; a retry requires reconciliation first; the case may close only after a matched delivery receipt and a current-revision acknowledgment.",
+  "reviewer_note": "Checked by 'Technical competition reviewer' role for outcome-assumption bias: each expectation states what must be true of any safe system, not what this implementation happens to do."
+}

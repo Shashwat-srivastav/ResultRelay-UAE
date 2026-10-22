@@ -1,0 +1,175 @@
+{
+  "scenario_id": "S5-late-acknowledgment-race",
+  "title": "Late acknowledgment and corrected-version race",
+  "summary": "Revision 1 delivery is uncertain when revision 2 is issued. A late acknowledgment and a late receipt for revision 1 then arrive. Both must be reconciled against result versions: neither may resolve revision 2.",
+  "case_id": "SYN-CASE-006",
+  "jurisdiction": "AE-DU",
+  "facility_type": "DHA-licensed walk-in clinical laboratory (simulated)",
+  "case_scope": "WALK_IN",
+  "patient_ref": "SYN-PATIENT-006",
+  "contact_ref": "SYN-CONTACT-006",
+  "initial_result": {
+    "revision_id": "SYN-CASE-006-R1",
+    "version": 1,
+    "status": "DRAFT",
+    "test_name": "Synthetic analyte D (walk-in permitted panel)",
+    "critical_flag_source": "Separate authorised laboratory critical-result process"
+  },
+  "network": {
+    "channels": {
+      "SMS-PATIENT": {
+        "kind": "SMS",
+        "endpoint_class": "patient_mobile",
+        "primary": true,
+        "status": "UP"
+      },
+      "PORTAL-PATIENT": {
+        "kind": "PORTAL",
+        "endpoint_class": "patient_portal",
+        "primary": false,
+        "status": "UP"
+      }
+    },
+    "attempts": [
+      {
+        "outcome": "TIMEOUT",
+        "timeout_after_minutes": 2.0
+      },
+      {
+        "outcome": "DELIVERED",
+        "accept_after_minutes": 0.3,
+        "deliver_after_minutes": 1.2
+      }
+    ],
+    "reconciliations": [
+      {
+        "attempt_id": null,
+        "result": "DELIVERED",
+        "note": "provider ledger shows ATT-001 did reach the endpoint"
+      }
+    ]
+  },
+  "steps": [
+    {
+      "step": 1,
+      "at_minutes": 0,
+      "kind": "event",
+      "type": "result.finalized",
+      "actor": "LAB",
+      "summary": "Revision 1 finalized",
+      "payload": {
+        "result_revision_id": "SYN-CASE-006-R1"
+      },
+      "visible_to": [
+        "lab_workflow",
+        "policy_applicability",
+        "network_delivery",
+        "escalation_coordinator"
+      ]
+    },
+    {
+      "step": 2,
+      "at_minutes": 1,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Send revision 1",
+      "channel": "SMS-PATIENT"
+    },
+    {
+      "step": 3,
+      "at_minutes": 20,
+      "kind": "event",
+      "type": "result.corrected",
+      "actor": "LAB",
+      "summary": "Revision 2 is issued while revision 1 delivery is still unknown",
+      "payload": {
+        "result_revision_id": "SYN-CASE-006-R2",
+        "supersedes_revision_id": "SYN-CASE-006-R1",
+        "version": 2
+      },
+      "visible_to": [
+        "lab_workflow",
+        "policy_applicability",
+        "escalation_coordinator"
+      ]
+    },
+    {
+      "step": 4,
+      "at_minutes": 25,
+      "kind": "event",
+      "type": "clinical.acknowledgment",
+      "actor": "HUMAN",
+      "summary": "A delayed acknowledgment for revision 1 arrives after revision 2 is current",
+      "payload": {
+        "result_revision_id": "SYN-CASE-006-R1",
+        "role": "PATIENT",
+        "actor": "SYN-PATIENT-006",
+        "identity_verified": true
+      },
+      "visible_to": [
+        "lab_workflow",
+        "escalation_coordinator"
+      ]
+    },
+    {
+      "step": 5,
+      "at_minutes": 30,
+      "kind": "event",
+      "type": "transport.delivery_receipt",
+      "actor": "NETWORK",
+      "summary": "A late endpoint receipt arrives for attempt ATT-001, which carried revision 1",
+      "payload": {
+        "attempt_id": "ATT-001",
+        "result_revision_id": "SYN-CASE-006-R1"
+      }
+    },
+    {
+      "step": 6,
+      "at_minutes": 35,
+      "kind": "event",
+      "type": "escalation.resolved",
+      "actor": "HUMAN",
+      "summary": "Named supervisor approves a new communication workflow for the corrected revision",
+      "payload": {
+        "actor": "SYN-SUPERVISOR-02",
+        "approve": "SEND_PRIMARY",
+        "approval_note": "Synthetic approval for reissue of the corrected result."
+      }
+    },
+    {
+      "step": 7,
+      "at_minutes": 40,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Communicate the corrected revision 2",
+      "channel": "SMS-PATIENT"
+    },
+    {
+      "step": 8,
+      "at_minutes": 60,
+      "kind": "event",
+      "type": "clinical.acknowledgment",
+      "actor": "HUMAN",
+      "summary": "Patient acknowledges revision 2",
+      "payload": {
+        "result_revision_id": "SYN-CASE-006-R2",
+        "role": "PATIENT",
+        "actor": "SYN-PATIENT-006",
+        "identity_verified": true
+      }
+    },
+    {
+      "step": 9,
+      "at_minutes": 61,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Close out the corrected-result workflow"
+    }
+  ],
+  "research_questions": [
+    "How should a laboratory evidence that a corrected result was communicated when the original communication outcome is unknown?"
+  ]
+}

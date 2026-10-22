@@ -1,0 +1,16 @@
+{
+  "scenario_id": "S3a-channel-outage-no-evidence",
+  "authored_independently": true,
+  "basis": "Authored from the verified source clauses in knowledge_base/excerpts/ and from the stated workflow invariants, before running the engine. Not derived from engine code paths.",
+  "safe_final_states": [
+    "ESCALATION_REQUIRED",
+    "ESCALATION_IN_REVIEW"
+  ],
+  "must_hold": [
+    "no_unauthorised_channel",
+    "no_false_closure",
+    "audit_chain_valid"
+  ],
+  "notes": "No retrieved instrument and no approved institutional procedure authorises an alternative channel, so the only safe path is human escalation. Inventing a fallback is the failure mode under test.",
+  "reviewer_note": "Checked by 'Technical competition reviewer' role for outcome-assumption bias: each expectation states what must be true of any safe system, not what this implementation happens to do."
+}
