@@ -1,257 +1,158 @@
+<div align="center">
+
 # ResultRelay
 
-**A policy-governed workflow for communicating critical laboratory results to walk-in patients —
-built to show where the workflow should refuse to proceed.**
+**A policy-governed agent that refuses to call a critical lab result "communicated" until there is evidence a person received it.**
+For walk-in laboratories licensed by the Dubai Health Authority: it keeps *sent*, *accepted by the
+gateway*, *delivered*, *acknowledged* and *documented* apart, binds every acknowledgment to the current
+result version, and refuses another jurisdiction's rule as binding.
 
-> Demonstration prototype. All patients, results and channels are synthetic. This is not a
-> clinical service, not a medical device, and not evidence of clinical safety, effectiveness or
-> regulatory compliance. It does not diagnose, interpret results, set clinical thresholds or give
-> medical advice.
+`ITU AI for Good Sandbox Hackathon — UAE` · Healthcare track · agent roles: **policy & legal adviser · innovative AI solution**
+
+![Standard](https://img.shields.io/badge/ITU--T-Y.3172-0ea5e9)
+![Data](https://img.shields.io/badge/data-100%25%20synthetic-success)
+![Tests](https://img.shields.io/badge/tests-229%20passing-success)
+![KB](https://img.shields.io/badge/quotes-63%20verified-success)
+
+</div>
+
+> ⚠️ **Synthetic data, hackathon exercise only.** No real patient data, EHR, SMS gateway or clinical
+> claim. ResultRelay does not diagnose, set thresholds, interpret results or give medical advice.
 
 ---
 
-## The problem in one paragraph
+## The one-sentence version
 
-A laboratory finalises a result that has been flagged critical. Someone has to tell the patient.
-The hard part is not sending a message — it is knowing, afterwards, what actually happened:
-whether the message was *accepted by a gateway*, *delivered to a device*, or *acknowledged by a
-person who now has the content*; whether the result the patient acknowledged is still the current
-one; whether the clause being relied on actually applies in this jurisdiction to this type of
-test; and whether re-sending would duplicate a message that already arrived. Most prototypes
-collapse those questions into "sent". This one does not, and the evaluation is designed to show
-the difference.
+A critical result is flagged, the SMS gateway says "accepted", and a dashboard turns green. Nobody knows
+whether the patient has it. **ResultRelay will not close the case on a gateway acceptance, will not reuse
+an acknowledgment of version 1 for a corrected version 2, and will not message a patient directly about
+a genetic result** — DHA's standard routes those to the referring physician.
 
-## What it does
+```console
+$ python run_demo.py 4
+── SC-04 [controversial] A generic walk-in rule retrieved for a genetic result  (S4-genetic-scope-exclusion)
+   FINAL RESULT_FINALIZED                 VERDICT VIOLATION              ✓ expected RESULT_FINALIZED
+   policy-blind final → DELIVERY_CONFIRMED
+```
 
-- Runs a 18-state workflow over synthetic laboratory events, with every transition either
-  permitted by a guard or explicitly forbidden.
-- Uses five **assessors** with declared, asymmetric context — four are fixed rule sets and one retrieves
-  from the policy corpus. None of them can change state and none of them can send anything. Calling that
-  "multi-agent" would oversell it: there is one deterministic planner and no agent-to-agent negotiation.
-- Puts a deterministic **gate** between every proposal and every effect. The gate is not an agent,
-  cannot be persuaded, and cites the invariant it applied.
-- Grounds policy in **63 quotations across 14 documents, each machine-verified against the official source text at build time** (and, since this review, re-verified at load against a committed pin),
-  with an applicability filter that refuses to present another jurisdiction's rule as binding.
-- Simulates an asynchronous transport that separates provider acceptance, endpoint delivery and
-  human acknowledgment, and treats a timeout as *unknown* rather than *failed*.
-- Writes a SHA-256 hash-chained audit log that is **re-verified when read**.
-- Ships a React console that keeps the clinical, transport, human and policy layers visibly apart.
+## Why the model advises and code decides
 
-## Quick start
+| | Node | Who does it | Can it change a case? |
+| :--- | :--- | :--- | :--- |
+| **Reasoning** | `M` | Five assessors + a policy & legal **reviewer** (TypeSafe Jev) that judges whether the shown evidence supports each proposed action, and which clause governs it ([app/advisers/jev.py](app/advisers/jev.py)) | **No** |
+| **Decision** | `P` | A deterministic gate over 18 states and named invariants ([app/orchestration/gate.py](app/orchestration/gate.py)) | **Yes — only this** |
+
+Every model proposal goes through a containment guard before the gate sees it
+([app/advisers/guard.py](app/advisers/guard.py)): **residency** (Federal Law 2/2019 Art. 13 — health data
+may not be processed outside the State; a synthetic case may use an offshore model, and a real case on the
+same endpoint is refused), **grounding** (it may cite only chunks it was shown) and **jurisdiction** (a
+comparator can inform a human, never underwrite an action). The gate computes its decision without reading
+the proposal; a test asserts the decision is unchanged when a proposal is attached.
+
+In the recorded run, all 23 reviewer proposals passed containment and 22 cite a verified clause. **The
+reviewer endorsed none of the 23 workflow actions**: it consistently asks for more evidence before a
+first send of a critical result. That is logged as dissent, not acted on, and it is why the gate, not the
+model, decides.
+
+## Architecture — ITU-T Y.3172, node for node
+
+| Node (Y.3172 §8.1) | In ResultRelay | AI Readiness 2.0 dimension | Policy source |
+| :--- | :--- | :--- | :--- |
+| **SRC** | Synthetic result revisions, contacts, channels; the verified corpus | Data/Model Marketplace (1), Contextualization and Regional Impact (4) | DHA ST-28 §11.1 (walk-in tests) |
+| **C** | Staged event streams: transport, patient and supervisor events | Level of Integration of AI in Workflows (5) | DHA ST-28 §11.1.1–3 |
+| **PP** | Normalised states; report version, action id and provenance preserved | AI & Policies (10) | HL7 FHIR Task, IHE XDW (comparators) |
+| **M** | Assessors + Jev policy & legal reviewer over retrieved, jurisdiction-filtered evidence | Collaboration with AI (8), Impacts of Humans in AI Integration (9) | UAE AI Charter (human oversight) |
+| **P** | Gate: scope (§13.4 genetic results), version binding, reconcile-before-retry, no false closure | AI & Policies (10), Strategy Alignment (7) | DHA ST-28 §11.1, §13.4 |
+| **D** | Mock transport that separates acceptance, delivery and acknowledgment; idempotency keys | Digital Infrastructure (13), Granular Priorities (12) | Federal Law 2/2019 Art. 4, 13 |
+| **SINK** | Supervisor queue, React console, hash-chained audit re-verified on read | Human Interface (6), AI for Inclusion (11) | DHA ST-28 §11.1.3 (communication record) |
+
+## The four scenarios — `python run_demo.py`
+
+| # | Scenario | Final state | Verdict | Policy-blind |
+| :--- | :--- | :--- | :--- | :--- |
+| **SC-01** normal | Genetic result routed to the referring physician | `COMMUNICATION_DOCUMENTED` | `COMPLIANT` | same |
+| **SC-02** failure | Primary channel down, no approved fallback | `ESCALATION_REQUIRED` | `INSUFFICIENT_EVIDENCE` | invents a channel → `DELIVERY_CONFIRMED` |
+| **SC-03** failure | Corrected result after acknowledgment of version 1 | `CORRECTED_RESULT_ACKNOWLEDGED` | `COMPLIANT` | `ESCALATION_REQUIRED` |
+| **SC-04** controversial | Generic walk-in rule retrieved for a genetic result | `RESULT_FINALIZED` (direct path refused) | `VIOLATION` | messages the patient → `DELIVERY_CONFIRMED` |
+
+## Evaluation — `python scripts/run_evaluation.py`
+
+8 scenarios × 11 configurations = 88 runs; seven configurations differ from the full system in exactly
+one input.
+
+| Configuration | Fully safe | Assertions |
+| :--- | ---: | ---: |
+| `resultrelay` | **8/8** | **32/32** |
+| `static_rules` (competent hand-written rules) | 6/8 | 30/32 |
+| `ablate_no_kb` · `ablate_ack_any` | 6/8 | 30/32 |
+| `retrieval_only` | 4/8 | 28/32 |
+| `policy_blind` | 3/8 | 27/32 |
+
+What these numbers do not show, said plainly: the scenarios and expectations were written by the same
+team that wrote the engine. S1 and S3b separate no configuration. `static_rules` loses only the two
+genetic-scope scenarios, because it was built without a genetic rule. Two ablations
+(`ablate_no_audit_agent`, `ablate_full_context`) cannot change an outcome by construction.
+
+## Knowledge base — `GET /api/kb/search?q=…&jurisdiction=AE-DU`
+
+**63 quotations from 14 documents**, each with issuing body, jurisdiction, section, printed page and a
+claim class; only `BINDING_REQUIREMENT` can block an action, and only sources that bind the case
+jurisdiction carry it. **50 are verified against the downloaded official documents** (the quote must
+appear on the declared page, or the excerpt is rejected and never indexed); **13 (Federal Law 2/2019,
+UAE AI Charter, ADHICS) are verified against recorded transcriptions** of portal pages that refuse
+scripted downloads. The served index is pinned by SHA-256 and re-checked on load.
+
+`python scripts/export_itu_kb.py` writes every verified excerpt to `kb/itu_inputdocs/` in the ITU
+reference-code InputDocs format; `--ingest PATH/TO/ITUAIReadiness` runs the ITU `ingest.py` (ChromaDB +
+Ollama `nomic-embed-text`) with clause-level provenance as metadata.
+
+## Policy and standards gaps — [kb/gap_register.csv](kb/gap_register.csv)
+
+| Gap | Type |
+| :--- | :--- |
+| No retrieved source sets an acknowledgment clock or a responsible role for patient-direct results with no ordering physician | Unclear responsibility |
+| Health rules require a *record of communication*; telecom delivery receipts prove arrival at a handset, never receipt by a person — no instrument joins the two | Coordination (health ↔ telecom) |
+| No standard binds an acknowledgment to a specific result revision for patient-direct notification | Standards |
+| No route for a patient to report an inaccurate result | Legislative / process |
+| Federal 25-year health-record retention (Law 2/2019 Art. 20) is not reflected in lab messaging workflows | Implementation |
+
+Global comparisons used: Joint Commission NPSG.02.03.01 (critical results to the responsible caregiver),
+ONC SAFER Guides 2025 (test-results follow-up), HL7 FHIR R5 Task, IHE XDW. PDPL (Federal Decree-Law
+45/2021) is cited only for its scope exclusion: **Article 2, exclusion (e)** — health data governed by
+its own legislation.
+
+## Run it
 
 ```bash
-# backend + frontend dependencies
-make setup
-
-# fetch the official sources and rebuild the verified index (optional but recommended)
-make kb
-
-# build the UI and serve API + UI on :8000
-make build
-cd backend && python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+python -m pip install -r requirements.txt
+python -m pytest -q                          # 229 tests (one skips unless every source text is cached)
+python run_demo.py                           # four scenarios; adviser replays recorded responses offline
+python scripts/run_evaluation.py             # 88-run matrix → evaluation/report.md
+python -m uvicorn app.main:app --port 8000   # API + built UI on http://127.0.0.1:8000  (docs at /api/docs)
+python scripts/fetch_sources.py              # optional: download the official texts and re-verify every quote
 ```
 
-Then open <http://localhost:8000>. API documentation is at `/api/docs`.
+Live adviser: set `TYPESAFE_API_KEY` and `RESULTRELAY_ADVISE=1`, `RESULTRELAY_ADVISE_PROVIDER=jev`
+(PowerShell: `$env:RESULTRELAY_ADVISE='1'`). A local OpenAI-compatible model (Ollama) works through
+`RESULTRELAY_ADVISE_URL=http://localhost:11434/v1`. The UI is pre-built in `app/static/app`; rebuild with
+`cd web && npm ci && npm run build`. The build has no authentication: bind to 127.0.0.1 and use synthetic
+data only.
 
-```bash
-make test      # 113 backend tests
-make eval      # 8 scenarios x 11 configurations -> evaluation/report.md
-make verify    # re-check every quotation against the source PDFs
-make manifest  # export frontend/public/data/manifest.json (served at /data/manifest.json)
-```
-
-## What to look at first
-
-| if you have | look at | why |
-|---|---|---|
-| 2 minutes | the **Console** page, then **Simulator** → run `S1` under `resultrelay`, press *Step* | watch an accepted message fail to become a delivered one |
-| 5 minutes | **Simulator** → `S3a` under `resultrelay`, then again under `policy_blind` | the full system escalates; the baseline invents a channel |
-| 10 minutes | **Evaluation** → *Run the matrix* | which single input changes which outcome, and where the rule baseline still ties |
-| sceptical | **Standards & gaps** → *Retrieval* with the scope filter off | the Abu Dhabi clause outranks the Dubai one, and the UI shows it |
-| audit-minded | **Audit trail** → *Export bundle* | the chain, the citations, and every decision that produced the state |
-
-## The configurations
-
-The same engine runs eleven ways, because a number means nothing without a comparison. Seven of them are
-**one-flag ablations** — each differs from the full system in exactly one input, so a difference in an
-outcome is attributable to that input. Three are **compound baselines**, kept because they answer a
-different question ("what does a system without any of this look like?") and labelled as such.
-
-| configuration | knowledge base | applicability filter | invariants | acknowledgment | transport |
-|---|---|---|---|---|---|
-| `resultrelay` | yes | yes | yes | bound to the current revision | acceptance ≠ delivery |
-| `ablate_no_kb` | **no** | yes | yes | bound | strict |
-| `ablate_no_applicability_filter` | yes | **no** | yes | bound | strict |
-| `ablate_no_invariants` | yes | yes | **no** | bound | strict |
-| `ablate_no_audit_agent` | yes | yes | yes (4 assessors) | bound | strict |
-| `ablate_full_context` | yes | yes | yes | bound | strict (every assessor sees the whole case) |
-| `ablate_ack_any` | yes | yes | yes | **any ack closes the case** | strict |
-| `ablate_optimistic_transport` | yes | yes | yes | bound | **acceptance = delivery** |
-| `policy_blind` (compound) | no | — | no | any ack | optimistic |
-| `retrieval_only` (compound) | yes | no | no | any ack | optimistic |
-| `static_rules` (compound) | no | — | yes | bound | strict |
-
-`static_rules` is not a strawman: it is a competent hand-written rules engine, and it scores
-30/32 (`evaluation/results/latest.json`). It fails exactly where a static rule cannot know something — that a genetic result may not
-be communicated to the patient directly, and that a clause belongs to another jurisdiction. Three of
-the seven ablations change no outcome on this scenario set (`ablate_no_audit_agent`,
-`ablate_full_context`, `ablate_optimistic_transport`); all three null results are reported rather than dropped,
-and the last one exposed a flag that had no behaviour at all until it was implemented.
-
-## How the evidence works
+## Repository
 
 ```
-official document ──fetch──▶ page-marked text ──verify──▶ excerpt ──ingest──▶ index
-                    (build time)                (quote must appear
-                                                 on the declared page)
+app/          gateway: agents/, advisers/ (guard, residency, Jev, OpenAI-compatible), orchestration/ (gate, engine),
+              state_machine/, transport/, kb/ (ingest + verified retrieval), audit/, api/, static/ (built UI)
+web/          React console (CaseTimeline, Simulator, Standards & gaps, Evaluation, Audit, Decision trace)
+kb/           records/ (verified excerpts) · index/ (pinned) · framework/ (Y.3172 + Readiness mappings) · itu_inputdocs/
+scenarios/    S1–S7 staged event streams · expected/ (assertions)
+evaluation/   report.md · results/latest.json · agent_runs/ (recorded adviser responses)
+submission/   technical report · design brief · build scripts
+docs/         architecture, REPORT, audit disposition, design notes
+tests/        229 tests
 ```
 
-- Sources are downloaded from the issuing bodies at build time into
-  `~/.cache/resultrelay/sources/` and **are not redistributed**. Only the minimum necessary
-  quotations are committed, in `knowledge_base/excerpts/`.
-- Each quote is normalised (case, curly punctuation, all whitespace removed) and must appear as a
-  contiguous substring of the declared page. Wrong page = rejected. Misquote = rejected.
-- A rejected excerpt never reaches the index, so no agent can cite it.
-- Every excerpt carries a claim class. Only `BINDING_REQUIREMENT` can block an action, and for a
-  Dubai case only Dubai sources carry that class.
+## License
 
-Current build: **63 excerpts across 14 documents, 63 verified, 0 unverified, 0 rejected.**
-
-The same figures are exported to `frontend/public/data/manifest.json` and served at
-`/data/manifest.json`, so the claims can be checked with `curl` and `jq` without running the
-application — and a test asserts the manifest cannot drift from the index, the gap register or the
-last evaluation.
-
-## Repository map
-
-```
-backend/app/
-  core/config.py            runtime settings, safe defaults, no credentials
-  api/routes.py             REST surface (also serves the built UI and /data/manifest.json)
-  models/schemas.py         typed agent messages, gate decisions, evidence chunks
-  models/db.py              12-table SQLite store
-  kb/ingest.py              quote verification + index build
-  kb/retriever.py           BM25 + the applicability filter
-  agents/                   five assessors (four rule sets, one retriever), declared context scopes
-  orchestration/gate.py     the deterministic gate (the only path to an effect)
-  orchestration/engine.py   event loop, configurations, release policy
-  state_machine/            18 states, 17 events, guards, forbidden pairs, conflations
-  transport/simulator.py    asynchronous network without a network
-  audit/log.py              hash-chained, append-only
-  api/routes.py             REST surface
-  evaluation/               metrics that can fail, and the runner that proves it
-  static/app/               built frontend (served by the API process)
-evaluation/
-  scenarios/                7 synthetic event streams
-  expected_actions/         the assertions each scenario must satisfy (authorship is declared, not provable)
-  report.md, results/       generated artefacts
-knowledge_base/
-  source_register.csv      14 sources, with licence and verification status
-  excerpts/*.yaml           minimal necessary quotations
-  gap_register.csv          12 documented gaps
-  mappings/                 ITU-T Y.3172 and AI-readiness self-assessment
-frontend/src/pages/         CaseTimeline, Simulator, StandardsMapping, Evaluation, Audit
-docs/architecture.md        the design, and the distinctions it is built around
-REPORT.md                   results, method and limitations
-paper/ResultRelay_ITU_paper.docx   the five-page submission paper (built by paper/build_paper.py)
-docs/audit-disposition.md   red-team findings re-tested against the current build
-```
-
-## Interface
-
-The console is designed as an instrument panel for a regulator, not a startup dashboard: one lead
-question per screen, colour reserved for status, motion that shows a chain of custody.
-
-- **Review:** [`docs/design/01-critique.md`](docs/design/01-critique.md) — five review seats, ten
-  findings with measurements (including two contrast failures), and what was deliberately not done.
-- **Jobs:** [`docs/design/02-user-stories.md`](docs/design/02-user-stories.md) — quality officer, duty
-  biochemist, governance reviewer, evaluator; each story has an acceptance check.
-- **Direction:** [`docs/design/03-moodboard.html`](docs/design/03-moodboard.html) — palette with
-  measured contrast, type scale, motion curves, reference board.
-- **Decisions:** [`docs/design/04-decisions.md`](docs/design/04-decisions.md) — what each library does
-  and, more usefully, what it is forbidden to do.
-
-Stack: **GSAP** for the reveal/count-up language, **three.js** for the one scene that carries meaning
-(the pipeline, with the gate as a membrane and refused steps stopping at it), and **Magic UI patterns**
-(blur-fade, shine border, animated beam) re-implemented against local tokens rather than installed —
-the UI has to render in a sandbox with no network, so nothing is fetched from a CDN.
-
-Initial JS is ~246 kB gzipped 75; three.js is a separate lazy chunk (131 kB gzip) that only downloads
-when a scene mounts.
-
-Type and colour are self-hosted and measured, not asserted: **Inter** and **JetBrains Mono** ship in
-`frontend/public/fonts/` (SIL OFL 1.1, licences alongside) and are served from `/fonts`, and
-`python3 scripts/check_contrast.py` verifies 35 foreground/background pairs against WCAG AA — including
-the 3:1 floor for control boundaries and focus rings. It runs as part of `make check`. The audit that
-produced it, including the three failures it found after the first pass, is
-[`docs/design/05-typography-and-colour.md`](docs/design/05-typography-and-colour.md).
-
-## Deployment boundary (read before hosting this)
-
-This build has **no authentication**. Every endpoint returns case data to anyone who can reach it.
-
-- `make dev` binds `127.0.0.1` by default. Widening it is an explicit act: `RESULTRELAY_HOST=0.0.0.0`.
-- Cross-origin access is closed by default. If a separate front-end host is used, name it:
-  `RESULTRELAY_CORS_ORIGINS=https://host`.
-- `/api/health` states `authentication_enabled: false` so the boundary is declared, not assumed.
-- **Do not host this with real patient data.** It is a single-tenant demonstration over synthetic cases.
-
-## The advisory boundary
-
-A model may propose; it may never decide. `backend/app/advisers/` holds the containment wrapper:
-the boundary is closed by default, an out-of-country endpoint is refused under Federal Law 2/2019
-Art. 13 unless a named Health Authority resolution is recorded, a proposal citing material outside
-the applicable jurisdiction is rejected, and the deterministic gate computes its decision before it
-sees the proposal at all. `backend/tests/test_adviser.py` asserts the decision is unchanged when an
-accepted proposal is attached.
-
-A model client *does* ship (`backend/app/advisers/llm.py`) — an OpenAI-compatible adapter that is
-**not connected to anything by default**: its transport refuses, and the only endpoints it will
-accept are loopback or `.ae`. Enable it against an in-country server:
-
-```bash
-RESULTRELAY_ADVISE=1 \
-RESULTRELAY_ADVISE_URL=http://localhost:11434/v1 \
-RESULTRELAY_ADVISE_MODEL=qwen2.5 \
-make dev
-```
-
-An offshore endpoint such as `https://api.openai.com/v1` is refused at construction time under
-Federal Law 2/2019 Art. 13 (processing health data outside the State), with Art. 24's
-AED 500,000–700,000 penalty cited in the refusal — unless a named Health Authority resolution is
-recorded in `RESULTRELAY_RESIDENCY_RESOLUTION`. In the shipped configuration no model runs, and the
-Decision-trace page says so per step rather than implying otherwise.
-
-### Why this repo publishes decision traces, not chain-of-thought
-
-The hackathon criteria ask for reasoning that a judge can inspect, and this repository answers that
-with a decision trace rather than a transcript of model reasoning — a position, not an omission.
-Raw chain-of-thought is unverifiable (there is no artefact to check it against), unstable across
-runs, and in this build there is no model running at all, so a published transcript would be
-fabricated. What is published instead is the thing the criteria are actually after: for every step,
-the event, the evidence retrieved with its claim class and printed page, each agent's proposal with
-its basis, the gate's conditions and the invariant that fired, the transition and the resulting
-state — all reproducible by re-running the same scenario. A judge who wants to see *why* the system
-refused can read the refusal in `REPORT.md` §4, on the Decision-trace page, or in the failing
-assertion itself.
-
-## Honest limitations
-
-- **Synthetic everything.** No real patient data, no EHR, no SMS gateway, no model provider.
-- **Scenario authorship.** The eight scenarios were written by the same team that built the
-  engine. Expected outcomes are marked with an `authored_independently` flag, but the git history
-  cannot substantiate the authoring order — both landed in the same commit — so treat that flag as a
-  stated intention and not as independent validation. See `REPORT.md` §6.
-- **One partial discriminator.** Scenario S6 separates only `retrieval_only`. It is reported as a
-  partial result rather than dressed up as a general one.
-- **No clinical claim.** Nothing here shows a patient outcome improved.
-- **Gaps are published.** Fourteen open questions — including "no retrieved source sets an
-  acknowledgment clock", the federal 25-year retention floor this build does not implement, and the
-  absence of any way for a patient to report an inaccurate result — are in
-  `knowledge_base/gap_register.csv` rather than in a comments file.
-
-## Licence and third-party text
-
-Source documents belong to their issuing bodies and are not included. Quotations are minimal and
-attributed with section and page. See `knowledge_base/source_register.csv` for per-source licence
-notes and `docs/architecture.md` §4 for the classification scheme.
+[MIT](LICENSE). Source documents belong to their issuing bodies and are not redistributed; quotations are
+minimal and attributed with section and page.

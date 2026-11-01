@@ -1,0 +1,3 @@
+HL7 FHIR R5 — Task resource — Task.status (p.1)
+
+draft | requested | received | accepted |

@@ -1,0 +1,3 @@
+2025 SAFER Guide: Test Results Reporting and Follow-Up — Worksheet 2.3 (p.6)
+
+When test results are changed or amended, the ordering clinician and other clinicians responsible for follow-up are notified electronically, and the changed results and amended flag should be clearly visible in the EHR.

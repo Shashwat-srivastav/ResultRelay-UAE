@@ -1,0 +1,3 @@
+AI Ready – Analysis Towards a Standardized Readiness Framework, Report 2.0 — 2 / Data dimension (p.13)
+
+The Data dimension evaluates foundational data readiness for AI development and deployment.

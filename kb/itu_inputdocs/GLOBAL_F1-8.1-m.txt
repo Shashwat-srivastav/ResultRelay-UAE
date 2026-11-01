@@ -1,0 +1,3 @@
+Architectural framework for machine learning in future networks including IMT-2020 — 8.1 (M) (p.15)
+
+M (model): This is a machine learning model, in a form which is usable in a machine learning pipeline.

@@ -1,0 +1,3 @@
+Health Data Quality Policy (HISHD/PP-08) — 4.5.1 (p.10)
+
+Accurate: Data must be accurate and truthful at aggregate and record level, representing what was intended /defined by their official source. Data recorded in Data Subject/Patient EMRs must accurately reflect each other and the care/treatment provided to the Data Subject/Patient.

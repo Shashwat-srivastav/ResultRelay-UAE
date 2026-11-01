@@ -1,0 +1,3 @@
+Architectural framework for machine learning in future networks including IMT-2020 — 8.1 (P) (p.15)
+
+P (policy): This node enables the application of policies to the output of the model node.

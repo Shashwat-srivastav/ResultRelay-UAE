@@ -11,8 +11,8 @@
 #   make check     verify + test + eval + contrast (what CI would run)
 
 PY := python3
-BACKEND := backend
-FRONTEND := frontend
+BACKEND := .
+FRONTEND := web
 
 .PHONY: help setup kb verify test eval manifest build dev check clean
 
@@ -56,6 +56,6 @@ contrast:
 check: verify test eval contrast
 
 clean:
-	rm -f backend/resultrelay.db
+	rm -f resultrelay.db
 	rm -rf $(BACKEND)/app/static/app
 	find . -name '__pycache__' -type d -prune -exec rm -rf {} +

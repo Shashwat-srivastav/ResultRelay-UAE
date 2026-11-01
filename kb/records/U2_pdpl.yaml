@@ -1,0 +1,39 @@
+# United Arab Emirates — Federal Decree-Law No. 45 of 2021 on the Protection of Personal Data (PDPL)
+# IMPORTANT PROVENANCE NOTE: the official text is Arabic. This excerpt set is verified against an
+# unofficial English translation (Lexis Middle East, as published on a third-party mirror). It is
+# recorded as UNOFFICIAL_TRANSLATION, not as an official text, and is used only for one purpose:
+# to establish the SCOPE EXCLUSION that sends health data to the ICT Health Law (U1).
+source_id: U2
+excerpts:
+  - chunk_id: U2-art2-exclusion-health
+    section_id: "Article 2"
+    page_start: 3
+    page_end: 3
+    claim_classification: BINDING_REQUIREMENT
+    topics: [scope, exclusion, health_data, instrument_selection]
+    text: >-
+      The provisions of this Decree Law shall not apply to the following: a. government data.
+      b. government authorities that control or process Personal Data. c. Personal Data held with
+      security and judicial authorities. d. a Data Subject who processes his/her data for personal
+      purposes. e. health personal data that is subject to legislation regulating the protection and
+      Processing thereof.
+    support_note: >-
+      The reason a laboratory must not cite PDPL consent mechanics for result notification: health data
+      governed by other legislation is outside this Decree-Law, and in the UAE that legislation is the
+      ICT Health Law (U1). This is the "relevant but not applicable" case the filter exists for.
+
+  - chunk_id: U2-art1-sensitive-data-definition
+    section_id: "Article 1 (definitions)"
+    page_start: 2
+    page_end: 2
+    claim_classification: BINDING_REQUIREMENT
+    topics: [sensitive_data, health_data, definitions]
+    text: >-
+      Sensitive Personal Data: Any data that directly or indirectly reveals a natural person's family,
+      racial origin, political or philosophical opinions, religious beliefs, criminal records, biometric
+      data, or any data related to the health of such person, such as his/her physical, psychological,
+      mental, genetic or sexual condition, including information related to health care services
+      provided thereto that reveals his/her health status.
+    support_note: >-
+      Confirms that laboratory results are health data of the most sensitive kind, whichever instrument
+      ultimately governs them. Used to size the handling requirements, not to pick the instrument.

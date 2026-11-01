@@ -4,7 +4,7 @@
 This exists because the first colour pass was done by eye and shipped two failures (a 3.64:1 sidebar
 label and a 4.31:1 muted ink). Contrast is arithmetic, so it belongs in CI next to the tests.
 
-Tokens are parsed out of ``frontend/src/index.css`` rather than duplicated here: if someone changes a
+Tokens are parsed out of ``web/src/index.css`` rather than duplicated here: if someone changes a
 variable and forgets a pair, the numbers below are read from the file, and the check still applies.
 
 Usage::
@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-CSS = ROOT / "frontend" / "src" / "index.css"
+CSS = ROOT / "web" / "src" / "index.css"
 
 #: WCAG 2.2: 4.5:1 for normal text, 3.0:1 for large text (>=24px, or >=18.66px bold),
 #: 3.0:1 for the visual boundary of a control and for focus indicators (1.4.11, 2.4.11).

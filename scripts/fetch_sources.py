@@ -6,9 +6,9 @@ Why a cache rather than committed text
 Several of these documents are third-party standards whose terms do not permit
 redistribution. They are therefore downloaded from the issuing body at build time and kept
 outside the repository (default ``~/.cache/resultrelay/sources``). What *is* committed is the
-minimum quotation needed for each excerpt, in ``knowledge_base/excerpts/``.
+minimum quotation needed for each excerpt, in ``kb/records/``.
 
-The verifier in ``backend/app/kb/ingest.py`` reads this cache and refuses to index any excerpt
+The verifier in ``app/kb/ingest.py`` reads this cache and refuses to index any excerpt
 whose text cannot be found on the page the register claims. When the cache is absent, ingestion
 still runs but labels every excerpt ``UNVERIFIED_THIS_RUN`` and prints the list; the index is
 then not reproducible as evidence.
@@ -46,7 +46,7 @@ def _cache_dir() -> Path:
     override = os.environ.get("RESULTRELAY_SOURCE_CACHE")
     if override:
         return Path(override)
-    local = ROOT / "knowledge_base" / ".sources"
+    local = ROOT / "kb" / ".sources"
     if local.exists():
         return local
     return Path.home() / ".cache" / "resultrelay" / "sources"
@@ -107,7 +107,7 @@ SOURCES: dict[str, dict[str, str]] = {
         "file": "U1_ict_health_law.txt",
         "title": "Federal Law No. (2) of 2019 on the Use of ICT in Health Fields",
         "note": "The portal returns 403 to scripted clients. Retrieved by rendering the page and "
-                "recording the articles relied on; see knowledge_base/sources/README.md.",
+                "recording the articles relied on; see kb/sources/README.md.",
     },
     "U2": {
         "url": "https://privacyarabia.com/wp-content/uploads/2022/08/Decree-Law-45-2021-Data-Protection-Law-English.pdf",

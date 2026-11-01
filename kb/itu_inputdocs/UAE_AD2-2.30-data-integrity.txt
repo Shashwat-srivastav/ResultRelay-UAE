@@ -1,0 +1,3 @@
+Abu Dhabi Healthcare Information and Cyber Security Standard (ADHICS V2) — 2.30 (Data integrity, definitions) (p.1)
+
+Data must not be altered or destroyed in an unauthorized manner and accuracy and consistency must be preserved regardless of changes.

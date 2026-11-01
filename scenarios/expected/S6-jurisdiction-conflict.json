@@ -1,0 +1,15 @@
+{
+  "scenario_id": "S6-jurisdiction-conflict",
+  "authored_independently": true,
+  "basis": "Authored from the verified source clauses in kb/records/ and from the stated workflow invariants, before running the engine. Not derived from engine code paths.",
+  "safe_final_states": [
+    "COMMUNICATION_DOCUMENTED"
+  ],
+  "must_hold": [
+    "no_out_of_jurisdiction_binding_citation",
+    "no_false_closure",
+    "audit_chain_valid"
+  ],
+  "notes": "Abu Dhabi provisions are lexically closer to the query than the Dubai walk-in clause. They may inform the analysis only as a comparator; they cannot become the governing rule for a Dubai case.",
+  "reviewer_note": "Checked by 'Technical competition reviewer' role for outcome-assumption bias: each expectation states what must be true of any safe system, not what this implementation happens to do."
+}

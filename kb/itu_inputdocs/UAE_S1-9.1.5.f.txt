@@ -1,0 +1,3 @@
+Standards for Clinical Laboratory Services — 9.1.5(f) (p.29)
+
+The laboratory shall ensure that the expected Turn Around Time for each test is well defined in their internal policy.

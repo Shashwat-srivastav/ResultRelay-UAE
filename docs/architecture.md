@@ -198,7 +198,7 @@ case; the isolation test fails the moment the filter is removed.
 
 ### 4.4 Provenance is mechanical
 
-`backend/app/kb/ingest.py` normalises each quotation (case, curly punctuation, and *all*
+`app/kb/ingest.py` normalises each quotation (case, curly punctuation, and *all*
 whitespace, because PDF extractors break words mid-token) and requires it to appear as a
 contiguous substring of the declared page. A quote on the wrong page fails even if it exists
 elsewhere in the document. Excerpts that fail are excluded from the index, so retrieval cannot
@@ -206,7 +206,7 @@ cite them. Sources are fetched at build time into `~/.cache/resultrelay/sources`
 bodies and are not redistributed; only minimal necessary quotations are committed.
 
 Current state: **63 excerpts, 63 verified, 0 unverified, 0 rejected**, pinned by
-`knowledge_base/index/pinned.sha256` and re-verified at load (0.17 s).
+`kb/index/pinned.sha256` and re-verified at load (0.17 s).
 
 ITU-T Y.3172 §8.1 is used descriptively to name the components (source, collection, preprocessing,
 model, policy, decision, sink). No conformance claim is made, and the mapping file records two
@@ -244,11 +244,11 @@ Three ablations produce no difference on the eight scenarios (`ablate_no_audit_a
 had no behaviour at all until it was implemented: it changed a gate message and nothing else. It now
 records provider acceptance as delivery in the transport ledger, and a constructed
 accepted-without-receipt case diverges (strict `TRANSPORT_ACCEPTED`, optimistic
-`DELIVERY_CONFIRMED`) — see `backend/tests/test_transport_semantics.py`.
+`DELIVERY_CONFIRMED`) — see `tests/test_transport_semantics.py`.
 
 ## 5b. The advisory boundary (a model may propose, never decide)
 
-`backend/app/advisers/` is the only place a model is allowed to exist, and by default nothing does.
+`app/advisers/` is the only place a model is allowed to exist, and by default nothing does.
 One switch governs it: `RESULTRELAY_ADVISE=1` (`RESULTRELAY_ENABLE_LLM` is accepted as a legacy alias).
 `/api/health` distinguishes *enabled* from *enabled and connected*, because an operator reading
 "open" while the engine records `DISABLED` would be reading fiction.

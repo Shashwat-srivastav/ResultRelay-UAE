@@ -1,0 +1,136 @@
+{
+ "state": {
+  "jurisdiction": "AE-DU",
+  "situation": "{\"action_under_review\": \"SEND_PRIMARY\", \"case_scope\": \"WALK_IN\", \"current_state\": \"CORRECTION_PENDING\", \"this_step_event\": \"A reviewer opened the escalation\", \"current_result_revision\": \"SYN-CASE-002-R2\", \"attempts\": [{\"channel\": \"SMS-PATIENT\", \"revision\": \"SYN-CASE-002-R1\", \"transport_accepted\": true, \"delivery_receipt\": true}], \"acknowledgments_for_current_revision\": 0, \"approvals_on_record\": [\"SEND_PRIMARY\"], \"escalations_open\": 1}",
+  "retrieved_evidence": [
+   {
+    "chunk_id": "S1-11.1.3",
+    "jurisdiction": "AE-DU",
+    "class": "BINDING_REQUIREMENT",
+    "section": "11.1.3",
+    "text": "The laboratory shall keep record of the communication with the patient."
+   },
+   {
+    "chunk_id": "S1-11.1.1",
+    "jurisdiction": "AE-DU",
+    "class": "BINDING_REQUIREMENT",
+    "section": "11.1.1",
+    "text": "Critical laboratory results shall be reported clearly to the patient."
+   },
+   {
+    "chunk_id": "S1-11.1.2",
+    "jurisdiction": "AE-DU",
+    "class": "OFFICIAL_GUIDANCE",
+    "section": "11.1.2",
+    "text": "The laboratory should direct the patient to seek further medical advice."
+   },
+   {
+    "chunk_id": "S1-9.1.5.g",
+    "jurisdiction": "AE-DU",
+    "class": "BINDING_REQUIREMENT",
+    "section": "9.1.5(g)",
+    "text": "The laboratory shall have a mechanism for correcting erroneous result in a manner that identifies the corrected result as revised and the date and time of correction. Both the original and corrected reports must be maintained and retrievable by the laboratory."
+   },
+   {
+    "chunk_id": "S1-9.1.5.e",
+    "jurisdiction": "AE-DU",
+    "class": "BINDING_REQUIREMENT",
+    "section": "9.1.5(e)",
+    "text": "The laboratory shall have a policy for identifying and reporting critical results."
+   },
+   {
+    "chunk_id": "U4-4.5.1-accuracy",
+    "jurisdiction": "AE-DU",
+    "class": "BINDING_REQUIREMENT",
+    "section": "4.5.1",
+    "text": "Accurate: Data must be accurate and truthful at aggregate and record level, representing what was intended /defined by their official source. Data recorded in Data Subject/Patient EMRs must accurately reflect each other and the care/treatment provided to the Data Subject/Patient."
+   }
+  ],
+  "note": "Synthetic laboratory exercise. You advise; a deterministic gate decides."
+ },
+ "questions": {
+  "supported": {
+   "type": "noul",
+   "instructions": "As policy and legal reviewer for a walk-in laboratory: does the `retrieved_evidence` support taking `situation.action_under_review` now, given the case facts in `situation`? A transport acceptance is not delivery, and a callback does not prove identity.",
+   "criteria": {
+    "true": "Supported by the shown evidence and facts",
+    "false": "Not supported, or not settled"
+   }
+  },
+  "basis_chunk": {
+   "type": "choice",
+   "criteria": {
+    "S1-11.1.3": "[AE-DU] 11.1.3: The laboratory shall keep record of the communication with the patient.",
+    "S1-11.1.1": "[AE-DU] 11.1.1: Critical laboratory results shall be reported clearly to the patient.",
+    "S1-11.1.2": "[AE-DU] 11.1.2: The laboratory should direct the patient to seek further medical advice.",
+    "S1-9.1.5.g": "[AE-DU] 9.1.5(g): The laboratory shall have a mechanism for correcting erroneous result in a manner that identifies the corrected result as revised and the date and time of correction. Both the original and corrected reports must be maintained and retrievable by the laboratory.",
+    "S1-9.1.5.e": "[AE-DU] 9.1.5(e): The laboratory shall have a policy for identifying and reporting critical results.",
+    "U4-4.5.1-accuracy": "[AE-DU] 4.5.1: Accurate: Data must be accurate and truthful at aggregate and record level, representing what was intended /defined by their official source. Data recorded in Data Subject/Patient EMRs must accurately reflect each other and the care/treatment provided to the D",
+    "NONE": "None of the retrieved passages supports a specific action."
+   },
+   "instructions": "Which retrieved passage most directly governs `situation.action_under_review`?"
+  },
+  "alternative": {
+   "type": "choice",
+   "criteria": {
+    "SEND_PRIMARY": "Send the result notification on the approved primary channel.",
+    "AWAIT_EVIDENCE": "Wait: a receipt or other required evidence has not arrived yet.",
+    "RECONCILE_ATTEMPT": "Ask the provider what happened to an attempt whose outcome is unknown before doing anything else.",
+    "RETRY_SAME_CHANNEL": "Retry on the same channel (only after the earlier attempt is reconciled).",
+    "PROPOSE_FALLBACK": "Propose an alternative channel, which needs an approved fallback procedure.",
+    "AWAIT_ACKNOWLEDGMENT": "Delivery is evidenced; wait for the patient's acknowledgment of the current result version.",
+    "RECORD_DOCUMENTATION": "The communication is evidenced end to end; record it as required.",
+    "OPEN_CORRECTION_TASK": "The result was corrected; cancel stale messages and open a reviewed correction task.",
+    "ESCALATE_HUMAN": "Identity, scope, wording or next step is uncertain; hand to the named supervisor.",
+    "VERIFY_RECIPIENT": "The recipient or contact is not verified; verify before sending.",
+    "NO_ACTION": "Nothing should be done at this step."
+   },
+   "instructions": "If the action under review were not taken, which action would the evidence support instead?"
+  }
+ },
+ "response": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "supported": {
+    "type": "noul",
+    "noul": 0.08
+   },
+   "basis_chunk": {
+    "type": "choice",
+    "choice": "S1-11.1.1",
+    "confidence": 0.63,
+    "probabilities": {
+     "S1-11.1.3": 0.05,
+     "S1-11.1.1": 0.68,
+     "S1-11.1.2": 0.01,
+     "S1-9.1.5.g": 0.2,
+     "S1-9.1.5.e": 0.03,
+     "U4-4.5.1-accuracy": 0.01,
+     "NONE": 0.02
+    }
+   },
+   "alternative": {
+    "type": "choice",
+    "choice": "OPEN_CORRECTION_TASK",
+    "confidence": 0.86,
+    "probabilities": {
+     "SEND_PRIMARY": 0.0,
+     "AWAIT_EVIDENCE": 0.01,
+     "RECONCILE_ATTEMPT": 0.0,
+     "RETRY_SAME_CHANNEL": 0.0,
+     "PROPOSE_FALLBACK": 0.0,
+     "AWAIT_ACKNOWLEDGMENT": 0.09,
+     "RECORD_DOCUMENTATION": 0.02,
+     "OPEN_CORRECTION_TASK": 0.87,
+     "ESCALATE_HUMAN": 0.01,
+     "VERIFY_RECIPIENT": 0.0,
+     "NO_ACTION": 0.0
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 1823,
+   "output_tokens": 281
+  }
+ }
+}

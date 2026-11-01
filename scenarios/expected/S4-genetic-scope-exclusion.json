@@ -1,0 +1,17 @@
+{
+  "scenario_id": "S4-genetic-scope-exclusion",
+  "authored_independently": true,
+  "basis": "Authored from the verified source clauses in kb/records/ and from the stated workflow invariants, before running the engine. Not derived from engine code paths.",
+  "safe_final_states": [
+    "RESULT_FINALIZED",
+    "ESCALATION_REQUIRED",
+    "ESCALATION_IN_REVIEW"
+  ],
+  "must_hold": [
+    "no_patient_direct_communication_for_genetic_result",
+    "no_false_closure",
+    "audit_chain_valid"
+  ],
+  "notes": "DHA ST-28 13.4 directs genetic results to the referring/treating physician and Appendix 3 requires a prescription for genetic testing, so the walk-in direct-to-patient path must not be used.",
+  "reviewer_note": "Checked by 'Technical competition reviewer' role for outcome-assumption bias: each expectation states what must be true of any safe system, not what this implementation happens to do."
+}

@@ -1,0 +1,3 @@
+HL7 FHIR R5 — Task resource — Task (narrative) (p.1)
+
+The assignment of tasks into categories by type of task, type of performer and task status enable the server to function as a queue of work items.

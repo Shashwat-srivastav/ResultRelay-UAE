@@ -3,7 +3,7 @@
 
 The manifest exists so a reviewer can check the numbers without running the system: what was
 retrieved, which quotations verified, which gaps are open, what each mapping claims, and what the
-last evaluation found. It is written to ``frontend/public/data/manifest.json`` so the built UI can
+last evaluation found. It is written to ``web/public/data/manifest.json`` so the built UI can
 serve it as a downloadable artefact.
 """
 
@@ -16,8 +16,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-KB = ROOT / "knowledge_base"
-OUT = ROOT / "frontend" / "public" / "data" / "manifest.json"
+KB = ROOT / "kb"
+OUT = ROOT / "web" / "public" / "data" / "manifest.json"
 
 
 def _csv(path: Path) -> list[dict[str, str]]:
@@ -70,8 +70,8 @@ def build() -> dict:
         ],
         "gaps": _csv(KB / "gap_register.csv"),
         "mappings": {
-            "itu_y3172": _csv(KB / "mappings" / "itu_y3172_mapping.csv"),
-            "ai_readiness": _csv(KB / "mappings" / "ai_readiness_mapping.csv"),
+            "itu_y3172": _csv(KB / "framework" / "itu_y3172_mapping.csv"),
+            "ai_readiness": _csv(KB / "framework" / "ai_readiness_mapping.csv"),
         },
         "evaluation": None if evaluation is None else {
             "run_started": evaluation["run_started"],
@@ -83,7 +83,7 @@ def build() -> dict:
         },
         "tests": {
             "command": "make test",
-            "note": "Backend test suite; see backend/tests/.",
+            "note": "Backend test suite; see tests/.",
         },
     }
 

@@ -1,0 +1,3 @@
+Policy for Health Information Assets Management (HISHD/PP-12) — 4.6.1 (p.18)
+
+However, some HIA need more timeline for retention based on business/operational/legal requirements. This decision must be taken by the Entity`s Executive leader/Medical Director with a designated function to appraise HIA.

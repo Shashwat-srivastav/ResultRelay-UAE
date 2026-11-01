@@ -1,11 +1,25 @@
-# downloaded primary sources: not redistributed, see knowledge_base/sources/README.md
-knowledge_base/.sources/
+# downloaded primary sources: not redistributed, see kb/sources/README.md
+kb/.sources/
 __pycache__/
 *.pyc
-backend/resultrelay.db
-backend/.pytest_cache/
+resultrelay.db
+resultrelay.db-shm
+resultrelay.db-wal
+*.db-journal
 .pytest_cache/
 node_modules/
-frontend/node_modules/
-frontend/dist/
+web/dist/
+
+# secrets: never commit
+.env
+.env.local
+
+# local environments
+.venv/
+venv/
 .DS_Store
+evaluation/results/run-*.json
+evaluation/demo_run.json
+app/resultrelay.db*
+web/tsconfig.tsbuildinfo
+kb/chroma/

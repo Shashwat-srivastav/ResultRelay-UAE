@@ -1,0 +1,3 @@
+Architectural framework for machine learning in future networks including IMT-2020 — 8.1 (SRC) (p.14)
+
+SRC (source): This node is the source of data that can be used as input to the ML pipeline.

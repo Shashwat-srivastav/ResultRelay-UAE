@@ -1,0 +1,3 @@
+Architectural framework for machine learning in future networks including IMT-2020 — 3.2.2 (MLFO) (p.2)
+
+machine learning function orchestrator (MLFO): A logical node with functionalities that manage and orchestrate the nodes in a machine learning pipeline.

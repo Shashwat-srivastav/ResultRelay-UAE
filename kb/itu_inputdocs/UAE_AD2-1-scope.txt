@@ -1,0 +1,3 @@
+Abu Dhabi Healthcare Information and Cyber Security Standard (ADHICS V2) — 1 (Standard Scope), (a) (p.1)
+
+Any health sector (referred to as "entity") including but not limited to, Healthcare Facility, Payer, Service Provider in the Emirate of Abu Dhabi that generate, access, store, use, process and/or transmit health information.

@@ -1,0 +1,3 @@
+HAAD Clinical Laboratory Standards — PP.11.2(c) (p.13)
+
+The means of notifying the clinician of these critical values is defined. For inpatients, the process might be notifying a responsible nurse who calls the physician. For outpatients, the response may be to directly notify the physician.

@@ -1,0 +1,3 @@
+Policy for Health Information Assets Management (HISHD/PP-12) — 4.6.1 (p.18)
+
+In general and as per ICT Health Law, HIA must be stored for at least Twenty five (25) years from the date of the last health Procedure/Encounter of the Data Subject/ Patient.

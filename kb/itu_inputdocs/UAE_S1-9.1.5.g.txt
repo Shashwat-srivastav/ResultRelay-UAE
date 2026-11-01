@@ -1,0 +1,3 @@
+Standards for Clinical Laboratory Services — 9.1.5(g) (p.29)
+
+The laboratory shall have a mechanism for correcting erroneous result in a manner that identifies the corrected result as revised and the date and time of correction. Both the original and corrected reports must be maintained and retrievable by the laboratory.

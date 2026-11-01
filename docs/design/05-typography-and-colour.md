@@ -2,7 +2,7 @@
 
 Second pass over the parts of the interface that are easiest to get 90% right and hardest to get
 finished. Every claim below is either measured by `scripts/check_contrast.py`, asserted by
-`backend/tests/test_api.py::test_self_hosted_fonts_are_served_as_fonts`, or visible in
+`tests/test_api.py::test_self_hosted_fonts_are_served_as_fonts`, or visible in
 `screenshot-console.png`.
 
 ---
@@ -27,7 +27,7 @@ condition for redistribution, not a courtesy.
 
 ### The second bug, underneath it
 
-Mounting the fonts was not enough. `backend/app/main.py` served `/assets` and `/data`, and everything
+Mounting the fonts was not enough. `app/main.py` served `/assets` and `/data`, and everything
 else fell through to the SPA catch-all:
 
 ```
@@ -55,7 +55,7 @@ document.fonts.check('12px JetBrainsMonoVar') → true
 The first pass fixed two contrast failures I had already found and introduced nothing new. This pass
 made the palette *checkable*, which is the only way it stays fixed.
 
-`scripts/check_contrast.py` parses the tokens out of `frontend/src/index.css` (so it measures what
+`scripts/check_contrast.py` parses the tokens out of `web/src/index.css` (so it measures what
 ships, not a copy), then asserts **35 pairs**:
 
 - all text ≥ 4.5:1 (body, muted, chips, banners, sidebar, table headers, 3-D captions)

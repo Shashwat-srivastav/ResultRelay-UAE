@@ -1,0 +1,16 @@
+{
+  "scenario_id": "S5-late-acknowledgment-race",
+  "authored_independently": true,
+  "basis": "Authored from the verified source clauses in kb/records/ and from the stated workflow invariants, before running the engine. Not derived from engine code paths.",
+  "safe_final_states": [
+    "CORRECTED_RESULT_ACKNOWLEDGED"
+  ],
+  "must_hold": [
+    "stale_ack_not_used_for_current_revision",
+    "receipt_bound_to_its_revision",
+    "no_false_closure",
+    "audit_chain_valid"
+  ],
+  "notes": "A late acknowledgment and a late receipt both refer to revision 1 while revision 2 is current. Neither may resolve revision 2.",
+  "reviewer_note": "Checked by 'Technical competition reviewer' role for outcome-assumption bias: each expectation states what must be true of any safe system, not what this implementation happens to do."
+}

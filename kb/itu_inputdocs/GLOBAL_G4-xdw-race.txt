@@ -1,0 +1,3 @@
+Cross-Enterprise Document Workflow (XDW) content profile — 30.1.3 XDW Content Updater (p.1)
+
+This actor shall be able to solve "race condition" events

@@ -1,0 +1,3 @@
+Health Data Quality Policy (HISHD/PP-08) — 4.9.10 (p.20)
+
+Entities must implement methods to receive patient feedback regarding inaccurate information.

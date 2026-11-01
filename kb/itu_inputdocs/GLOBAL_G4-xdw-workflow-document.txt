@@ -1,0 +1,3 @@
+Cross-Enterprise Document Workflow (XDW) content profile — 30 (XDW overview) (p.1)
+
+This profile defines an instrument, called a "Workflow Document", to manage and track a shared workflow. It records the creation of tasks and maintains a historical record of tasks as they move through the associated workflow.

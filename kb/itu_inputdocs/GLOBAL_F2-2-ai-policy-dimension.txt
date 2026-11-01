@@ -1,0 +1,3 @@
+AI Ready – Analysis Towards a Standardized Readiness Framework, Report 2.0 — 2 / AI Policy dimension (p.16)
+
+The AI Policy dimension evaluates the maturity of institutional frameworks essential for trustworthy and responsible AI ecosystems. We selected AI Policy and Regulation, Regulatory Quality, and Implementation as they collectively represent the indispensable triad for accountable AI systems.

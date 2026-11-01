@@ -67,7 +67,7 @@ to 560 kB with a comment rather than silencing the warning globally.
 
 ```bash
 cd frontend && npm install          # three, gsap
-make build                          # tsc -b && vite build → backend/app/static/app
+make build                          # tsc -b && vite build → app/static/app
 make dev                            # http://127.0.0.1:8000
 ```
 
