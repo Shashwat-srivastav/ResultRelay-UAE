@@ -1,20 +1,2243 @@
 {
  "totals": {
-  "decision_points": 4,
-  "answers": 11,
+  "decision_points": 25,
+  "answers": 58,
   "tool_calls": 0,
-  "flagged": 4,
-  "corrected": 0,
-  "upheld": 4,
+  "flagged": 22,
+  "corrected": 7,
+  "upheld": 15,
   "disputed": 0,
-  "objections": 4,
-  "objections_rejected": 2,
-  "escalations": 2,
-  "institution_invoked": 3,
-  "gaps": 4,
+  "objections": 18,
+  "objections_rejected": 13,
+  "escalations": 5,
+  "institution_invoked": 8,
+  "gaps": 19,
   "unavailable": 0
  },
  "runs": [
+  {
+   "scenario": "SC-01",
+   "source": "S7-genetic-physician-route",
+   "final": "COMMUNICATION_DOCUMENTED",
+   "matched": true,
+   "deliberations": [
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "SEND_PRIMARY",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.99
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 1.0
+        },
+        "settled": {
+         "noul": 0.01
+        },
+        "gap": {
+         "choice": "NO_ACK_CLOCK",
+         "confidence": 0.98
+        },
+        "rationale": {
+         "text": "The **S1-11.1.1** clause explicitly mandates that critical results must be reported *clearly to the patient*, and no acknowledgment of the current revision (SYN-CASE-008-R1) exists in the `acknowledgments` list, leaving the duty unsettled. The reviewer issue was incorrect because **S1-11.1.1** directly governs the obligation to communicate to the patient, not a physician, and the case facts confir",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "SCOPE_ROUTES_ELSEWHERE",
+         "confidence": 0.37
+        },
+        "own_reading": {
+         "choice": "NOT_YET_SENT",
+         "confidence": 0.49
+        },
+        "analyst_supported": {
+         "noul": 0.25
+        },
+        "analyst_issue": {
+         "choice": "CLAUSE_DOES_NOT_SUPPORT",
+         "confidence": 0.39
+        },
+        "alternative": {
+         "choice": "AWAIT_EVIDENCE",
+         "confidence": 0.45
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=SCOPE_ROUTES_ELSEWHERE (p=0.37); own_reading=NOT_YET_SENT (p=0.49); analyst_supported=0.25; analyst_issue=CLAUSE_DOES_NOT_SUPPORT (p=0.39); alternative=AWAIT_EVIDENCE (p=0.45)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.25,
+       "reviewer_issue": "CLAUSE_DOES_NOT_SUPPORT",
+       "flagged": true,
+       "outcome": "UPHELD",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [
+        "objection SCOPE_ROUTES_ELSEWHERE does not fit the case: the message is not addressed to the patient, or the scope is walk-in"
+       ],
+       "flagged": true,
+       "outcome": "OBJECTION_REJECTED"
+      }
+     },
+     "conflicts": [
+      "READINGS_DIFFER: analyst AWAITING_ACK vs reviewer NOT_YET_SENT",
+      "UNSETTLED_HIGH_RISK: the binding clauses do not settle a high-risk step"
+     ],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 1,
+      "corrected": 0,
+      "upheld": 1,
+      "disputed": [],
+      "objection_rejected": true,
+      "institution_invoked": false
+     }
+    },
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "RECORD_DOCUMENTATION",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "DIRECT_NOT_PERMITTED",
+         "confidence": 0.95
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 0.95
+        },
+        "settled": {
+         "noul": 0.05
+        },
+        "gap": {
+         "choice": "RECIPIENT_RESPONSIBILITY_UNCLEAR",
+         "confidence": 0.95
+        },
+        "rationale": {
+         "text": "The duty to communicate critical results to the patient is **not settled** because **S1-11.1.1** mandates direct communication to the patient, but the physician\u2019s acknowledgment does not fulfill this requirement. The case facts show no direct patient communication or acknowledgment, leaving a gap in compliance with the binding clause.",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "NONE",
+         "confidence": 0.35
+        },
+        "own_reading": {
+         "choice": "COMMUNICATED",
+         "confidence": 0.37
+        },
+        "analyst_supported": {
+         "noul": 0.04
+        },
+        "analyst_issue": {
+         "choice": "CLAUSE_DOES_NOT_SUPPORT",
+         "confidence": 0.74
+        },
+        "alternative": {
+         "choice": "ESCALATE_HUMAN",
+         "confidence": 0.38
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=NONE (p=0.35); own_reading=COMMUNICATED (p=0.37); analyst_supported=0.04; analyst_issue=CLAUSE_DOES_NOT_SUPPORT (p=0.74); alternative=ESCALATE_HUMAN (p=0.38)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.04,
+       "reviewer_issue": "CLAUSE_DOES_NOT_SUPPORT",
+       "flagged": true,
+       "outcome": "CORRECTED",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [],
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      }
+     },
+     "conflicts": [
+      "READINGS_DIFFER: analyst DIRECT_NOT_PERMITTED vs reviewer COMMUNICATED",
+      "UNSETTLED_HIGH_RISK: the binding clauses do not settle a high-risk step"
+     ],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 1,
+      "corrected": 1,
+      "upheld": 0,
+      "disputed": [],
+      "objection_rejected": false,
+      "institution_invoked": false
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "SC-02",
+   "source": "S3a-channel-outage-no-evidence",
+   "final": "ESCALATION_REQUIRED",
+   "matched": true,
+   "deliberations": [
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "SEND_PRIMARY",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "NOT_YET_SENT",
+         "confidence": 0.95
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 0.5
+        },
+        "settled": {
+         "noul": 0.05
+        },
+        "gap": {
+         "choice": "FALLBACK_UNAUTHORISED",
+         "confidence": 0.5
+        },
+        "tool_request": {
+         "choice": "NONE",
+         "confidence": 0.5
+        },
+        "rationale": {
+         "text": "The duty to communicate the result is governed by **S1-11.1.1**, which mandates clear reporting of critical results to the patient, and **S1-11.1.3**, which requires record-keeping of patient communication. The case is **not settled** because the primary SMS gateway failure prevents communication, and no fallback procedure is approved, leaving a gap in delivery evidence and escalation authority (G",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "UNAPPROVED_CHANNEL",
+         "confidence": 0.6
+        },
+        "own_reading": {
+         "choice": "INSUFFICIENT_EVIDENCE",
+         "confidence": 0.46
+        },
+        "analyst_supported": {
+         "noul": 0.6
+        },
+        "analyst_issue": {
+         "choice": "NONE",
+         "confidence": 0.36
+        },
+        "alternative": {
+         "choice": "ESCALATE_HUMAN",
+         "confidence": 0.53
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=UNAPPROVED_CHANNEL (p=0.60); own_reading=INSUFFICIENT_EVIDENCE (p=0.46); analyst_supported=0.6; analyst_issue=NONE (p=0.36); alternative=ESCALATE_HUMAN (p=0.53)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.6,
+       "reviewer_issue": "NONE",
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      },
+      "reviewer": {
+       "checks": [
+        "objection UNAPPROVED_CHANNEL does not fit the case: the action is not a fallback, or a fallback procedure is approved"
+       ],
+       "flagged": true,
+       "outcome": "OBJECTION_REJECTED"
+      }
+     },
+     "conflicts": [
+      "READINGS_DIFFER: analyst NOT_YET_SENT vs reviewer INSUFFICIENT_EVIDENCE",
+      "UNSETTLED_HIGH_RISK: the binding clauses do not settle a high-risk step"
+     ],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 0,
+      "corrected": 0,
+      "upheld": 0,
+      "disputed": [],
+      "objection_rejected": true,
+      "institution_invoked": false
+     }
+    },
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "RECONCILE_ATTEMPT",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.98
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 0.95
+        },
+        "settled": {
+         "noul": 0.05
+        },
+        "gap": {
+         "choice": "NO_ACK_CLOCK",
+         "confidence": 0.97
+        },
+        "tool_request": {
+         "choice": "NONE",
+         "confidence": 1.0
+        },
+        "rationale": {
+         "text": "The duty to communicate the result is governed by **S1-11.1.1**, which mandates clear reporting of critical results to the patient, and **S1-11.1.3**, which requires record-keeping of patient communication. The case is **not settled** because no acknowledgment exists for the current revision (SYN-CASE-003-R1), and the SMS attempt timed out without delivery confirmation or reconciliation. The gap l",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "institution": {
+       "status": "ANSWERED",
+       "answers": {
+        "telecom_covers": {
+         "noul": 0.75
+        },
+        "clause": {
+         "choice": "U8-8-1-licensee-responsibility",
+         "confidence": 0.98
+        },
+        "rationale": {
+         "text": "The clause **U8-8-1-licensee-responsibility** is the closest governing clause, as it explicitly assigns responsibility for the delivery of text messages (including those from MSCs) to a mobile customer, which aligns with the case's clinical result communication scenario. The previous choice **U8-1-23-delivery-definition** is marketing-specific and does not cover clinical messages or delivery respo",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "U8-1-23-delivery-definition",
+        "G6-9.2.3.15-tp-status",
+        "G6-3-sme-definition",
+        "U8-8-1-licensee-responsibility"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "RETRY_BEFORE_RECONCILE",
+         "confidence": 0.37
+        },
+        "own_reading": {
+         "choice": "INSUFFICIENT_EVIDENCE",
+         "confidence": 0.35
+        },
+        "analyst_supported": {
+         "noul": 0.64
+        },
+        "analyst_issue": {
+         "choice": "NONE",
+         "confidence": 0.33
+        },
+        "institution_supported": {
+         "noul": 0.03
+        },
+        "institution_issue": {
+         "choice": "CLAUSE_DOES_NOT_SUPPORT",
+         "confidence": 0.53
+        },
+        "alternative": {
+         "choice": "AWAIT_EVIDENCE",
+         "confidence": 0.63
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=RETRY_BEFORE_RECONCILE (p=0.37); own_reading=INSUFFICIENT_EVIDENCE (p=0.35); analyst_supported=0.64; analyst_issue=NONE (p=0.33); institution_supported=0.03; institution_issue=CLAUSE_DOES_NOT_SUPPORT (p=0.53); alternative=AWAIT_EVIDENCE (p=0.63)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.64,
+       "reviewer_issue": "NONE",
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      },
+      "institution": {
+       "checks": [],
+       "reviewer_supported": 0.03,
+       "reviewer_issue": "CLAUSE_DOES_NOT_SUPPORT",
+       "flagged": true,
+       "outcome": "CORRECTED",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [
+        "objection RETRY_BEFORE_RECONCILE does not fit the case: the action is not a retry, or no attempt is unreconciled"
+       ],
+       "flagged": true,
+       "outcome": "OBJECTION_REJECTED"
+      }
+     },
+     "conflicts": [
+      "READINGS_DIFFER: analyst AWAITING_ACK vs reviewer INSUFFICIENT_EVIDENCE"
+     ],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 1,
+      "corrected": 1,
+      "upheld": 0,
+      "disputed": [],
+      "objection_rejected": true,
+      "institution_invoked": true
+     }
+    },
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "PROPOSE_FALLBACK",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.95
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 0.95
+        },
+        "settled": {
+         "noul": 0.05
+        },
+        "gap": {
+         "choice": "FALLBACK_UNAUTHORISED",
+         "confidence": 0.9
+        },
+        "rationale": {
+         "text": "The duty to communicate the result is **not settled** because the SMS attempt failed without acknowledgment, and no fallback procedure is approved. The gap is **NO_ACK_CLOCK** as no binding clause sets a time limit for acknowledgment or escalation, and **FALLBACK_UNAUTHORISED** since no clause authorizes an alternative communication method. The binding clause **S1-11.1.1** mandates clear reporting",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "institution": {
+       "status": "ANSWERED",
+       "answers": {
+        "telecom_covers": {
+         "noul": 0.0
+        },
+        "clause": {
+         "choice": "U8-8-1-licensee-responsibility",
+         "confidence": 0.95
+        },
+        "rationale": {
+         "text": "The **U8-8-1-licensee-responsibility** clause is the only binding requirement assigning responsibility for delivery of text messages to a mobile customer, though it is limited to marketing messages. The **U8-1-23-delivery-definition** is a definition, not a governing clause, and the other options are either comparators or unrelated. The case involves a clinical result, but no clause explicitly cov",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "U8-1-23-delivery-definition",
+        "G6-9.2.3.15-tp-status",
+        "G6-3-sme-definition",
+        "U8-8-1-licensee-responsibility"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "UNAPPROVED_CHANNEL",
+         "confidence": 0.93
+        },
+        "own_reading": {
+         "choice": "INSUFFICIENT_EVIDENCE",
+         "confidence": 0.27
+        },
+        "analyst_supported": {
+         "noul": 0.44
+        },
+        "analyst_issue": {
+         "choice": "CLAUSE_DOES_NOT_SUPPORT",
+         "confidence": 0.33
+        },
+        "institution_supported": {
+         "noul": 0.04
+        },
+        "institution_issue": {
+         "choice": "WRONG_AUTHORITY",
+         "confidence": 0.32
+        },
+        "alternative": {
+         "choice": "AWAIT_EVIDENCE",
+         "confidence": 0.57
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=UNAPPROVED_CHANNEL (p=0.93); own_reading=INSUFFICIENT_EVIDENCE (p=0.27); analyst_supported=0.44; analyst_issue=CLAUSE_DOES_NOT_SUPPORT (p=0.33); institution_supported=0.04; institution_issue=WRONG_AUTHORITY (p=0.32); alternative=AWAIT_EVIDENCE (p=0.57)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.44,
+       "reviewer_issue": "CLAUSE_DOES_NOT_SUPPORT",
+       "flagged": true,
+       "outcome": "CORRECTED",
+       "checks_after": []
+      },
+      "institution": {
+       "checks": [],
+       "reviewer_supported": 0.04,
+       "reviewer_issue": "WRONG_AUTHORITY",
+       "flagged": true,
+       "outcome": "CORRECTED",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [],
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      }
+     },
+     "conflicts": [
+      "READINGS_DIFFER: analyst AWAITING_ACK vs reviewer INSUFFICIENT_EVIDENCE",
+      "OBJECTION: UNAPPROVED_CHANNEL",
+      "UNSETTLED_HIGH_RISK: the binding clauses do not settle a high-risk step",
+      "TELECOM_GAP: no telecom clause covers delivery of this message to a person (GR-15)"
+     ],
+     "decision": "ESCALATE",
+     "escalation": "reviewer objection UNAPPROVED_CHANNEL, consistent with the case record: The action uses an alternative channel with no approved fallback procedure.",
+     "summary": {
+      "flagged": 2,
+      "corrected": 2,
+      "upheld": 0,
+      "disputed": [],
+      "objection_rejected": false,
+      "institution_invoked": true
+     }
+    },
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "PROPOSE_FALLBACK",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.98
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 0.95
+        },
+        "settled": {
+         "noul": 0.05
+        },
+        "gap": {
+         "choice": "NO_ACK_CLOCK",
+         "confidence": 0.92
+        },
+        "tool_request": {
+         "choice": "NONE",
+         "confidence": 1.0
+        },
+        "rationale": {
+         "text": "The duty to communicate critical results to the patient is binding under **S1-11.1.1**, but the case is **not settled** because the patient failed to acknowledge the current revision (SYN-CASE-003-R1) within the configured window (60 minutes), and no fallback procedure has been approved. The gap lies in the **NO_ACK_CLOCK** policy issue, as no clause explicitly mandates escalation timing or fallba",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "institution": {
+       "status": "ANSWERED",
+       "answers": {
+        "telecom_covers": {
+         "noul": 0.95
+        },
+        "clause": {
+         "choice": "U8-8-1-licensee-responsibility",
+         "confidence": 0.98
+        },
+        "rationale": {
+         "text": "Clause **U8-8-1-licensee-responsibility** explicitly assigns responsibility for the delivery of text messages to the Licensee, including those from MSCs, to a Mobile Customer, which aligns with the case involving a failed SMS delivery to a patient (a Mobile Customer). The previous choice **U8-1-23-delivery-definition** only defines the delivery stage but does not assign responsibility, and the oth",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "U8-1-23-delivery-definition",
+        "G6-9.2.3.15-tp-status",
+        "G6-3-sme-definition",
+        "U8-8-1-licensee-responsibility"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "UNAPPROVED_CHANNEL",
+         "confidence": 0.76
+        },
+        "own_reading": {
+         "choice": "INSUFFICIENT_EVIDENCE",
+         "confidence": 0.3
+        },
+        "analyst_supported": {
+         "noul": 0.56
+        },
+        "analyst_issue": {
+         "choice": "NONE",
+         "confidence": 0.32
+        },
+        "institution_supported": {
+         "noul": 0.03
+        },
+        "institution_issue": {
+         "choice": "CLAUSE_DOES_NOT_SUPPORT",
+         "confidence": 0.51
+        },
+        "alternative": {
+         "choice": "ESCALATE_HUMAN",
+         "confidence": 0.76
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=UNAPPROVED_CHANNEL (p=0.76); own_reading=INSUFFICIENT_EVIDENCE (p=0.30); analyst_supported=0.56; analyst_issue=NONE (p=0.32); institution_supported=0.03; institution_issue=CLAUSE_DOES_NOT_SUPPORT (p=0.51); alternative=ESCALATE_HUMAN (p=0.76)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.56,
+       "reviewer_issue": "NONE",
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      },
+      "institution": {
+       "checks": [],
+       "reviewer_supported": 0.03,
+       "reviewer_issue": "CLAUSE_DOES_NOT_SUPPORT",
+       "flagged": true,
+       "outcome": "CORRECTED",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [],
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      }
+     },
+     "conflicts": [
+      "READINGS_DIFFER: analyst AWAITING_ACK vs reviewer INSUFFICIENT_EVIDENCE",
+      "OBJECTION: UNAPPROVED_CHANNEL",
+      "UNSETTLED_HIGH_RISK: the binding clauses do not settle a high-risk step"
+     ],
+     "decision": "ESCALATE",
+     "escalation": "reviewer objection UNAPPROVED_CHANNEL, consistent with the case record: The action uses an alternative channel with no approved fallback procedure.",
+     "summary": {
+      "flagged": 1,
+      "corrected": 1,
+      "upheld": 0,
+      "disputed": [],
+      "objection_rejected": false,
+      "institution_invoked": true
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "SC-03",
+   "source": "S2-correction-after-acknowledgment",
+   "final": "CORRECTED_RESULT_ACKNOWLEDGED",
+   "matched": true,
+   "deliberations": [
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "SEND_PRIMARY",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.99
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 0.95
+        },
+        "settled": {
+         "noul": 0.01
+        },
+        "gap": {
+         "choice": "NO_ACK_CLOCK",
+         "confidence": 0.95
+        },
+        "rationale": {
+         "text": "The duty to communicate the result is governed by **S1-11.1.1**, which mandates clear reporting of critical results to the patient, and **S1-11.1.3**, which requires record-keeping of patient communication. The case is **not settled** because no acknowledgment of the current revision (SYN-CASE-002-R1) has been recorded, and the system is in the `SEND_PRIMARY` step with no evidence of acknowledgmen",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "NONE",
+         "confidence": 0.8
+        },
+        "own_reading": {
+         "choice": "NOT_YET_SENT",
+         "confidence": 0.71
+        },
+        "analyst_supported": {
+         "noul": 0.27
+        },
+        "analyst_issue": {
+         "choice": "CLAUSE_DOES_NOT_SUPPORT",
+         "confidence": 0.56
+        },
+        "alternative": {
+         "choice": "AWAIT_EVIDENCE",
+         "confidence": 0.55
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=NONE (p=0.80); own_reading=NOT_YET_SENT (p=0.71); analyst_supported=0.27; analyst_issue=CLAUSE_DOES_NOT_SUPPORT (p=0.56); alternative=AWAIT_EVIDENCE (p=0.55)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.27,
+       "reviewer_issue": "CLAUSE_DOES_NOT_SUPPORT",
+       "flagged": true,
+       "outcome": "UPHELD",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [],
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      }
+     },
+     "conflicts": [
+      "READINGS_DIFFER: analyst AWAITING_ACK vs reviewer NOT_YET_SENT",
+      "UNSETTLED_HIGH_RISK: the binding clauses do not settle a high-risk step"
+     ],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 1,
+      "corrected": 0,
+      "upheld": 1,
+      "disputed": [],
+      "objection_rejected": false,
+      "institution_invoked": false
+     }
+    },
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "RECORD_DOCUMENTATION",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "COMMUNICATED",
+         "confidence": 1.0
+        },
+        "clause": {
+         "choice": "S1-11.1.3",
+         "confidence": 1.0
+        },
+        "settled": {
+         "noul": 1.0
+        },
+        "gap": {
+         "choice": "NONE",
+         "confidence": 1.0
+        },
+        "tool_request": {
+         "choice": "NONE",
+         "confidence": 1.0
+        },
+        "rationale": {
+         "text": "The patient has acknowledged the current revision (SYN-CASE-002-R1) of the critical laboratory result, fulfilling the communication duty under **S1-11.1.1**, and the duty to record this communication is now active under **S1-11.1.3**. The case is settled as no further action is required beyond documentation.",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "NONE",
+         "confidence": 0.9
+        },
+        "own_reading": {
+         "choice": "COMMUNICATED",
+         "confidence": 0.99
+        },
+        "analyst_supported": {
+         "noul": 0.59
+        },
+        "analyst_issue": {
+         "choice": "NONE",
+         "confidence": 0.52
+        },
+        "alternative": {
+         "choice": "RECORD_DOCUMENTATION",
+         "confidence": 0.89
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=NONE (p=0.90); own_reading=COMMUNICATED (p=0.99); analyst_supported=0.59; analyst_issue=NONE (p=0.52); alternative=RECORD_DOCUMENTATION (p=0.89)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.59,
+       "reviewer_issue": "NONE",
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      },
+      "reviewer": {
+       "checks": [],
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      }
+     },
+     "conflicts": [],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 0,
+      "corrected": 0,
+      "upheld": 0,
+      "disputed": [],
+      "objection_rejected": false,
+      "institution_invoked": false
+     }
+    },
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "SEND_PRIMARY",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "AWAITING_ACK",
+         "confidence": 1.0
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 1.0
+        },
+        "settled": {
+         "noul": 0.0
+        },
+        "gap": {
+         "choice": "NONE",
+         "confidence": 1.0
+        },
+        "rationale": {
+         "text": "The acknowledgment for **SYN-CASE-002-R1** does not satisfy the duty to communicate the **current revision (SYN-CASE-002-R2)** as required by **S1-11.1.1**, since the patient has not acknowledged the corrected result. The duty remains **AWAITING_ACK** under the binding clause **S1-11.1.1**, and no policy gap is exposed beyond the lack of acknowledgment for the current revision. This aligns with **",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "STALE_REVISION_ACK",
+         "confidence": 0.73
+        },
+        "own_reading": {
+         "choice": "NOT_YET_SENT",
+         "confidence": 0.46
+        },
+        "analyst_supported": {
+         "noul": 0.05
+        },
+        "analyst_issue": {
+         "choice": "WRONG_REVISION",
+         "confidence": 0.89
+        },
+        "alternative": {
+         "choice": "OPEN_CORRECTION_TASK",
+         "confidence": 0.46
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=STALE_REVISION_ACK (p=0.73); own_reading=NOT_YET_SENT (p=0.46); analyst_supported=0.05; analyst_issue=WRONG_REVISION (p=0.89); alternative=OPEN_CORRECTION_TASK (p=0.46)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [
+        "claims the result was communicated, but no one acknowledged the current revision"
+       ],
+       "reviewer_supported": 0.05,
+       "reviewer_issue": "WRONG_REVISION",
+       "flagged": true,
+       "outcome": "CORRECTED",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [
+        "objection STALE_REVISION_ACK does not fit the case: the action does not rely on an older-revision acknowledgment"
+       ],
+       "flagged": true,
+       "outcome": "OBJECTION_REJECTED"
+      }
+     },
+     "conflicts": [
+      "READINGS_DIFFER: analyst AWAITING_ACK vs reviewer NOT_YET_SENT",
+      "UNSETTLED_HIGH_RISK: the binding clauses do not settle a high-risk step"
+     ],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 1,
+      "corrected": 1,
+      "upheld": 0,
+      "disputed": [],
+      "objection_rejected": true,
+      "institution_invoked": false
+     }
+    },
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "SEND_PRIMARY",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.99
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 0.98
+        },
+        "settled": {
+         "noul": 0.95
+        },
+        "gap": {
+         "choice": "NONE",
+         "confidence": 0.97
+        },
+        "rationale": {
+         "text": "The acknowledgment for **SYN-CASE-002-R1** does not count for the current revision (**SYN-CASE-002-R2**), and no acknowledgment for **R2** has been recorded, violating **S1-11.1.1** and **S1-11.1.3**. The duty remains **AWAITING_ACK** under the binding clauses, as the current revision has not been acknowledged despite delivery receipts.",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "STALE_REVISION_ACK",
+         "confidence": 0.71
+        },
+        "own_reading": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.5
+        },
+        "analyst_supported": {
+         "noul": 0.1
+        },
+        "analyst_issue": {
+         "choice": "WRONG_REVISION",
+         "confidence": 0.9
+        },
+        "alternative": {
+         "choice": "RECORD_DOCUMENTATION",
+         "confidence": 0.33
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=STALE_REVISION_ACK (p=0.71); own_reading=AWAITING_ACK (p=0.50); analyst_supported=0.1; analyst_issue=WRONG_REVISION (p=0.90); alternative=RECORD_DOCUMENTATION (p=0.33)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [
+        "claims the result was communicated, but no one acknowledged the current revision"
+       ],
+       "reviewer_supported": 0.1,
+       "reviewer_issue": "WRONG_REVISION",
+       "flagged": true,
+       "outcome": "CORRECTED",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [
+        "objection STALE_REVISION_ACK does not fit the case: the action does not rely on an older-revision acknowledgment"
+       ],
+       "flagged": true,
+       "outcome": "OBJECTION_REJECTED"
+      }
+     },
+     "conflicts": [],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 1,
+      "corrected": 1,
+      "upheld": 0,
+      "disputed": [],
+      "objection_rejected": true,
+      "institution_invoked": false
+     }
+    },
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "ESCALATE_HUMAN",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "COMMUNICATED",
+         "confidence": 1.0
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 1.0
+        },
+        "settled": {
+         "noul": 1.0
+        },
+        "gap": {
+         "choice": "NONE",
+         "confidence": 1.0
+        },
+        "tool_request": {
+         "choice": "NONE",
+         "confidence": 1.0
+        },
+        "rationale": {
+         "text": "The patient has acknowledged the current revision (SYN-CASE-002-R2) of the critical laboratory result, fulfilling the binding requirement in **S1-11.1.1** to report results clearly to the patient, and the communication record requirement in **S1-11.1.3** is satisfied by the documented acknowledgment. The duty is thus fulfilled without further escalation needed.",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "ACK_WINDOW_EXPIRED",
+         "confidence": 0.49
+        },
+        "own_reading": {
+         "choice": "COMMUNICATED",
+         "confidence": 0.98
+        },
+        "analyst_supported": {
+         "noul": 0.58
+        },
+        "analyst_issue": {
+         "choice": "NONE",
+         "confidence": 0.51
+        },
+        "alternative": {
+         "choice": "RECORD_DOCUMENTATION",
+         "confidence": 0.93
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=ACK_WINDOW_EXPIRED (p=0.49); own_reading=COMMUNICATED (p=0.98); analyst_supported=0.58; analyst_issue=NONE (p=0.51); alternative=RECORD_DOCUMENTATION (p=0.93)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.58,
+       "reviewer_issue": "NONE",
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      },
+      "reviewer": {
+       "checks": [
+        "objection ACK_WINDOW_EXPIRED does not fit the case: the window has not passed, an acknowledgment exists, or the action is not waiting"
+       ],
+       "flagged": true,
+       "outcome": "OBJECTION_REJECTED"
+      }
+     },
+     "conflicts": [],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 0,
+      "corrected": 0,
+      "upheld": 0,
+      "disputed": [],
+      "objection_rejected": true,
+      "institution_invoked": false
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "SC-04",
+   "source": "S4-genetic-scope-exclusion",
+   "final": "ESCALATION_REQUIRED",
+   "matched": true,
+   "deliberations": [
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "SEND_PRIMARY",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "DIRECT_NOT_PERMITTED",
+         "confidence": 0.99
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 1.0
+        },
+        "settled": {
+         "noul": 0.0
+        },
+        "gap": {
+         "choice": "RECIPIENT_RESPONSIBILITY_UNCLEAR",
+         "confidence": 0.98
+        },
+        "rationale": {
+         "text": "The **S1-11.1.1** clause mandates **direct communication to the patient** for critical results, but the current routing is set to the physician, violating this requirement. The duty is **not settled** because the system has not yet sent the result, and the routing conflict remains unresolved.",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "SCOPE_ROUTES_ELSEWHERE",
+         "confidence": 0.52
+        },
+        "own_reading": {
+         "choice": "NOT_YET_SENT",
+         "confidence": 0.32
+        },
+        "analyst_supported": {
+         "noul": 0.32
+        },
+        "analyst_issue": {
+         "choice": "CLAUSE_DOES_NOT_SUPPORT",
+         "confidence": 0.44
+        },
+        "alternative": {
+         "choice": "ESCALATE_HUMAN",
+         "confidence": 0.62
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=SCOPE_ROUTES_ELSEWHERE (p=0.52); own_reading=NOT_YET_SENT (p=0.32); analyst_supported=0.32; analyst_issue=CLAUSE_DOES_NOT_SUPPORT (p=0.44); alternative=ESCALATE_HUMAN (p=0.62)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.32,
+       "reviewer_issue": "CLAUSE_DOES_NOT_SUPPORT",
+       "flagged": true,
+       "outcome": "UPHELD",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [
+        "objection SCOPE_ROUTES_ELSEWHERE does not fit the case: the message is not addressed to the patient, or the scope is walk-in"
+       ],
+       "flagged": true,
+       "outcome": "OBJECTION_REJECTED"
+      }
+     },
+     "conflicts": [
+      "READINGS_DIFFER: analyst DIRECT_NOT_PERMITTED vs reviewer NOT_YET_SENT",
+      "UNSETTLED_HIGH_RISK: the binding clauses do not settle a high-risk step"
+     ],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 1,
+      "corrected": 0,
+      "upheld": 1,
+      "disputed": [],
+      "objection_rejected": true,
+      "institution_invoked": false
+     }
+    },
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "SEND_PRIMARY",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "DIRECT_NOT_PERMITTED",
+         "confidence": 0.98
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 0.98
+        },
+        "settled": {
+         "noul": 0.05
+        },
+        "gap": {
+         "choice": "RECIPIENT_RESPONSIBILITY_UNCLEAR",
+         "confidence": 0.95
+        },
+        "tool_request": {
+         "choice": "NONE",
+         "confidence": 0.5
+        },
+        "rationale": {
+         "text": "The critical result must be communicated directly to the patient per **S1-11.1.1**, but the recipient route is currently set to the physician, violating **S1-11.1.1**\u2019s direct communication requirement. No acknowledgment exists for **SYN-CASE-005-R1**, and the system has not yet sent the result to the patient, leaving the duty unsettled due to routing conflict.",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "SCOPE_ROUTES_ELSEWHERE",
+         "confidence": 0.45
+        },
+        "own_reading": {
+         "choice": "DIRECT_NOT_PERMITTED",
+         "confidence": 0.31
+        },
+        "analyst_supported": {
+         "noul": 0.51
+        },
+        "analyst_issue": {
+         "choice": "CLAUSE_DOES_NOT_SUPPORT",
+         "confidence": 0.35
+        },
+        "alternative": {
+         "choice": "ESCALATE_HUMAN",
+         "confidence": 0.63
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=SCOPE_ROUTES_ELSEWHERE (p=0.45); own_reading=DIRECT_NOT_PERMITTED (p=0.31); analyst_supported=0.51; analyst_issue=CLAUSE_DOES_NOT_SUPPORT (p=0.35); alternative=ESCALATE_HUMAN (p=0.63)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.51,
+       "reviewer_issue": "CLAUSE_DOES_NOT_SUPPORT",
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      },
+      "reviewer": {
+       "checks": [
+        "objection SCOPE_ROUTES_ELSEWHERE does not fit the case: the message is not addressed to the patient, or the scope is walk-in"
+       ],
+       "flagged": true,
+       "outcome": "OBJECTION_REJECTED"
+      }
+     },
+     "conflicts": [
+      "UNSETTLED_HIGH_RISK: the binding clauses do not settle a high-risk step"
+     ],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 0,
+      "corrected": 0,
+      "upheld": 0,
+      "disputed": [],
+      "objection_rejected": true,
+      "institution_invoked": false
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "SC-05",
+   "source": "S8-accepted-never-delivered",
+   "final": "ESCALATION_REQUIRED",
+   "matched": true,
+   "deliberations": [
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "SEND_PRIMARY",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.99
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 1.0
+        },
+        "settled": {
+         "noul": 0.97
+        },
+        "gap": {
+         "choice": "NO_ACK_CLOCK",
+         "confidence": 0.95
+        },
+        "rationale": {
+         "text": "The duty to communicate critical results directly to the patient is explicitly mandated by **S1-11.1.1**, and the case facts confirm the result is critical, finalized, and unacknowledged. The acknowledgment window has not elapsed, so the obligation remains **AWAITING_ACK** with no policy gap requiring escalation.",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "NONE",
+         "confidence": 0.83
+        },
+        "own_reading": {
+         "choice": "NOT_YET_SENT",
+         "confidence": 0.85
+        },
+        "analyst_supported": {
+         "noul": 0.43
+        },
+        "analyst_issue": {
+         "choice": "NONE",
+         "confidence": 0.24
+        },
+        "alternative": {
+         "choice": "SEND_PRIMARY",
+         "confidence": 0.65
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=NONE (p=0.83); own_reading=NOT_YET_SENT (p=0.85); analyst_supported=0.43; analyst_issue=NONE (p=0.24); alternative=SEND_PRIMARY (p=0.65)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.43,
+       "reviewer_issue": "NONE",
+       "flagged": true,
+       "outcome": "UPHELD",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [],
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      }
+     },
+     "conflicts": [
+      "READINGS_DIFFER: analyst AWAITING_ACK vs reviewer NOT_YET_SENT"
+     ],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 1,
+      "corrected": 0,
+      "upheld": 1,
+      "disputed": [],
+      "objection_rejected": false,
+      "institution_invoked": false
+     }
+    },
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "RECONCILE_ATTEMPT",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.98
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 1.0
+        },
+        "settled": {
+         "noul": 0.02
+        },
+        "gap": {
+         "choice": "NO_ACK_CLOCK",
+         "confidence": 0.95
+        },
+        "tool_request": {
+         "choice": "NONE",
+         "confidence": 1.0
+        },
+        "rationale": {
+         "text": "The duty to communicate critical results to the patient is explicitly governed by **S1-11.1.1**, and the case shows the result was sent via SMS but lacks acknowledgment, leaving the duty unsettled until confirmed. The retention requirement (S1-11.1.3) does not resolve the communication obligation itself.",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "institution": {
+       "status": "ANSWERED",
+       "answers": {
+        "telecom_covers": {
+         "noul": 0.0
+        },
+        "clause": {
+         "choice": "NONE",
+         "confidence": 1.0
+        },
+        "rationale": {
+         "text": "The case involves a **critical clinical result** sent via SMS to a **patient (person)**, not a *Mobile Customer* or *SME* in a marketing context. No clause covers delivery of clinical results to a person, and **U8-8-1-licensee-responsibility** is limited to marketing messages. Thus, **NONE** remains correct. The **reviewer_issue** was misinterpreted; the clause does not *support* the claim because",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "U8-1-23-delivery-definition",
+        "G6-9.2.3.15-tp-status",
+        "G6-3-sme-definition",
+        "U8-8-1-licensee-responsibility"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "ACCEPTANCE_AS_DELIVERY",
+         "confidence": 0.84
+        },
+        "own_reading": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.82
+        },
+        "analyst_supported": {
+         "noul": 0.6
+        },
+        "analyst_issue": {
+         "choice": "CLAUSE_DOES_NOT_SUPPORT",
+         "confidence": 0.27
+        },
+        "institution_supported": {
+         "noul": 0.14
+        },
+        "institution_issue": {
+         "choice": "CLAUSE_DOES_NOT_SUPPORT",
+         "confidence": 0.35
+        },
+        "alternative": {
+         "choice": "AWAIT_EVIDENCE",
+         "confidence": 0.6
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=ACCEPTANCE_AS_DELIVERY (p=0.84); own_reading=AWAITING_ACK (p=0.82); analyst_supported=0.6; analyst_issue=CLAUSE_DOES_NOT_SUPPORT (p=0.27); institution_supported=0.14; institution_issue=CLAUSE_DOES_NOT_SUPPORT (p=0.35); alternative=AWAIT_EVIDENCE (p=0.60)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.6,
+       "reviewer_issue": "CLAUSE_DOES_NOT_SUPPORT",
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      },
+      "institution": {
+       "checks": [],
+       "reviewer_supported": 0.14,
+       "reviewer_issue": "CLAUSE_DOES_NOT_SUPPORT",
+       "flagged": true,
+       "outcome": "UPHELD",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [
+        "objection ACCEPTANCE_AS_DELIVERY does not fit the case: no accepted-but-undelivered attempt, or the action does not rely on delivery"
+       ],
+       "flagged": true,
+       "outcome": "OBJECTION_REJECTED"
+      }
+     },
+     "conflicts": [
+      "TELECOM_GAP: no telecom clause covers delivery of this message to a person (GR-15)"
+     ],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 1,
+      "corrected": 0,
+      "upheld": 1,
+      "disputed": [],
+      "objection_rejected": true,
+      "institution_invoked": true
+     }
+    },
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "ESCALATE_HUMAN",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.99
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 0.99
+        },
+        "settled": {
+         "noul": 0.01
+        },
+        "gap": {
+         "choice": "NO_ACK_CLOCK",
+         "confidence": 0.98
+        },
+        "rationale": {
+         "text": "The duty to communicate the critical result (SYN-CASE-009-R1) remains unsettled because the SMS was accepted by the provider but no acknowledgment of the current revision was recorded, violating **S1-11.1.1** (clear reporting requirement). The case facts confirm no acknowledgment exists, and no clause mandates escalation timing or alternative procedures.",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "institution": {
+       "status": "ANSWERED",
+       "answers": {
+        "telecom_covers": {
+         "noul": 0.0
+        },
+        "clause": {
+         "choice": "NONE",
+         "confidence": 1.0
+        },
+        "rationale": {
+         "text": "The **U8-8-1-licensee-responsibility** clause assigns responsibility for delivery of messages to a Mobile Customer, but it is limited to marketing messages. No clause explicitly covers delivery of clinical results to a person, and the **U8-1-23-delivery-definition** and **G6-9.2.3.15-tp-status** do not address this scenario either. The **G6-3-sme-definition** is irrelevant as it does not address d",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "U8-1-23-delivery-definition",
+        "G6-9.2.3.15-tp-status",
+        "G6-3-sme-definition",
+        "U8-8-1-licensee-responsibility"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "ACK_WINDOW_EXPIRED",
+         "confidence": 0.25
+        },
+        "own_reading": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.77
+        },
+        "analyst_supported": {
+         "noul": 0.34
+        },
+        "analyst_issue": {
+         "choice": "CLAUSE_DOES_NOT_SUPPORT",
+         "confidence": 0.39
+        },
+        "institution_supported": {
+         "noul": 0.03
+        },
+        "institution_issue": {
+         "choice": "CLAUSE_DOES_NOT_SUPPORT",
+         "confidence": 0.32
+        },
+        "alternative": {
+         "choice": "AWAIT_ACKNOWLEDGMENT",
+         "confidence": 0.54
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=ACK_WINDOW_EXPIRED (p=0.25); own_reading=AWAITING_ACK (p=0.77); analyst_supported=0.34; analyst_issue=CLAUSE_DOES_NOT_SUPPORT (p=0.39); institution_supported=0.03; institution_issue=CLAUSE_DOES_NOT_SUPPORT (p=0.32); alternative=AWAIT_ACKNOWLEDGMENT (p=0.54)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.34,
+       "reviewer_issue": "CLAUSE_DOES_NOT_SUPPORT",
+       "flagged": true,
+       "outcome": "UPHELD",
+       "checks_after": []
+      },
+      "institution": {
+       "checks": [],
+       "reviewer_supported": 0.03,
+       "reviewer_issue": "CLAUSE_DOES_NOT_SUPPORT",
+       "flagged": true,
+       "outcome": "UPHELD",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [
+        "objection ACK_WINDOW_EXPIRED does not fit the case: the window has not passed, an acknowledgment exists, or the action is not waiting"
+       ],
+       "flagged": true,
+       "outcome": "OBJECTION_REJECTED"
+      }
+     },
+     "conflicts": [
+      "TELECOM_GAP: no telecom clause covers delivery of this message to a person (GR-15)"
+     ],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 2,
+      "corrected": 0,
+      "upheld": 2,
+      "disputed": [],
+      "objection_rejected": true,
+      "institution_invoked": true
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "SC-06",
+   "source": "S9-reply-from-someone-else",
+   "final": "ESCALATION_REQUIRED",
+   "matched": true,
+   "deliberations": [
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "SEND_PRIMARY",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "AWAITING_ACK",
+         "confidence": 1.0
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 1.0
+        },
+        "settled": {
+         "noul": 0.95
+        },
+        "gap": {
+         "choice": "NO_ACK_CLOCK",
+         "confidence": 0.85
+        },
+        "tool_request": {
+         "choice": "NONE",
+         "confidence": 1.0
+        },
+        "rationale": {
+         "text": "The result is critical and must be communicated directly to the patient under **S1-11.1.1**, and the laboratory must record the communication under **S1-11.1.3**. The case facts show no acknowledgment yet, so the duty remains active and unfulfilled.",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "NONE",
+         "confidence": 0.75
+        },
+        "own_reading": {
+         "choice": "NOT_YET_SENT",
+         "confidence": 0.85
+        },
+        "analyst_supported": {
+         "noul": 0.6
+        },
+        "analyst_issue": {
+         "choice": "NONE",
+         "confidence": 0.44
+        },
+        "alternative": {
+         "choice": "SEND_PRIMARY",
+         "confidence": 0.75
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=NONE (p=0.75); own_reading=NOT_YET_SENT (p=0.85); analyst_supported=0.6; analyst_issue=NONE (p=0.44); alternative=SEND_PRIMARY (p=0.75)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.6,
+       "reviewer_issue": "NONE",
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      },
+      "reviewer": {
+       "checks": [],
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      }
+     },
+     "conflicts": [
+      "READINGS_DIFFER: analyst AWAITING_ACK vs reviewer NOT_YET_SENT"
+     ],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 0,
+      "corrected": 0,
+      "upheld": 0,
+      "disputed": [],
+      "objection_rejected": false,
+      "institution_invoked": false
+     }
+    },
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "RECORD_DOCUMENTATION",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "COMMUNICATED",
+         "confidence": 1.0
+        },
+        "clause": {
+         "choice": "S1-11.1.3",
+         "confidence": 1.0
+        },
+        "settled": {
+         "noul": 1.0
+        },
+        "gap": {
+         "choice": "NONE",
+         "confidence": 1.0
+        },
+        "rationale": {
+         "text": "The acknowledgment from the patient's daughter ('This is his daughter...') confirms communication of the current revision (SYN-CASE-010-R1) to the patient, satisfying the duty to record documentation under **S1-11.1.3**. The case is settled as no further action is required beyond documentation, and no gaps remain.",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "TEXT_CONTRADICTS_RECORD",
+         "confidence": 0.93
+        },
+        "own_reading": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.26
+        },
+        "analyst_supported": {
+         "noul": 0.08
+        },
+        "analyst_issue": {
+         "choice": "IGNORES_WHAT_WAS_SAID",
+         "confidence": 0.41
+        },
+        "alternative": {
+         "choice": "ESCALATE_HUMAN",
+         "confidence": 0.43
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=TEXT_CONTRADICTS_RECORD (p=0.93); own_reading=AWAITING_ACK (p=0.26); analyst_supported=0.08; analyst_issue=IGNORES_WHAT_WAS_SAID (p=0.41); alternative=ESCALATE_HUMAN (p=0.43)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.08,
+       "reviewer_issue": "IGNORES_WHAT_WAS_SAID",
+       "flagged": true,
+       "outcome": "UPHELD",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [],
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      }
+     },
+     "conflicts": [
+      "READINGS_DIFFER: analyst COMMUNICATED vs reviewer AWAITING_ACK",
+      "OBJECTION: TEXT_CONTRADICTS_RECORD"
+     ],
+     "decision": "ESCALATE",
+     "escalation": "reviewer objection TEXT_CONTRADICTS_RECORD (model judgment, confidence 0.93; free text cannot be checked by code): What a person said in `case.recent_events` contradicts the structured record (for example the reply is from someone other than the patient).",
+     "summary": {
+      "flagged": 1,
+      "corrected": 0,
+      "upheld": 1,
+      "disputed": [],
+      "objection_rejected": false,
+      "institution_invoked": false
+     }
+    }
+   ]
+  },
   {
    "scenario": "SC-07",
    "source": "S10-escalation-nobody-answers",
@@ -584,6 +2807,334 @@
       "disputed": [],
       "objection_rejected": false,
       "institution_invoked": true
+     }
+    }
+   ]
+  },
+  {
+   "scenario": "SC-08",
+   "source": "S11-delivered-not-acknowledged",
+   "final": "ESCALATION_REQUIRED",
+   "matched": true,
+   "deliberations": [
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "SEND_PRIMARY",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.99
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 0.99
+        },
+        "settled": {
+         "noul": 0.02
+        },
+        "gap": {
+         "choice": "NO_ACK_CLOCK",
+         "confidence": 0.98
+        },
+        "rationale": {
+         "text": "The duty to communicate critical results directly to the patient is settled under **S1-11.1.1**, but the absence of an acknowledgment for the current revision leaves the duty unsettled. The 1-minute elapsed time is insufficient to confirm acknowledgment under the 60-minute window, and no policy gap other than the lack of an acknowledgment clock is exposed.",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "NONE",
+         "confidence": 0.7
+        },
+        "own_reading": {
+         "choice": "NOT_YET_SENT",
+         "confidence": 0.89
+        },
+        "analyst_supported": {
+         "noul": 0.34
+        },
+        "analyst_issue": {
+         "choice": "CLAUSE_DOES_NOT_SUPPORT",
+         "confidence": 0.3
+        },
+        "alternative": {
+         "choice": "SEND_PRIMARY",
+         "confidence": 0.57
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=NONE (p=0.70); own_reading=NOT_YET_SENT (p=0.89); analyst_supported=0.34; analyst_issue=CLAUSE_DOES_NOT_SUPPORT (p=0.30); alternative=SEND_PRIMARY (p=0.57)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.34,
+       "reviewer_issue": "CLAUSE_DOES_NOT_SUPPORT",
+       "flagged": true,
+       "outcome": "UPHELD",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [],
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      }
+     },
+     "conflicts": [
+      "READINGS_DIFFER: analyst AWAITING_ACK vs reviewer NOT_YET_SENT",
+      "UNSETTLED_HIGH_RISK: the binding clauses do not settle a high-risk step"
+     ],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 1,
+      "corrected": 0,
+      "upheld": 1,
+      "disputed": [],
+      "objection_rejected": false,
+      "institution_invoked": false
+     }
+    },
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "AWAIT_ACKNOWLEDGMENT",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.99
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 1.0
+        },
+        "settled": {
+         "noul": 0.97
+        },
+        "gap": {
+         "choice": "NONE",
+         "confidence": 0.99
+        },
+        "rationale": {
+         "text": "The duty to communicate critical results to the patient is explicitly governed by **S1-11.1.1**, and the case shows the result was delivered but not acknowledged, leaving the communication record incomplete as required by **S1-11.1.3**. The 60-minute acknowledgment window is configured but not yet triggered, and no gap in policy is exposed beyond the need for acknowledgment.",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "NONE",
+         "confidence": 0.92
+        },
+        "own_reading": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.99
+        },
+        "analyst_supported": {
+         "noul": 0.34
+        },
+        "analyst_issue": {
+         "choice": "CLAUSE_DOES_NOT_SUPPORT",
+         "confidence": 0.56
+        },
+        "alternative": {
+         "choice": "AWAIT_ACKNOWLEDGMENT",
+         "confidence": 0.67
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=NONE (p=0.92); own_reading=AWAITING_ACK (p=0.99); analyst_supported=0.34; analyst_issue=CLAUSE_DOES_NOT_SUPPORT (p=0.56); alternative=AWAIT_ACKNOWLEDGMENT (p=0.67)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.34,
+       "reviewer_issue": "CLAUSE_DOES_NOT_SUPPORT",
+       "flagged": true,
+       "outcome": "UPHELD",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [],
+       "flagged": false,
+       "outcome": "ACCEPTED"
+      }
+     },
+     "conflicts": [],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 1,
+      "corrected": 0,
+      "upheld": 1,
+      "disputed": [],
+      "objection_rejected": false,
+      "institution_invoked": false
+     }
+    },
+    {
+     "provider": {
+      "analyst": "replay:recorded-mistral",
+      "institution": "replay:recorded-mistral",
+      "reviewer": "replay:recorded-jev"
+     },
+     "action_under_review": "ESCALATE_HUMAN",
+     "messages": {
+      "analyst": {
+       "status": "ANSWERED",
+       "answers": {
+        "obligation": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.99
+        },
+        "clause": {
+         "choice": "S1-11.1.1",
+         "confidence": 0.95
+        },
+        "settled": {
+         "noul": 0.98
+        },
+        "gap": {
+         "choice": "NO_ACK_CLOCK",
+         "confidence": 0.85
+        },
+        "rationale": {
+         "text": "The duty to communicate the result is **settled** under **S1-11.1.1**, which mandates clear reporting of critical results to the patient, and **S1-11.1.3**, which requires record-keeping of patient communication. The case is **awaiting acknowledgment** as no acknowledgment for `SYN-CASE-012-R1` exists, and no policy gap exists regarding the obligation itself, though the **acknowledgment clock** is",
+         "source": "model"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      },
+      "reviewer": {
+       "status": "ANSWERED",
+       "answers": {
+        "objection": {
+         "choice": "ACK_WINDOW_EXPIRED",
+         "confidence": 0.43
+        },
+        "own_reading": {
+         "choice": "AWAITING_ACK",
+         "confidence": 0.99
+        },
+        "analyst_supported": {
+         "noul": 0.23
+        },
+        "analyst_issue": {
+         "choice": "CLAUSE_DOES_NOT_SUPPORT",
+         "confidence": 0.3
+        },
+        "alternative": {
+         "choice": "AWAIT_ACKNOWLEDGMENT",
+         "confidence": 0.69
+        },
+        "rationale": {
+         "source": "typed-judgment",
+         "text": "objection=ACK_WINDOW_EXPIRED (p=0.43); own_reading=AWAITING_ACK (p=0.99); analyst_supported=0.23; analyst_issue=CLAUSE_DOES_NOT_SUPPORT (p=0.30); alternative=AWAIT_ACKNOWLEDGMENT (p=0.69)"
+        }
+       },
+       "invalid": [],
+       "evidence": [
+        "S1-11.1.3",
+        "S1-11.1.1",
+        "S1-11.1",
+        "U11-art6-21-health-information-system"
+       ],
+       "tool": "NONE"
+      }
+     },
+     "tool_calls": [],
+     "reviews": {
+      "analyst": {
+       "checks": [],
+       "reviewer_supported": 0.23,
+       "reviewer_issue": "CLAUSE_DOES_NOT_SUPPORT",
+       "flagged": true,
+       "outcome": "UPHELD",
+       "checks_after": []
+      },
+      "reviewer": {
+       "checks": [
+        "objection ACK_WINDOW_EXPIRED does not fit the case: the window has not passed, an acknowledgment exists, or the action is not waiting"
+       ],
+       "flagged": true,
+       "outcome": "OBJECTION_REJECTED"
+      }
+     },
+     "conflicts": [],
+     "decision": "PROCEED",
+     "escalation": null,
+     "summary": {
+      "flagged": 1,
+      "corrected": 0,
+      "upheld": 1,
+      "disputed": [],
+      "objection_rejected": true,
+      "institution_invoked": false
      }
     }
    ]
