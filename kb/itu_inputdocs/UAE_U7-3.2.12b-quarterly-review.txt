@@ -1,0 +1,3 @@
+NABIDH Policies and Standards, Section 4: Audit Policy — 3.2.12(b) (p.6)
+
+The generated audit logs shall be reviewed on a regular basis based on audit criteria developed in advance, at least quarterly, in order to detect improper use of the PHI.

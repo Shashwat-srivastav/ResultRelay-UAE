@@ -1,0 +1,3 @@
+Artificial Intelligence in the Healthcare — 4.2.1 (Accountability) (p.7)
+
+Accountability for the outcomes of an AI solution in health care must be agreed between designer, researcher, developer, operators/commissioners, and end users.

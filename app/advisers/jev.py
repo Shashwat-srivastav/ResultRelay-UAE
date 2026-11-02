@@ -2,9 +2,9 @@
 
 Jev does not write a proposal; it *selects*. One request asks, over the same bounded case view:
 
-  candidate_action    which permitted action the retrieved evidence supports (Choice over the action set)
-  basis_chunk         which retrieved chunk is the basis for it (Choice over chunk ids, or NONE)
-  evidence_sufficient whether the evidence settles the step at all (Noul)
+  objection           whether the evidence or case facts give a concrete reason not to take the step (Noul)
+  basis_chunk         which retrieved chunk governs the step (Choice over chunk ids, or NONE)
+  alternative         which action the evidence supports if the step is not taken (Choice over the action set)
 
 so every citation is, by construction, a chunk the retriever returned, and the rationale is the
 probability distribution itself rather than prose that could be confabulated. The guard
@@ -68,11 +68,14 @@ class JevAdviser:
                  "note": "Synthetic laboratory exercise. You advise; a deterministic gate decides."}
         under_review = (json.loads(situation).get("action_under_review") if situation.strip().startswith("{") else None)
         questions = {
-            "supported": {"type": "noul", "instructions":
-                "As policy and legal reviewer for a walk-in laboratory: does the `retrieved_evidence` support taking "
-                "`situation.action_under_review` now, given the case facts in `situation`? A transport acceptance is not "
-                "delivery, and a callback does not prove identity.",
-                "criteria": {"true": "Supported by the shown evidence and facts", "false": "Not supported, or not settled"}},
+            "objection": {"type": "noul", "instructions":
+                "As policy and legal reviewer for a walk-in laboratory: do the `retrieved_evidence` or the case facts in "
+                "`situation` give a concrete reason NOT to take `situation.action_under_review` now? Concrete reasons "
+                "include: treating a transport acceptance as delivery, an acknowledgment for an older result revision, "
+                "a result scope the shown clauses route elsewhere, an unverified recipient, an unapproved channel, or a "
+                "retry before the earlier attempt is reconciled. The absence of a clause that names this exact step is "
+                "not by itself a reason.",
+                "criteria": {"true": "A concrete objection exists", "false": "No concrete objection"}},
             "basis_chunk": {"type": "choice", "criteria": basis, "instructions":
                 "Which retrieved passage most directly governs `situation.action_under_review`?"},
             "alternative": {"type": "choice", "criteria": ACTIONS, "instructions":
@@ -80,7 +83,10 @@ class JevAdviser:
         }
         resp = self._ask(state, questions)
         a = resp["answers"]
-        p_ok = a["supported"]["noul"]
+        # Verify-for-objection: the earlier form asked whether the evidence positively *supports* each step,
+        # and endorsed 0 of 23 gate actions, because routine steps (wait for a receipt) have no clause naming
+        # them. A legal reviewer looks for a reason not to act; that is what is asked now.
+        p_ok = 1 - a["objection"]["noul"]
         pick = a["basis_chunk"]["choice"]
         if under_review in ACTIONS and p_ok >= 0.5:
             action, conf = under_review, p_ok
@@ -88,7 +94,7 @@ class JevAdviser:
             action, conf = a["alternative"]["choice"], 1 - p_ok
         else:
             action, conf = "ESCALATE_HUMAN", 1 - p_ok
-        rationale = (f"reviewed {under_review}: supported p={p_ok:.2f}; basis {pick} "
+        rationale = (f"reviewed {under_review}: objection p={1 - p_ok:.2f}; basis {pick} "
                      f"(p={a['basis_chunk']['confidence']:.2f}); alternative {a['alternative']['choice']} "
                      f"(p={a['alternative']['confidence']:.2f})")
         return AdvisoryProposal(

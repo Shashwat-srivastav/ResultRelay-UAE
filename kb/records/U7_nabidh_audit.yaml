@@ -1,0 +1,41 @@
+# Dubai Health Authority — NABIDH Policies and Standards, Section 4: Audit Policy (v1.0, September 2020)
+# Binding on DHA-licensed facilities connected to NABIDH, Dubai's health information exchange. Used here
+# for the audit-log expectations that apply when a laboratory result moves through NABIDH, and to expose
+# the retention question between audit logs and health records.
+source_id: U7
+excerpts:
+  - chunk_id: U7-3.2.10-human-readable
+    section_id: "3.2.10"
+    page_start: 5
+    page_end: 5
+    claim_classification: BINDING_REQUIREMENT
+    topics: [audit, audit_log, readability]
+    text: >-
+      Ensure audit logs are either in human readable format or translatable by some easy to use tool to
+      be in human readable format.
+    support_note: The audit view renders every hash-chained entry as readable JSON and a timeline.
+
+  - chunk_id: U7-3.2.11-retention-three-years
+    section_id: "3.2.11"
+    page_start: 6
+    page_end: 6
+    claim_classification: BINDING_REQUIREMENT
+    topics: [audit, audit_log, retention, record_retention]
+    text: >-
+      Ensure audit logs are retained for Three (3) years, the same duration as the retention time
+      required of NABIDH managed PHI.
+    support_note: >-
+      Three years for audit logs, against 25 years for health data under Federal Law 2/2019 Art. 20.
+      Whether a record that a critical result was communicated is an audit log or part of the health
+      record is not settled by either instrument (gap GR-15).
+
+  - chunk_id: U7-3.2.12b-quarterly-review
+    section_id: "3.2.12(b)"
+    page_start: 6
+    page_end: 6
+    claim_classification: BINDING_REQUIREMENT
+    topics: [audit, audit_review, monitoring]
+    text: >-
+      The generated audit logs shall be reviewed on a regular basis based on audit criteria developed in
+      advance, at least quarterly, in order to detect improper use of the PHI.
+    support_note: Integrity checks run on every read; periodic human review is an operator duty.

@@ -46,6 +46,12 @@ IN_COUNTRY_CIDRS_ENV = "RESULTRELAY_RESIDENCY_AE_CIDRS"
 
 ART13 = "Federal Law 2/2019 Art. 13"
 ART24 = "Federal Law 2/2019 Art. 24"
+#: The implementing resolution for Art. 13. It lists the cases in which health data may be stored or
+#: processed outside the State (treatment abroad, samples sent to overseas laboratories, and others,
+#: some with consent, anonymisation or in-country-copy conditions). Its official text was not retrieved,
+#: so this module never decides whether an exception applies: it cites the resolution and sends the
+#: question to a person. A recorded resolution reference is the only way that person's answer gets in.
+MR51 = "Ministerial Resolution No. 51 of 2021 (Art. 13 exceptions; official text not retrieved - human determination)"
 
 
 class Residency(str, Enum):
@@ -185,9 +191,10 @@ def authorise(endpoint: str | None, resolution_ref: str | None = None, data_clas
             reason=(
                 f"out-of-country processing (status {residency.value}) permitted only on the strength of "
                 f"the recorded Health Authority resolution {resolution_ref!r}; the resolution itself is "
-                "not verified by this system"
+                "not verified by this system, and nor is whether a Ministerial Resolution 51/2021 exception "
+                "applies"
             ),
-            policy_refs=(ART13, ART24),
+            policy_refs=(ART13, ART24, MR51),
             asserted_by="resolution",
         )
     return ResidencyDecision(
@@ -196,9 +203,12 @@ def authorise(endpoint: str | None, resolution_ref: str | None = None, data_clas
         reason=(
             f"endpoint status is {residency.value}: Article 13 prohibits storing, processing, generating "
             "or transforming health data outside the State without a Health Authority resolution, and "
-            "Article 24 sets the penalty at AED 500,000-700,000. Refused. Note that a local or in-country "
+            "Article 24 sets the penalty at AED 500,000-700,000. Refused. Ministerial Resolution 51/2021 lists "
+            "exceptions (for example treatment abroad, or samples sent to an overseas laboratory); whether one "
+            "covers this processing is a legal determination this system does not make, so the case goes to a "
+            "person, and only a recorded resolution reference can permit it. Note that a local or in-country "
             "endpoint is not thereby endorsed: this checks residency only."
         ),
-        policy_refs=(ART13, ART24),
+        policy_refs=(ART13, ART24, MR51),
         asserted_by="no-signal",
     )

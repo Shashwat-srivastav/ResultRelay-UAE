@@ -1,6 +1,6 @@
 {
  "format": "ITUAIReadiness InputDocs (one verified clause per file)",
- "count": 63,
+ "count": 82,
  "files": {
   "UAE_AD1-PP.11.2.intro.txt": {
    "clause_id": "AD1-PP.11.2.intro",
@@ -354,6 +354,50 @@
    "url": "n/a",
    "project": "ResultRelay"
   },
+  "GLOBAL_G5-8-clinical-team-only.txt": {
+   "clause_id": "G5-8-clinical-team-only",
+   "source_id": "G5",
+   "authority": "The Royal College of Pathologists (United Kingdom)",
+   "jurisdiction": "GLOBAL",
+   "claim_class": "GLOBAL_COMPARATOR",
+   "section": "8 (Reporting of results directly to patients)",
+   "page": 9,
+   "url": "https://www.rcpath.org/asset/BB86B370-1545-4C5A-B5826A2C431934F5/",
+   "project": "ResultRelay"
+  },
+  "GLOBAL_G5-8-care-team-first.txt": {
+   "clause_id": "G5-8-care-team-first",
+   "source_id": "G5",
+   "authority": "The Royal College of Pathologists (United Kingdom)",
+   "jurisdiction": "GLOBAL",
+   "claim_class": "GLOBAL_COMPARATOR",
+   "section": "8 (Reporting of results directly to patients)",
+   "page": 9,
+   "url": "https://www.rcpath.org/asset/BB86B370-1545-4C5A-B5826A2C431934F5/",
+   "project": "ResultRelay"
+  },
+  "GLOBAL_G5-6-feedback-received-read.txt": {
+   "clause_id": "G5-6-feedback-received-read",
+   "source_id": "G5",
+   "authority": "The Royal College of Pathologists (United Kingdom)",
+   "jurisdiction": "GLOBAL",
+   "claim_class": "GLOBAL_COMPARATOR",
+   "section": "5 (Methods for rapid communication), continued",
+   "page": 7,
+   "url": "https://www.rcpath.org/asset/BB86B370-1545-4C5A-B5826A2C431934F5/",
+   "project": "ResultRelay"
+  },
+  "GLOBAL_G5-7-communication-record.txt": {
+   "clause_id": "G5-7-communication-record",
+   "source_id": "G5",
+   "authority": "The Royal College of Pathologists (United Kingdom)",
+   "jurisdiction": "GLOBAL",
+   "claim_class": "GLOBAL_COMPARATOR",
+   "section": "7 (Responsibilities for the rapid communication)",
+   "page": 8,
+   "url": "https://www.rcpath.org/asset/BB86B370-1545-4C5A-B5826A2C431934F5/",
+   "project": "ResultRelay"
+  },
   "UAE_S1-11.1.txt": {
    "clause_id": "S1-11.1",
    "source_id": "S1",
@@ -693,6 +737,171 @@
    "section": "Principle 12 (Commitment to Treaties and Applicable Laws)",
    "page": 1,
    "url": "https://uaelegislation.gov.ae/en/policy/details/the-uae-charter-for-the-development-and-use-of-artificial-intelligence",
+   "project": "ResultRelay"
+  },
+  "UAE_U6-4.2.1-accountability.txt": {
+   "clause_id": "U6-4.2.1-accountability",
+   "source_id": "U6",
+   "authority": "Dubai Health Authority (Health Informatics and Smart Health Department)",
+   "jurisdiction": "AE-DU",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "4.2.1 (Accountability)",
+   "page": 7,
+   "url": "https://www.dha.gov.ae/uploads/082022/Artificial%20Intelligence%20Policy20228457.pdf",
+   "project": "ResultRelay"
+  },
+  "UAE_U6-4.2.3-appeals.txt": {
+   "clause_id": "U6-4.2.3-appeals",
+   "source_id": "U6",
+   "authority": "Dubai Health Authority (Health Informatics and Smart Health Department)",
+   "jurisdiction": "AE-DU",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "4.2.3 (Accountability)",
+   "page": 7,
+   "url": "https://www.dha.gov.ae/uploads/082022/Artificial%20Intelligence%20Policy20228457.pdf",
+   "project": "ResultRelay"
+  },
+  "UAE_U6-4.3.1-traceable-failures.txt": {
+   "clause_id": "U6-4.3.1-traceable-failures",
+   "source_id": "U6",
+   "authority": "Dubai Health Authority (Health Informatics and Smart Health Department)",
+   "jurisdiction": "AE-DU",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "4.3.1 (Transparency)",
+   "page": 7,
+   "url": "https://www.dha.gov.ae/uploads/082022/Artificial%20Intelligence%20Policy20228457.pdf",
+   "project": "ResultRelay"
+  },
+  "UAE_U6-4.3.3-independent-validation.txt": {
+   "clause_id": "U6-4.3.3-independent-validation",
+   "source_id": "U6",
+   "authority": "Dubai Health Authority (Health Informatics and Smart Health Department)",
+   "jurisdiction": "AE-DU",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "4.3.3 (Transparency)",
+   "page": 8,
+   "url": "https://www.dha.gov.ae/uploads/082022/Artificial%20Intelligence%20Policy20228457.pdf",
+   "project": "ResultRelay"
+  },
+  "UAE_U6-4.4.2-override.txt": {
+   "clause_id": "U6-4.4.2-override",
+   "source_id": "U6",
+   "authority": "Dubai Health Authority (Health Informatics and Smart Health Department)",
+   "jurisdiction": "AE-DU",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "4.4.2 (Safety and Security)",
+   "page": 8,
+   "url": "https://www.dha.gov.ae/uploads/082022/Artificial%20Intelligence%20Policy20228457.pdf",
+   "project": "ResultRelay"
+  },
+  "UAE_U6-4.6.12-auditable-validation.txt": {
+   "clause_id": "U6-4.6.12-auditable-validation",
+   "source_id": "U6",
+   "authority": "Dubai Health Authority (Health Informatics and Smart Health Department)",
+   "jurisdiction": "AE-DU",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "4.6.12 (Minimum acceptable requirements)",
+   "page": 10,
+   "url": "https://www.dha.gov.ae/uploads/082022/Artificial%20Intelligence%20Policy20228457.pdf",
+   "project": "ResultRelay"
+  },
+  "UAE_U6-4.6.13-graceful-degradation.txt": {
+   "clause_id": "U6-4.6.13-graceful-degradation",
+   "source_id": "U6",
+   "authority": "Dubai Health Authority (Health Informatics and Smart Health Department)",
+   "jurisdiction": "AE-DU",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "4.6.13 (Minimum acceptable requirements)",
+   "page": 10,
+   "url": "https://www.dha.gov.ae/uploads/082022/Artificial%20Intelligence%20Policy20228457.pdf",
+   "project": "ResultRelay"
+  },
+  "UAE_U6-4.8.1-incident-reporting.txt": {
+   "clause_id": "U6-4.8.1-incident-reporting",
+   "source_id": "U6",
+   "authority": "Dubai Health Authority (Health Informatics and Smart Health Department)",
+   "jurisdiction": "AE-DU",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "4.8.1 (End users)",
+   "page": 12,
+   "url": "https://www.dha.gov.ae/uploads/082022/Artificial%20Intelligence%20Policy20228457.pdf",
+   "project": "ResultRelay"
+  },
+  "UAE_U7-3.2.10-human-readable.txt": {
+   "clause_id": "U7-3.2.10-human-readable",
+   "source_id": "U7",
+   "authority": "Dubai Health Authority (NABIDH health information exchange)",
+   "jurisdiction": "AE-DU",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "3.2.10",
+   "page": 5,
+   "url": "https://www.dha.gov.ae/uploads/102022/NABIDH%20Policies%20%26%20Standards%20-%20Audit%20Policy20221021791.pdf",
+   "project": "ResultRelay"
+  },
+  "UAE_U7-3.2.11-retention-three-years.txt": {
+   "clause_id": "U7-3.2.11-retention-three-years",
+   "source_id": "U7",
+   "authority": "Dubai Health Authority (NABIDH health information exchange)",
+   "jurisdiction": "AE-DU",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "3.2.11",
+   "page": 6,
+   "url": "https://www.dha.gov.ae/uploads/102022/NABIDH%20Policies%20%26%20Standards%20-%20Audit%20Policy20221021791.pdf",
+   "project": "ResultRelay"
+  },
+  "UAE_U7-3.2.12b-quarterly-review.txt": {
+   "clause_id": "U7-3.2.12b-quarterly-review",
+   "source_id": "U7",
+   "authority": "Dubai Health Authority (NABIDH health information exchange)",
+   "jurisdiction": "AE-DU",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "3.2.12(b)",
+   "page": 6,
+   "url": "https://www.dha.gov.ae/uploads/102022/NABIDH%20Policies%20%26%20Standards%20-%20Audit%20Policy20221021791.pdf",
+   "project": "ResultRelay"
+  },
+  "UAE_U8-1-23-delivery-definition.txt": {
+   "clause_id": "U8-1-23-delivery-definition",
+   "source_id": "U8",
+   "authority": "Telecommunications Regulatory Authority (TRA), now Telecommunications and Digital Government Regulatory Authority (TDRA)",
+   "jurisdiction": "AE-FED",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "1-23 (Definitions)",
+   "page": 5,
+   "url": "https://www.unifonic.com/hubfs/Technical%20Writing/ESP%20(Du)%20Portal%20and%20Sender%20form.pdf",
+   "project": "ResultRelay"
+  },
+  "UAE_U8-3-scope.txt": {
+   "clause_id": "U8-3-scope",
+   "source_id": "U8",
+   "authority": "Telecommunications Regulatory Authority (TRA), now Telecommunications and Digital Government Regulatory Authority (TDRA)",
+   "jurisdiction": "AE-FED",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "3-1, 3-2 (Scope)",
+   "page": 5,
+   "url": "https://www.unifonic.com/hubfs/Technical%20Writing/ESP%20(Du)%20Portal%20and%20Sender%20form.pdf",
+   "project": "ResultRelay"
+  },
+  "UAE_U8-8-1-licensee-responsibility.txt": {
+   "clause_id": "U8-8-1-licensee-responsibility",
+   "source_id": "U8",
+   "authority": "Telecommunications Regulatory Authority (TRA), now Telecommunications and Digital Government Regulatory Authority (TDRA)",
+   "jurisdiction": "AE-FED",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "8-1 (Other Obligations)",
+   "page": 6,
+   "url": "https://www.unifonic.com/hubfs/Technical%20Writing/ESP%20(Du)%20Portal%20and%20Sender%20form.pdf",
+   "project": "ResultRelay"
+  },
+  "UAE_U8-8-3-quiet-hours.txt": {
+   "clause_id": "U8-8-3-quiet-hours",
+   "source_id": "U8",
+   "authority": "Telecommunications Regulatory Authority (TRA), now Telecommunications and Digital Government Regulatory Authority (TDRA)",
+   "jurisdiction": "AE-FED",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "8-3 (Other Obligations)",
+   "page": 6,
+   "url": "https://www.unifonic.com/hubfs/Technical%20Writing/ESP%20(Du)%20Portal%20and%20Sender%20form.pdf",
    "project": "ResultRelay"
   }
  }

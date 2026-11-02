@@ -135,6 +135,32 @@ SOURCES: dict[str, dict[str, str]] = {
         "file": "F2_itu_ai_readiness_report_2_0.pdf",
         "title": "AI Readiness Report 2.0 (ITU, January 2026)",
     },
+    "U6": {
+        "url": "https://www.dha.gov.ae/uploads/082022/Artificial%20Intelligence%20Policy20228457.pdf",
+        "kind": "pdf",
+        "file": "U6_dha_ai_in_healthcare_policy.pdf",
+        "title": "Artificial Intelligence in the Healthcare (DHA/HISHD/PP-09)",
+    },
+    "U7": {
+        "url": "https://www.dha.gov.ae/uploads/102022/NABIDH%20Policies%20%26%20Standards%20-%20Audit%20Policy20221021791.pdf",
+        "kind": "pdf",
+        "file": "U7_nabidh_audit_policy.pdf",
+        "title": "NABIDH Policies and Standards, Section 4: Audit Policy (v1.0, September 2020)",
+    },
+    "U8": {
+        "url": "https://www.unifonic.com/hubfs/Technical%20Writing/ESP%20(Du)%20Portal%20and%20Sender%20form.pdf",
+        "kind": "pdf",
+        "file": "U8_tdra_mobile_spam_policy_v9.pdf",
+        "title": "TRA (now TDRA) Regulatory Policy: Mobile Spam, Version 9.0 (31 August 2022)",
+        "note": "Third-party copy (an SMS provider's onboarding pack) of the regulator's policy; "
+                "tdra.gov.ae does not serve it to scripted clients.",
+    },
+    "G5": {
+        "url": "https://www.rcpath.org/asset/BB86B370-1545-4C5A-B5826A2C431934F5/",
+        "kind": "pdf",
+        "file": "G5_rcpath_g158_v2.pdf",
+        "title": "RCPath G158: The communication of critical and unexpected pathology results (V2, May 2026)",
+    },
 }
 
 

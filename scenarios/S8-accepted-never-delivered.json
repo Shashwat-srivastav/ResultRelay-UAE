@@ -1,0 +1,112 @@
+{
+  "scenario_id": "S8-accepted-never-delivered",
+  "title": "Gateway accepts the SMS; no delivery receipt ever arrives",
+  "summary": "A walk-in critical result is sent by SMS. The provider accepts the message and returns a message id, then nothing: no delivery receipt, no failure, no acknowledgment. A dashboard that reads 'accepted' as 'delivered' turns green and the case looks done. The system must keep the case at transport acceptance, never record delivery or communication, and escalate to a person when the acknowledgment does not come.",
+  "case_id": "SYN-CASE-009",
+  "jurisdiction": "AE-DU",
+  "facility_type": "DHA-licensed walk-in clinical laboratory (simulated)",
+  "case_scope": "WALK_IN",
+  "patient_ref": "SYN-PATIENT-009",
+  "contact_ref": "SYN-CONTACT-009",
+  "initial_result": {
+    "revision_id": "SYN-CASE-009-R1",
+    "version": 1,
+    "status": "DRAFT",
+    "test_name": "Synthetic analyte A (walk-in permitted panel)",
+    "critical_flag_source": "Separate authorised laboratory critical-result process (not ResultRelay)"
+  },
+  "network": {
+    "channels": {
+      "SMS-PATIENT": {
+        "kind": "SMS",
+        "endpoint_class": "patient_mobile",
+        "primary": true,
+        "status": "UP",
+        "note": "synthetic primary channel"
+      },
+      "PORTAL-PATIENT": {
+        "kind": "PORTAL",
+        "endpoint_class": "patient_portal",
+        "primary": false,
+        "status": "UP",
+        "note": "synthetic alternative channel, not approved as a fallback"
+      },
+      "PHONE-CALL": {
+        "kind": "VOICE",
+        "endpoint_class": "patient_mobile",
+        "primary": false,
+        "status": "UP",
+        "note": "synthetic voice channel"
+      }
+    },
+    "attempts": [
+      {
+        "outcome": "ACCEPTED",
+        "accept_after_minutes": 0.2
+      }
+    ],
+    "reconciliations": [
+      {
+        "attempt_id": null,
+        "result": "STILL_UNKNOWN",
+        "note": "provider ledger shows the message accepted and no delivery report"
+      }
+    ]
+  },
+  "steps": [
+    {
+      "step": 1,
+      "at_minutes": 0,
+      "kind": "event",
+      "type": "result.finalized",
+      "actor": "LAB",
+      "summary": "Laboratory finalizes synthetic result revision 1, already flagged critical by a separate authorised process",
+      "payload": {
+        "result_revision_id": "SYN-CASE-009-R1",
+        "finalized_at": "2026-03-08T21:40:00Z"
+      },
+      "visible_to": [
+        "lab_workflow",
+        "policy_applicability",
+        "network_delivery",
+        "escalation_coordinator"
+      ]
+    },
+    {
+      "step": 2,
+      "at_minutes": 1,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "ResultRelay decides whether to release the communication",
+      "channel": "SMS-PATIENT",
+      "visible_to": [
+        "lab_workflow",
+        "policy_applicability",
+        "network_delivery",
+        "escalation_coordinator"
+      ]
+    },
+    {
+      "step": 3,
+      "at_minutes": 45,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "No delivery receipt and no acknowledgment after 45 minutes: ResultRelay reconciles the accepted attempt against the provider ledger"
+    },
+    {
+      "step": 4,
+      "at_minutes": 65,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "65 minutes after acceptance (configured acknowledgment window: 60): ResultRelay decides between waiting, a retry, a fallback channel or escalation to a person",
+      "channel": "SMS-PATIENT"
+    }
+  ],
+  "research_questions": [
+    "Which instrument assigns responsibility for a transactional clinical message lost after gateway acceptance (gap GR-15)?",
+    "Does a telecom delivery receipt satisfy the DHA ST-28 §11.1.3 communication record?"
+  ]
+}

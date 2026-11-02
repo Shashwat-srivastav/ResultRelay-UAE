@@ -287,7 +287,7 @@ add_para(doc,
     "application.")
 add_para(doc,
     f"Three obligations are recorded and not met. (i) Art. 20 retention: communications are retained "
-    "without a derived disposal date (gap register GR-13). (ii) DHA PP-08 §4.9.10 patient feedback: the "
+    "without a derived disposal date (gap register GR-11). (ii) DHA PP-08 §4.9.10 patient feedback: the "
     "prototype is strictly outbound, so a correction can only be started by staff (GR-14). (iii) The "
     "correction-intake absence means a patient cannot report the error that triggers the workflow. "
     f"The gap register publishes {GAP_COUNT} such questions rather than leaving them in a comments "

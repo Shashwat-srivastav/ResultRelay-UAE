@@ -1,0 +1,105 @@
+# Dubai Health Authority — Artificial Intelligence in the Healthcare (DHA/HISHD/PP-09), Version 1
+# Binding on DHA-licensed facilities and professionals that use AI in healthcare services. This is the
+# instrument that governs ResultRelay's own model components (the policy & legal reviewer and the
+# regulator agents), so it is the local basis for "the model advises, the gate decides".
+source_id: U6
+excerpts:
+  - chunk_id: U6-4.2.1-accountability
+    section_id: "4.2.1 (Accountability)"
+    page_start: 7
+    page_end: 7
+    claim_classification: BINDING_REQUIREMENT
+    topics: [ai_governance, accountability, responsibility]
+    text: >-
+      Accountability for the outcomes of an AI solution in health care must be agreed between designer,
+      researcher, developer, operators/commissioners, and end users.
+    support_note: >-
+      Requires an agreed allocation of accountability; it does not say who is accountable when an AI
+      component recommends a communication action. ResultRelay records the human who owns each gate
+      decision, and the gap register flags that no instrument names the owner by default.
+
+  - chunk_id: U6-4.2.3-appeals
+    section_id: "4.2.3 (Accountability)"
+    page_start: 7
+    page_end: 7
+    claim_classification: BINDING_REQUIREMENT
+    topics: [ai_governance, contestability, human_oversight]
+    text: >-
+      AI solutions for health care must have built-in appeals procedures whereby users can challenge
+      significant decisions.
+    support_note: Basis for the supervisor queue, where a reviewer can overturn any proposed action.
+
+  - chunk_id: U6-4.3.1-traceable-failures
+    section_id: "4.3.1 (Transparency)"
+    page_start: 7
+    page_end: 7
+    claim_classification: BINDING_REQUIREMENT
+    topics: [ai_governance, audit, traceability, decision_trace]
+    text: >-
+      AI solution developers must build systems whose failures can be traced, diagnosed, and controlled.
+    support_note: >-
+      The local requirement behind the hash-chained audit and the per-step reasoning trace: every model
+      proposal, its probabilities, the clauses it was shown and the gate's decision are logged together.
+
+  - chunk_id: U6-4.3.3-independent-validation
+    section_id: "4.3.3 (Transparency)"
+    page_start: 8
+    page_end: 8
+    claim_classification: BINDING_REQUIREMENT
+    topics: [ai_governance, validation, evaluation]
+    text: >-
+      All AI solutions for healthcare must go through independent validation by a competent third party.
+    support_note: >-
+      ResultRelay's evaluation was written by its own authors, so it does not meet this requirement and
+      says so. Independent validation is listed as a precondition for any real deployment.
+
+  - chunk_id: U6-4.4.2-override
+    section_id: "4.4.2 (Safety and Security)"
+    page_start: 8
+    page_end: 8
+    claim_classification: BINDING_REQUIREMENT
+    topics: [ai_governance, human_oversight, override, human_in_the_loop]
+    text: >-
+      AI solutions for health care that may directly impact people's lives in a significant way must be
+      designed with utmost care, and such solutions must be able to be overridden or their decisions
+      reversed by designated end users.
+    support_note: >-
+      The model components cannot change a case at all; the deterministic gate decides, and a designated
+      supervisor can override or reverse it.
+
+  - chunk_id: U6-4.6.12-auditable-validation
+    section_id: "4.6.12 (Minimum acceptable requirements)"
+    page_start: 10
+    page_end: 10
+    claim_classification: BINDING_REQUIREMENT
+    topics: [ai_governance, audit, validation]
+    text: >-
+      AI tool must include auditable validation statements.
+    support_note: Met in part by the recorded evaluation matrix and the replayable adviser runs.
+
+  - chunk_id: U6-4.6.13-graceful-degradation
+    section_id: "4.6.13 (Minimum acceptable requirements)"
+    page_start: 10
+    page_end: 10
+    claim_classification: BINDING_REQUIREMENT
+    topics: [ai_governance, graceful_degradation, availability, fallback]
+    text: >-
+      AI tool must be equipped with "Graceful Degradation" mechanisms by means of automatic alerts and
+      gradual operation cessation abilities in AI used for healthcare activities in the event of any
+      hardware or software malfunctioning.
+    support_note: >-
+      If the model endpoint is down or refused by the residency guard, ResultRelay continues on the
+      deterministic gate alone and raises the case to a human; no workflow depends on a model answer.
+
+  - chunk_id: U6-4.8.1-incident-reporting
+    section_id: "4.8.1 (End users)"
+    page_start: 12
+    page_end: 12
+    claim_classification: BINDING_REQUIREMENT
+    topics: [ai_governance, incident_reporting, regulator]
+    text: >-
+      Report to DHA-HRS all known or suspected incidents or deficiencies related to AI solutions used in
+      their respective healthcare facility.
+    support_note: >-
+      An AI-related incident must reach the regulator; the policy sets no timeframe and no format, which
+      the gap register records.

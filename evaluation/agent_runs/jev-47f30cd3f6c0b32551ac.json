@@ -1,0 +1,136 @@
+{
+ "state": {
+  "jurisdiction": "AE-DU",
+  "situation": "{\"action_under_review\": \"ESCALATE_HUMAN\", \"case_scope\": \"WALK_IN\", \"current_state\": \"ESCALATION_REQUIRED\", \"this_step_event\": \"system.action (SYSTEM)\", \"current_result_revision\": \"SYN-CASE-002-R2\", \"attempts\": [{\"channel\": \"SMS-PATIENT\", \"revision\": \"SYN-CASE-002-R1\", \"transport_accepted\": true, \"delivery_receipt\": true}, {\"channel\": \"SMS-PATIENT\", \"revision\": \"SYN-CASE-002-R2\", \"transport_accepted\": true, \"delivery_receipt\": true}], \"acknowledgments_for_current_revision\": 0, \"approvals_on_record\": [\"SEND_PRIMARY\"], \"escalations_open\": 2}",
+  "retrieved_evidence": [
+   {
+    "chunk_id": "S1-11.1.3",
+    "jurisdiction": "AE-DU",
+    "class": "BINDING_REQUIREMENT",
+    "section": "11.1.3",
+    "text": "The laboratory shall keep record of the communication with the patient."
+   },
+   {
+    "chunk_id": "S1-11.1.1",
+    "jurisdiction": "AE-DU",
+    "class": "BINDING_REQUIREMENT",
+    "section": "11.1.1",
+    "text": "Critical laboratory results shall be reported clearly to the patient."
+   },
+   {
+    "chunk_id": "S1-11.1.2",
+    "jurisdiction": "AE-DU",
+    "class": "OFFICIAL_GUIDANCE",
+    "section": "11.1.2",
+    "text": "The laboratory should direct the patient to seek further medical advice."
+   },
+   {
+    "chunk_id": "U7-3.2.11-retention-three-years",
+    "jurisdiction": "AE-DU",
+    "class": "BINDING_REQUIREMENT",
+    "section": "3.2.11",
+    "text": "Ensure audit logs are retained for Three (3) years, the same duration as the retention time required of NABIDH managed PHI."
+   },
+   {
+    "chunk_id": "S1-9.3.3",
+    "jurisdiction": "AE-DU",
+    "class": "BINDING_REQUIREMENT",
+    "section": "9.3.3",
+    "text": "Laboratories sending reports electronically should include electronic signature of the authorized signatory. Laboratories should be able to provide critical information required by a physician on telephone."
+   },
+   {
+    "chunk_id": "S1-9.1.5.e",
+    "jurisdiction": "AE-DU",
+    "class": "BINDING_REQUIREMENT",
+    "section": "9.1.5(e)",
+    "text": "The laboratory shall have a policy for identifying and reporting critical results."
+   }
+  ],
+  "note": "Synthetic laboratory exercise. You advise; a deterministic gate decides."
+ },
+ "questions": {
+  "objection": {
+   "type": "noul",
+   "instructions": "As policy and legal reviewer for a walk-in laboratory: do the `retrieved_evidence` or the case facts in `situation` give a concrete reason NOT to take `situation.action_under_review` now? Concrete reasons include: treating a transport acceptance as delivery, an acknowledgment for an older result revision, a result scope the shown clauses route elsewhere, an unverified recipient, an unapproved channel, or a retry before the earlier attempt is reconciled. The absence of a clause that names this exact step is not by itself a reason.",
+   "criteria": {
+    "true": "A concrete objection exists",
+    "false": "No concrete objection"
+   }
+  },
+  "basis_chunk": {
+   "type": "choice",
+   "criteria": {
+    "S1-11.1.3": "[AE-DU] 11.1.3: The laboratory shall keep record of the communication with the patient.",
+    "S1-11.1.1": "[AE-DU] 11.1.1: Critical laboratory results shall be reported clearly to the patient.",
+    "S1-11.1.2": "[AE-DU] 11.1.2: The laboratory should direct the patient to seek further medical advice.",
+    "U7-3.2.11-retention-three-years": "[AE-DU] 3.2.11: Ensure audit logs are retained for Three (3) years, the same duration as the retention time required of NABIDH managed PHI.",
+    "S1-9.3.3": "[AE-DU] 9.3.3: Laboratories sending reports electronically should include electronic signature of the authorized signatory. Laboratories should be able to provide critical information required by a physician on telephone.",
+    "S1-9.1.5.e": "[AE-DU] 9.1.5(e): The laboratory shall have a policy for identifying and reporting critical results.",
+    "NONE": "None of the retrieved passages supports a specific action."
+   },
+   "instructions": "Which retrieved passage most directly governs `situation.action_under_review`?"
+  },
+  "alternative": {
+   "type": "choice",
+   "criteria": {
+    "SEND_PRIMARY": "Send the result notification on the approved primary channel.",
+    "AWAIT_EVIDENCE": "Wait: a receipt or other required evidence has not arrived yet.",
+    "RECONCILE_ATTEMPT": "Ask the provider what happened to an attempt whose outcome is unknown before doing anything else.",
+    "RETRY_SAME_CHANNEL": "Retry on the same channel (only after the earlier attempt is reconciled).",
+    "PROPOSE_FALLBACK": "Propose an alternative channel, which needs an approved fallback procedure.",
+    "AWAIT_ACKNOWLEDGMENT": "Delivery is evidenced; wait for the patient's acknowledgment of the current result version.",
+    "RECORD_DOCUMENTATION": "The communication is evidenced end to end; record it as required.",
+    "OPEN_CORRECTION_TASK": "The result was corrected; cancel stale messages and open a reviewed correction task.",
+    "ESCALATE_HUMAN": "Identity, scope, wording or next step is uncertain; hand to the named supervisor.",
+    "VERIFY_RECIPIENT": "The recipient or contact is not verified; verify before sending.",
+    "NO_ACTION": "Nothing should be done at this step."
+   },
+   "instructions": "If the action under review were not taken, which action would the evidence support instead?"
+  }
+ },
+ "response": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "objection": {
+    "type": "noul",
+    "noul": 0.73
+   },
+   "basis_chunk": {
+    "type": "choice",
+    "choice": "S1-9.1.5.e",
+    "confidence": 0.49,
+    "probabilities": {
+     "S1-11.1.3": 0.02,
+     "S1-11.1.1": 0.06,
+     "S1-11.1.2": 0.19,
+     "U7-3.2.11-retention-three-years": 0.0,
+     "S1-9.3.3": 0.03,
+     "S1-9.1.5.e": 0.56,
+     "NONE": 0.14
+    }
+   },
+   "alternative": {
+    "type": "choice",
+    "choice": "AWAIT_ACKNOWLEDGMENT",
+    "confidence": 0.55,
+    "probabilities": {
+     "SEND_PRIMARY": 0.01,
+     "AWAIT_EVIDENCE": 0.0,
+     "RECONCILE_ATTEMPT": 0.0,
+     "RETRY_SAME_CHANNEL": 0.0,
+     "PROPOSE_FALLBACK": 0.01,
+     "AWAIT_ACKNOWLEDGMENT": 0.59,
+     "RECORD_DOCUMENTATION": 0.27,
+     "OPEN_CORRECTION_TASK": 0.01,
+     "ESCALATE_HUMAN": 0.11,
+     "VERIFY_RECIPIENT": 0.0,
+     "NO_ACTION": 0.0
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 1839,
+   "output_tokens": 287
+  }
+ }
+}

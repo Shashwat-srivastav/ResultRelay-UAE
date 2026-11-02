@@ -1,6 +1,7 @@
 {
   "scenario_id": "S2-correction-after-acknowledgment",
-  "authored_independently": true,
+  "authorship": "ENGINE_AUTHORS",
+  "independent_review": false,
   "basis": "Authored from the verified source clauses in kb/records/ and from the stated workflow invariants, before running the engine. Not derived from engine code paths.",
   "safe_final_states": [
     "CORRECTED_RESULT_ACKNOWLEDGED"

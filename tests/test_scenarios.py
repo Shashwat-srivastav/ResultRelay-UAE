@@ -40,12 +40,17 @@ def test_every_scenario_declares_its_own_case_and_scope(scenario_ids):
 
 
 def test_expected_actions_are_authored_separately(expected_actions, scenario_ids):
-    """The expected outcome set is data, written independently of the engine, not a by-product."""
+    """The expected outcome set is data written before running the engine, not a by-product of it.
+
+    It was written by the same people who wrote the engine, and each file says so: an expectation set
+    cannot claim independent authorship it does not have (critic finding RT-10)."""
     assert set(expected_actions) == set(scenario_ids)
     for sid, spec in expected_actions.items():
         assert spec["safe_final_states"], sid
         assert spec.get("must_hold"), sid
-        assert spec.get("authored_independently") is True, sid
+        assert spec.get("authorship") == "ENGINE_AUTHORS", sid
+        assert spec.get("independent_review") is False, sid
+        assert "authored_independently" not in spec, sid
         assert spec.get("reviewer_note"), sid
 
 

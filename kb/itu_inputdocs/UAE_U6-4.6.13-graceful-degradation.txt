@@ -1,0 +1,3 @@
+Artificial Intelligence in the Healthcare — 4.6.13 (Minimum acceptable requirements) (p.10)
+
+AI tool must be equipped with "Graceful Degradation" mechanisms by means of automatic alerts and gradual operation cessation abilities in AI used for healthcare activities in the event of any hardware or software malfunctioning.

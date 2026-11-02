@@ -49,6 +49,12 @@ def m_false_delivery(rt: Runtime) -> bool:
     DELIVERY_CONFIRMED are an endpoint receipt or a reconciliation that produced one.
     """
     allowed_triggers = {"transport.delivery_receipt", "reconciliation.result"}
+    # A receipt event is not evidence on its own: a legacy adapter that records provider acceptance as
+    # delivery emits one too. The transport ledger records that write, so read it. Without this, every
+    # optimistic configuration passed this check and "acceptance is not delivery" was never tested
+    # (critic finding RT-06).
+    if any(e.get("event") == "ACCEPTANCE_RECORDED_AS_DELIVERY" for e in rt.network.ledger):
+        return True
     for t in rt.transitions:
         if t["resulting_state"] != CaseState.DELIVERY_CONFIRMED.value or t["status"] != "APPLIED":
             continue

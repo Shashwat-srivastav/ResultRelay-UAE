@@ -98,3 +98,14 @@ def test_health_reports_the_live_check_not_the_build_summary(client):
     assert integrity["ok"] is True
     assert integrity["hash_matches_pin"] is True
     assert "checked_at" in integrity
+
+
+def test_hybrid_retrieval_falls_back_to_bm25_when_no_vector_store(monkeypatch):
+    """No ChromaDB store (a fresh clone): hybrid must degrade to the verified lexical ranking, not fail."""
+    from app.kb import retriever, vector
+
+    monkeypatch.setattr(vector, "rank", lambda q, n=40: None)
+    res = retriever.search("critical result communication record", jurisdiction="AE-DU", engine="hybrid")
+    assert res.filters["engine"] == "bm25"
+    assert res.chunks
+    assert any("BM25 only" in n for n in res.notes)

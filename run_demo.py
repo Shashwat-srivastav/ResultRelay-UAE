@@ -23,6 +23,7 @@ if "--no-adviser" not in sys.argv:
     if not os.environ.get("TYPESAFE_API_KEY"):
         os.environ["RESULTRELAY_ADVISE_REPLAY"] = "1"
 
+from app.advisers import institutions  # noqa: E402
 from app.orchestration.engine import load_scenario, run_scenario  # noqa: E402
 
 VERDICT = {  # final state → policy-gap verdict (P node classification, deterministic)
@@ -40,6 +41,8 @@ HEADLINE = [
      "A corrected report arrives after the patient acknowledged version 1. The old acknowledgment cannot close version 2."),
     ("SC-04", "controversial", "S4-genetic-scope-exclusion", "RESULT_FINALIZED",
      "The generic walk-in rule is retrieved for a genetic result. Both baselines message the patient directly; the scope gate refuses and escalates."),
+    ("SC-05", "failure", "S8-accepted-never-delivered", "ESCALATION_REQUIRED",
+     "The gateway accepts the SMS and nothing else ever happens. The policy-blind baseline records delivery; ResultRelay escalates to a person after the configured window."),
 ]
 
 
@@ -70,9 +73,29 @@ def main(argv: list[str]) -> int:
                 agree += adv["candidate_action"] == enforced
             print(f"   step {i:>2} adviser {adv['status']:<26} proposes {str(adv['candidate_action']):<20} "
                   f"gate → {enforced:<20} cites {adv['citation_chunk_ids'] or '-'}")
-        chain = rt.audit.verify() if hasattr(rt.audit, "verify") else None
-        print(f"   adviser agreed with the gate on {agree}/{considered} considered steps; audit chain {chain}\n")
+        print(f"   reviewer agreed with the gate on {agree}/{considered} considered steps")
+        inst = institutions.review(rt) if "--no-adviser" not in sys.argv else None
+        if inst is not None:
+            # Runs after the gate decided: evidence for the supervisor, written into the same hash chain
+            # as every gate decision.
+            rt.audit.append(event="institutional.review", actor="AGENTS(DHA,TDRA)+COORDINATOR",
+                            summary=f"institutional review {inst.status}; conflicts "
+                                    f"{[c['type'] for c in inst.conflicts] or 'none'}", payload=inst.to_dict())
+            if inst.status == "REVIEWED":
+                print(f"   DHA agent   communication established p={inst.dha['communication_established']:.2f} "
+                      f"· clause {inst.dha['governing_clause']} · AI use conforms to PP-09 p={inst.dha['ai_use_conforms']:.2f}")
+                print(f"   TDRA agent  network delivery evidenced p={inst.tdra['network_delivery_evidenced']:.2f} "
+                      f"· clause {inst.tdra['governing_clause']}")
+                for c in inst.conflicts:
+                    print(f"   ⚠ {c['type']}: {c['detail']}")
+                print(f"   coordinator: DHA agent {'agrees' if inst.agrees_with_gate else 'DISAGREES'} with the gate")
+            else:
+                print(f"   institutional review {inst.status}: {inst.residency[:120]}")
+        chain = rt.audit.verify_chain()[0] if rt.audit else None
+        print(f"   audit chain {chain}\n")
         out.append({"scenario": sid, "source": scen_id, "final": final, "matched": ok,
+                    "reviewer_agreement": [agree, considered],
+                    "institutional": inst.to_dict() if inst else None,
                     "steps": [{"advisory": s.get("advisory"), "enforced_action": s.get("enforced_action")} for s in rt.steps]})
     (ROOT / "evaluation" / "demo_run.json").write_text(json.dumps(out, indent=1, default=str), encoding="utf-8")
     print(f"{matched}/{len(out)} matched expected")

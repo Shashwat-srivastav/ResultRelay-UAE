@@ -7,12 +7,12 @@ For walk-in laboratories licensed by the Dubai Health Authority: it keeps *sent*
 gateway*, *delivered*, *acknowledged* and *documented* apart, binds every acknowledgment to the current
 result version, and refuses another jurisdiction's rule as binding.
 
-`ITU AI for Good Sandbox Hackathon — UAE` · Healthcare track · agent roles: **policy & legal adviser · innovative AI solution**
+`ITU AI for Good Sandbox Hackathon — UAE` · Healthcare track · agent roles: **policy & legal adviser · institutional participants (DHA, TDRA) · multi-agent coordination**
 
 ![Standard](https://img.shields.io/badge/ITU--T-Y.3172-0ea5e9)
 ![Data](https://img.shields.io/badge/data-100%25%20synthetic-success)
-![Tests](https://img.shields.io/badge/tests-229%20passing-success)
-![KB](https://img.shields.io/badge/quotes-63%20verified-success)
+![Tests](https://img.shields.io/badge/tests-236%20passing-success)
+![KB](https://img.shields.io/badge/quotes-82%20verified-success)
 
 </div>
 
@@ -39,7 +39,7 @@ $ python run_demo.py 4
 
 | | Node | Who does it | Can it change a case? |
 | :--- | :--- | :--- | :--- |
-| **Reasoning** | `M` | Five assessors + a policy & legal **reviewer** (TypeSafe Jev) that judges whether the shown evidence supports each proposed action, and which clause governs it ([app/advisers/jev.py](app/advisers/jev.py)) | **No** |
+| **Reasoning** | `M` | A policy & legal **reviewer** that looks for a concrete objection to each proposed action ([app/advisers/jev.py](app/advisers/jev.py)); a **DHA agent** and a **TDRA agent** that each read the case through their own authority's clauses, and a deterministic **coordinator** that flags where they diverge ([app/advisers/institutions.py](app/advisers/institutions.py)); five rule-based assessors. All model outputs are typed TypeSafe Jev judgments with probabilities | **No** |
 | **Decision** | `P` | A deterministic gate over 18 states and named invariants ([app/orchestration/gate.py](app/orchestration/gate.py)) | **Yes — only this** |
 
 Every model proposal goes through a containment guard before the gate sees it
@@ -49,10 +49,23 @@ same endpoint is refused), **grounding** (it may cite only chunks it was shown) 
 comparator can inform a human, never underwrite an action). The gate computes its decision without reading
 the proposal; a test asserts the decision is unchanged when a proposal is attached.
 
-In the recorded run, all 23 reviewer proposals passed containment and 22 cite a verified clause. **The
-reviewer endorsed none of the 23 workflow actions**: it consistently asks for more evidence before a
-first send of a critical result. That is logged as dissent, not acted on, and it is why the gate, not the
-model, decides.
+In the recorded run (`python run_demo.py`, five scenarios) every reviewer proposal passed containment.
+**The reviewer agreed with the gate on 13 of 27 steps**; the rest is logged dissent, never acted on. An
+earlier form, which asked whether the evidence positively *supported* each step, endorsed 0 of 23,
+because routine steps such as "wait for the receipt" have no clause naming them; it now asks whether there
+is a concrete objection. **The DHA agent's conclusion (is communication to the right person established?)
+matched the gate in 5 of 5 cases**, citing ST-28 §11.1.3 or §13.4, and the TDRA agent cites the policy's
+definition of delivery. On SC-01 the coordinator flags `COMMUNICATION_WITHOUT_NETWORK_RECORD`: the result
+reached the physician by phone, which no telecom instrument records.
+
+```console
+── SC-05 [failure] Gateway accepts the SMS; no delivery receipt ever arrives
+   FINAL ESCALATION_REQUIRED              VERDICT INSUFFICIENT_EVIDENCE  ✓ expected ESCALATION_REQUIRED
+   policy-blind final → DELIVERY_CONFIRMED
+   DHA agent   communication established p=0.04 · clause S1-11.1.3 · AI use conforms to PP-09 p=0.60
+   TDRA agent  network delivery evidenced p=0.03 · clause U8-1-23-delivery-definition
+   coordinator: DHA agent agrees with the gate
+```
 
 ## Architecture — ITU-T Y.3172, node for node
 
@@ -61,10 +74,10 @@ model, decides.
 | **SRC** | Synthetic result revisions, contacts, channels; the verified corpus | Data/Model Marketplace (1), Contextualization and Regional Impact (4) | DHA ST-28 §11.1 (walk-in tests) |
 | **C** | Staged event streams: transport, patient and supervisor events | Level of Integration of AI in Workflows (5) | DHA ST-28 §11.1.1–3 |
 | **PP** | Normalised states; report version, action id and provenance preserved | AI & Policies (10) | HL7 FHIR Task, IHE XDW (comparators) |
-| **M** | Assessors + Jev policy & legal reviewer over retrieved, jurisdiction-filtered evidence | Collaboration with AI (8), Impacts of Humans in AI Integration (9) | UAE AI Charter (human oversight) |
+| **M** | Jev reviewer, DHA and TDRA agents, coordinator; hybrid retrieval over jurisdiction-filtered evidence | Collaboration with AI (8), Impacts of Humans in AI Integration (9) | DHA AI policy PP-09 §4.3.1, §4.4.2; UAE AI Charter |
 | **P** | Gate: scope (§13.4 genetic results), version binding, reconcile-before-retry, no false closure | AI & Policies (10), Strategy Alignment (7) | DHA ST-28 §11.1, §13.4 |
-| **D** | Mock transport that separates acceptance, delivery and acknowledgment; idempotency keys | Digital Infrastructure (13), Granular Priorities (12) | Federal Law 2/2019 Art. 4, 13 |
-| **SINK** | Supervisor queue, React console, hash-chained audit re-verified on read | Human Interface (6), AI for Inclusion (11) | DHA ST-28 §11.1.3 (communication record) |
+| **D** | Mock transport that separates acceptance, delivery and acknowledgment; idempotency keys | Digital Infrastructure (13), Granular Priorities (12) | Federal Law 2/2019 Art. 4, 13; TDRA Mobile Spam §1-23 |
+| **SINK** | Supervisor queue, React console, hash-chained audit re-verified on read | Human Interface (6), AI for Inclusion (11) | DHA ST-28 §11.1.3; NABIDH Audit Policy §3.2.10–11 |
 
 ## The four scenarios — `python run_demo.py`
 
@@ -74,50 +87,72 @@ model, decides.
 | **SC-02** failure | Primary channel down, no approved fallback | `ESCALATION_REQUIRED` | `INSUFFICIENT_EVIDENCE` | invents a channel → `DELIVERY_CONFIRMED` |
 | **SC-03** failure | Corrected result after acknowledgment of version 1 | `CORRECTED_RESULT_ACKNOWLEDGED` | `COMPLIANT` | `ESCALATION_REQUIRED` |
 | **SC-04** controversial | Generic walk-in rule retrieved for a genetic result | `RESULT_FINALIZED` (direct path refused) | `VIOLATION` | messages the patient → `DELIVERY_CONFIRMED` |
+| **SC-05** failure | Gateway accepts the SMS; no receipt ever arrives | `ESCALATION_REQUIRED` | `INSUFFICIENT_EVIDENCE` | records delivery → `DELIVERY_CONFIRMED` |
 
 ## Evaluation — `python scripts/run_evaluation.py`
 
-8 scenarios × 11 configurations = 88 runs; seven configurations differ from the full system in exactly
+9 scenarios × 11 configurations = 99 runs; seven configurations differ from the full system in exactly
 one input.
 
 | Configuration | Fully safe | Assertions |
 | :--- | ---: | ---: |
-| `resultrelay` | **8/8** | **32/32** |
-| `static_rules` (competent hand-written rules) | 6/8 | 30/32 |
-| `ablate_no_kb` · `ablate_ack_any` | 6/8 | 30/32 |
-| `retrieval_only` | 4/8 | 28/32 |
-| `policy_blind` | 3/8 | 27/32 |
+| `resultrelay` | **9/9** | **38/38** |
+| `static_rules` (competent hand-written rules) | 7/9 | 36/38 |
+| `ablate_optimistic_transport` (acceptance recorded as delivery) | 7/9 | 36/38 |
+| `ablate_no_kb` · `ablate_ack_any` | 7/9 | 36/38 |
+| `retrieval_only` | 3/9 | 32/38 |
+| `policy_blind` | 2/9 | 31/38 |
+
+"Acceptance is not delivery" is now tested: the delivery check reads the transport ledger, so a conflated
+receipt fails S1, and S8 (accepted, never delivered) fails every configuration that conflates.
 
 What these numbers do not show, said plainly: the scenarios and expectations were written by the same
-team that wrote the engine. S1 and S3b separate no configuration. `static_rules` loses only the two
-genetic-scope scenarios, because it was built without a genetic rule. Two ablations
-(`ablate_no_audit_agent`, `ablate_full_context`) cannot change an outcome by construction.
+team that wrote the engine, and every expectation file says so (`"authorship": "ENGINE_AUTHORS"`).
+`static_rules` loses only the two genetic-scope scenarios, because it was built without a genetic rule.
+Two ablations (`ablate_no_audit_agent`, `ablate_full_context`) cannot change an outcome by construction.
+DHA's AI policy (PP-09 §4.3.3) requires independent third-party validation; this system has had none.
 
 ## Knowledge base — `GET /api/kb/search?q=…&jurisdiction=AE-DU`
 
-**63 quotations from 14 documents**, each with issuing body, jurisdiction, section, printed page and a
+**82 quotations from 18 documents**, each with issuing body, jurisdiction, section, printed page and a
 claim class; only `BINDING_REQUIREMENT` can block an action, and only sources that bind the case
-jurisdiction carry it. **50 are verified against the downloaded official documents** (the quote must
-appear on the declared page, or the excerpt is rejected and never indexed); **13 (Federal Law 2/2019,
-UAE AI Charter, ADHICS) are verified against recorded transcriptions** of portal pages that refuse
-scripted downloads. The served index is pinned by SHA-256 and re-checked on load.
+jurisdiction carry it. **65 are verified against downloaded official PDFs** (the quote must appear on the
+declared page, or the excerpt is rejected and never indexed); **4 (TDRA Mobile Spam policy v9.0) against a
+third-party copy** of the policy, because tdra.gov.ae refuses scripted clients; **13 (Federal Law 2/2019,
+UAE AI Charter, ADHICS) against recorded transcriptions** of portal pages. The served index is pinned by
+SHA-256 and re-checked on load.
 
-`python scripts/export_itu_kb.py` writes every verified excerpt to `kb/itu_inputdocs/` in the ITU
-reference-code InputDocs format; `--ingest PATH/TO/ITUAIReadiness` runs the ITU `ingest.py` (ChromaDB +
-Ollama `nomic-embed-text`) with clause-level provenance as metadata.
+| Layer | Sources |
+| :--- | :--- |
+| Dubai (binding) | DHA ST-28 laboratory standards · DHA AI in Healthcare policy PP-09 · NABIDH Audit Policy · DHA health-information and data-quality policies |
+| Federal | Federal Law 2/2019 (ICT in health) · PDPL (scope exclusion only) · UAE AI Charter · TDRA Mobile Spam policy |
+| Comparators | DoH Abu Dhabi lab standard and ADHICS · RCPath G158 (UK, 2026) · Joint Commission NPSG · ONC SAFER Guide 8 · HL7 FHIR R5 Task · IHE XDW · ITU-T Y.3172 · ITU AI Readiness 2.0 |
+
+**Vector KB built with the ITU reference code.** `python scripts/export_itu_kb.py --ingest
+PATH/TO/ITUAIReadiness` writes every verified excerpt to `kb/itu_inputdocs/` in the ITU InputDocs format
+and runs the ITU `ingest.py` (Ollama `nomic-embed-text`, ChromaDB, cosine) into `kb/chroma`: 82 clauses,
+each carrying clause id, authority, jurisdiction, section, page and URL as metadata. With
+`RESULTRELAY_RETRIEVAL=hybrid` the retriever fuses BM25 with the vector ranking (reciprocal-rank fusion).
+The vector store only *ranks*: the text always comes from the verified, SHA-pinned index, so a vector hit
+that is not a verified clause cannot be cited. Without the store or Ollama it falls back to BM25.
+
+On seven plain-language questions ([evaluation/retrieval_check.md](evaluation/retrieval_check.md)), the
+expected clause is in the top 5 for **hybrid 4/7, BM25 1/7**. For example, "send health data abroad cloud"
+now finds Federal Law 2/2019 Art. 13. The questions are ours, so this is a smoke test, not a benchmark.
 
 ## Policy and standards gaps — [kb/gap_register.csv](kb/gap_register.csv)
 
-| Gap | Type |
-| :--- | :--- |
-| No retrieved source sets an acknowledgment clock or a responsible role for patient-direct results with no ordering physician | Unclear responsibility |
-| Health rules require a *record of communication*; telecom delivery receipts prove arrival at a handset, never receipt by a person — no instrument joins the two | Coordination (health ↔ telecom) |
-| No standard binds an acknowledgment to a specific result revision for patient-direct notification | Standards |
-| No route for a patient to report an inaccurate result | Legislative / process |
-| Federal 25-year health-record retention (Law 2/2019 Art. 20) is not reflected in lab messaging workflows | Implementation |
+| Gap | Type | Global comparison |
+| :--- | :--- | :--- |
+| **GR-15** TDRA's policy defines "delivery" only for marketing SMS, as network delivery to the subscriber (§1-23, §8-1); DHA ST-28 §11.1.3 needs a record of communication. Nothing joins them, or assigns responsibility for an accepted-but-lost clinical SMS | Coordination (health ↔ telecom) | RCPath G158 §5 (UK): alerts need feedback on whether "received, read, understood" |
+| **GR-16** DHA ST-28 §11.1 provides for walk-in results to the patient, with no acknowledgment standard for a lay recipient of a critical value | Conflict between objectives | RCPath G158 §8: critical results "only communicated with the requesting clinical team" |
+| **GR-11** Is the communication record an audit log (NABIDH §3.2.11: 3 years) or health data (Law 2/2019 Art. 20: 25 years)? | Standards ambiguity | RCPath G158 §7 names the record's fields, leaves retention local |
+| **GR-17** DHA PP-09 requires agreed accountability, independent validation and AI-incident reporting, but names no default owner, validator or deadline; its revision date (1 July 2026) has passed | AI governance | EU AI Act (Reg. 2024/1689) Art. 14, 26, 73 |
+| **GR-03** No retrieved source sets an acknowledgment clock for walk-in results | Unclear responsibility | Joint Commission NPSG.02.03.01 leaves the time frame to the organisation |
+| **GR-18** No route for a clinical SMS to show it is not marketing (quiet hours 9pm–7am, §8-3) | Implementation | none retrieved |
 
-Global comparisons used: Joint Commission NPSG.02.03.01 (critical results to the responsible caregiver),
-ONC SAFER Guides 2025 (test-results follow-up), HL7 FHIR R5 Task, IHE XDW. PDPL (Federal Decree-Law
+17 entries in total; each lists the sources reviewed, what they establish, what remains unclear and the
+product control that follows. PDPL (Federal Decree-Law
 45/2021) is cited only for its scope exclusion: **Article 2, exclusion (e)** — health data governed by
 its own legislation.
 
@@ -125,11 +160,16 @@ its own legislation.
 
 ```bash
 python -m pip install -r requirements.txt
-python -m pytest -q                          # 229 tests (one skips unless every source text is cached)
-python run_demo.py                           # four scenarios; adviser replays recorded responses offline
-python scripts/run_evaluation.py             # 88-run matrix → evaluation/report.md
+python -m pytest -q                          # 236 tests (one skips unless every source text is cached)
+python run_demo.py                           # five scenarios; reviewer + DHA/TDRA agents replay offline
+python scripts/run_evaluation.py             # 99-run matrix → evaluation/report.md
 python -m uvicorn app.main:app --port 8000   # API + built UI on http://127.0.0.1:8000  (docs at /api/docs)
 python scripts/fetch_sources.py              # optional: download the official texts and re-verify every quote
+
+# optional: vector KB with the ITU reference stack (pip install -r requirements-itu.txt; Ollama running)
+ollama pull nomic-embed-text
+python scripts/export_itu_kb.py --ingest PATH/TO/ITUAIReadiness
+RESULTRELAY_RETRIEVAL=hybrid python scripts/retrieval_check.py
 ```
 
 Live adviser: set `TYPESAFE_API_KEY` and `RESULTRELAY_ADVISE=1`, `RESULTRELAY_ADVISE_PROVIDER=jev`
@@ -141,15 +181,15 @@ data only.
 ## Repository
 
 ```
-app/          gateway: agents/, advisers/ (guard, residency, Jev, OpenAI-compatible), orchestration/ (gate, engine),
+app/          gateway: agents/, advisers/ (guard, residency, Jev reviewer, DHA/TDRA institutions), orchestration/ (gate, engine),
               state_machine/, transport/, kb/ (ingest + verified retrieval), audit/, api/, static/ (built UI)
 web/          React console (CaseTimeline, Simulator, Standards & gaps, Evaluation, Audit, Decision trace)
 kb/           records/ (verified excerpts) · index/ (pinned) · framework/ (Y.3172 + Readiness mappings) · itu_inputdocs/
-scenarios/    S1–S7 staged event streams · expected/ (assertions)
+scenarios/    S1–S8 staged event streams · expected/ (assertions)
 evaluation/   report.md · results/latest.json · agent_runs/ (recorded adviser responses)
 submission/   technical report · design brief · build scripts
 docs/         architecture, REPORT, audit disposition, design notes
-tests/        229 tests
+tests/        236 tests
 ```
 
 ## License

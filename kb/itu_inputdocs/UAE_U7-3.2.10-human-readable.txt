@@ -1,0 +1,3 @@
+NABIDH Policies and Standards, Section 4: Audit Policy — 3.2.10 (p.5)
+
+Ensure audit logs are either in human readable format or translatable by some easy to use tool to be in human readable format.

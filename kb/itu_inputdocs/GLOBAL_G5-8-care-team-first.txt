@@ -1,0 +1,3 @@
+Best practice recommendations: The communication of critical and unexpected pathology results — 8 (Reporting of results directly to patients) (p.9)
+
+However, where service providers push results to apps/electronic patient records (EPRs) which make results accessible to patients, it is important that the care team are informed of the critical result before it is available to the pati

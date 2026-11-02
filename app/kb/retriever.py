@@ -281,6 +281,7 @@ def search(
     scope: str = "all",  # all | applicable | comparator
     top_k: int = 6,
     min_score: float = 0.0,
+    engine: str | None = None,  # bm25 | hybrid (default from RESULTRELAY_RETRIEVAL, else bm25)
 ) -> RetrievalResult:
     """Rank the corpus, then apply filters.
 
@@ -324,6 +325,30 @@ def search(
             scored.append((s, i, matched))
     scored.sort(key=lambda x: (-x[0], idx.chunks[x[1]]["chunk_id"]))
 
+    engine = (engine or os.environ.get("RESULTRELAY_RETRIEVAL", "bm25")).lower()
+    used = "bm25"
+    if engine == "hybrid":
+        from app.kb import vector
+
+        semantic = vector.rank(query)
+        if semantic is None:
+            notes.append("hybrid retrieval requested but the ChromaDB store or Ollama is unavailable; BM25 only.")
+        else:
+            # Reciprocal-rank fusion. Candidates are the filtered *verified* chunks only: a semantic hit
+            # outside the pinned index, or outside the requested filters, cannot enter the result.
+            pos = {cid: r for r, cid in enumerate(semantic)}
+            lexical = {i: r for r, (_, i, _) in enumerate(scored)}
+            matched_terms = {i: m for _, i, m in scored}
+            fused = []
+            for i in filtered:
+                cid = idx.chunks[i]["chunk_id"]
+                if i not in lexical and cid not in pos:
+                    continue
+                f = (1 / (60 + lexical[i]) if i in lexical else 0) + (1 / (60 + pos[cid]) if cid in pos else 0)
+                fused.append((round(f * 1000, 4), i, matched_terms.get(i, [])))
+            fused.sort(key=lambda x: (-x[0], idx.chunks[x[1]]["chunk_id"]))
+            scored, used = fused, "hybrid(bm25+chromadb:nomic-embed-text)"
+
     out: list[EvidenceChunk] = []
     for s, i, matched in scored[:top_k]:
         raw = idx.chunks[i]
@@ -353,7 +378,7 @@ def search(
             "source_ids": sorted(sids) if sids else None,
             "scope": scope,
             "top_k": top_k,
-            "engine": "bm25",
+            "engine": used,
         },
         chunks=out,
         considered=len(filtered),

@@ -1,0 +1,136 @@
+{
+ "state": {
+  "jurisdiction": "AE-DU",
+  "situation": "{\"action_under_review\": \"SEND_PRIMARY\", \"case_scope\": \"WALK_IN\", \"current_state\": \"RESULT_FINALIZED\", \"this_step_event\": \"system.action (SYSTEM)\", \"current_result_revision\": \"SYN-CASE-002-R1\", \"attempts\": [], \"acknowledgments_for_current_revision\": 0, \"approvals_on_record\": [], \"escalations_open\": 0}",
+  "retrieved_evidence": [
+   {
+    "chunk_id": "S1-11.1.1",
+    "jurisdiction": "AE-DU",
+    "class": "BINDING_REQUIREMENT",
+    "section": "11.1.1",
+    "text": "Critical laboratory results shall be reported clearly to the patient."
+   },
+   {
+    "chunk_id": "S1-11.1.3",
+    "jurisdiction": "AE-DU",
+    "class": "BINDING_REQUIREMENT",
+    "section": "11.1.3",
+    "text": "The laboratory shall keep record of the communication with the patient."
+   },
+   {
+    "chunk_id": "S1-11.1.2",
+    "jurisdiction": "AE-DU",
+    "class": "OFFICIAL_GUIDANCE",
+    "section": "11.1.2",
+    "text": "The laboratory should direct the patient to seek further medical advice."
+   },
+   {
+    "chunk_id": "S1-9.1.5.e",
+    "jurisdiction": "AE-DU",
+    "class": "BINDING_REQUIREMENT",
+    "section": "9.1.5(e)",
+    "text": "The laboratory shall have a policy for identifying and reporting critical results."
+   },
+   {
+    "chunk_id": "S1-9.3.6",
+    "jurisdiction": "AE-DU",
+    "class": "BINDING_REQUIREMENT",
+    "section": "9.3.6",
+    "text": "Patient Result Records and materials shall be retained aligned to the DHA Guidelines for Managing Health Records."
+   },
+   {
+    "chunk_id": "U8-8-1-licensee-responsibility",
+    "jurisdiction": "AE-FED",
+    "class": "BINDING_REQUIREMENT",
+    "section": "8-1 (Other Obligations)",
+    "text": "The Licensees are deemed responsible for the Delivery of Marketing Text Messages whether their Own or the MSCs' to a Mobile Customer."
+   }
+  ],
+  "note": "Synthetic laboratory exercise. You advise; a deterministic gate decides."
+ },
+ "questions": {
+  "objection": {
+   "type": "noul",
+   "instructions": "As policy and legal reviewer for a walk-in laboratory: do the `retrieved_evidence` or the case facts in `situation` give a concrete reason NOT to take `situation.action_under_review` now? Concrete reasons include: treating a transport acceptance as delivery, an acknowledgment for an older result revision, a result scope the shown clauses route elsewhere, an unverified recipient, an unapproved channel, or a retry before the earlier attempt is reconciled. The absence of a clause that names this exact step is not by itself a reason.",
+   "criteria": {
+    "true": "A concrete objection exists",
+    "false": "No concrete objection"
+   }
+  },
+  "basis_chunk": {
+   "type": "choice",
+   "criteria": {
+    "S1-11.1.1": "[AE-DU] 11.1.1: Critical laboratory results shall be reported clearly to the patient.",
+    "S1-11.1.3": "[AE-DU] 11.1.3: The laboratory shall keep record of the communication with the patient.",
+    "S1-11.1.2": "[AE-DU] 11.1.2: The laboratory should direct the patient to seek further medical advice.",
+    "S1-9.1.5.e": "[AE-DU] 9.1.5(e): The laboratory shall have a policy for identifying and reporting critical results.",
+    "S1-9.3.6": "[AE-DU] 9.3.6: Patient Result Records and materials shall be retained aligned to the DHA Guidelines for Managing Health Records.",
+    "U8-8-1-licensee-responsibility": "[AE-FED] 8-1 (Other Obligations): The Licensees are deemed responsible for the Delivery of Marketing Text Messages whether their Own or the MSCs' to a Mobile Customer.",
+    "NONE": "None of the retrieved passages supports a specific action."
+   },
+   "instructions": "Which retrieved passage most directly governs `situation.action_under_review`?"
+  },
+  "alternative": {
+   "type": "choice",
+   "criteria": {
+    "SEND_PRIMARY": "Send the result notification on the approved primary channel.",
+    "AWAIT_EVIDENCE": "Wait: a receipt or other required evidence has not arrived yet.",
+    "RECONCILE_ATTEMPT": "Ask the provider what happened to an attempt whose outcome is unknown before doing anything else.",
+    "RETRY_SAME_CHANNEL": "Retry on the same channel (only after the earlier attempt is reconciled).",
+    "PROPOSE_FALLBACK": "Propose an alternative channel, which needs an approved fallback procedure.",
+    "AWAIT_ACKNOWLEDGMENT": "Delivery is evidenced; wait for the patient's acknowledgment of the current result version.",
+    "RECORD_DOCUMENTATION": "The communication is evidenced end to end; record it as required.",
+    "OPEN_CORRECTION_TASK": "The result was corrected; cancel stale messages and open a reviewed correction task.",
+    "ESCALATE_HUMAN": "Identity, scope, wording or next step is uncertain; hand to the named supervisor.",
+    "VERIFY_RECIPIENT": "The recipient or contact is not verified; verify before sending.",
+    "NO_ACTION": "Nothing should be done at this step."
+   },
+   "instructions": "If the action under review were not taken, which action would the evidence support instead?"
+  }
+ },
+ "response": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "objection": {
+    "type": "noul",
+    "noul": 0.42
+   },
+   "basis_chunk": {
+    "type": "choice",
+    "choice": "S1-11.1.1",
+    "confidence": 0.8,
+    "probabilities": {
+     "S1-11.1.1": 0.83,
+     "S1-11.1.3": 0.01,
+     "S1-11.1.2": 0.0,
+     "S1-9.1.5.e": 0.05,
+     "S1-9.3.6": 0.0,
+     "U8-8-1-licensee-responsibility": 0.04,
+     "NONE": 0.07
+    }
+   },
+   "alternative": {
+    "type": "choice",
+    "choice": "AWAIT_EVIDENCE",
+    "confidence": 0.46,
+    "probabilities": {
+     "SEND_PRIMARY": 0.16,
+     "AWAIT_EVIDENCE": 0.51,
+     "RECONCILE_ATTEMPT": 0.01,
+     "RETRY_SAME_CHANNEL": 0.0,
+     "PROPOSE_FALLBACK": 0.01,
+     "AWAIT_ACKNOWLEDGMENT": 0.04,
+     "RECORD_DOCUMENTATION": 0.1,
+     "OPEN_CORRECTION_TASK": 0.0,
+     "ESCALATE_HUMAN": 0.08,
+     "VERIFY_RECIPIENT": 0.03,
+     "NO_ACTION": 0.06
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 1733,
+   "output_tokens": 285
+  }
+ }
+}

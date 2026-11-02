@@ -379,6 +379,12 @@ class Orchestrator:
         elapsed_since_delivery = (
             round(rt.at_minutes_current - max(a.delivered_at_minutes for a in delivered), 1) if delivered else None
         )
+        # Accepted by the provider, never delivered: the case that looks finished on a dashboard.
+        undelivered = [a for a in rt.network.attempts
+                       if a.accepted and not a.delivered and not a.failed and a.accepted_at_minutes is not None]
+        elapsed_since_acceptance = (
+            round(rt.at_minutes_current - min(a.accepted_at_minutes for a in undelivered), 1) if undelivered else None
+        )
         return {
             "case_id": rt.case_id,
             "jurisdiction": rt.jurisdiction,
@@ -402,6 +408,7 @@ class Orchestrator:
                 "escalation_role": rt.profile.get("escalation_role"),
                 "elapsed_minutes_current": rt.at_minutes_current,
                 "elapsed_minutes_since_delivery": elapsed_since_delivery,
+                "elapsed_minutes_since_acceptance_without_delivery": elapsed_since_acceptance,
             },
             "attempts": [
                 {

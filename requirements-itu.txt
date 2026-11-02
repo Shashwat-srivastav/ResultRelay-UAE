@@ -1,0 +1,4 @@
+# optional, for the ITU vector KB (scripts/export_itu_kb.py --ingest, RESULTRELAY_RETRIEVAL=hybrid):
+chromadb>=0.5
+ollama>=0.4
+pydantic-settings>=2

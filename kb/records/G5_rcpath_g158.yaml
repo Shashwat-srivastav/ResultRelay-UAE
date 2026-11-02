@@ -1,0 +1,59 @@
+# The Royal College of Pathologists (UK) — G158, The communication of critical and unexpected pathology
+# results, Version 2, May 2026 (GLOBAL COMPARATOR). Professional best practice, not law. The closest
+# global counterpart to DHA ST-28 §11.1, and the one that departs from it on patient-direct results.
+source_id: G5
+excerpts:
+  - chunk_id: G5-8-clinical-team-only
+    section_id: "8 (Reporting of results directly to patients)"
+    page_start: 9
+    page_end: 9
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [critical_result, patient_direct, recipient, comparator]
+    text: >-
+      Our recommendation remains that critical results are only communicated with the requesting clinical
+      team.
+    support_note: >-
+      The UK position differs from DHA ST-28 §11.1, which provides for walk-in results communicated to the
+      patient. A comparator can inform a reviewer; it cannot change the Dubai rule (the jurisdiction guard
+      enforces that).
+
+  - chunk_id: G5-8-care-team-first
+    section_id: "8 (Reporting of results directly to patients)"
+    page_start: 9
+    page_end: 9
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [critical_result, patient_direct, patient_portal, sequencing]
+    text: >-
+      However, where service providers push results to apps/electronic patient records (EPRs) which make
+      results accessible to patients, it is important that the care team are informed of the critical
+      result before it is available to the pati
+    support_note: >-
+      Quoted to the page break. Sequencing rule for patient-facing apps: the care team first. DHA ST-28 has
+      no equivalent for walk-in results, where no care team may exist.
+
+  - chunk_id: G5-6-feedback-received-read
+    section_id: "5 (Methods for rapid communication), continued"
+    page_start: 7
+    page_end: 7
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [critical_result, acknowledgment, electronic_alert, delivery_semantics]
+    text: >-
+      been received, read, understood and even actioned. It is the joint responsibility of laboratory and
+      clinical teams to ensure that such a process is audited to ensure that there are no missed results.
+    support_note: >-
+      Continues p.6: electronic alerts "should also have a feedback mechanism to allow the laboratory to
+      ascertain whether any such alert has" been received, read, understood and actioned. The comparator
+      separates receipt from reading and understanding, as ResultRelay separates DELIVERED from
+      ACKNOWLEDGED.
+
+  - chunk_id: G5-7-communication-record
+    section_id: "7 (Responsibilities for the rapid communication)"
+    page_start: 8
+    page_end: 8
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [critical_result, communication_record, documentation, audit]
+    text: >-
+      An electronic means of recording when results are urgently communicated should be in place, which
+      should also record the name of the person to whom the result was communicated, the name of the
+      laboratory person communicating the result, and the date and time of the communication.
+    support_note: Matches the communication record DHA ST-28 §11.1.3 requires; the comparator names its fields.

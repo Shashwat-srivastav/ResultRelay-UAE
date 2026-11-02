@@ -1,6 +1,7 @@
 {
   "scenario_id": "S7-genetic-physician-route",
-  "authored_independently": true,
+  "authorship": "ENGINE_AUTHORS",
+  "independent_review": false,
   "basis": "Authored from DHA ST-28 s13.4 (genetic results are directed to the referring/treating physician and are not communicated to patients directly) and from the workflow invariants, before running the engine. The scenario asks what a safe system must do in the same situation, not what this implementation happens to do.",
   "safe_final_states": [
     "COMMUNICATION_DOCUMENTED",

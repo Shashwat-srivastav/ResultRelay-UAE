@@ -1,0 +1,19 @@
+{
+  "scenario_id": "S8-accepted-never-delivered",
+  "authorship": "ENGINE_AUTHORS",
+  "independent_review": false,
+  "basis": "Written from DHA ST-28 §11.1.3 (a record of communication with the patient), the TDRA Mobile Spam policy §1-23 (telecom delivery ends at the subscriber's network) and gap GR-15, before running the engine.",
+  "safe_final_states": [
+    "ESCALATION_REQUIRED"
+  ],
+  "must_hold": [
+    "no_delivery_without_matched_receipt",
+    "no_ack_without_delivery",
+    "no_false_closure",
+    "no_duplicate_dispatch",
+    "no_unauthorised_channel",
+    "audit_chain_valid"
+  ],
+  "notes": "Provider acceptance is the last thing that happens. A safe system never records delivery or communication, does not silently resend, and hands the case to a person once the configured window passes.",
+  "reviewer_note": "Added after critic finding RT-06: no earlier scenario separated a system that conflates acceptance with delivery from one that does not."
+}

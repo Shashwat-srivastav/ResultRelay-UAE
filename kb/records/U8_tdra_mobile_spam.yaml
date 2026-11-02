@@ -1,0 +1,63 @@
+# TRA (now TDRA) — Regulatory Policy: Mobile Spam, Version 9.0 (31 August 2022)
+# PROVENANCE: verified against a third-party copy of the policy (an SMS provider's onboarding pack);
+# tdra.gov.ae does not serve the PDF to scripted clients. Binding on telecom licensees. For a laboratory
+# it is context: it is the only UAE telecom instrument retrieved that defines "delivery" of a text
+# message, and it defines it for marketing messages, as network delivery to the subscriber.
+source_id: U8
+excerpts:
+  - chunk_id: U8-1-23-delivery-definition
+    section_id: "1-23 (Definitions)"
+    page_start: 5
+    page_end: 5
+    claim_classification: BINDING_REQUIREMENT
+    topics: [telecom, sms, delivery, transport, delivery_semantics]
+    text: >-
+      Delivery of Marketing Text Messages means the stage that follows the Licensee's Reception of
+      Marketing Text Messages from the MSC and where the Licensee delivers the Marketing Text Messages to
+      the relevant Mobile Customer across its Telecommunications Network.
+    support_note: >-
+      Telecom "delivery" ends at the subscriber's network endpoint and is defined only for marketing
+      messages. Nothing here makes a delivery receipt evidence that a person read a clinical result,
+      which is why ResultRelay keeps DELIVERED and ACKNOWLEDGED apart (gap GR-02).
+
+  - chunk_id: U8-3-scope
+    section_id: "3-1, 3-2 (Scope)"
+    page_start: 5
+    page_end: 5
+    claim_classification: BINDING_REQUIREMENT
+    topics: [telecom, sms, scope]
+    text: >-
+      This Regulatory Policy shall be applied to all text messages with a UAE link. 3-2 This Regulatory
+      Policy sets out in general terms the rules which will apply to Unsolicited Marketing Text Messages
+      having a UAE Link.
+    support_note: >-
+      Applies to all UAE-linked text messages, but its rules address marketing. Transactional clinical
+      notifications have no telecom-side rule on delivery evidence.
+
+  - chunk_id: U8-8-1-licensee-responsibility
+    section_id: "8-1 (Other Obligations)"
+    page_start: 6
+    page_end: 6
+    claim_classification: BINDING_REQUIREMENT
+    topics: [telecom, sms, delivery, responsibility]
+    text: >-
+      The Licensees are deemed responsible for the Delivery of Marketing Text Messages whether their Own
+      or the MSCs' to a Mobile Customer.
+    support_note: >-
+      Responsibility for delivery is assigned to the licensee for marketing traffic only; for a critical
+      result, no instrument retrieved assigns responsibility for a message that is accepted by the gateway
+      and never delivered.
+
+  - chunk_id: U8-8-3-quiet-hours
+    section_id: "8-3 (Other Obligations)"
+    page_start: 6
+    page_end: 6
+    claim_classification: BINDING_REQUIREMENT
+    topics: [telecom, sms, timing, quiet_hours]
+    text: >-
+      The Licensees shall not send Licensee's own or the MSC's Marketing Text Messages to Mobile Customers
+      between 9pm and 7am.
+    support_note: >-
+      A quiet-hours rule written for marketing. A clinical alert must not be classified as marketing, or a
+      night-time critical result could be held by the same controls; no instrument retrieved says how a
+      sender proves a message is not marketing.

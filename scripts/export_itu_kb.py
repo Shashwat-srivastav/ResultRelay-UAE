@@ -77,7 +77,12 @@ def ingest(ref: Path, written: list[tuple[Path, dict]], collection: str) -> int:
     from server.knowledge.ingest import ingest_file  # type: ignore  # ITU reference code
     from server.knowledge.kb import KnowledgeBase  # type: ignore
 
-    kb = KnowledgeBase(persist_dir=str(ROOT / "kb" / "chroma"))
+    store = ROOT / "kb" / "chroma"
+    kb = KnowledgeBase(persist_dir=str(store))
+    try:  # rebuild, never append: the ITU ingest gives every chunk a fresh uuid, so a re-run would duplicate
+        kb.delete_collection(collection)
+    except Exception:  # noqa: BLE001 - first build: nothing to delete
+        pass
     return sum(ingest_file(p, kb, collection, extra_metadata=m) for p, m in written)
 
 

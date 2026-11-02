@@ -73,6 +73,22 @@ class EscalationCoordinator(Agent):
                     f"acknowledged revision {current}; a delivery receipt is not an acknowledgment"
                 )
 
+        # Gateway acceptance with no receipt is not progress. Without this rule an accepted-but-lost
+        # message waited forever: nothing else escalates a case that never reaches delivery (gap GR-15).
+        waiting = timers.get("elapsed_minutes_since_acceptance_without_delivery")
+        if not deliveries and not current_acks and waiting is not None:
+            if clock is not None and waiting < clock:
+                checked.append(
+                    f"message accepted by the provider {waiting} min ago with no delivery receipt; the configured "
+                    f"window ({clock} min) has not elapsed"
+                )
+            else:
+                reasons.append(
+                    f"the provider accepted the message {waiting} min ago and no delivery receipt or acknowledgment "
+                    f"has arrived (configured window {clock} min); gateway acceptance is not delivery, so a person "
+                    "must reach the recipient"
+                )
+
         if clock is not None:
             checked.append(
                 f"acknowledgment clock {clock} min is the configured institutional value "

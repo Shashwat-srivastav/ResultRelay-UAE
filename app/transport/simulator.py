@@ -48,6 +48,7 @@ class TransportAttempt:
     recipient: str | None = None
     accepted: bool = False
     accepted_at: str | None = None
+    accepted_at_minutes: float | None = None
     delivered: bool = False
     delivered_at: str | None = None
     delivered_at_minutes: float | None = None
@@ -183,7 +184,8 @@ class SimulatedNetwork:
 
         if outcome in {"ACCEPTED", "DELIVERED"}:
             attempt.accepted = True
-            attempt.accepted_at = sim_time(at_minutes + float(plan.get("accept_after_minutes", 0.2)))
+            attempt.accepted_at_minutes = at_minutes + float(plan.get("accept_after_minutes", 0.2))
+            attempt.accepted_at = sim_time(attempt.accepted_at_minutes)
             attempt.outcome = "ACCEPTED"
             self.ledger.append(
                 {

@@ -1,6 +1,12 @@
 # ResultRelay — technical report
 
-Generated from `evaluation/results/latest.json`. 88 runs: 8 scenarios x 11 configurations (the system, seven one-flag ablations, three compound baselines).
+> **Reading note (2 Nov 2026).** This long-form report predates S8 (accepted, never delivered), the DHA
+> and TDRA institutional agents, the four new sources (DHA AI policy PP-09, NABIDH Audit Policy, TDRA
+> Mobile Spam policy, RCPath G158) and the ledger-based delivery check. Current figures: 99 runs
+> (9 scenarios × 11 configurations), 82 verified quotations from 18 documents, 17 gaps. The README,
+> `evaluation/report.md` and `submission/` carry them; where this document disagrees, they win.
+
+Generated from `evaluation/results/latest.json` at the time of writing. 88 runs: 8 scenarios x 11 configurations (the system, seven one-flag ablations, three compound baselines).
 
 > **These results are not evidence of clinical safety, clinical effectiveness or regulatory compliance.** All data is synthetic. The scenarios were authored by the same team that built the engine.
 
@@ -165,7 +171,7 @@ decoration:
   guard rejects any proposal leaning on a clause that cannot bind the case jurisdiction. What no code
   can enforce is the provider's own data handling; that remains a contract question.
 * **Art. 20** sets a 25-year retention floor. The prototype keeps every record forever, which
-  satisfies a floor but is not a retention policy; recorded as GR-13.
+  satisfies a floor but is not a retention policy; recorded as GR-11.
 
 ### 7.2 Jurisdiction is now layered, not singular
 
@@ -232,14 +238,14 @@ The gap register holds 14 documented gaps: 3 source ambiguities, 3 insufficient-
 | GR-10 | INTEROPERABILITY_GAP | Do existing interoperability standards model a patient acknowledgment of a critical walk-in result as a first-class event? |
 | GR-11 | INSUFFICIENT_EVIDENCE | How long must the communication record for a walk-in critical result be retained, and in what form? |
 | GR-12 | CANDIDATE_POLICY_GAP | What should happen when the delivery outcome of a critical-result message is unknown? |
-| GR-13 | IMPLEMENTATION_GAP | How long must the communication record for a notified critical result be kept, and who decides when it may be purged? |
+| GR-11 | IMPLEMENTATION_GAP | How long must the communication record for a notified critical result be kept, and who decides when it may be purged? |
 | GR-14 | CANDIDATE_POLICY_GAP | How does a patient raise, and how does the laboratory receive, a report that a communicated result is wrong? |
 
 The `CANDIDATE_POLICY_GAP` entries are the ones a facility would need to resolve before production
 use; `GR-04` (fallback channel unauthorised and undefined) is still the strongest candidate for
 review because it is the gap the system currently handles by escalating.
 
-Two of the new entries are gaps the product *creates* rather than inherits. `GR-13`: the retention
+Two of the new entries are gaps the product *creates* rather than inherits. `GR-11`: the retention
 floor is federal, and the build has no retention mechanism at all. `GR-14`: Dubai requires a way for
 a patient to report inaccurate information, and the prototype is strictly outbound — a correction
 can only be started by staff. Both are recorded as unimplemented rather than described as design

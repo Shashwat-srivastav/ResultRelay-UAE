@@ -170,3 +170,11 @@ def test_the_gate_decision_is_identical_with_and_without_an_adviser():
     assert with_adviser.blocked_actions == base.blocked_actions
     assert with_adviser.advisory_overruled is True
     assert any("did not read the proposal" in c for c in with_adviser.conditions_checked)
+
+
+def test_ministerial_resolution_51_exceptions_are_cited_but_never_decided_by_code():
+    """MR 51/2021 lists Art. 13 exceptions. Code cannot tell whether one applies, so it cites and refuses."""
+    decision = authorise("https://api.openai.com/v1")
+    assert decision.permitted is False
+    assert "Resolution No. 51 of 2021" in decision.citation
+    assert "does not make" in decision.reason
