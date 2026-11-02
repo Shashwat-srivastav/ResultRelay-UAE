@@ -26,6 +26,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Iterable
 
+import yaml
+
 from app.models.schemas import EvidenceChunk, RetrievalResult
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -99,12 +101,22 @@ def _deep_quote_check(chunks: list[dict[str, Any]]) -> tuple[int, list[dict[str,
     what is actually being served. Without it the health endpoint repeated a build-time summary
     from a mutable file and reported 63/63 verified for a corpus that had been tampered with.
     """
-    from app.kb.ingest import load_pages, verify_excerpt  # local import: ingest imports this module
+    from app.kb.ingest import EXCERPT_DIR, load_pages, verify_excerpt  # local import: ingest imports this module
 
     pages_cache: dict[str, dict[int, str] | None] = {}
     mismatches: list[dict[str, Any]] = []
     not_reverifiable: list[str] = []
     verified = 0
+    # Works on any clone, with or without the source cache: every served excerpt must be word for word the
+    # reviewed record it was built from, so editing the index and re-pinning its hash is still caught.
+    records: dict[str, str] = {}
+    for f in sorted(EXCERPT_DIR.glob("*.yaml")):
+        for e in (yaml.safe_load(f.read_text(encoding="utf-8")) or {}).get("excerpts", []):
+            records[e.get("chunk_id")] = e.get("text")
+    for chunk in chunks:
+        if records.get(chunk.get("chunk_id")) != chunk.get("text"):
+            mismatches.append({"chunk_id": chunk.get("chunk_id"), "status": "DIFFERS_FROM_RECORD",
+                               "detail": f"text differs from the reviewed record in {EXCERPT_DIR.name}/"})
     for chunk in chunks:
         source_id = chunk.get("source_id", "")
         if source_id not in pages_cache:
@@ -187,7 +199,7 @@ def corpus_integrity(index_path: str | None = None) -> dict[str, Any]:
             f"served index hash {recomputed[:16]}… does not match the pinned hash {pinned[:16]}…"
         )
     if mismatches:
-        problems.append(f"{len(mismatches)} excerpt(s) no longer match the cached source text")
+        problems.append(f"{len(mismatches)} excerpt(s) no longer match their reviewed record or the cached source text")
     report["ok"] = not problems
     report["reason"] = "; ".join(problems)
     return report

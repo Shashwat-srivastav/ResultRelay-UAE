@@ -58,7 +58,12 @@ def main() -> int:
     finally:
         srv.terminate()
         srv.wait(timeout=10)
-        (ROOT / "evaluation" / "smoke.sqlite").unlink(missing_ok=True)
+        for _ in range(10):  # Windows can hold the file briefly after the server exits
+            try:
+                (ROOT / "evaluation" / "smoke.sqlite").unlink(missing_ok=True)
+                break
+            except PermissionError:
+                time.sleep(0.5)
     print("smoke test passed")
     return 0
 
