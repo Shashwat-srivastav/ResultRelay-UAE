@@ -274,10 +274,10 @@ flowchart LR
 | **SC-02** failure | Primary channel down, no approved fallback | `ESCALATION_REQUIRED` | `INSUFFICIENT_EVIDENCE` | same · invents a channel → `DELIVERY_CONFIRMED` |
 | **SC-03** failure | Corrected result after acknowledgment of version 1 | `CORRECTED_RESULT_ACKNOWLEDGED` | `COMPLIANT` | same · `ESCALATION_REQUIRED` |
 | **SC-04** controversial | Generic walk-in rule retrieved for a genetic result; no physician channel | `ESCALATION_REQUIRED` (failed send logged and escalated) | `VIOLATION` (prevented) | same · messages the patient |
-| **SC-05** failure | Gateway accepts the SMS; no receipt ever arrives | `ESCALATION_REQUIRED` | `INSUFFICIENT_EVIDENCE` | same · records delivery |
+| **SC-05** failure | Gateway accepts the SMS; no receipt ever arrives | `ESCALATION_REQUIRED` | `INSUFFICIENT_EVIDENCE` | same · records a delivery that never happened |
 | **SC-06** agents | Delivered and "acknowledged", but the reply is from the patient's daughter | `ESCALATION_REQUIRED` | `INSUFFICIENT_EVIDENCE` | **closes the case** · closes the case |
 | **SC-07** failure | Escalated to the supervisor, who never answers | `ESCALATION_REQUIRED` (raised to the clinical lead, tier 2) | `INSUFFICIENT_EVIDENCE` | same · records delivery |
-| **SC-08** failure | Delivered with a receipt, never acknowledged | `ESCALATION_REQUIRED` (when the acknowledgment window passes) | `INSUFFICIENT_EVIDENCE` | same · records delivery |
+| **SC-08** failure | Delivered with a receipt, never acknowledged | `ESCALATION_REQUIRED` (when the acknowledgment window passes) | `INSUFFICIENT_EVIDENCE` | same · same (a regression guard: it exposed a clock bug) |
 
 **The case state machine** (main paths; [app/state_machine/transitions.py](app/state_machine/transitions.py)
 is the full table). Transport states and human states are kept apart: no transport event can reach an

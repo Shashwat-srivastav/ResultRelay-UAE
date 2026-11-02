@@ -52,13 +52,13 @@ HEADLINE = [
     ("SC-04", "controversial", "S4-genetic-scope-exclusion", "ESCALATION_REQUIRED",
      "The generic walk-in rule is retrieved for a genetic result. Both baselines message the patient directly; ResultRelay routes it to the physician, finds no physician channel, logs the failed send and escalates."),
     ("SC-05", "failure", "S8-accepted-never-delivered", "ESCALATION_REQUIRED",
-     "The gateway accepts the SMS and nothing else ever happens. The policy-blind baseline records delivery; ResultRelay escalates to a person after the configured window."),
+     "The gateway accepts the SMS and nothing else ever happens. The policy-blind baseline records a delivery that never happened; ResultRelay never records delivery and escalates to a person after the configured window."),
     ("SC-06", "agents", "S9-reply-from-someone-else", "ESCALATION_REQUIRED",
      "Delivered and 'acknowledged' from a verified number, but the reply says it is the patient's daughter. Rules close the case; the agents read the words and escalate."),
     ("SC-07", "failure", "S10-escalation-nobody-answers", "ESCALATION_REQUIRED",
      "Escalated to the supervisor, who never answers. Past the deadline the escalation is raised to the clinical lead (tier 2), not left open."),
     ("SC-08", "failure", "S11-delivered-not-acknowledged", "ESCALATION_REQUIRED",
-     "The SMS is delivered with a receipt, but nobody acknowledges it. When the acknowledgment window passes, ResultRelay escalates; a receipt is not a person."),
+     "The SMS is delivered with a receipt, but nobody acknowledges it. When the acknowledgment window passes, ResultRelay escalates; a receipt is not a person. (This scenario exposed a clock bug that had disabled the rule.)"),
 ]
 
 
