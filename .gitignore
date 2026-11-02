@@ -18,8 +18,8 @@ web/dist/
 .venv/
 venv/
 .DS_Store
+# per-run outputs are not committed; evaluation/results/latest.json and evaluation/demo_run.json are (README and docs/figures read them)
 evaluation/results/run-*.json
-evaluation/demo_run.json
 app/resultrelay.db*
 web/tsconfig.tsbuildinfo
 # kb/chroma/ is shipped: the vector KB built with the ITU reference ingest (rebuild: scripts/export_itu_kb.py --ingest)

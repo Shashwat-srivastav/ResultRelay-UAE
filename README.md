@@ -11,7 +11,7 @@ result version, and refuses another jurisdiction's rule as binding.
 
 ![Standard](https://img.shields.io/badge/ITU--T-Y.3172-0ea5e9)
 ![Data](https://img.shields.io/badge/data-100%25%20synthetic-success)
-![Tests](https://img.shields.io/badge/tests-257%20passing-success)
+![Tests](https://img.shields.io/badge/tests-258%20passing-success)
 ![KB](https://img.shields.io/badge/quotes-96%20verified-success)
 
 </div>
@@ -444,9 +444,9 @@ its own legislation.
 
 ```bash
 python -m pip install -r requirements.txt
-python -m pytest -q                          # 257 tests (one skips unless every source text is cached)
+python -m pytest -q                          # 258 tests (one skips unless every source text is cached)
 python run_demo.py                           # eight scenarios; the agent council replays recorded answers offline
-python scripts/run_evaluation.py             # 120-run matrix → evaluation/report.md
+python scripts/run_evaluation.py             # 144-run matrix (12 × 12) → evaluation/report.md
 python -m uvicorn app.main:app --port 8000   # API + built UI on http://127.0.0.1:8000  (docs at /api/docs)
 python scripts/fetch_sources.py              # optional: download the official texts and re-verify every quote
 
@@ -469,11 +469,11 @@ app/          gateway: agents/, multiagent/ (council, providers), advisers/ (gua
               state_machine/, transport/, kb/ (ingest + verified retrieval), audit/, api/, static/ (built UI)
 web/          React console (CaseTimeline, Simulator, Standards & gaps, Evaluation, Audit, Decision trace)
 kb/           records/ (verified excerpts) · index/ (pinned) · framework/ (Y.3172 + Readiness mappings) · itu_inputdocs/
-scenarios/    S1–S9 staged event streams · expected/ (assertions)
+scenarios/    S1–S11 (12 files) staged event streams · expected/ (assertions)
 evaluation/   report.md · results/latest.json · agent_runs/ (recorded adviser responses)
 submission/   technical report · design brief · build scripts
 docs/         architecture, REPORT, audit disposition, design notes
-tests/        257 tests
+tests/        258 tests
 ```
 
 ## License

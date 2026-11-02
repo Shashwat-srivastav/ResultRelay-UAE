@@ -1,3 +1,5 @@
+"""LEGACY: builds the earlier long-form paper (8 scenarios, 11 configurations). Superseded by the template report
+in submission/ResultRelay_ITU_Submission.docx; kept for history. Its counts are not current."""
 #!/usr/bin/env python3
 """Build the five-page submission paper from the repository's own numbers.
 

@@ -1,6 +1,6 @@
 {
   "manifest_version": "1.0",
-  "generated_at": "2026-11-02T10:55:07.739321+00:00",
+  "generated_at": "2026-11-02T15:37:27.273182+00:00",
   "synthetic_data_only": true,
   "disclaimer": "Demonstration prototype with synthetic data. Not a clinical service and not evidence of clinical safety, effectiveness or regulatory compliance.",
   "knowledge_base": {
@@ -2757,251 +2757,251 @@
     ]
   },
   "evaluation": {
-    "run_started": "2026-11-02T10:51:56.924565+00:00",
-    "run_finished": "2026-11-02T10:52:26.300249+00:00",
-    "scenario_count": 10,
-    "run_count": 120,
+    "run_started": "2026-11-02T15:19:27.179343+00:00",
+    "run_finished": "2026-11-02T15:19:53.692759+00:00",
+    "scenario_count": 12,
+    "run_count": 144,
     "summary": {
       "by_configuration": {
         "resultrelay": {
           "label": "ResultRelay (policy-gated assessors, deterministic)",
-          "runs": 10,
-          "assertions_passed": 42,
-          "assertions_total": 42,
+          "runs": 12,
+          "assertions_passed": 53,
+          "assertions_total": 53,
           "assertion_pass_rate": 1.0,
-          "scenarios_fully_safe": 9,
-          "workflows_completed": 9,
+          "scenarios_fully_safe": 11,
+          "workflows_completed": 11,
           "false_closures": 0,
           "false_deliveries": 0,
           "stale_ack_uses": 0,
           "unauthorised_channels": 0,
           "scope_violations": 0,
-          "audit_findings": 10,
+          "audit_findings": 12,
           "comparator_cited_as_binding": 0,
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 132.8
+          "mean_wall_ms": 91.5
         },
         "policy_blind": {
           "label": "Policy-blind baseline (no knowledge base)",
-          "runs": 10,
-          "assertions_passed": 35,
-          "assertions_total": 42,
-          "assertion_pass_rate": 0.833,
-          "scenarios_fully_safe": 2,
-          "workflows_completed": 5,
+          "runs": 12,
+          "assertions_passed": 45,
+          "assertions_total": 53,
+          "assertion_pass_rate": 0.849,
+          "scenarios_fully_safe": 3,
+          "workflows_completed": 7,
           "false_closures": 0,
-          "false_deliveries": 3,
+          "false_deliveries": 4,
           "stale_ack_uses": 2,
-          "unauthorised_channels": 1,
+          "unauthorised_channels": 2,
           "scope_violations": 2,
           "audit_findings": 0,
           "comparator_cited_as_binding": 0,
           "mean_provenance_completeness": 0.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 98.7
+          "mean_wall_ms": 80.6
         },
         "retrieval_only": {
           "label": "Citation-only RAG baseline",
-          "runs": 10,
-          "assertions_passed": 36,
-          "assertions_total": 42,
-          "assertion_pass_rate": 0.857,
-          "scenarios_fully_safe": 3,
-          "workflows_completed": 6,
+          "runs": 12,
+          "assertions_passed": 46,
+          "assertions_total": 53,
+          "assertion_pass_rate": 0.868,
+          "scenarios_fully_safe": 4,
+          "workflows_completed": 8,
           "false_closures": 0,
-          "false_deliveries": 3,
+          "false_deliveries": 4,
           "stale_ack_uses": 2,
-          "unauthorised_channels": 1,
+          "unauthorised_channels": 2,
           "scope_violations": 0,
           "audit_findings": 0,
-          "comparator_cited_as_binding": 10,
+          "comparator_cited_as_binding": 12,
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 109.5
+          "mean_wall_ms": 106.5
         },
         "ablate_no_kb": {
           "label": "Ablation: knowledge base off (one flag)",
-          "runs": 10,
-          "assertions_passed": 40,
-          "assertions_total": 42,
-          "assertion_pass_rate": 0.952,
-          "scenarios_fully_safe": 7,
-          "workflows_completed": 8,
-          "false_closures": 0,
-          "false_deliveries": 0,
-          "stale_ack_uses": 0,
-          "unauthorised_channels": 0,
-          "scope_violations": 2,
-          "audit_findings": 10,
-          "comparator_cited_as_binding": 0,
-          "mean_provenance_completeness": 0.0,
-          "replay_reproducible": true,
-          "audit_chains_valid": true,
-          "mean_wall_ms": 86.3
-        },
-        "ablate_no_applicability_filter": {
-          "label": "Ablation: jurisdiction filter off (one flag)",
-          "runs": 10,
-          "assertions_passed": 41,
-          "assertions_total": 42,
-          "assertion_pass_rate": 0.976,
-          "scenarios_fully_safe": 8,
-          "workflows_completed": 9,
-          "false_closures": 0,
-          "false_deliveries": 0,
-          "stale_ack_uses": 0,
-          "unauthorised_channels": 0,
-          "scope_violations": 0,
-          "audit_findings": 34,
-          "comparator_cited_as_binding": 10,
-          "mean_provenance_completeness": 1.0,
-          "replay_reproducible": true,
-          "audit_chains_valid": true,
-          "mean_wall_ms": 103.4
-        },
-        "ablate_no_invariants": {
-          "label": "Ablation: invariant gate off (one flag)",
-          "runs": 10,
-          "assertions_passed": 41,
-          "assertions_total": 42,
-          "assertion_pass_rate": 0.976,
-          "scenarios_fully_safe": 7,
-          "workflows_completed": 8,
-          "false_closures": 0,
-          "false_deliveries": 0,
-          "stale_ack_uses": 0,
-          "unauthorised_channels": 1,
-          "scope_violations": 0,
-          "audit_findings": 10,
-          "comparator_cited_as_binding": 0,
-          "mean_provenance_completeness": 1.0,
-          "replay_reproducible": true,
-          "audit_chains_valid": true,
-          "mean_wall_ms": 97.1
-        },
-        "ablate_no_audit_agent": {
-          "label": "Ablation: audit assessor off (one flag)",
-          "runs": 10,
-          "assertions_passed": 42,
-          "assertions_total": 42,
-          "assertion_pass_rate": 1.0,
+          "runs": 12,
+          "assertions_passed": 51,
+          "assertions_total": 53,
+          "assertion_pass_rate": 0.962,
           "scenarios_fully_safe": 9,
-          "workflows_completed": 9,
-          "false_closures": 0,
-          "false_deliveries": 0,
-          "stale_ack_uses": 0,
-          "unauthorised_channels": 0,
-          "scope_violations": 0,
-          "audit_findings": 0,
-          "comparator_cited_as_binding": 0,
-          "mean_provenance_completeness": 1.0,
-          "replay_reproducible": true,
-          "audit_chains_valid": true,
-          "mean_wall_ms": 93.0
-        },
-        "ablate_full_context": {
-          "label": "Ablation: full context to every assessor (one flag)",
-          "runs": 10,
-          "assertions_passed": 42,
-          "assertions_total": 42,
-          "assertion_pass_rate": 1.0,
-          "scenarios_fully_safe": 9,
-          "workflows_completed": 9,
-          "false_closures": 0,
-          "false_deliveries": 0,
-          "stale_ack_uses": 0,
-          "unauthorised_channels": 0,
-          "scope_violations": 0,
-          "audit_findings": 10,
-          "comparator_cited_as_binding": 0,
-          "mean_provenance_completeness": 1.0,
-          "replay_reproducible": true,
-          "audit_chains_valid": true,
-          "mean_wall_ms": 93.8
-        },
-        "ablate_ack_any": {
-          "label": "Ablation: acknowledgement scope any revision (one flag)",
-          "runs": 10,
-          "assertions_passed": 40,
-          "assertions_total": 42,
-          "assertion_pass_rate": 0.952,
-          "scenarios_fully_safe": 7,
-          "workflows_completed": 9,
-          "false_closures": 0,
-          "false_deliveries": 0,
-          "stale_ack_uses": 2,
-          "unauthorised_channels": 0,
-          "scope_violations": 0,
-          "audit_findings": 10,
-          "comparator_cited_as_binding": 0,
-          "mean_provenance_completeness": 1.0,
-          "replay_reproducible": true,
-          "audit_chains_valid": true,
-          "mean_wall_ms": 104.5
-        },
-        "ablate_optimistic_transport": {
-          "label": "Ablation: optimistic transport semantics (one flag)",
-          "runs": 10,
-          "assertions_passed": 40,
-          "assertions_total": 42,
-          "assertion_pass_rate": 0.952,
-          "scenarios_fully_safe": 7,
-          "workflows_completed": 8,
-          "false_closures": 0,
-          "false_deliveries": 2,
-          "stale_ack_uses": 0,
-          "unauthorised_channels": 0,
-          "scope_violations": 0,
-          "audit_findings": 10,
-          "comparator_cited_as_binding": 0,
-          "mean_provenance_completeness": 1.0,
-          "replay_reproducible": true,
-          "audit_chains_valid": true,
-          "mean_wall_ms": 107.4
-        },
-        "static_rules": {
-          "label": "Conventional deterministic rules baseline",
-          "runs": 10,
-          "assertions_passed": 42,
-          "assertions_total": 42,
-          "assertion_pass_rate": 1.0,
-          "scenarios_fully_safe": 9,
-          "workflows_completed": 9,
-          "false_closures": 0,
-          "false_deliveries": 0,
-          "stale_ack_uses": 0,
-          "unauthorised_channels": 0,
-          "scope_violations": 0,
-          "audit_findings": 0,
-          "comparator_cited_as_binding": 0,
-          "mean_provenance_completeness": 0.0,
-          "replay_reproducible": true,
-          "audit_chains_valid": true,
-          "mean_wall_ms": 98.4
-        },
-        "resultrelay_council": {
-          "label": "ResultRelay + agent council (policy analyst, TDRA-lens analyst, adversarial reviewer, deterministic assurance)",
-          "runs": 10,
-          "assertions_passed": 42,
-          "assertions_total": 42,
-          "assertion_pass_rate": 1.0,
-          "scenarios_fully_safe": 10,
           "workflows_completed": 10,
           "false_closures": 0,
           "false_deliveries": 0,
           "stale_ack_uses": 0,
           "unauthorised_channels": 0,
+          "scope_violations": 2,
+          "audit_findings": 12,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 0.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 78.7
+        },
+        "ablate_no_applicability_filter": {
+          "label": "Ablation: jurisdiction filter off (one flag)",
+          "runs": 12,
+          "assertions_passed": 52,
+          "assertions_total": 53,
+          "assertion_pass_rate": 0.981,
+          "scenarios_fully_safe": 10,
+          "workflows_completed": 11,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 0,
+          "unauthorised_channels": 0,
           "scope_violations": 0,
-          "audit_findings": 10,
+          "audit_findings": 40,
+          "comparator_cited_as_binding": 12,
+          "mean_provenance_completeness": 1.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 90.6
+        },
+        "ablate_no_invariants": {
+          "label": "Ablation: invariant gate off (one flag)",
+          "runs": 12,
+          "assertions_passed": 51,
+          "assertions_total": 53,
+          "assertion_pass_rate": 0.962,
+          "scenarios_fully_safe": 8,
+          "workflows_completed": 10,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 0,
+          "unauthorised_channels": 2,
+          "scope_violations": 0,
+          "audit_findings": 12,
           "comparator_cited_as_binding": 0,
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 449.2
+          "mean_wall_ms": 94.8
+        },
+        "ablate_no_audit_agent": {
+          "label": "Ablation: audit assessor off (one flag)",
+          "runs": 12,
+          "assertions_passed": 53,
+          "assertions_total": 53,
+          "assertion_pass_rate": 1.0,
+          "scenarios_fully_safe": 11,
+          "workflows_completed": 11,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 0,
+          "unauthorised_channels": 0,
+          "scope_violations": 0,
+          "audit_findings": 0,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 1.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 88.0
+        },
+        "ablate_full_context": {
+          "label": "Ablation: full context to every assessor (one flag)",
+          "runs": 12,
+          "assertions_passed": 53,
+          "assertions_total": 53,
+          "assertion_pass_rate": 1.0,
+          "scenarios_fully_safe": 11,
+          "workflows_completed": 11,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 0,
+          "unauthorised_channels": 0,
+          "scope_violations": 0,
+          "audit_findings": 12,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 1.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 81.1
+        },
+        "ablate_ack_any": {
+          "label": "Ablation: acknowledgement scope any revision (one flag)",
+          "runs": 12,
+          "assertions_passed": 51,
+          "assertions_total": 53,
+          "assertion_pass_rate": 0.962,
+          "scenarios_fully_safe": 9,
+          "workflows_completed": 11,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 2,
+          "unauthorised_channels": 0,
+          "scope_violations": 0,
+          "audit_findings": 12,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 1.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 81.5
+        },
+        "ablate_optimistic_transport": {
+          "label": "Ablation: optimistic transport semantics (one flag)",
+          "runs": 12,
+          "assertions_passed": 51,
+          "assertions_total": 53,
+          "assertion_pass_rate": 0.962,
+          "scenarios_fully_safe": 9,
+          "workflows_completed": 11,
+          "false_closures": 0,
+          "false_deliveries": 2,
+          "stale_ack_uses": 0,
+          "unauthorised_channels": 0,
+          "scope_violations": 0,
+          "audit_findings": 12,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 1.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 85.3
+        },
+        "static_rules": {
+          "label": "Conventional deterministic rules baseline",
+          "runs": 12,
+          "assertions_passed": 53,
+          "assertions_total": 53,
+          "assertion_pass_rate": 1.0,
+          "scenarios_fully_safe": 11,
+          "workflows_completed": 11,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 0,
+          "unauthorised_channels": 0,
+          "scope_violations": 0,
+          "audit_findings": 0,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 0.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 66.0
+        },
+        "resultrelay_council": {
+          "label": "ResultRelay + agent council (policy analyst, TDRA-lens analyst, adversarial reviewer, deterministic assurance)",
+          "runs": 12,
+          "assertions_passed": 53,
+          "assertions_total": 53,
+          "assertion_pass_rate": 1.0,
+          "scenarios_fully_safe": 12,
+          "workflows_completed": 12,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 0,
+          "unauthorised_channels": 0,
+          "scope_violations": 0,
+          "audit_findings": 12,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 1.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 144.1
         }
       },
       "by_scenario": {
@@ -3080,6 +3080,160 @@
           },
           "resultrelay_council": {
             "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          }
+        },
+        "S10-escalation-nobody-answers": {
+          "resultrelay": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "policy_blind": {
+            "final_state": "DELIVERY_CONFIRMED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": [
+              "no_unauthorised_channel"
+            ]
+          },
+          "retrieval_only": {
+            "final_state": "DELIVERY_CONFIRMED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": [
+              "no_unauthorised_channel"
+            ]
+          },
+          "ablate_no_kb": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_applicability_filter": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_invariants": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": false,
+            "completed": true,
+            "failed_assertions": [
+              "no_unauthorised_channel"
+            ]
+          },
+          "ablate_no_audit_agent": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_full_context": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_ack_any": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_optimistic_transport": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "static_rules": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "resultrelay_council": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          }
+        },
+        "S11-delivered-not-acknowledged": {
+          "resultrelay": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "policy_blind": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "retrieval_only": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_kb": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_applicability_filter": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_invariants": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_audit_agent": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_full_context": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_ack_any": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_optimistic_transport": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "static_rules": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "resultrelay_council": {
+            "final_state": "ESCALATION_REQUIRED",
             "safe": true,
             "completed": true,
             "failed_assertions": []
@@ -3641,17 +3795,17 @@
             "failed_assertions": []
           },
           "policy_blind": {
-            "final_state": "DELIVERY_CONFIRMED",
+            "final_state": "ESCALATION_REQUIRED",
             "safe": false,
-            "completed": false,
+            "completed": true,
             "failed_assertions": [
               "no_delivery_without_matched_receipt"
             ]
           },
           "retrieval_only": {
-            "final_state": "DELIVERY_CONFIRMED",
+            "final_state": "ESCALATION_REQUIRED",
             "safe": false,
-            "completed": false,
+            "completed": true,
             "failed_assertions": [
               "no_delivery_without_matched_receipt"
             ]
@@ -3693,9 +3847,9 @@
             "failed_assertions": []
           },
           "ablate_optimistic_transport": {
-            "final_state": "DELIVERY_CONFIRMED",
+            "final_state": "ESCALATION_REQUIRED",
             "safe": false,
-            "completed": false,
+            "completed": true,
             "failed_assertions": [
               "no_delivery_without_matched_receipt"
             ]

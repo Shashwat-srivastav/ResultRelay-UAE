@@ -308,7 +308,7 @@ network access.
 
 | artefact | content |
 |---|---|
-| `kb/source_register.csv` | 23 sources with issuer, jurisdiction, version, official URL, legal status, verification class and limitations |
+| `kb/source_register.csv` | 24 sources with issuer, jurisdiction, version, official URL, legal status, verification class and limitations |
 | `kb/records/*.yaml` | the committed excerpts: verbatim quotation, section, printed page, claim classification, topics, declared fields |
 | `kb/.sources/<ID>.txt` | page-marked full texts (`===== PAGE n =====`), git-ignored, not redistributed; fetched by `scripts/fetch_sources.py` |
 | `kb/index/chunks.json` | 93 chunks, each verified at ingest; pinned by `kb/index/pinned.sha256` |
@@ -374,7 +374,7 @@ extract cleanly.
   for that reason.
 - **Simulated transport.** No SMS gateway, LIS or EHR is contacted; latency and provider behaviour
   are scripted.
-- **Author-written scenarios.** S1, S2, S3a, S3b, S4–S9 (ten files) and their expectations in
+- **Author-written scenarios.** S1, S2, S3a, S3b, S4–S11 (twelve files) and their expectations in
   `scenarios/expected/` were written by the engine authors (`authorship: ENGINE_AUTHORS`,
   `independent_review: false`). There is no held-out or independently written set.
 - **Hosted models, synthetic only.** Recorded runs use Mistral (hosted outside the UAE) and

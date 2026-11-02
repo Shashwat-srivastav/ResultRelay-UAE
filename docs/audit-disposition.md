@@ -1,5 +1,7 @@
 # Judge-critic audit: disposition against the current repository
 
+> This file records the disposition as of 2 Nov 2026; for current counts and results, `README.md` and `evaluation/report.md` are authoritative.
+
 *Re-checked on 2 November 2026 against the working tree of this repository. This replaces the
 earlier disposition of the first red-team audit (C-/H- findings), which described a 14-source,
 63-excerpt build that no longer exists.*
@@ -55,14 +57,14 @@ untracked). They have to be committed for a clone to show them.
 | RJ-17 | major | The telecom and digital-government layer was missing. | PARTIAL | U8 (TDRA Mobile Spam, third-party copy), U10 (Telecom Law Art. 13) and the TDRA-lens analyst. No digital-government or A2P/sender-ID instrument from a TDRA domain. |
 | RJ-18 | major | Identity shifts between documents; the main contribution is country-specific. | PARTIAL | Identity is consistent ("walk-in labs licensed by DHA"), but the submission still frames requirements around DHA ST-28 (11 mentions in the docx). Not changed in this pass. |
 | RJ-19 | major | The paper contradicted itself on ADHICS / AI Charter being absent. | FIXED | The submission no longer says they are absent; register lists AD2 and U5 as transcriptions. |
-| RJ-20 | major | The README was stale on numbers and paths. | OPEN | At the time of writing `README.md` still says 248 tests (badge and two other places), "The four scenarios", "9 scenarios × 11 configurations" and "82 quotations from 18 documents"; the repo has 10 scenario files, 12 configurations, 93 quotations, 23 sources. README is being regenerated. |
+| RJ-20 | major | The README was stale on numbers and paths. | OPEN | At the time of writing `README.md` still says 248 tests (badge and two other places), "The four scenarios", "9 scenarios × 11 configurations" and "82 quotations from 18 documents"; the repo has 12 scenario files, 12 configurations, 96 quotations, 24 sources. README is being regenerated. |
 | RJ-21 | major | Judges could not inject error events at runtime. | FIXED | `POST /api/runs/{run_id}/events` (`inject_event` in `app/api/routes.py`) validates against `EventType`, audits `event.injected`, runs `orchestrator.step`. |
 | RJ-22 | major | Problem size never measured; why AI is needed never argued. | LIMIT-DISCLOSED | The submission quotes ONC SAFER and states "we found no published UAE figure for failed patient-direct notifications, itself a gap". S9 is the case for agents (`requires_council: true`). No local failure-rate estimate exists. |
 | RJ-23 | minor | Residency treated `.ae` or loopback as in-country and ignored the implementing resolution. | LIMIT-DISCLOSED | `app/advisers/residency.py`: decisions are marked `nominal`; an operator address check (`RESULTRELAY_RESIDENCY_RESOLVED_IPS` / `_AE_CIDRS`) overrides the name; MR 51/2021 is sent to a person. Egress is not observed. |
 | RJ-24 | minor | Register fields corrupted; PDPL kept as binding for a case it excludes. | PARTIAL | U2 relabelled as excluded. `local_file_path` still mixes `kb/records/*.yaml` (e.g. S1, U6, U8) and `kb/.sources/*.txt` (U1–U5, AD2). |
 | RJ-25 | minor | No Arabic support. | PARTIAL | Arabic queries via `ARABIC_GLOSSARY`. No Arabic quotation stored (U10 limitations: Arabic PDF extracts with broken glyphs); UI is English; U2 is an unofficial translation. |
 | RJ-26 | minor | Effort spent on 3-D pipeline and design documents. | NOTE | `web/package.json` still depends on `three`; `docs/design/` still present. |
-| RJ-27 | minor | The evaluation only shows the system agrees with itself. | OPEN | All 10 files in `scenarios/expected/` have `authorship: ENGINE_AUTHORS`, `independent_review: false`. No held-out set. |
+| RJ-27 | minor | The evaluation only shows the system agrees with itself. | OPEN | All 12 files in `scenarios/expected/` have `authorship: ENGINE_AUTHORS`, `independent_review: false`. No held-out set. |
 
 ## RT series (technical view)
 
@@ -96,7 +98,7 @@ untracked). They have to be committed for a clone to show them.
 | RT-26 | minor | Chunk `verification_status` held a file path. | FIXED | `app/kb/ingest.py` `build_chunks` writes the register class; `chunks.json` holds only class values (`VERIFIED_OFFICIAL`, `VERIFIED_TRANSCRIPTION`, …). |
 | RT-27 | minor | Spot checks of quotations were positive. | NOTE | No change needed; all 93 chunks report `VERIFIED_AGAINST_SOURCE` at the last ingest. |
 | RT-28 | minor | README said "no authentication" while optional API-key middleware exists. | OPEN | `README.md` still says "The build has no authentication"; `app/main.py` `_require_api_key` implements `RESULTRELAY_API_KEY` / `X-API-Key`. `docs/architecture.md` §9 now states it correctly. |
-| RT-29 | minor | The served manifest went stale ("63 chunks across 14 sources"). | FIXED | `app/static/app/data/manifest.json` and `web/public/data/manifest.json` are identical, with `chunk_count: 93`, and contain no "63" counts. |
+| RT-29 | minor | The served manifest went stale ("63 chunks across 14 sources"). | FIXED | `app/static/app/data/manifest.json` and `web/public/data/manifest.json` are identical, with `chunk_count: 96`, and contain no "63" counts. |
 | RT-30 | minor | An external draft did not match the build. | NOTE | Superseded by `submission/ResultRelay_ITU_Submission.docx`. |
 | RT-31 | minor | Framework mappings overclaimed (no external API, no proprietary dependency). | FIXED | Those phrases no longer occur in `kb/framework/*.csv`; R08 and Y4 state that hosted Mistral/Jev are used for synthetic cases and that the local 14B model has not been run end to end. |
 | RT-32 | minor | Informational events were shown as BLOCKED transitions. | FIXED | `transitions.evaluate`: `INFORMATIONAL_EVENTS` return status `RECORDED` with audit event `event.informational`. |

@@ -6,7 +6,7 @@
 Every number drawn comes from a file read below; nothing is typed in by hand, so a figure cannot drift
 from the evaluation, the recorded council run or the knowledge base. Sources:
 
-    evaluation/results/latest.json        fully-safe counts and final states (10 scenarios x 12 configurations)
+    evaluation/results/latest.json        fully-safe counts and final states (12 scenarios x 12 configurations)
     evaluation/demo_run.json              the recorded agent-council run (18 decision points)
     kb/index/chunks.json                  the 96 verified quotations
     kb/source_register.csv                the 24 source documents

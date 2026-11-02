@@ -114,7 +114,7 @@ export default function Simulator() {
         </span>
       </Banner>
 
-      <Panel title="Run a scenario" hint="10 scenarios · 12 configurations">
+      <Panel title="Run a scenario" hint="12 scenarios · 12 configurations">
         <div className="grid cols-4" style={{ alignItems: "end" }}>
           <div className="field" style={{ gridColumn: "span 2" }}>
             <label htmlFor="scenario">Scenario</label>
