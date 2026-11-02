@@ -154,62 +154,62 @@
    "objection": {
     "type": "choice",
     "choice": "NONE",
-    "confidence": 0.75,
+    "confidence": 0.74,
     "probabilities": {
-     "NONE": 0.78,
-     "ACCEPTANCE_AS_DELIVERY": 0.13,
+     "NONE": 0.77,
+     "ACCEPTANCE_AS_DELIVERY": 0.14,
      "STALE_REVISION_ACK": 0.0,
      "SCOPE_ROUTES_ELSEWHERE": 0.0,
-     "UNAPPROVED_CHANNEL": 0.08,
-     "RETRY_BEFORE_RECONCILE": 0.0,
+     "UNAPPROVED_CHANNEL": 0.06,
+     "RETRY_BEFORE_RECONCILE": 0.01,
      "ACK_WINDOW_EXPIRED": 0.0,
      "UNVERIFIED_RECIPIENT": 0.0,
-     "TEXT_CONTRADICTS_RECORD": 0.01
+     "TEXT_CONTRADICTS_RECORD": 0.02
     }
    },
    "own_reading": {
     "type": "choice",
     "choice": "NOT_YET_SENT",
-    "confidence": 0.9,
+    "confidence": 0.91,
     "probabilities": {
      "COMMUNICATED": 0.0,
-     "AWAITING_ACK": 0.04,
+     "AWAITING_ACK": 0.03,
      "DIRECT_NOT_PERMITTED": 0.0,
-     "NOT_YET_SENT": 0.92,
+     "NOT_YET_SENT": 0.93,
      "INSUFFICIENT_EVIDENCE": 0.04
     }
    },
    "analyst_supported": {
     "type": "noul",
-    "noul": 0.54
+    "noul": 0.53
    },
    "analyst_issue": {
     "type": "choice",
     "choice": "NONE",
-    "confidence": 0.33,
+    "confidence": 0.39,
     "probabilities": {
-     "NONE": 0.44,
-     "CONTRADICTS_CASE_FACTS": 0.22,
+     "NONE": 0.49,
+     "CONTRADICTS_CASE_FACTS": 0.19,
      "CLAUSE_DOES_NOT_SUPPORT": 0.29,
-     "WRONG_AUTHORITY": 0.01,
-     "WRONG_REVISION": 0.01,
+     "WRONG_AUTHORITY": 0.0,
+     "WRONG_REVISION": 0.0,
      "IGNORES_WHAT_WAS_SAID": 0.03
     }
    },
    "alternative": {
     "type": "choice",
     "choice": "SEND_PRIMARY",
-    "confidence": 0.79,
+    "confidence": 0.82,
     "probabilities": {
-     "SEND_PRIMARY": 0.81,
-     "AWAIT_EVIDENCE": 0.13,
+     "SEND_PRIMARY": 0.84,
+     "AWAIT_EVIDENCE": 0.11,
      "RECONCILE_ATTEMPT": 0.0,
      "RETRY_SAME_CHANNEL": 0.0,
      "PROPOSE_FALLBACK": 0.0,
-     "AWAIT_ACKNOWLEDGMENT": 0.03,
+     "AWAIT_ACKNOWLEDGMENT": 0.01,
      "RECORD_DOCUMENTATION": 0.0,
      "OPEN_CORRECTION_TASK": 0.0,
-     "ESCALATE_HUMAN": 0.02,
+     "ESCALATE_HUMAN": 0.03,
      "VERIFY_RECIPIENT": 0.01,
      "NO_ACTION": 0.0
     }

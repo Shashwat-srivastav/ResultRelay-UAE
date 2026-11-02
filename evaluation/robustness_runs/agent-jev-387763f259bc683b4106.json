@@ -175,9 +175,9 @@
    "objection": {
     "type": "choice",
     "choice": "NONE",
-    "confidence": 0.96,
+    "confidence": 0.94,
     "probabilities": {
-     "NONE": 0.96,
+     "NONE": 0.95,
      "ACCEPTANCE_AS_DELIVERY": 0.0,
      "STALE_REVISION_ACK": 0.01,
      "SCOPE_ROUTES_ELSEWHERE": 0.0,
@@ -185,19 +185,19 @@
      "RETRY_BEFORE_RECONCILE": 0.0,
      "ACK_WINDOW_EXPIRED": 0.0,
      "UNVERIFIED_RECIPIENT": 0.0,
-     "TEXT_CONTRADICTS_RECORD": 0.02
+     "TEXT_CONTRADICTS_RECORD": 0.03
     }
    },
    "own_reading": {
     "type": "choice",
     "choice": "COMMUNICATED",
-    "confidence": 0.92,
+    "confidence": 0.94,
     "probabilities": {
-     "COMMUNICATED": 0.94,
-     "AWAITING_ACK": 0.03,
+     "COMMUNICATED": 0.95,
+     "AWAITING_ACK": 0.01,
      "DIRECT_NOT_PERMITTED": 0.0,
      "NOT_YET_SENT": 0.0,
-     "INSUFFICIENT_EVIDENCE": 0.03
+     "INSUFFICIENT_EVIDENCE": 0.04
     }
    },
    "analyst_supported": {
@@ -207,10 +207,10 @@
    "analyst_issue": {
     "type": "choice",
     "choice": "NONE",
-    "confidence": 0.38,
+    "confidence": 0.4,
     "probabilities": {
-     "NONE": 0.48,
-     "CONTRADICTS_CASE_FACTS": 0.15,
+     "NONE": 0.5,
+     "CONTRADICTS_CASE_FACTS": 0.13,
      "CLAUSE_DOES_NOT_SUPPORT": 0.26,
      "WRONG_AUTHORITY": 0.01,
      "WRONG_REVISION": 0.02,

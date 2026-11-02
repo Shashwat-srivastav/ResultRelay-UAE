@@ -177,9 +177,9 @@
     "choice": "TEXT_CONTRADICTS_RECORD",
     "confidence": 0.76,
     "probabilities": {
-     "NONE": 0.16,
+     "NONE": 0.17,
      "ACCEPTANCE_AS_DELIVERY": 0.0,
-     "STALE_REVISION_ACK": 0.01,
+     "STALE_REVISION_ACK": 0.0,
      "SCOPE_ROUTES_ELSEWHERE": 0.0,
      "UNAPPROVED_CHANNEL": 0.01,
      "RETRY_BEFORE_RECONCILE": 0.0,
@@ -191,10 +191,10 @@
    "own_reading": {
     "type": "choice",
     "choice": "AWAITING_ACK",
-    "confidence": 0.89,
+    "confidence": 0.9,
     "probabilities": {
-     "COMMUNICATED": 0.06,
-     "AWAITING_ACK": 0.91,
+     "COMMUNICATED": 0.05,
+     "AWAITING_ACK": 0.92,
      "DIRECT_NOT_PERMITTED": 0.0,
      "NOT_YET_SENT": 0.0,
      "INSUFFICIENT_EVIDENCE": 0.03
@@ -202,36 +202,36 @@
    },
    "analyst_supported": {
     "type": "noul",
-    "noul": 0.58
+    "noul": 0.55
    },
    "analyst_issue": {
     "type": "choice",
     "choice": "CLAUSE_DOES_NOT_SUPPORT",
-    "confidence": 0.33,
+    "confidence": 0.3,
     "probabilities": {
      "NONE": 0.37,
-     "CONTRADICTS_CASE_FACTS": 0.14,
-     "CLAUSE_DOES_NOT_SUPPORT": 0.44,
+     "CONTRADICTS_CASE_FACTS": 0.17,
+     "CLAUSE_DOES_NOT_SUPPORT": 0.42,
      "WRONG_AUTHORITY": 0.01,
      "WRONG_REVISION": 0.01,
-     "IGNORES_WHAT_WAS_SAID": 0.03
+     "IGNORES_WHAT_WAS_SAID": 0.02
     }
    },
    "alternative": {
     "type": "choice",
     "choice": "ESCALATE_HUMAN",
-    "confidence": 0.44,
+    "confidence": 0.37,
     "probabilities": {
      "SEND_PRIMARY": 0.01,
-     "AWAIT_EVIDENCE": 0.05,
+     "AWAIT_EVIDENCE": 0.04,
      "RECONCILE_ATTEMPT": 0.01,
      "RETRY_SAME_CHANNEL": 0.0,
      "PROPOSE_FALLBACK": 0.0,
-     "AWAIT_ACKNOWLEDGMENT": 0.17,
-     "RECORD_DOCUMENTATION": 0.2,
+     "AWAIT_ACKNOWLEDGMENT": 0.18,
+     "RECORD_DOCUMENTATION": 0.24,
      "OPEN_CORRECTION_TASK": 0.01,
-     "ESCALATE_HUMAN": 0.49,
-     "VERIFY_RECIPIENT": 0.05,
+     "ESCALATE_HUMAN": 0.43,
+     "VERIFY_RECIPIENT": 0.07,
      "NO_ACTION": 0.01
     }
    }

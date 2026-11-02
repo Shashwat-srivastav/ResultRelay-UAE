@@ -133,18 +133,18 @@
  "response": {
   "answers": {
    "obligation": {
-    "choice": "AWAITING_ACK",
+    "choice": "COMMUNICATED",
     "confidence": 0.98
    },
    "clause": {
-    "choice": "S1-11.1.1",
+    "choice": "S1-11.1.3",
     "confidence": 0.95
    },
    "settled": {
-    "noul": 0.25
+    "noul": 0.97
    },
    "gap": {
-    "choice": "NO_ACK_CLOCK",
+    "choice": "NONE",
     "confidence": 0.92
    },
    "tool_request": {
@@ -152,6 +152,6 @@
     "confidence": 1.0
    }
   },
-  "rationale": "The patient’s explicit denial of identity ('Wrong number. I do not know anyone by that name.') and the verified identity of the responder (identity_verified: true) mean the communication was not successfully acknowledged for the current revision, despite delivery. Clause **S1-11.1.1** mandates clear reporting to the patient, and **S1-11.1.3** requires documentation of communication attempts, but neither settles the unresolved acknowledgment or escalation procedure."
+  "rationale": "The patient’s explicit denial of identity ('Wrong number. I do not know anyone by that name.') and the verified identity of the responder (identity_verified: true) mean the current revision was acknowledged, satisfying the communication duty under **S1-11.1.1**. The acknowledgment is tied to the current revision, and no clause requires further action beyond documentation of this failed attempt, which is governed by **S1-11.1.3**."
  }
 }

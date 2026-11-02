@@ -152,6 +152,6 @@
     "confidence": 1.0
    }
   },
-  "rationale": "The patient’s verified acknowledgment ('OK, understood') of the current revision (SYN-CASE-010-R1) satisfies the binding requirement in **S1-11.1.3** to record communication, and **S1-11.1.1** mandates clear reporting of critical results, which has been met by the patient’s reply. The case is settled under these clauses with no gaps."
+  "rationale": "The patient’s verified acknowledgment ('OK, understood') of the current revision (SYN-CASE-010-R1) satisfies the binding requirement in **S1-11.1.3** to record communication, and **S1-11.1.1** mandates clear reporting to the patient. The case is settled under these clauses, with no gaps left for human discretion."
  }
 }

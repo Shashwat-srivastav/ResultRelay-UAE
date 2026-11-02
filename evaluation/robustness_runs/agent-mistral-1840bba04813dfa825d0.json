@@ -134,21 +134,24 @@
   "answers": {
    "obligation": {
     "choice": "COMMUNICATED",
-    "confidence": 0.98
+    "confidence": 1.0
    },
    "clause": {
-    "choice": "S1-11.1.3"
+    "choice": "S1-11.1.3",
+    "confidence": 0.95
    },
    "settled": {
-    "noul": 0.98
+    "noul": 1.0
    },
    "gap": {
-    "choice": "NONE"
+    "choice": "NONE",
+    "confidence": 1.0
    },
    "tool_request": {
-    "choice": "NONE"
+    "choice": "NONE",
+    "confidence": 1.0
    }
   },
-  "rationale": "The acknowledgment from a verified number ('أنا زوجته، هو مسافر وليس معه هاتفه. سأخبره لاحقاً.') confirms communication with the patient for the current revision (SYN-CASE-010-R1), satisfying the binding requirement in **S1-11.1.3** to record the communication, while **S1-11.1.1** mandates clear reporting of critical results. The duty is settled as the acknowledgment aligns with the current revision, and no gaps remain unaddressed by the shown clauses."
+  "rationale": "The acknowledgment from a verified number ('أنا زوجته، هو مسافر وليس معه هاتفه. سأخبره لاحقاً.') confirms the current revision was communicated to the patient’s spouse, satisfying the duty to report results clearly (S1-11.1.1) and triggering the record-keeping obligation (S1-11.1.3). The case is settled under these clauses with no gaps."
  }
 }

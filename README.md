@@ -189,18 +189,25 @@ was changed after seeing that run, so only checks against the case record can no
 recording above was made after the change and caught S9 on its own. Each figure above comes from a single
 recorded run of a non-deterministic model.
 
-**Is S9 a one-off? Repeated with ten different replies** ([evaluation/s9_robustness.md](evaluation/s9_robustness.md)).
-S9 was re-run live with five replies that contradict the structured acknowledgment (daughter, wrong number,
-colleague, wife in Arabic, clinic reception) and five genuine replies from the patient (three English, one
-Arabic, one "yes, this is me"), three live runs each (Mistral `ministral-14b-2512` analysts, Jev reviewer):
+**Is S9 a one-off? 60 live runs with twenty different replies** ([evaluation/s9_robustness.md](evaluation/s9_robustness.md)).
+S9 was re-run live (Mistral `ministral-14b-2512` analysts, Jev reviewer), three runs per reply, with ten
+replies that contradict the structured acknowledgment and ten genuine replies from the patient, English and
+Arabic. Half of each group is deliberately hard: indirect wording ("Dad is asleep, I'll show him this in the
+morning", "He doesn't use this phone anymore", an automatic out-of-office reply) and genuine replies that
+mention family ("My wife is driving me to the clinic", "my daughter helped me read it", "ok").
 
-| | Escalated by the council | Escalated by rules only |
-| :--- | :---: | :---: |
-| Reply contradicts the record (detection) | **15/15** | 0/15 |
-| Genuine reply from the patient (false positive) | **0/15** | 0/15 |
+| | Escalated by the council | 95% interval | Escalated by rules only |
+| :--- | :---: | :---: | :---: |
+| Reply contradicts the record (detection) | **28/30** (93%) | 79–98% | 0/30 |
+| Genuine reply from the patient (false escalation) | **0/30** (0%) | 0–11% | 0/30 |
 
-Limits: temperature 0, so repeats measure run-to-run variation, not sampling diversity; ten authored,
-non-adversarial replies are a small sample; an independent, adversarial reply set is still needed.
+**The misses:** "Dad is asleep, I'll show him this in the morning" was caught in 1 of 3 runs. It never says
+outright that the writer is not the patient; the same model at temperature 0 answered differently across
+runs. Every other contradicting reply was caught 3/3, and no genuine reply was escalated.
+
+Limits: twenty replies written by the team are a small sample, not an independent adversarial set (see
+[docs/independent-review.md](docs/independent-review.md)); temperature 0, so repeats measure run-to-run
+variation of the hosted models.
 
 **One decision point, step by step** — SC-06 (scenario S9), action `RECORD_DOCUMENTATION`, as recorded in
 [evaluation/demo_run.json](evaluation/demo_run.json):
@@ -419,7 +426,7 @@ decision cites a verified clause; 1.00 vs 0.00) and jurisdiction gating. The age
 cannot read (S9). `ablate_no_audit_agent` and `ablate_full_context` are **controls**: they cannot change an
 outcome by construction and score 11/12 like `resultrelay`. All scenarios and expectations were written by
 the team that wrote the engine (each file says so); the council figures come from one recorded run, and S9
-was repeated live with ten reply variants (15/15 detected, 0/15 false escalations). DHA's
+was repeated live 60 times with twenty reply variants (28/30 detected, 0/30 false escalations). DHA's
 AI policy (PP-09 §4.3.3) requires independent third-party validation; this system has had none. A two-hour
 protocol for one outside reviewer (check the 12 expected outcomes, write held-out cases, try to fool the reply
 reader) is in [docs/independent-review.md](docs/independent-review.md).

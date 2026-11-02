@@ -157,59 +157,59 @@
     "confidence": 0.7,
     "probabilities": {
      "NONE": 0.73,
-     "ACCEPTANCE_AS_DELIVERY": 0.16,
+     "ACCEPTANCE_AS_DELIVERY": 0.15,
      "STALE_REVISION_ACK": 0.01,
      "SCOPE_ROUTES_ELSEWHERE": 0.0,
-     "UNAPPROVED_CHANNEL": 0.08,
+     "UNAPPROVED_CHANNEL": 0.09,
      "RETRY_BEFORE_RECONCILE": 0.01,
      "ACK_WINDOW_EXPIRED": 0.0,
-     "UNVERIFIED_RECIPIENT": 0.0,
-     "TEXT_CONTRADICTS_RECORD": 0.01
+     "UNVERIFIED_RECIPIENT": 0.01,
+     "TEXT_CONTRADICTS_RECORD": 0.0
     }
    },
    "own_reading": {
     "type": "choice",
     "choice": "NOT_YET_SENT",
-    "confidence": 0.87,
+    "confidence": 0.85,
     "probabilities": {
      "COMMUNICATED": 0.0,
      "AWAITING_ACK": 0.06,
      "DIRECT_NOT_PERMITTED": 0.0,
-     "NOT_YET_SENT": 0.9,
-     "INSUFFICIENT_EVIDENCE": 0.04
+     "NOT_YET_SENT": 0.88,
+     "INSUFFICIENT_EVIDENCE": 0.06
     }
    },
    "analyst_supported": {
     "type": "noul",
-    "noul": 0.69
+    "noul": 0.64
    },
    "analyst_issue": {
     "type": "choice",
     "choice": "NONE",
-    "confidence": 0.53,
+    "confidence": 0.46,
     "probabilities": {
-     "NONE": 0.61,
-     "CONTRADICTS_CASE_FACTS": 0.16,
-     "CLAUSE_DOES_NOT_SUPPORT": 0.13,
+     "NONE": 0.55,
+     "CONTRADICTS_CASE_FACTS": 0.18,
+     "CLAUSE_DOES_NOT_SUPPORT": 0.2,
      "WRONG_AUTHORITY": 0.01,
      "WRONG_REVISION": 0.01,
-     "IGNORES_WHAT_WAS_SAID": 0.08
+     "IGNORES_WHAT_WAS_SAID": 0.05
     }
    },
    "alternative": {
     "type": "choice",
     "choice": "SEND_PRIMARY",
-    "confidence": 0.79,
+    "confidence": 0.66,
     "probabilities": {
-     "SEND_PRIMARY": 0.81,
-     "AWAIT_EVIDENCE": 0.14,
+     "SEND_PRIMARY": 0.69,
+     "AWAIT_EVIDENCE": 0.24,
      "RECONCILE_ATTEMPT": 0.0,
      "RETRY_SAME_CHANNEL": 0.0,
      "PROPOSE_FALLBACK": 0.0,
-     "AWAIT_ACKNOWLEDGMENT": 0.02,
+     "AWAIT_ACKNOWLEDGMENT": 0.03,
      "RECORD_DOCUMENTATION": 0.0,
      "OPEN_CORRECTION_TASK": 0.0,
-     "ESCALATE_HUMAN": 0.02,
+     "ESCALATE_HUMAN": 0.03,
      "VERIFY_RECIPIENT": 0.0,
      "NO_ACTION": 0.01
     }

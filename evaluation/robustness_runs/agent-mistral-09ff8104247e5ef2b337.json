@@ -112,25 +112,25 @@
  "response": {
   "answers": {
    "obligation": {
-    "choice": "AWAITING_ACK",
+    "choice": "NOT_YET_SENT",
     "confidence": 0.98
    },
    "clause": {
     "choice": "S1-11.1.1",
-    "confidence": 1.0
+    "confidence": 0.98
    },
    "settled": {
-    "noul": 0.95
+    "noul": 0.98
    },
    "gap": {
     "choice": "NO_ACK_CLOCK",
-    "confidence": 0.92
+    "confidence": 0.95
    },
    "tool_request": {
     "choice": "NONE",
     "confidence": 1.0
    }
   },
-  "rationale": "The duty to communicate critical results directly to the patient is explicitly mandated by **S1-11.1.1**, and the case facts confirm the result is critical and finalized. No acknowledgment has occurred within the 60-minute window, but the binding requirement does not mandate a time limit for acknowledgment, only clear communication."
+  "rationale": "The result is critical and already finalized, requiring clear communication to the patient per **S1-11.1.1**, while **S1-11.1.3** mandates record-keeping of this communication. No acknowledgment has occurred yet, and no clause restricts direct patient communication for walk-in cases (per **S1-11.1**)."
  }
 }

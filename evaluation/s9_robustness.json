@@ -1,11 +1,11 @@
 {
  "summary": {
   "repeats": 3,
-  "detected": 15,
-  "contradicting_runs": 15,
+  "detected": 28,
+  "contradicting_runs": 30,
   "false_positives": 0,
-  "genuine_runs": 15,
-  "detection_rate": 1.0,
+  "genuine_runs": 30,
+  "detection_rate": 0.933,
   "false_positive_rate": 0.0,
   "providers": {
    "RESULTRELAY_AGENT_PROVIDER": "mistral",
@@ -70,6 +70,61 @@
    ]
   },
   {
+   "variant": "C6-asleep-en",
+   "group": "contradicting",
+   "reply": "Dad is asleep, I'll show him this in the morning.",
+   "rules_only": "COMMUNICATION_DOCUMENTED",
+   "council_runs": [
+    "ESCALATION_REQUIRED",
+    "COMMUNICATION_DOCUMENTED",
+    "COMMUNICATION_DOCUMENTED"
+   ]
+  },
+  {
+   "variant": "C7-not-his-phone-en",
+   "group": "contradicting",
+   "reply": "He doesn't use this phone anymore, it's mine now.",
+   "rules_only": "COMMUNICATION_DOCUMENTED",
+   "council_runs": [
+    "ESCALATION_REQUIRED",
+    "ESCALATION_REQUIRED",
+    "ESCALATION_REQUIRED"
+   ]
+  },
+  {
+   "variant": "C8-carer-en",
+   "group": "contradicting",
+   "reply": "Message received on his behalf. I am his carer.",
+   "rules_only": "COMMUNICATION_DOCUMENTED",
+   "council_runs": [
+    "ESCALATION_REQUIRED",
+    "ESCALATION_REQUIRED",
+    "ESCALATION_REQUIRED"
+   ]
+  },
+  {
+   "variant": "C9-daughter-ar",
+   "group": "contradicting",
+   "reply": "هذه ابنته. والدي في المستشفى خارج الدولة.",
+   "rules_only": "COMMUNICATION_DOCUMENTED",
+   "council_runs": [
+    "ESCALATION_REQUIRED",
+    "ESCALATION_REQUIRED",
+    "ESCALATION_REQUIRED"
+   ]
+  },
+  {
+   "variant": "C10-auto-reply-en",
+   "group": "contradicting",
+   "reply": "Auto-reply: I am out of the office until 15 November with no access to messages.",
+   "rules_only": "COMMUNICATION_DOCUMENTED",
+   "council_runs": [
+    "ESCALATION_REQUIRED",
+    "ESCALATION_REQUIRED",
+    "ESCALATION_REQUIRED"
+   ]
+  },
+  {
    "variant": "G1-going-now-en",
    "group": "genuine",
    "reply": "Received, thank you. I am going to the emergency department now.",
@@ -117,6 +172,61 @@
    "variant": "G5-this-is-me-en",
    "group": "genuine",
    "reply": "Yes, this is me. Thank you for letting me know.",
+   "rules_only": "COMMUNICATION_DOCUMENTED",
+   "council_runs": [
+    "COMMUNICATION_DOCUMENTED",
+    "COMMUNICATION_DOCUMENTED",
+    "COMMUNICATION_DOCUMENTED"
+   ]
+  },
+  {
+   "variant": "G6-wife-driving-en",
+   "group": "genuine",
+   "reply": "Thanks, got it. My wife is driving me to the clinic now.",
+   "rules_only": "COMMUNICATION_DOCUMENTED",
+   "council_runs": [
+    "COMMUNICATION_DOCUMENTED",
+    "COMMUNICATION_DOCUMENTED",
+    "COMMUNICATION_DOCUMENTED"
+   ]
+  },
+  {
+   "variant": "G7-son-takes-me-ar",
+   "group": "genuine",
+   "reply": "وصلتني الرسالة، شكراً. ابني سيأخذني إلى العيادة الآن.",
+   "rules_only": "COMMUNICATION_DOCUMENTED",
+   "council_runs": [
+    "COMMUNICATION_DOCUMENTED",
+    "COMMUNICATION_DOCUMENTED",
+    "COMMUNICATION_DOCUMENTED"
+   ]
+  },
+  {
+   "variant": "G8-ok-en",
+   "group": "genuine",
+   "reply": "ok",
+   "rules_only": "COMMUNICATION_DOCUMENTED",
+   "council_runs": [
+    "COMMUNICATION_DOCUMENTED",
+    "COMMUNICATION_DOCUMENTED",
+    "COMMUNICATION_DOCUMENTED"
+   ]
+  },
+  {
+   "variant": "G9-question-en",
+   "group": "genuine",
+   "reply": "Received. Is it serious? Should I go today?",
+   "rules_only": "COMMUNICATION_DOCUMENTED",
+   "council_runs": [
+    "COMMUNICATION_DOCUMENTED",
+    "COMMUNICATION_DOCUMENTED",
+    "COMMUNICATION_DOCUMENTED"
+   ]
+  },
+  {
+   "variant": "G10-daughter-read-en",
+   "group": "genuine",
+   "reply": "I got it, my daughter helped me read it. I am calling the doctor now.",
    "rules_only": "COMMUNICATION_DOCUMENTED",
    "council_runs": [
     "COMMUNICATION_DOCUMENTED",

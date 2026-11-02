@@ -154,13 +154,13 @@
    "objection": {
     "type": "choice",
     "choice": "NONE",
-    "confidence": 0.81,
+    "confidence": 0.84,
     "probabilities": {
-     "NONE": 0.83,
-     "ACCEPTANCE_AS_DELIVERY": 0.11,
+     "NONE": 0.86,
+     "ACCEPTANCE_AS_DELIVERY": 0.09,
      "STALE_REVISION_ACK": 0.0,
      "SCOPE_ROUTES_ELSEWHERE": 0.0,
-     "UNAPPROVED_CHANNEL": 0.05,
+     "UNAPPROVED_CHANNEL": 0.04,
      "RETRY_BEFORE_RECONCILE": 0.0,
      "ACK_WINDOW_EXPIRED": 0.01,
      "UNVERIFIED_RECIPIENT": 0.0,
@@ -170,30 +170,30 @@
    "own_reading": {
     "type": "choice",
     "choice": "NOT_YET_SENT",
-    "confidence": 0.81,
+    "confidence": 0.76,
     "probabilities": {
      "COMMUNICATED": 0.0,
-     "AWAITING_ACK": 0.1,
+     "AWAITING_ACK": 0.12,
      "DIRECT_NOT_PERMITTED": 0.0,
-     "NOT_YET_SENT": 0.85,
-     "INSUFFICIENT_EVIDENCE": 0.05
+     "NOT_YET_SENT": 0.81,
+     "INSUFFICIENT_EVIDENCE": 0.07
     }
    },
    "analyst_supported": {
     "type": "noul",
-    "noul": 0.55
+    "noul": 0.58
    },
    "analyst_issue": {
     "type": "choice",
     "choice": "NONE",
-    "confidence": 0.27,
+    "confidence": 0.28,
     "probabilities": {
-     "NONE": 0.39,
-     "CONTRADICTS_CASE_FACTS": 0.21,
-     "CLAUSE_DOES_NOT_SUPPORT": 0.37,
-     "WRONG_AUTHORITY": 0.01,
+     "NONE": 0.4,
+     "CONTRADICTS_CASE_FACTS": 0.19,
+     "CLAUSE_DOES_NOT_SUPPORT": 0.38,
+     "WRONG_AUTHORITY": 0.0,
      "WRONG_REVISION": 0.01,
-     "IGNORES_WHAT_WAS_SAID": 0.01
+     "IGNORES_WHAT_WAS_SAID": 0.02
     }
    },
    "alternative": {
@@ -202,15 +202,15 @@
     "confidence": 0.65,
     "probabilities": {
      "SEND_PRIMARY": 0.68,
-     "AWAIT_EVIDENCE": 0.17,
+     "AWAIT_EVIDENCE": 0.19,
      "RECONCILE_ATTEMPT": 0.0,
      "RETRY_SAME_CHANNEL": 0.0,
      "PROPOSE_FALLBACK": 0.0,
-     "AWAIT_ACKNOWLEDGMENT": 0.05,
+     "AWAIT_ACKNOWLEDGMENT": 0.04,
      "RECORD_DOCUMENTATION": 0.01,
      "OPEN_CORRECTION_TASK": 0.0,
      "ESCALATE_HUMAN": 0.05,
-     "VERIFY_RECIPIENT": 0.03,
+     "VERIFY_RECIPIENT": 0.02,
      "NO_ACTION": 0.01
     }
    }

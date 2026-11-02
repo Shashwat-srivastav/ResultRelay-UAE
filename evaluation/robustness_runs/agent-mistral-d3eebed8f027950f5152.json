@@ -138,7 +138,7 @@
    },
    "clause": {
     "choice": "S1-11.1.3",
-    "confidence": 0.95
+    "confidence": 1.0
    },
    "settled": {
     "noul": 1.0
@@ -152,6 +152,6 @@
     "confidence": 1.0
    }
   },
-  "rationale": "The patient’s verified acknowledgment of the current revision (SYN-CASE-010-R1) satisfies the binding requirement in **S1-11.1.1** to report critical results clearly, and **S1-11.1.3** mandates recording this communication. The case is settled under these clauses with no gaps."
+  "rationale": "The patient’s verified acknowledgment of the current revision (SYN-CASE-010-R1) satisfies the binding requirement in **S1-11.1.3** to record communication, and **S1-11.1.1** mandates clear reporting to the patient, which has occurred. The case is settled under these clauses with no gaps."
  }
 }

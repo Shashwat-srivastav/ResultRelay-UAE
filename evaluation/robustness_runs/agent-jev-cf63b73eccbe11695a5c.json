@@ -154,13 +154,13 @@
    "objection": {
     "type": "choice",
     "choice": "NONE",
-    "confidence": 0.85,
+    "confidence": 0.84,
     "probabilities": {
-     "NONE": 0.87,
-     "ACCEPTANCE_AS_DELIVERY": 0.07,
+     "NONE": 0.86,
+     "ACCEPTANCE_AS_DELIVERY": 0.06,
      "STALE_REVISION_ACK": 0.0,
      "SCOPE_ROUTES_ELSEWHERE": 0.0,
-     "UNAPPROVED_CHANNEL": 0.05,
+     "UNAPPROVED_CHANNEL": 0.07,
      "RETRY_BEFORE_RECONCILE": 0.0,
      "ACK_WINDOW_EXPIRED": 0.0,
      "UNVERIFIED_RECIPIENT": 0.0,
@@ -170,48 +170,48 @@
    "own_reading": {
     "type": "choice",
     "choice": "NOT_YET_SENT",
-    "confidence": 0.95,
+    "confidence": 0.94,
     "probabilities": {
      "COMMUNICATED": 0.0,
      "AWAITING_ACK": 0.02,
      "DIRECT_NOT_PERMITTED": 0.0,
-     "NOT_YET_SENT": 0.96,
-     "INSUFFICIENT_EVIDENCE": 0.02
+     "NOT_YET_SENT": 0.95,
+     "INSUFFICIENT_EVIDENCE": 0.03
     }
    },
    "analyst_supported": {
     "type": "noul",
-    "noul": 0.71
+    "noul": 0.7
    },
    "analyst_issue": {
     "type": "choice",
     "choice": "NONE",
-    "confidence": 0.57,
+    "confidence": 0.52,
     "probabilities": {
-     "NONE": 0.64,
+     "NONE": 0.6,
      "CONTRADICTS_CASE_FACTS": 0.26,
-     "CLAUSE_DOES_NOT_SUPPORT": 0.08,
+     "CLAUSE_DOES_NOT_SUPPORT": 0.09,
      "WRONG_AUTHORITY": 0.0,
      "WRONG_REVISION": 0.01,
-     "IGNORES_WHAT_WAS_SAID": 0.01
+     "IGNORES_WHAT_WAS_SAID": 0.04
     }
    },
    "alternative": {
     "type": "choice",
     "choice": "SEND_PRIMARY",
-    "confidence": 0.88,
+    "confidence": 0.87,
     "probabilities": {
-     "SEND_PRIMARY": 0.89,
-     "AWAIT_EVIDENCE": 0.04,
+     "SEND_PRIMARY": 0.88,
+     "AWAIT_EVIDENCE": 0.05,
      "RECONCILE_ATTEMPT": 0.0,
      "RETRY_SAME_CHANNEL": 0.0,
      "PROPOSE_FALLBACK": 0.0,
      "AWAIT_ACKNOWLEDGMENT": 0.0,
      "RECORD_DOCUMENTATION": 0.0,
      "OPEN_CORRECTION_TASK": 0.0,
-     "ESCALATE_HUMAN": 0.03,
+     "ESCALATE_HUMAN": 0.02,
      "VERIFY_RECIPIENT": 0.03,
-     "NO_ACTION": 0.01
+     "NO_ACTION": 0.02
     }
    }
   },

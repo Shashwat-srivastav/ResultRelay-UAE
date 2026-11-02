@@ -154,13 +154,13 @@
    "objection": {
     "type": "choice",
     "choice": "NONE",
-    "confidence": 0.83,
+    "confidence": 0.85,
     "probabilities": {
-     "NONE": 0.85,
-     "ACCEPTANCE_AS_DELIVERY": 0.06,
+     "NONE": 0.87,
+     "ACCEPTANCE_AS_DELIVERY": 0.05,
      "STALE_REVISION_ACK": 0.0,
      "SCOPE_ROUTES_ELSEWHERE": 0.0,
-     "UNAPPROVED_CHANNEL": 0.08,
+     "UNAPPROVED_CHANNEL": 0.07,
      "RETRY_BEFORE_RECONCILE": 0.0,
      "ACK_WINDOW_EXPIRED": 0.0,
      "UNVERIFIED_RECIPIENT": 0.0,
@@ -181,28 +181,28 @@
    },
    "analyst_supported": {
     "type": "noul",
-    "noul": 0.75
+    "noul": 0.76
    },
    "analyst_issue": {
     "type": "choice",
     "choice": "NONE",
-    "confidence": 0.62,
+    "confidence": 0.65,
     "probabilities": {
-     "NONE": 0.68,
-     "CONTRADICTS_CASE_FACTS": 0.21,
+     "NONE": 0.71,
+     "CONTRADICTS_CASE_FACTS": 0.17,
      "CLAUSE_DOES_NOT_SUPPORT": 0.08,
      "WRONG_AUTHORITY": 0.0,
-     "WRONG_REVISION": 0.0,
+     "WRONG_REVISION": 0.01,
      "IGNORES_WHAT_WAS_SAID": 0.03
     }
    },
    "alternative": {
     "type": "choice",
     "choice": "SEND_PRIMARY",
-    "confidence": 0.84,
+    "confidence": 0.87,
     "probabilities": {
-     "SEND_PRIMARY": 0.85,
-     "AWAIT_EVIDENCE": 0.09,
+     "SEND_PRIMARY": 0.88,
+     "AWAIT_EVIDENCE": 0.07,
      "RECONCILE_ATTEMPT": 0.0,
      "RETRY_SAME_CHANNEL": 0.0,
      "PROPOSE_FALLBACK": 0.0,
@@ -210,7 +210,7 @@
      "RECORD_DOCUMENTATION": 0.0,
      "OPEN_CORRECTION_TASK": 0.0,
      "ESCALATE_HUMAN": 0.02,
-     "VERIFY_RECIPIENT": 0.03,
+     "VERIFY_RECIPIENT": 0.02,
      "NO_ACTION": 0.01
     }
    }

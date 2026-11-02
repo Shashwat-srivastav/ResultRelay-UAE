@@ -137,21 +137,21 @@
     "confidence": 1.0
    },
    "clause": {
-    "choice": "S1-11.1.3",
-    "confidence": 0.95
+    "choice": "S1-11.1.1",
+    "confidence": 1.0
    },
    "settled": {
-    "noul": 0.98
+    "noul": 1.0
    },
    "gap": {
     "choice": "NONE",
-    "confidence": 0.95
+    "confidence": 1.0
    },
    "tool_request": {
     "choice": "NONE",
     "confidence": 1.0
    }
   },
-  "rationale": "The clinic reception desk acknowledged the current revision (SYN-CASE-010-R1) from a verified number, fulfilling the communication requirement under **S1-11.1.1**, which mandates clear reporting of critical results to the patient. The acknowledgment also satisfies the documentation duty in **S1-11.1.3**."
+  "rationale": "The clinic reception desk acknowledged the current revision (SYN-CASE-010-R1) from a verified number, fulfilling the communication requirement under **S1-11.1.1**, which mandates clear reporting of critical results to the patient. The acknowledgment also satisfies the documentation duty in **S1-11.1.3** since the communication was verified and recorded."
  }
 }
