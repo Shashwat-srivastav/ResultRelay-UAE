@@ -56,40 +56,51 @@ policy, reading what people said); decide everything else in code — transport 
 idempotency, and whether to escalate.
 
 ```mermaid
-flowchart TD
-    EV(["Event chunk: from a scenario file, or injected by a judge through the API"])
-    CS["Deterministic case services: revision binding, transport reconciliation, recipient routing, applicability. Rule-based assessors propose the step's action"]
-    RT["Evidence retrieval: BM25, ChromaDB via the ITU ingest, jurisdiction filter, verified quotations only"]
-    A1["① Policy Evidence Analyst. LLM, DHA lens: obligation status, governing clause, settled?, policy gap"]
-    A2["② Institutional analyst. LLM, TDRA lens, only when transport is unresolved"]
-    A3["③ Adversarial reviewer. LLM, a different model family: challenges each claim, typed objection"]
-    ASR["④ Independent assurance, code: fact check against the case record, policy-rules check, conflicts"]
-    ORC{"⑤ Deterministic orchestrator, code"}
-    PE(["Named owner with a deadline"])
-    GT["Gate, the Y.3172 P node, code: case states and named invariants. Decides every transition"]
-    EX["Execution and audit: failed actions escalated, overdue escalations re-escalated, hash chain, HMAC-signed checkpoints"]
-    EV --> CS --> RT
-    RT --> A1
-    RT --> A2
-    RT --> A3
-    A1 --> ASR
-    A2 --> ASR
-    A3 --> ASR
-    ASR -.->|"one feedback round: CORRECTED, UPHELD or DISPUTED"| A1
-    ASR --> ORC
-    ORC -->|"PROCEED: the gate decides"| GT
-    ORC -->|"ESCALATE: objection that stands, or disputed claim"| PE
+flowchart TB
+    EV(["<b>Event arrives</b><br/>scenario file or judge API"])
+
+    subgraph PREP["① Prepare the case · deterministic code"]
+        direction LR
+        CS["<b>Case services</b><br/>revision binding<br/>transport reconciliation<br/>recipient routing"]
+        AS["<b>Rule assessors</b><br/>propose the<br/>step's action"]
+        RT["<b>Evidence retrieval</b><br/>BM25 + ChromaDB<br/>jurisdiction filter<br/>verified quotes only"]
+        CS --> AS --> RT
+    end
+
+    subgraph COUNCIL["② Agent council · language models advise, never act"]
+        direction LR
+        A1["<b>Policy analyst</b><br/>DHA lens<br/>governing clause · gaps"]
+        A2["<b>Institution analyst</b><br/>TDRA lens<br/>only if delivery unclear"]
+        A3["<b>Adversarial reviewer</b><br/>other model family<br/>typed objections"]
+        A1 ~~~ A2 ~~~ A3
+    end
+
+    ASR["<b>③ Assurance · code</b><br/>fact-check vs case record<br/>policy rules · conflicts"]
+    ORC{{"<b>④ Orchestrator · code</b><br/>escalate or proceed"}}
+    GT[["<b>⑤ Gate · Y.3172 P node</b><br/>18 states<br/>named invariants<br/>decides every transition"]]
+    PE(["<b>Named person</b><br/>owner + deadline"])
+    EX["<b>Execution + audit</b><br/>hash chain<br/>signed checkpoints<br/>overdue → re-escalate"]
+
+    EV --> PREP --> COUNCIL --> ASR --> ORC
+    ASR -. "one revision round" .-> COUNCIL
+    ORC -- "PROCEED" --> GT
+    ORC -- "ESCALATE" --> PE
     PE --> GT
     GT --> EX
-    classDef llm fill:#cde2fb,stroke:#2a78d6,color:#0b0b0b
-    classDef code fill:#f2f1ee,stroke:#52514e,color:#0b0b0b
-    classDef gate fill:#ffffff,stroke:#0b0b0b,stroke-width:2px,color:#0b0b0b
+
+    classDef llm fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#0b1220
+    classDef code fill:#f1f5f9,stroke:#64748b,color:#0b1220
+    classDef gate fill:#fef3c7,stroke:#b45309,stroke-width:3px,color:#0b1220
+    classDef human fill:#fee2e2,stroke:#dc2626,stroke-width:2px,color:#0b1220
     class A1,A2,A3 llm
-    class CS,RT,ASR,ORC,EX,EV,PE code
+    class EV,CS,AS,RT,ASR,ORC,EX code
     class GT gate
+    class PE human
+    style PREP fill:transparent,stroke:#94a3b8,stroke-dasharray:5 4
+    style COUNCIL fill:transparent,stroke:#2563eb,stroke-dasharray:5 4
 ```
 
-<sub>Blue = language models, which advise only; grey = deterministic code. The gate is the only component that changes a case.</sub>
+<sub>🟦 Blue = language models, which advise only · ⬜ grey = deterministic code · 🟨 amber = the gate, the only component that changes a case · 🟥 red = a named person. Dashed arrow = one revision round: assurance returns a flagged claim to its agent once.</sub>
 
 <details>
 <summary>Text version of the diagram</summary>
@@ -245,22 +256,27 @@ model needs the ITU Lab compute requested in [submission/DESIGN-BRIEF.md](submis
 ## Architecture — ITU-T Y.3172, node for node
 
 ```mermaid
-flowchart LR
-    SRC["SRC: synthetic event streams and the verified policy corpus"] --> C["C: event ingestion, each event hash-chained before it is applied"]
-    C --> PP["PP: case state, revision binding, transport reconciliation, jurisdiction-filtered retrieval"]
-    PP --> M["M: policy analyst, TDRA-lens analyst, adversarial reviewer (LLMs)"]
-    M --> P["P: assurance and the gate's invariants decide what may happen"]
-    P --> D["D: execution of permitted actions"]
-    D --> SINK["SINK: mock transport, supervisor queue, communication record"]
-    MLFO{{"MLFO: deterministic orchestrator, no LLM coordinator"}}
-    MLFO -.-> C
-    MLFO -.-> M
-    MLFO -.-> P
-    MLFO -.-> D
-    classDef llm fill:#cde2fb,stroke:#2a78d6,color:#0b0b0b
-    classDef code fill:#f2f1ee,stroke:#52514e,color:#0b0b0b
+flowchart TB
+    MLFO{{"<b>MLFO · orchestrator</b><br/>deterministic, no LLM coordinator<br/>chains the nodes per incident"}}
+    subgraph PIPE["ITU-T Y.3172 pipeline"]
+        direction LR
+        SRC["<b>SRC</b><br/>synthetic<br/>events"]
+        C["<b>C</b><br/>ingest<br/>hash-chained"]
+        PP["<b>PP</b><br/>case state<br/>retrieval"]
+        M["<b>M</b><br/>analysts<br/>+ reviewer"]
+        P[["<b>P</b><br/>assurance<br/>+ gate"]]
+        D["<b>D</b><br/>permitted<br/>actions"]
+        SINK["<b>SINK</b><br/>transport<br/>records"]
+        SRC --> C --> PP --> M --> P --> D --> SINK
+    end
+    MLFO -.-> PIPE
+    classDef llm fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#0b1220
+    classDef code fill:#f1f5f9,stroke:#64748b,color:#0b1220
+    classDef gate fill:#fef3c7,stroke:#b45309,stroke-width:3px,color:#0b1220
     class M llm
-    class SRC,C,PP,P,D,SINK,MLFO code
+    class SRC,C,PP,D,SINK,MLFO code
+    class P gate
+    style PIPE fill:transparent,stroke:#94a3b8,stroke-dasharray:5 4
 ```
 
 <sub>Node by node from [kb/framework/itu_y3172_mapping.csv](kb/framework/itu_y3172_mapping.csv), which also names the code, the test and the limitation for each node.</sub>
