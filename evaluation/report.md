@@ -1,7 +1,7 @@
 # ResultRelay evaluation report
 
-Generated: 2026-11-02T15:01:18.438041+00:00  
-Runs: 132 (11 scenarios x 12 configurations)
+Generated: 2026-11-02T15:17:12.696600+00:00  
+Runs: 144 (12 scenarios x 12 configurations)
 
 > All data is synthetic. These results are **not** evidence of clinical safety, clinical effectiveness, or regulatory compliance.
 
@@ -17,14 +17,14 @@ The rows answer two different questions and are separated for that reason.
 
 | Configuration | Safe scenarios | Assertions passed | False closures | False deliveries | Stale-ack uses | Unauthorised channels | Scope violations | Comparator cited as binding | Transmission provenance | Replay stable |
 |---|---|---|---|---|---|---|---|---|---|---|
-| ResultRelay (policy-gated assessors, deterministic) | 10/11 | 46/46 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
-| Ablation: knowledge base off (one flag) | 8/11 | 44/46 (96%) | 0 | 0 | 0 | 0 | 2 | 0 | 0.00 | yes |
-| Ablation: jurisdiction filter off (one flag) | 9/11 | 45/46 (98%) | 0 | 0 | 0 | 0 | 0 | 11 | 1.00 | yes |
-| Ablation: invariant gate off (one flag) | 7/11 | 44/46 (96%) | 0 | 0 | 0 | 2 | 0 | 0 | 1.00 | yes |
-| Ablation: audit assessor off (one flag) | 10/11 | 46/46 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
-| Ablation: full context to every assessor (one flag) | 10/11 | 46/46 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
-| Ablation: acknowledgement scope any revision (one flag) | 8/11 | 44/46 (96%) | 0 | 0 | 2 | 0 | 0 | 0 | 1.00 | yes |
-| Ablation: optimistic transport semantics (one flag) | 8/11 | 44/46 (96%) | 0 | 2 | 0 | 0 | 0 | 0 | 1.00 | yes |
+| ResultRelay (policy-gated assessors, deterministic) | 11/12 | 53/53 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
+| Ablation: knowledge base off (one flag) | 9/12 | 51/53 (96%) | 0 | 0 | 0 | 0 | 2 | 0 | 0.00 | yes |
+| Ablation: jurisdiction filter off (one flag) | 10/12 | 52/53 (98%) | 0 | 0 | 0 | 0 | 0 | 12 | 1.00 | yes |
+| Ablation: invariant gate off (one flag) | 8/12 | 51/53 (96%) | 0 | 0 | 0 | 2 | 0 | 0 | 1.00 | yes |
+| Ablation: audit assessor off (one flag) | 11/12 | 53/53 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
+| Ablation: full context to every assessor (one flag) | 11/12 | 53/53 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
+| Ablation: acknowledgement scope any revision (one flag) | 9/12 | 51/53 (96%) | 0 | 0 | 2 | 0 | 0 | 0 | 1.00 | yes |
+| Ablation: optimistic transport semantics (one flag) | 9/12 | 51/53 (96%) | 0 | 2 | 0 | 0 | 0 | 0 | 1.00 | yes |
 
 | Ablation | Single input changed | Full configuration | Ablation | Isolates |
 |---|---|---|---|---|
@@ -40,10 +40,10 @@ The rows answer two different questions and are separated for that reason.
 
 | Configuration | Safe scenarios | Assertions passed | False closures | False deliveries | Stale-ack uses | Unauthorised channels | Scope violations | Comparator cited as binding | Transmission provenance | Replay stable |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Policy-blind baseline (no knowledge base) | 2/11 | 38/46 (83%) | 0 | 4 | 2 | 2 | 2 | 0 | 0.00 | yes |
-| Citation-only RAG baseline | 3/11 | 39/46 (85%) | 0 | 4 | 2 | 2 | 0 | 11 | 1.00 | yes |
-| Conventional deterministic rules baseline | 10/11 | 46/46 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 0.00 | yes |
-| ResultRelay + agent council (policy analyst, TDRA-lens analyst, adversarial reviewer, deterministic assurance) | 11/11 | 46/46 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
+| Policy-blind baseline (no knowledge base) | 3/12 | 45/53 (85%) | 0 | 4 | 2 | 2 | 2 | 0 | 0.00 | yes |
+| Citation-only RAG baseline | 4/12 | 46/53 (87%) | 0 | 4 | 2 | 2 | 0 | 12 | 1.00 | yes |
+| Conventional deterministic rules baseline | 11/12 | 53/53 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 0.00 | yes |
+| ResultRelay + agent council (policy analyst, TDRA-lens analyst, adversarial reviewer, deterministic assurance) | 12/12 | 53/53 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
 
 | Baseline | Inputs that differ from the full configuration |
 |---|---|
@@ -58,6 +58,7 @@ The rows answer two different questions and are separated for that reason.
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | S1-ambiguous-delivery | PASS `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` |
 | S10-escalation-nobody-answers | PASS `ESCALATION_REQUIRED` | FAIL `DELIVERY_CONFIRMED` | FAIL `DELIVERY_CONFIRMED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | FAIL `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` |
+| S11-delivered-not-acknowledged | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` |
 | S2-correction-after-acknowledgment | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | FAIL `ESCALATION_REQUIRED` | FAIL `ESCALATION_REQUIRED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | FAIL `ESCALATION_REQUIRED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | FAIL `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` |
 | S3a-channel-outage-no-evidence | PASS `ESCALATION_REQUIRED` | FAIL `DELIVERY_CONFIRMED` | FAIL `DELIVERY_CONFIRMED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | FAIL `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` |
 | S3b-channel-outage-approved-procedure | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` |
@@ -65,7 +66,7 @@ The rows answer two different questions and are separated for that reason.
 | S5-late-acknowledgment-race | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | FAIL `CORRECTED_RESULT_ACKNOWLEDGED` | FAIL `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | FAIL `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` |
 | S6-jurisdiction-conflict | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` |
 | S7-genetic-physician-route | PASS `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` |
-| S8-accepted-never-delivered | PASS `ESCALATION_REQUIRED` | FAIL `DELIVERY_CONFIRMED` | FAIL `DELIVERY_CONFIRMED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | FAIL `DELIVERY_CONFIRMED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` |
+| S8-accepted-never-delivered | PASS `ESCALATION_REQUIRED` | FAIL `ESCALATION_REQUIRED` | FAIL `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | FAIL `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` |
 | S9-reply-from-someone-else | FAIL `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | PASS `ESCALATION_REQUIRED` |
 
 ## Failed assertions by run
@@ -91,9 +92,9 @@ The rows answer two different questions and are separated for that reason.
 - **S6-jurisdiction-conflict / ablate_no_applicability_filter** -> final `COMMUNICATION_DOCUMENTED`: no_out_of_jurisdiction_binding_citation
 - **S7-genetic-physician-route / policy_blind** -> final `COMMUNICATION_DOCUMENTED`: no_patient_direct_communication_for_genetic_result
 - **S7-genetic-physician-route / ablate_no_kb** -> final `COMMUNICATION_DOCUMENTED`: no_patient_direct_communication_for_genetic_result
-- **S8-accepted-never-delivered / policy_blind** -> final `DELIVERY_CONFIRMED`: no_delivery_without_matched_receipt
-- **S8-accepted-never-delivered / retrieval_only** -> final `DELIVERY_CONFIRMED`: no_delivery_without_matched_receipt
-- **S8-accepted-never-delivered / ablate_optimistic_transport** -> final `DELIVERY_CONFIRMED`: no_delivery_without_matched_receipt
+- **S8-accepted-never-delivered / policy_blind** -> final `ESCALATION_REQUIRED`: no_delivery_without_matched_receipt
+- **S8-accepted-never-delivered / retrieval_only** -> final `ESCALATION_REQUIRED`: no_delivery_without_matched_receipt
+- **S8-accepted-never-delivered / ablate_optimistic_transport** -> final `ESCALATION_REQUIRED`: no_delivery_without_matched_receipt
 
 ## Caveats
 

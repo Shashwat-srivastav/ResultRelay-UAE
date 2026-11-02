@@ -1,6 +1,6 @@
 {
-  "run_started": "2026-11-02T15:00:58.414230+00:00",
-  "run_finished": "2026-11-02T15:01:18.438041+00:00",
+  "run_started": "2026-11-02T15:16:51.406113+00:00",
+  "run_finished": "2026-11-02T15:17:12.696600+00:00",
   "configurations": {
     "resultrelay": "ResultRelay (policy-gated assessors, deterministic)",
     "policy_blind": "Policy-blind baseline (no knowledge base)",
@@ -15,235 +15,15 @@
     "static_rules": "Conventional deterministic rules baseline",
     "resultrelay_council": "ResultRelay + agent council (policy analyst, TDRA-lens analyst, adversarial reviewer, deterministic assurance)"
   },
-  "scenario_count": 11,
-  "run_count": 132,
+  "scenario_count": 12,
+  "run_count": 144,
   "summary": {
     "by_configuration": {
       "resultrelay": {
         "label": "ResultRelay (policy-gated assessors, deterministic)",
-        "runs": 11,
-        "assertions_passed": 46,
-        "assertions_total": 46,
-        "assertion_pass_rate": 1.0,
-        "scenarios_fully_safe": 10,
-        "workflows_completed": 10,
-        "false_closures": 0,
-        "false_deliveries": 0,
-        "stale_ack_uses": 0,
-        "unauthorised_channels": 0,
-        "scope_violations": 0,
-        "audit_findings": 11,
-        "comparator_cited_as_binding": 0,
-        "mean_provenance_completeness": 1.0,
-        "replay_reproducible": true,
-        "audit_chains_valid": true,
-        "mean_wall_ms": 76.8
-      },
-      "policy_blind": {
-        "label": "Policy-blind baseline (no knowledge base)",
-        "runs": 11,
-        "assertions_passed": 38,
-        "assertions_total": 46,
-        "assertion_pass_rate": 0.826,
-        "scenarios_fully_safe": 2,
-        "workflows_completed": 5,
-        "false_closures": 0,
-        "false_deliveries": 4,
-        "stale_ack_uses": 2,
-        "unauthorised_channels": 2,
-        "scope_violations": 2,
-        "audit_findings": 0,
-        "comparator_cited_as_binding": 0,
-        "mean_provenance_completeness": 0.0,
-        "replay_reproducible": true,
-        "audit_chains_valid": true,
-        "mean_wall_ms": 68.2
-      },
-      "retrieval_only": {
-        "label": "Citation-only RAG baseline",
-        "runs": 11,
-        "assertions_passed": 39,
-        "assertions_total": 46,
-        "assertion_pass_rate": 0.848,
-        "scenarios_fully_safe": 3,
-        "workflows_completed": 6,
-        "false_closures": 0,
-        "false_deliveries": 4,
-        "stale_ack_uses": 2,
-        "unauthorised_channels": 2,
-        "scope_violations": 0,
-        "audit_findings": 0,
-        "comparator_cited_as_binding": 11,
-        "mean_provenance_completeness": 1.0,
-        "replay_reproducible": true,
-        "audit_chains_valid": true,
-        "mean_wall_ms": 72.8
-      },
-      "ablate_no_kb": {
-        "label": "Ablation: knowledge base off (one flag)",
-        "runs": 11,
-        "assertions_passed": 44,
-        "assertions_total": 46,
-        "assertion_pass_rate": 0.957,
-        "scenarios_fully_safe": 8,
-        "workflows_completed": 9,
-        "false_closures": 0,
-        "false_deliveries": 0,
-        "stale_ack_uses": 0,
-        "unauthorised_channels": 0,
-        "scope_violations": 2,
-        "audit_findings": 11,
-        "comparator_cited_as_binding": 0,
-        "mean_provenance_completeness": 0.0,
-        "replay_reproducible": true,
-        "audit_chains_valid": true,
-        "mean_wall_ms": 63.5
-      },
-      "ablate_no_applicability_filter": {
-        "label": "Ablation: jurisdiction filter off (one flag)",
-        "runs": 11,
-        "assertions_passed": 45,
-        "assertions_total": 46,
-        "assertion_pass_rate": 0.978,
-        "scenarios_fully_safe": 9,
-        "workflows_completed": 10,
-        "false_closures": 0,
-        "false_deliveries": 0,
-        "stale_ack_uses": 0,
-        "unauthorised_channels": 0,
-        "scope_violations": 0,
-        "audit_findings": 37,
-        "comparator_cited_as_binding": 11,
-        "mean_provenance_completeness": 1.0,
-        "replay_reproducible": true,
-        "audit_chains_valid": true,
-        "mean_wall_ms": 73.9
-      },
-      "ablate_no_invariants": {
-        "label": "Ablation: invariant gate off (one flag)",
-        "runs": 11,
-        "assertions_passed": 44,
-        "assertions_total": 46,
-        "assertion_pass_rate": 0.957,
-        "scenarios_fully_safe": 7,
-        "workflows_completed": 9,
-        "false_closures": 0,
-        "false_deliveries": 0,
-        "stale_ack_uses": 0,
-        "unauthorised_channels": 2,
-        "scope_violations": 0,
-        "audit_findings": 11,
-        "comparator_cited_as_binding": 0,
-        "mean_provenance_completeness": 1.0,
-        "replay_reproducible": true,
-        "audit_chains_valid": true,
-        "mean_wall_ms": 72.6
-      },
-      "ablate_no_audit_agent": {
-        "label": "Ablation: audit assessor off (one flag)",
-        "runs": 11,
-        "assertions_passed": 46,
-        "assertions_total": 46,
-        "assertion_pass_rate": 1.0,
-        "scenarios_fully_safe": 10,
-        "workflows_completed": 10,
-        "false_closures": 0,
-        "false_deliveries": 0,
-        "stale_ack_uses": 0,
-        "unauthorised_channels": 0,
-        "scope_violations": 0,
-        "audit_findings": 0,
-        "comparator_cited_as_binding": 0,
-        "mean_provenance_completeness": 1.0,
-        "replay_reproducible": true,
-        "audit_chains_valid": true,
-        "mean_wall_ms": 70.5
-      },
-      "ablate_full_context": {
-        "label": "Ablation: full context to every assessor (one flag)",
-        "runs": 11,
-        "assertions_passed": 46,
-        "assertions_total": 46,
-        "assertion_pass_rate": 1.0,
-        "scenarios_fully_safe": 10,
-        "workflows_completed": 10,
-        "false_closures": 0,
-        "false_deliveries": 0,
-        "stale_ack_uses": 0,
-        "unauthorised_channels": 0,
-        "scope_violations": 0,
-        "audit_findings": 11,
-        "comparator_cited_as_binding": 0,
-        "mean_provenance_completeness": 1.0,
-        "replay_reproducible": true,
-        "audit_chains_valid": true,
-        "mean_wall_ms": 69.2
-      },
-      "ablate_ack_any": {
-        "label": "Ablation: acknowledgement scope any revision (one flag)",
-        "runs": 11,
-        "assertions_passed": 44,
-        "assertions_total": 46,
-        "assertion_pass_rate": 0.957,
-        "scenarios_fully_safe": 8,
-        "workflows_completed": 10,
-        "false_closures": 0,
-        "false_deliveries": 0,
-        "stale_ack_uses": 2,
-        "unauthorised_channels": 0,
-        "scope_violations": 0,
-        "audit_findings": 11,
-        "comparator_cited_as_binding": 0,
-        "mean_provenance_completeness": 1.0,
-        "replay_reproducible": true,
-        "audit_chains_valid": true,
-        "mean_wall_ms": 68.4
-      },
-      "ablate_optimistic_transport": {
-        "label": "Ablation: optimistic transport semantics (one flag)",
-        "runs": 11,
-        "assertions_passed": 44,
-        "assertions_total": 46,
-        "assertion_pass_rate": 0.957,
-        "scenarios_fully_safe": 8,
-        "workflows_completed": 9,
-        "false_closures": 0,
-        "false_deliveries": 2,
-        "stale_ack_uses": 0,
-        "unauthorised_channels": 0,
-        "scope_violations": 0,
-        "audit_findings": 11,
-        "comparator_cited_as_binding": 0,
-        "mean_provenance_completeness": 1.0,
-        "replay_reproducible": true,
-        "audit_chains_valid": true,
-        "mean_wall_ms": 79.0
-      },
-      "static_rules": {
-        "label": "Conventional deterministic rules baseline",
-        "runs": 11,
-        "assertions_passed": 46,
-        "assertions_total": 46,
-        "assertion_pass_rate": 1.0,
-        "scenarios_fully_safe": 10,
-        "workflows_completed": 10,
-        "false_closures": 0,
-        "false_deliveries": 0,
-        "stale_ack_uses": 0,
-        "unauthorised_channels": 0,
-        "scope_violations": 0,
-        "audit_findings": 0,
-        "comparator_cited_as_binding": 0,
-        "mean_provenance_completeness": 0.0,
-        "replay_reproducible": true,
-        "audit_chains_valid": true,
-        "mean_wall_ms": 62.7
-      },
-      "resultrelay_council": {
-        "label": "ResultRelay + agent council (policy analyst, TDRA-lens analyst, adversarial reviewer, deterministic assurance)",
-        "runs": 11,
-        "assertions_passed": 46,
-        "assertions_total": 46,
+        "runs": 12,
+        "assertions_passed": 53,
+        "assertions_total": 53,
         "assertion_pass_rate": 1.0,
         "scenarios_fully_safe": 11,
         "workflows_completed": 11,
@@ -252,12 +32,232 @@
         "stale_ack_uses": 0,
         "unauthorised_channels": 0,
         "scope_violations": 0,
-        "audit_findings": 11,
+        "audit_findings": 12,
         "comparator_cited_as_binding": 0,
         "mean_provenance_completeness": 1.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 129.0
+        "mean_wall_ms": 74.9
+      },
+      "policy_blind": {
+        "label": "Policy-blind baseline (no knowledge base)",
+        "runs": 12,
+        "assertions_passed": 45,
+        "assertions_total": 53,
+        "assertion_pass_rate": 0.849,
+        "scenarios_fully_safe": 3,
+        "workflows_completed": 7,
+        "false_closures": 0,
+        "false_deliveries": 4,
+        "stale_ack_uses": 2,
+        "unauthorised_channels": 2,
+        "scope_violations": 2,
+        "audit_findings": 0,
+        "comparator_cited_as_binding": 0,
+        "mean_provenance_completeness": 0.0,
+        "replay_reproducible": true,
+        "audit_chains_valid": true,
+        "mean_wall_ms": 59.2
+      },
+      "retrieval_only": {
+        "label": "Citation-only RAG baseline",
+        "runs": 12,
+        "assertions_passed": 46,
+        "assertions_total": 53,
+        "assertion_pass_rate": 0.868,
+        "scenarios_fully_safe": 4,
+        "workflows_completed": 8,
+        "false_closures": 0,
+        "false_deliveries": 4,
+        "stale_ack_uses": 2,
+        "unauthorised_channels": 2,
+        "scope_violations": 0,
+        "audit_findings": 0,
+        "comparator_cited_as_binding": 12,
+        "mean_provenance_completeness": 1.0,
+        "replay_reproducible": true,
+        "audit_chains_valid": true,
+        "mean_wall_ms": 68.5
+      },
+      "ablate_no_kb": {
+        "label": "Ablation: knowledge base off (one flag)",
+        "runs": 12,
+        "assertions_passed": 51,
+        "assertions_total": 53,
+        "assertion_pass_rate": 0.962,
+        "scenarios_fully_safe": 9,
+        "workflows_completed": 10,
+        "false_closures": 0,
+        "false_deliveries": 0,
+        "stale_ack_uses": 0,
+        "unauthorised_channels": 0,
+        "scope_violations": 2,
+        "audit_findings": 12,
+        "comparator_cited_as_binding": 0,
+        "mean_provenance_completeness": 0.0,
+        "replay_reproducible": true,
+        "audit_chains_valid": true,
+        "mean_wall_ms": 59.7
+      },
+      "ablate_no_applicability_filter": {
+        "label": "Ablation: jurisdiction filter off (one flag)",
+        "runs": 12,
+        "assertions_passed": 52,
+        "assertions_total": 53,
+        "assertion_pass_rate": 0.981,
+        "scenarios_fully_safe": 10,
+        "workflows_completed": 11,
+        "false_closures": 0,
+        "false_deliveries": 0,
+        "stale_ack_uses": 0,
+        "unauthorised_channels": 0,
+        "scope_violations": 0,
+        "audit_findings": 40,
+        "comparator_cited_as_binding": 12,
+        "mean_provenance_completeness": 1.0,
+        "replay_reproducible": true,
+        "audit_chains_valid": true,
+        "mean_wall_ms": 73.2
+      },
+      "ablate_no_invariants": {
+        "label": "Ablation: invariant gate off (one flag)",
+        "runs": 12,
+        "assertions_passed": 51,
+        "assertions_total": 53,
+        "assertion_pass_rate": 0.962,
+        "scenarios_fully_safe": 8,
+        "workflows_completed": 10,
+        "false_closures": 0,
+        "false_deliveries": 0,
+        "stale_ack_uses": 0,
+        "unauthorised_channels": 2,
+        "scope_violations": 0,
+        "audit_findings": 12,
+        "comparator_cited_as_binding": 0,
+        "mean_provenance_completeness": 1.0,
+        "replay_reproducible": true,
+        "audit_chains_valid": true,
+        "mean_wall_ms": 68.1
+      },
+      "ablate_no_audit_agent": {
+        "label": "Ablation: audit assessor off (one flag)",
+        "runs": 12,
+        "assertions_passed": 53,
+        "assertions_total": 53,
+        "assertion_pass_rate": 1.0,
+        "scenarios_fully_safe": 11,
+        "workflows_completed": 11,
+        "false_closures": 0,
+        "false_deliveries": 0,
+        "stale_ack_uses": 0,
+        "unauthorised_channels": 0,
+        "scope_violations": 0,
+        "audit_findings": 0,
+        "comparator_cited_as_binding": 0,
+        "mean_provenance_completeness": 1.0,
+        "replay_reproducible": true,
+        "audit_chains_valid": true,
+        "mean_wall_ms": 66.2
+      },
+      "ablate_full_context": {
+        "label": "Ablation: full context to every assessor (one flag)",
+        "runs": 12,
+        "assertions_passed": 53,
+        "assertions_total": 53,
+        "assertion_pass_rate": 1.0,
+        "scenarios_fully_safe": 11,
+        "workflows_completed": 11,
+        "false_closures": 0,
+        "false_deliveries": 0,
+        "stale_ack_uses": 0,
+        "unauthorised_channels": 0,
+        "scope_violations": 0,
+        "audit_findings": 12,
+        "comparator_cited_as_binding": 0,
+        "mean_provenance_completeness": 1.0,
+        "replay_reproducible": true,
+        "audit_chains_valid": true,
+        "mean_wall_ms": 67.7
+      },
+      "ablate_ack_any": {
+        "label": "Ablation: acknowledgement scope any revision (one flag)",
+        "runs": 12,
+        "assertions_passed": 51,
+        "assertions_total": 53,
+        "assertion_pass_rate": 0.962,
+        "scenarios_fully_safe": 9,
+        "workflows_completed": 11,
+        "false_closures": 0,
+        "false_deliveries": 0,
+        "stale_ack_uses": 2,
+        "unauthorised_channels": 0,
+        "scope_violations": 0,
+        "audit_findings": 12,
+        "comparator_cited_as_binding": 0,
+        "mean_provenance_completeness": 1.0,
+        "replay_reproducible": true,
+        "audit_chains_valid": true,
+        "mean_wall_ms": 67.2
+      },
+      "ablate_optimistic_transport": {
+        "label": "Ablation: optimistic transport semantics (one flag)",
+        "runs": 12,
+        "assertions_passed": 51,
+        "assertions_total": 53,
+        "assertion_pass_rate": 0.962,
+        "scenarios_fully_safe": 9,
+        "workflows_completed": 11,
+        "false_closures": 0,
+        "false_deliveries": 2,
+        "stale_ack_uses": 0,
+        "unauthorised_channels": 0,
+        "scope_violations": 0,
+        "audit_findings": 12,
+        "comparator_cited_as_binding": 0,
+        "mean_provenance_completeness": 1.0,
+        "replay_reproducible": true,
+        "audit_chains_valid": true,
+        "mean_wall_ms": 66.2
+      },
+      "static_rules": {
+        "label": "Conventional deterministic rules baseline",
+        "runs": 12,
+        "assertions_passed": 53,
+        "assertions_total": 53,
+        "assertion_pass_rate": 1.0,
+        "scenarios_fully_safe": 11,
+        "workflows_completed": 11,
+        "false_closures": 0,
+        "false_deliveries": 0,
+        "stale_ack_uses": 0,
+        "unauthorised_channels": 0,
+        "scope_violations": 0,
+        "audit_findings": 0,
+        "comparator_cited_as_binding": 0,
+        "mean_provenance_completeness": 0.0,
+        "replay_reproducible": true,
+        "audit_chains_valid": true,
+        "mean_wall_ms": 58.7
+      },
+      "resultrelay_council": {
+        "label": "ResultRelay + agent council (policy analyst, TDRA-lens analyst, adversarial reviewer, deterministic assurance)",
+        "runs": 12,
+        "assertions_passed": 53,
+        "assertions_total": 53,
+        "assertion_pass_rate": 1.0,
+        "scenarios_fully_safe": 12,
+        "workflows_completed": 12,
+        "false_closures": 0,
+        "false_deliveries": 0,
+        "stale_ack_uses": 0,
+        "unauthorised_channels": 0,
+        "scope_violations": 0,
+        "audit_findings": 12,
+        "comparator_cited_as_binding": 0,
+        "mean_provenance_completeness": 1.0,
+        "replay_reproducible": true,
+        "audit_chains_valid": true,
+        "mean_wall_ms": 172.5
       }
     },
     "by_scenario": {
@@ -383,6 +383,80 @@
           "failed_assertions": [
             "no_unauthorised_channel"
           ]
+        },
+        "ablate_no_audit_agent": {
+          "final_state": "ESCALATION_REQUIRED",
+          "safe": true,
+          "completed": true,
+          "failed_assertions": []
+        },
+        "ablate_full_context": {
+          "final_state": "ESCALATION_REQUIRED",
+          "safe": true,
+          "completed": true,
+          "failed_assertions": []
+        },
+        "ablate_ack_any": {
+          "final_state": "ESCALATION_REQUIRED",
+          "safe": true,
+          "completed": true,
+          "failed_assertions": []
+        },
+        "ablate_optimistic_transport": {
+          "final_state": "ESCALATION_REQUIRED",
+          "safe": true,
+          "completed": true,
+          "failed_assertions": []
+        },
+        "static_rules": {
+          "final_state": "ESCALATION_REQUIRED",
+          "safe": true,
+          "completed": true,
+          "failed_assertions": []
+        },
+        "resultrelay_council": {
+          "final_state": "ESCALATION_REQUIRED",
+          "safe": true,
+          "completed": true,
+          "failed_assertions": []
+        }
+      },
+      "S11-delivered-not-acknowledged": {
+        "resultrelay": {
+          "final_state": "ESCALATION_REQUIRED",
+          "safe": true,
+          "completed": true,
+          "failed_assertions": []
+        },
+        "policy_blind": {
+          "final_state": "ESCALATION_REQUIRED",
+          "safe": true,
+          "completed": true,
+          "failed_assertions": []
+        },
+        "retrieval_only": {
+          "final_state": "ESCALATION_REQUIRED",
+          "safe": true,
+          "completed": true,
+          "failed_assertions": []
+        },
+        "ablate_no_kb": {
+          "final_state": "ESCALATION_REQUIRED",
+          "safe": true,
+          "completed": true,
+          "failed_assertions": []
+        },
+        "ablate_no_applicability_filter": {
+          "final_state": "ESCALATION_REQUIRED",
+          "safe": true,
+          "completed": true,
+          "failed_assertions": []
+        },
+        "ablate_no_invariants": {
+          "final_state": "ESCALATION_REQUIRED",
+          "safe": true,
+          "completed": true,
+          "failed_assertions": []
         },
         "ablate_no_audit_agent": {
           "final_state": "ESCALATION_REQUIRED",
@@ -977,17 +1051,17 @@
           "failed_assertions": []
         },
         "policy_blind": {
-          "final_state": "DELIVERY_CONFIRMED",
+          "final_state": "ESCALATION_REQUIRED",
           "safe": false,
-          "completed": false,
+          "completed": true,
           "failed_assertions": [
             "no_delivery_without_matched_receipt"
           ]
         },
         "retrieval_only": {
-          "final_state": "DELIVERY_CONFIRMED",
+          "final_state": "ESCALATION_REQUIRED",
           "safe": false,
-          "completed": false,
+          "completed": true,
           "failed_assertions": [
             "no_delivery_without_matched_receipt"
           ]
@@ -1029,9 +1103,9 @@
           "failed_assertions": []
         },
         "ablate_optimistic_transport": {
-          "final_state": "DELIVERY_CONFIRMED",
+          "final_state": "ESCALATION_REQUIRED",
           "safe": false,
-          "completed": false,
+          "completed": true,
           "failed_assertions": [
             "no_delivery_without_matched_receipt"
           ]
@@ -1169,7 +1243,7 @@
         "steps": 8,
         "open_questions": 2
       },
-      "wall_ms": 142.1,
+      "wall_ms": 169.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 38,
@@ -1522,7 +1596,7 @@
         "steps": 8,
         "open_questions": 0
       },
-      "wall_ms": 72.1,
+      "wall_ms": 77.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 37,
@@ -1672,7 +1746,7 @@
         "steps": 8,
         "open_questions": 1
       },
-      "wall_ms": 83.9,
+      "wall_ms": 96.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 40,
@@ -2019,7 +2093,7 @@
         "steps": 8,
         "open_questions": 1
       },
-      "wall_ms": 69.4,
+      "wall_ms": 89.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 35,
@@ -2175,7 +2249,7 @@
         "steps": 8,
         "open_questions": 5
       },
-      "wall_ms": 81.9,
+      "wall_ms": 84.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 38,
@@ -2528,7 +2602,7 @@
         "steps": 8,
         "open_questions": 2
       },
-      "wall_ms": 81.2,
+      "wall_ms": 90.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 38,
@@ -2881,7 +2955,7 @@
         "steps": 8,
         "open_questions": 1
       },
-      "wall_ms": 82.8,
+      "wall_ms": 85.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 38,
@@ -3226,7 +3300,7 @@
         "steps": 8,
         "open_questions": 2
       },
-      "wall_ms": 84.3,
+      "wall_ms": 86.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 38,
@@ -3579,7 +3653,7 @@
         "steps": 8,
         "open_questions": 2
       },
-      "wall_ms": 81.2,
+      "wall_ms": 85.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 38,
@@ -3932,7 +4006,7 @@
         "steps": 8,
         "open_questions": 2
       },
-      "wall_ms": 86.9,
+      "wall_ms": 93.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 40,
@@ -4287,7 +4361,7 @@
         "steps": 8,
         "open_questions": 0
       },
-      "wall_ms": 71.1,
+      "wall_ms": 86.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 35,
@@ -4435,7 +4509,7 @@
         "steps": 8,
         "open_questions": 4
       },
-      "wall_ms": 179.3,
+      "wall_ms": 839.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 62,
@@ -4786,7 +4860,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 77.6,
+      "wall_ms": 79.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -5084,7 +5158,7 @@
         "steps": 6,
         "open_questions": 0
       },
-      "wall_ms": 50.9,
+      "wall_ms": 52.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 27,
@@ -5209,7 +5283,7 @@
         "steps": 6,
         "open_questions": 1
       },
-      "wall_ms": 65.1,
+      "wall_ms": 68.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -5503,7 +5577,7 @@
         "steps": 6,
         "open_questions": 1
       },
-      "wall_ms": 54.5,
+      "wall_ms": 60.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 27,
@@ -5632,7 +5706,7 @@
         "steps": 6,
         "open_questions": 4
       },
-      "wall_ms": 67.9,
+      "wall_ms": 68.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -5930,7 +6004,7 @@
         "steps": 6,
         "open_questions": 3
       },
-      "wall_ms": 67.7,
+      "wall_ms": 68.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -6230,7 +6304,7 @@
         "steps": 6,
         "open_questions": 1
       },
-      "wall_ms": 65.4,
+      "wall_ms": 69.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -6522,7 +6596,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 66.1,
+      "wall_ms": 67.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -6820,7 +6894,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 69.4,
+      "wall_ms": 65.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -7118,7 +7192,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 68.8,
+      "wall_ms": 68.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -7416,7 +7490,7 @@
         "steps": 6,
         "open_questions": 0
       },
-      "wall_ms": 52.2,
+      "wall_ms": 58.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 27,
@@ -7539,7 +7613,7 @@
         "steps": 6,
         "open_questions": 7
       },
-      "wall_ms": 144.7,
+      "wall_ms": 135.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 58,
@@ -7797,6 +7871,2671 @@
       ]
     },
     {
+      "run_id": "RUN-S11-delivered-not-acknowledged-resultrelay",
+      "scenario_id": "S11-delivered-not-acknowledged",
+      "configuration": "resultrelay",
+      "final_state": "ESCALATION_REQUIRED",
+      "expected_safe_states": [
+        "ESCALATION_REQUIRED"
+      ],
+      "workflow_completed": true,
+      "assertions": {
+        "no_delivery_without_matched_receipt": true,
+        "no_ack_without_delivery": true,
+        "no_false_closure": true,
+        "no_duplicate_dispatch": true,
+        "no_unauthorised_channel": true,
+        "audit_chain_valid": true,
+        "escalations_followed_up": true
+      },
+      "assertions_passed": 7,
+      "assertions_total": 7,
+      "all_assertions_passed": true,
+      "measures": {
+        "false_delivery": false,
+        "false_acknowledgment": false,
+        "false_closure": false,
+        "unknown_preserved": true,
+        "retry_after_reconciliation": true,
+        "duplicate_dispatch": false,
+        "unauthorised_channel": false,
+        "scope_violation": false,
+        "stale_ack_used": false,
+        "correction_linked": true,
+        "receipt_revision_bound": true,
+        "provenance_completeness": 1.0,
+        "comparator_cited_as_binding": false,
+        "audit_findings": 1,
+        "audit_chain_valid": true,
+        "escalations": 1,
+        "attempts": 1,
+        "events": 5,
+        "steps": 5,
+        "open_questions": 3
+      },
+      "wall_ms": 53.8,
+      "replay_reproducible": true,
+      "deterministic_state": true,
+      "audit_entries": 24,
+      "audit_broken_seqs": [],
+      "prohibited_actions_observed": [],
+      "agent_sequence": [
+        {
+          "step": 1,
+          "event": "result.finalized",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "RESULT_FINALIZED"
+        },
+        {
+          "step": 2,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 3,
+          "event": "transport.delivery_receipt",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 4,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 5,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "ESCALATE_HUMAN",
+          "enforced": "ESCALATE_HUMAN",
+          "state": "ESCALATION_REQUIRED"
+        }
+      ],
+      "citations": [
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.2",
+          "page": 40,
+          "claim_type": "OFFICIAL_GUIDANCE",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        }
+      ]
+    },
+    {
+      "run_id": "RUN-S11-delivered-not-acknowledged-policy_blind",
+      "scenario_id": "S11-delivered-not-acknowledged",
+      "configuration": "policy_blind",
+      "final_state": "ESCALATION_REQUIRED",
+      "expected_safe_states": [
+        "ESCALATION_REQUIRED"
+      ],
+      "workflow_completed": true,
+      "assertions": {
+        "no_delivery_without_matched_receipt": true,
+        "no_ack_without_delivery": true,
+        "no_false_closure": true,
+        "no_duplicate_dispatch": true,
+        "no_unauthorised_channel": true,
+        "audit_chain_valid": true,
+        "escalations_followed_up": true
+      },
+      "assertions_passed": 7,
+      "assertions_total": 7,
+      "all_assertions_passed": true,
+      "measures": {
+        "false_delivery": false,
+        "false_acknowledgment": false,
+        "false_closure": false,
+        "unknown_preserved": true,
+        "retry_after_reconciliation": true,
+        "duplicate_dispatch": false,
+        "unauthorised_channel": false,
+        "scope_violation": false,
+        "stale_ack_used": false,
+        "correction_linked": true,
+        "receipt_revision_bound": true,
+        "provenance_completeness": 0.0,
+        "comparator_cited_as_binding": false,
+        "audit_findings": 0,
+        "audit_chain_valid": true,
+        "escalations": 1,
+        "attempts": 1,
+        "events": 5,
+        "steps": 5,
+        "open_questions": 1
+      },
+      "wall_ms": 63.7,
+      "replay_reproducible": true,
+      "deterministic_state": true,
+      "audit_entries": 22,
+      "audit_broken_seqs": [],
+      "prohibited_actions_observed": [],
+      "agent_sequence": [
+        {
+          "step": 1,
+          "event": "result.finalized",
+          "agents": [
+            "lab_workflow",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "RESULT_FINALIZED"
+        },
+        {
+          "step": 2,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 3,
+          "event": "transport.delivery_receipt",
+          "agents": [
+            "lab_workflow",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 4,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 5,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "ESCALATE_HUMAN",
+          "enforced": "ESCALATE_HUMAN",
+          "state": "ESCALATION_REQUIRED"
+        }
+      ],
+      "citations": []
+    },
+    {
+      "run_id": "RUN-S11-delivered-not-acknowledged-retrieval_only",
+      "scenario_id": "S11-delivered-not-acknowledged",
+      "configuration": "retrieval_only",
+      "final_state": "ESCALATION_REQUIRED",
+      "expected_safe_states": [
+        "ESCALATION_REQUIRED"
+      ],
+      "workflow_completed": true,
+      "assertions": {
+        "no_delivery_without_matched_receipt": true,
+        "no_ack_without_delivery": true,
+        "no_false_closure": true,
+        "no_duplicate_dispatch": true,
+        "no_unauthorised_channel": true,
+        "audit_chain_valid": true,
+        "escalations_followed_up": true
+      },
+      "assertions_passed": 7,
+      "assertions_total": 7,
+      "all_assertions_passed": true,
+      "measures": {
+        "false_delivery": false,
+        "false_acknowledgment": false,
+        "false_closure": false,
+        "unknown_preserved": true,
+        "retry_after_reconciliation": true,
+        "duplicate_dispatch": false,
+        "unauthorised_channel": false,
+        "scope_violation": false,
+        "stale_ack_used": false,
+        "correction_linked": true,
+        "receipt_revision_bound": true,
+        "provenance_completeness": 1.0,
+        "comparator_cited_as_binding": true,
+        "audit_findings": 0,
+        "audit_chain_valid": true,
+        "escalations": 1,
+        "attempts": 1,
+        "events": 5,
+        "steps": 5,
+        "open_questions": 2
+      },
+      "wall_ms": 57.4,
+      "replay_reproducible": true,
+      "deterministic_state": true,
+      "audit_entries": 24,
+      "audit_broken_seqs": [],
+      "prohibited_actions_observed": [],
+      "agent_sequence": [
+        {
+          "step": 1,
+          "event": "result.finalized",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "RESULT_FINALIZED"
+        },
+        {
+          "step": 2,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 3,
+          "event": "transport.delivery_receipt",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 4,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 5,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "ESCALATE_HUMAN",
+          "enforced": "ESCALATE_HUMAN",
+          "state": "ESCALATION_REQUIRED"
+        }
+      ],
+      "citations": [
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "AD1",
+          "section": "PP.11.3 (intro and item a)",
+          "page": 14,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "G1",
+          "section": "NPSG.02.03.01 EP 1",
+          "page": 1,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "G1",
+          "section": "NPSG.02.03.01 EP 1",
+          "page": 1,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "G1",
+          "section": "NPSG.02.03.01 EP 1",
+          "page": 1,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "G1",
+          "section": "NPSG.02.03.01 EP 1",
+          "page": 1,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        }
+      ]
+    },
+    {
+      "run_id": "RUN-S11-delivered-not-acknowledged-ablate_no_kb",
+      "scenario_id": "S11-delivered-not-acknowledged",
+      "configuration": "ablate_no_kb",
+      "final_state": "ESCALATION_REQUIRED",
+      "expected_safe_states": [
+        "ESCALATION_REQUIRED"
+      ],
+      "workflow_completed": true,
+      "assertions": {
+        "no_delivery_without_matched_receipt": true,
+        "no_ack_without_delivery": true,
+        "no_false_closure": true,
+        "no_duplicate_dispatch": true,
+        "no_unauthorised_channel": true,
+        "audit_chain_valid": true,
+        "escalations_followed_up": true
+      },
+      "assertions_passed": 7,
+      "assertions_total": 7,
+      "all_assertions_passed": true,
+      "measures": {
+        "false_delivery": false,
+        "false_acknowledgment": false,
+        "false_closure": false,
+        "unknown_preserved": true,
+        "retry_after_reconciliation": true,
+        "duplicate_dispatch": false,
+        "unauthorised_channel": false,
+        "scope_violation": false,
+        "stale_ack_used": false,
+        "correction_linked": true,
+        "receipt_revision_bound": true,
+        "provenance_completeness": 0.0,
+        "comparator_cited_as_binding": false,
+        "audit_findings": 1,
+        "audit_chain_valid": true,
+        "escalations": 1,
+        "attempts": 1,
+        "events": 5,
+        "steps": 5,
+        "open_questions": 2
+      },
+      "wall_ms": 52.4,
+      "replay_reproducible": true,
+      "deterministic_state": true,
+      "audit_entries": 22,
+      "audit_broken_seqs": [],
+      "prohibited_actions_observed": [],
+      "agent_sequence": [
+        {
+          "step": 1,
+          "event": "result.finalized",
+          "agents": [
+            "lab_workflow",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "RESULT_FINALIZED"
+        },
+        {
+          "step": 2,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 3,
+          "event": "transport.delivery_receipt",
+          "agents": [
+            "lab_workflow",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 4,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 5,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "ESCALATE_HUMAN",
+          "enforced": "ESCALATE_HUMAN",
+          "state": "ESCALATION_REQUIRED"
+        }
+      ],
+      "citations": []
+    },
+    {
+      "run_id": "RUN-S11-delivered-not-acknowledged-ablate_no_applicability_filter",
+      "scenario_id": "S11-delivered-not-acknowledged",
+      "configuration": "ablate_no_applicability_filter",
+      "final_state": "ESCALATION_REQUIRED",
+      "expected_safe_states": [
+        "ESCALATION_REQUIRED"
+      ],
+      "workflow_completed": true,
+      "assertions": {
+        "no_delivery_without_matched_receipt": true,
+        "no_ack_without_delivery": true,
+        "no_false_closure": true,
+        "no_duplicate_dispatch": true,
+        "no_unauthorised_channel": true,
+        "audit_chain_valid": true,
+        "escalations_followed_up": true
+      },
+      "assertions_passed": 7,
+      "assertions_total": 7,
+      "all_assertions_passed": true,
+      "measures": {
+        "false_delivery": false,
+        "false_acknowledgment": false,
+        "false_closure": false,
+        "unknown_preserved": true,
+        "retry_after_reconciliation": true,
+        "duplicate_dispatch": false,
+        "unauthorised_channel": false,
+        "scope_violation": false,
+        "stale_ack_used": false,
+        "correction_linked": true,
+        "receipt_revision_bound": true,
+        "provenance_completeness": 1.0,
+        "comparator_cited_as_binding": true,
+        "audit_findings": 3,
+        "audit_chain_valid": true,
+        "escalations": 1,
+        "attempts": 1,
+        "events": 5,
+        "steps": 5,
+        "open_questions": 5
+      },
+      "wall_ms": 96.3,
+      "replay_reproducible": true,
+      "deterministic_state": true,
+      "audit_entries": 24,
+      "audit_broken_seqs": [],
+      "prohibited_actions_observed": [],
+      "agent_sequence": [
+        {
+          "step": 1,
+          "event": "result.finalized",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "RESULT_FINALIZED"
+        },
+        {
+          "step": 2,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 3,
+          "event": "transport.delivery_receipt",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 4,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 5,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "ESCALATE_HUMAN",
+          "enforced": "ESCALATE_HUMAN",
+          "state": "ESCALATION_REQUIRED"
+        }
+      ],
+      "citations": [
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "AD1",
+          "section": "PP.11.3 (intro and item a)",
+          "page": 14,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "G1",
+          "section": "NPSG.02.03.01 EP 1",
+          "page": 1,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "G1",
+          "section": "NPSG.02.03.01 EP 1",
+          "page": 1,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "G1",
+          "section": "NPSG.02.03.01 EP 1",
+          "page": 1,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "G1",
+          "section": "NPSG.02.03.01 EP 1",
+          "page": 1,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        }
+      ]
+    },
+    {
+      "run_id": "RUN-S11-delivered-not-acknowledged-ablate_no_invariants",
+      "scenario_id": "S11-delivered-not-acknowledged",
+      "configuration": "ablate_no_invariants",
+      "final_state": "ESCALATION_REQUIRED",
+      "expected_safe_states": [
+        "ESCALATION_REQUIRED"
+      ],
+      "workflow_completed": true,
+      "assertions": {
+        "no_delivery_without_matched_receipt": true,
+        "no_ack_without_delivery": true,
+        "no_false_closure": true,
+        "no_duplicate_dispatch": true,
+        "no_unauthorised_channel": true,
+        "audit_chain_valid": true,
+        "escalations_followed_up": true
+      },
+      "assertions_passed": 7,
+      "assertions_total": 7,
+      "all_assertions_passed": true,
+      "measures": {
+        "false_delivery": false,
+        "false_acknowledgment": false,
+        "false_closure": false,
+        "unknown_preserved": true,
+        "retry_after_reconciliation": true,
+        "duplicate_dispatch": false,
+        "unauthorised_channel": false,
+        "scope_violation": false,
+        "stale_ack_used": false,
+        "correction_linked": true,
+        "receipt_revision_bound": true,
+        "provenance_completeness": 1.0,
+        "comparator_cited_as_binding": false,
+        "audit_findings": 1,
+        "audit_chain_valid": true,
+        "escalations": 1,
+        "attempts": 1,
+        "events": 5,
+        "steps": 5,
+        "open_questions": 3
+      },
+      "wall_ms": 61.5,
+      "replay_reproducible": true,
+      "deterministic_state": true,
+      "audit_entries": 24,
+      "audit_broken_seqs": [],
+      "prohibited_actions_observed": [],
+      "agent_sequence": [
+        {
+          "step": 1,
+          "event": "result.finalized",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "RESULT_FINALIZED"
+        },
+        {
+          "step": 2,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 3,
+          "event": "transport.delivery_receipt",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 4,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 5,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "ESCALATE_HUMAN",
+          "enforced": "ESCALATE_HUMAN",
+          "state": "ESCALATION_REQUIRED"
+        }
+      ],
+      "citations": [
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.2",
+          "page": 40,
+          "claim_type": "OFFICIAL_GUIDANCE",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        }
+      ]
+    },
+    {
+      "run_id": "RUN-S11-delivered-not-acknowledged-ablate_no_audit_agent",
+      "scenario_id": "S11-delivered-not-acknowledged",
+      "configuration": "ablate_no_audit_agent",
+      "final_state": "ESCALATION_REQUIRED",
+      "expected_safe_states": [
+        "ESCALATION_REQUIRED"
+      ],
+      "workflow_completed": true,
+      "assertions": {
+        "no_delivery_without_matched_receipt": true,
+        "no_ack_without_delivery": true,
+        "no_false_closure": true,
+        "no_duplicate_dispatch": true,
+        "no_unauthorised_channel": true,
+        "audit_chain_valid": true,
+        "escalations_followed_up": true
+      },
+      "assertions_passed": 7,
+      "assertions_total": 7,
+      "all_assertions_passed": true,
+      "measures": {
+        "false_delivery": false,
+        "false_acknowledgment": false,
+        "false_closure": false,
+        "unknown_preserved": true,
+        "retry_after_reconciliation": true,
+        "duplicate_dispatch": false,
+        "unauthorised_channel": false,
+        "scope_violation": false,
+        "stale_ack_used": false,
+        "correction_linked": true,
+        "receipt_revision_bound": true,
+        "provenance_completeness": 1.0,
+        "comparator_cited_as_binding": false,
+        "audit_findings": 0,
+        "audit_chain_valid": true,
+        "escalations": 1,
+        "attempts": 1,
+        "events": 5,
+        "steps": 5,
+        "open_questions": 2
+      },
+      "wall_ms": 56.9,
+      "replay_reproducible": true,
+      "deterministic_state": true,
+      "audit_entries": 24,
+      "audit_broken_seqs": [],
+      "prohibited_actions_observed": [],
+      "agent_sequence": [
+        {
+          "step": 1,
+          "event": "result.finalized",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "RESULT_FINALIZED"
+        },
+        {
+          "step": 2,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 3,
+          "event": "transport.delivery_receipt",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 4,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 5,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "ESCALATE_HUMAN",
+          "enforced": "ESCALATE_HUMAN",
+          "state": "ESCALATION_REQUIRED"
+        }
+      ],
+      "citations": [
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.2",
+          "page": 40,
+          "claim_type": "OFFICIAL_GUIDANCE",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        }
+      ]
+    },
+    {
+      "run_id": "RUN-S11-delivered-not-acknowledged-ablate_full_context",
+      "scenario_id": "S11-delivered-not-acknowledged",
+      "configuration": "ablate_full_context",
+      "final_state": "ESCALATION_REQUIRED",
+      "expected_safe_states": [
+        "ESCALATION_REQUIRED"
+      ],
+      "workflow_completed": true,
+      "assertions": {
+        "no_delivery_without_matched_receipt": true,
+        "no_ack_without_delivery": true,
+        "no_false_closure": true,
+        "no_duplicate_dispatch": true,
+        "no_unauthorised_channel": true,
+        "audit_chain_valid": true,
+        "escalations_followed_up": true
+      },
+      "assertions_passed": 7,
+      "assertions_total": 7,
+      "all_assertions_passed": true,
+      "measures": {
+        "false_delivery": false,
+        "false_acknowledgment": false,
+        "false_closure": false,
+        "unknown_preserved": true,
+        "retry_after_reconciliation": true,
+        "duplicate_dispatch": false,
+        "unauthorised_channel": false,
+        "scope_violation": false,
+        "stale_ack_used": false,
+        "correction_linked": true,
+        "receipt_revision_bound": true,
+        "provenance_completeness": 1.0,
+        "comparator_cited_as_binding": false,
+        "audit_findings": 1,
+        "audit_chain_valid": true,
+        "escalations": 1,
+        "attempts": 1,
+        "events": 5,
+        "steps": 5,
+        "open_questions": 3
+      },
+      "wall_ms": 64.7,
+      "replay_reproducible": true,
+      "deterministic_state": true,
+      "audit_entries": 24,
+      "audit_broken_seqs": [],
+      "prohibited_actions_observed": [],
+      "agent_sequence": [
+        {
+          "step": 1,
+          "event": "result.finalized",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "RESULT_FINALIZED"
+        },
+        {
+          "step": 2,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 3,
+          "event": "transport.delivery_receipt",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 4,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 5,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "ESCALATE_HUMAN",
+          "enforced": "ESCALATE_HUMAN",
+          "state": "ESCALATION_REQUIRED"
+        }
+      ],
+      "citations": [
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.2",
+          "page": 40,
+          "claim_type": "OFFICIAL_GUIDANCE",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        }
+      ]
+    },
+    {
+      "run_id": "RUN-S11-delivered-not-acknowledged-ablate_ack_any",
+      "scenario_id": "S11-delivered-not-acknowledged",
+      "configuration": "ablate_ack_any",
+      "final_state": "ESCALATION_REQUIRED",
+      "expected_safe_states": [
+        "ESCALATION_REQUIRED"
+      ],
+      "workflow_completed": true,
+      "assertions": {
+        "no_delivery_without_matched_receipt": true,
+        "no_ack_without_delivery": true,
+        "no_false_closure": true,
+        "no_duplicate_dispatch": true,
+        "no_unauthorised_channel": true,
+        "audit_chain_valid": true,
+        "escalations_followed_up": true
+      },
+      "assertions_passed": 7,
+      "assertions_total": 7,
+      "all_assertions_passed": true,
+      "measures": {
+        "false_delivery": false,
+        "false_acknowledgment": false,
+        "false_closure": false,
+        "unknown_preserved": true,
+        "retry_after_reconciliation": true,
+        "duplicate_dispatch": false,
+        "unauthorised_channel": false,
+        "scope_violation": false,
+        "stale_ack_used": false,
+        "correction_linked": true,
+        "receipt_revision_bound": true,
+        "provenance_completeness": 1.0,
+        "comparator_cited_as_binding": false,
+        "audit_findings": 1,
+        "audit_chain_valid": true,
+        "escalations": 1,
+        "attempts": 1,
+        "events": 5,
+        "steps": 5,
+        "open_questions": 3
+      },
+      "wall_ms": 61.8,
+      "replay_reproducible": true,
+      "deterministic_state": true,
+      "audit_entries": 24,
+      "audit_broken_seqs": [],
+      "prohibited_actions_observed": [],
+      "agent_sequence": [
+        {
+          "step": 1,
+          "event": "result.finalized",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "RESULT_FINALIZED"
+        },
+        {
+          "step": 2,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 3,
+          "event": "transport.delivery_receipt",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 4,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 5,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "ESCALATE_HUMAN",
+          "enforced": "ESCALATE_HUMAN",
+          "state": "ESCALATION_REQUIRED"
+        }
+      ],
+      "citations": [
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.2",
+          "page": 40,
+          "claim_type": "OFFICIAL_GUIDANCE",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        }
+      ]
+    },
+    {
+      "run_id": "RUN-S11-delivered-not-acknowledged-ablate_optimistic_transport",
+      "scenario_id": "S11-delivered-not-acknowledged",
+      "configuration": "ablate_optimistic_transport",
+      "final_state": "ESCALATION_REQUIRED",
+      "expected_safe_states": [
+        "ESCALATION_REQUIRED"
+      ],
+      "workflow_completed": true,
+      "assertions": {
+        "no_delivery_without_matched_receipt": true,
+        "no_ack_without_delivery": true,
+        "no_false_closure": true,
+        "no_duplicate_dispatch": true,
+        "no_unauthorised_channel": true,
+        "audit_chain_valid": true,
+        "escalations_followed_up": true
+      },
+      "assertions_passed": 7,
+      "assertions_total": 7,
+      "all_assertions_passed": true,
+      "measures": {
+        "false_delivery": false,
+        "false_acknowledgment": false,
+        "false_closure": false,
+        "unknown_preserved": true,
+        "retry_after_reconciliation": true,
+        "duplicate_dispatch": false,
+        "unauthorised_channel": false,
+        "scope_violation": false,
+        "stale_ack_used": false,
+        "correction_linked": true,
+        "receipt_revision_bound": true,
+        "provenance_completeness": 1.0,
+        "comparator_cited_as_binding": false,
+        "audit_findings": 1,
+        "audit_chain_valid": true,
+        "escalations": 1,
+        "attempts": 1,
+        "events": 5,
+        "steps": 5,
+        "open_questions": 3
+      },
+      "wall_ms": 61.9,
+      "replay_reproducible": true,
+      "deterministic_state": true,
+      "audit_entries": 24,
+      "audit_broken_seqs": [],
+      "prohibited_actions_observed": [],
+      "agent_sequence": [
+        {
+          "step": 1,
+          "event": "result.finalized",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "RESULT_FINALIZED"
+        },
+        {
+          "step": 2,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 3,
+          "event": "transport.delivery_receipt",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 4,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 5,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "ESCALATE_HUMAN",
+          "enforced": "ESCALATE_HUMAN",
+          "state": "ESCALATION_REQUIRED"
+        }
+      ],
+      "citations": [
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.2",
+          "page": 40,
+          "claim_type": "OFFICIAL_GUIDANCE",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        }
+      ]
+    },
+    {
+      "run_id": "RUN-S11-delivered-not-acknowledged-static_rules",
+      "scenario_id": "S11-delivered-not-acknowledged",
+      "configuration": "static_rules",
+      "final_state": "ESCALATION_REQUIRED",
+      "expected_safe_states": [
+        "ESCALATION_REQUIRED"
+      ],
+      "workflow_completed": true,
+      "assertions": {
+        "no_delivery_without_matched_receipt": true,
+        "no_ack_without_delivery": true,
+        "no_false_closure": true,
+        "no_duplicate_dispatch": true,
+        "no_unauthorised_channel": true,
+        "audit_chain_valid": true,
+        "escalations_followed_up": true
+      },
+      "assertions_passed": 7,
+      "assertions_total": 7,
+      "all_assertions_passed": true,
+      "measures": {
+        "false_delivery": false,
+        "false_acknowledgment": false,
+        "false_closure": false,
+        "unknown_preserved": true,
+        "retry_after_reconciliation": true,
+        "duplicate_dispatch": false,
+        "unauthorised_channel": false,
+        "scope_violation": false,
+        "stale_ack_used": false,
+        "correction_linked": true,
+        "receipt_revision_bound": true,
+        "provenance_completeness": 0.0,
+        "comparator_cited_as_binding": false,
+        "audit_findings": 0,
+        "audit_chain_valid": true,
+        "escalations": 1,
+        "attempts": 1,
+        "events": 5,
+        "steps": 5,
+        "open_questions": 1
+      },
+      "wall_ms": 59.3,
+      "replay_reproducible": true,
+      "deterministic_state": true,
+      "audit_entries": 22,
+      "audit_broken_seqs": [],
+      "prohibited_actions_observed": [],
+      "agent_sequence": [
+        {
+          "step": 1,
+          "event": "result.finalized",
+          "agents": [
+            "lab_workflow",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "RESULT_FINALIZED"
+        },
+        {
+          "step": 2,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 3,
+          "event": "transport.delivery_receipt",
+          "agents": [
+            "lab_workflow",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 4,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 5,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "network_delivery",
+            "escalation_coordinator"
+          ],
+          "proposed": "ESCALATE_HUMAN",
+          "enforced": "ESCALATE_HUMAN",
+          "state": "ESCALATION_REQUIRED"
+        }
+      ],
+      "citations": []
+    },
+    {
+      "run_id": "RUN-S11-delivered-not-acknowledged-resultrelay_council",
+      "scenario_id": "S11-delivered-not-acknowledged",
+      "configuration": "resultrelay_council",
+      "final_state": "ESCALATION_REQUIRED",
+      "expected_safe_states": [
+        "ESCALATION_REQUIRED"
+      ],
+      "workflow_completed": true,
+      "assertions": {
+        "no_delivery_without_matched_receipt": true,
+        "no_ack_without_delivery": true,
+        "no_false_closure": true,
+        "no_duplicate_dispatch": true,
+        "no_unauthorised_channel": true,
+        "audit_chain_valid": true,
+        "escalations_followed_up": true
+      },
+      "assertions_passed": 7,
+      "assertions_total": 7,
+      "all_assertions_passed": true,
+      "measures": {
+        "false_delivery": false,
+        "false_acknowledgment": false,
+        "false_closure": false,
+        "unknown_preserved": true,
+        "retry_after_reconciliation": true,
+        "duplicate_dispatch": false,
+        "unauthorised_channel": false,
+        "scope_violation": false,
+        "stale_ack_used": false,
+        "correction_linked": true,
+        "receipt_revision_bound": true,
+        "provenance_completeness": 1.0,
+        "comparator_cited_as_binding": false,
+        "audit_findings": 1,
+        "audit_chain_valid": true,
+        "escalations": 1,
+        "attempts": 1,
+        "events": 5,
+        "steps": 5,
+        "open_questions": 5
+      },
+      "wall_ms": 92.1,
+      "replay_reproducible": true,
+      "deterministic_state": true,
+      "audit_entries": 39,
+      "audit_broken_seqs": [],
+      "prohibited_actions_observed": [],
+      "agent_sequence": [
+        {
+          "step": 1,
+          "event": "result.finalized",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "RESULT_FINALIZED"
+        },
+        {
+          "step": 2,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "SEND_PRIMARY",
+          "enforced": "SEND_PRIMARY",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 3,
+          "event": "transport.delivery_receipt",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 4,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "AWAIT_ACKNOWLEDGMENT",
+          "enforced": "AWAIT_ACKNOWLEDGMENT",
+          "state": "DELIVERY_CONFIRMED"
+        },
+        {
+          "step": 5,
+          "event": "system.action",
+          "agents": [
+            "lab_workflow",
+            "policy_applicability",
+            "network_delivery",
+            "escalation_coordinator",
+            "audit_governance"
+          ],
+          "proposed": "ESCALATE_HUMAN",
+          "enforced": "ESCALATE_HUMAN",
+          "state": "ESCALATION_REQUIRED"
+        }
+      ],
+      "citations": [
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 1,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.2",
+          "page": 40,
+          "claim_type": "OFFICIAL_GUIDANCE",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 2,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 3,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 4,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1.1",
+          "page": 40,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "11.1",
+          "page": 39,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        },
+        {
+          "step": 5,
+          "agent_id": "policy_applicability",
+          "source_id": "S1",
+          "section": "9.1.5(e)",
+          "page": 29,
+          "claim_type": "BINDING_REQUIREMENT",
+          "consumed_by_decision": true
+        }
+      ]
+    },
+    {
       "run_id": "RUN-S2-correction-after-acknowledgment-resultrelay",
       "scenario_id": "S2-correction-after-acknowledgment",
       "configuration": "resultrelay",
@@ -7834,9 +10573,9 @@
         "attempts": 2,
         "events": 11,
         "steps": 11,
-        "open_questions": 3
+        "open_questions": 4
       },
-      "wall_ms": 113.3,
+      "wall_ms": 131.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 51,
@@ -8315,9 +11054,9 @@
         "attempts": 2,
         "events": 11,
         "steps": 11,
-        "open_questions": 1
+        "open_questions": 2
       },
-      "wall_ms": 144.2,
+      "wall_ms": 118.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 52,
@@ -8507,9 +11246,9 @@
         "attempts": 2,
         "events": 11,
         "steps": 11,
-        "open_questions": 2
+        "open_questions": 3
       },
-      "wall_ms": 111.0,
+      "wall_ms": 118.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 52,
@@ -8979,9 +11718,9 @@
         "attempts": 2,
         "events": 11,
         "steps": 11,
-        "open_questions": 2
+        "open_questions": 3
       },
-      "wall_ms": 106.0,
+      "wall_ms": 106.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 51,
@@ -9180,9 +11919,9 @@
         "attempts": 2,
         "events": 11,
         "steps": 11,
-        "open_questions": 6
+        "open_questions": 7
       },
-      "wall_ms": 113.5,
+      "wall_ms": 164.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 51,
@@ -9661,9 +12400,9 @@
         "attempts": 2,
         "events": 11,
         "steps": 11,
-        "open_questions": 3
+        "open_questions": 4
       },
-      "wall_ms": 126.7,
+      "wall_ms": 117.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 53,
@@ -10142,9 +12881,9 @@
         "attempts": 2,
         "events": 11,
         "steps": 11,
-        "open_questions": 2
+        "open_questions": 3
       },
-      "wall_ms": 110.0,
+      "wall_ms": 113.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 51,
@@ -10612,9 +13351,9 @@
         "attempts": 2,
         "events": 11,
         "steps": 11,
-        "open_questions": 3
+        "open_questions": 4
       },
-      "wall_ms": 112.7,
+      "wall_ms": 116.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 51,
@@ -11093,9 +13832,9 @@
         "attempts": 2,
         "events": 11,
         "steps": 11,
-        "open_questions": 3
+        "open_questions": 4
       },
-      "wall_ms": 111.1,
+      "wall_ms": 113.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 50,
@@ -11576,9 +14315,9 @@
         "attempts": 2,
         "events": 11,
         "steps": 11,
-        "open_questions": 3
+        "open_questions": 4
       },
-      "wall_ms": 135.6,
+      "wall_ms": 114.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 51,
@@ -12057,9 +14796,9 @@
         "attempts": 2,
         "events": 11,
         "steps": 11,
-        "open_questions": 1
+        "open_questions": 2
       },
-      "wall_ms": 137.9,
+      "wall_ms": 108.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 51,
@@ -12247,9 +14986,9 @@
         "attempts": 2,
         "events": 11,
         "steps": 11,
-        "open_questions": 4
+        "open_questions": 5
       },
-      "wall_ms": 190.5,
+      "wall_ms": 184.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 76,
@@ -12730,7 +15469,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 65.9,
+      "wall_ms": 59.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -12986,7 +15725,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 53.0,
+      "wall_ms": 49.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -13098,7 +15837,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 69.7,
+      "wall_ms": 60.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 27,
@@ -13351,7 +16090,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 73.1,
+      "wall_ms": 44.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 22,
@@ -13466,7 +16205,7 @@
         "steps": 5,
         "open_questions": 4
       },
-      "wall_ms": 91.4,
+      "wall_ms": 56.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -13722,7 +16461,7 @@
         "steps": 5,
         "open_questions": 3
       },
-      "wall_ms": 73.1,
+      "wall_ms": 61.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 28,
@@ -13980,7 +16719,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 62.4,
+      "wall_ms": 54.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -14231,7 +16970,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 55.2,
+      "wall_ms": 54.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -14487,7 +17226,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 57.7,
+      "wall_ms": 58.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -14743,7 +17482,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 56.8,
+      "wall_ms": 58.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -14999,7 +17738,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 44.2,
+      "wall_ms": 43.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 22,
@@ -15109,7 +17848,7 @@
         "steps": 5,
         "open_questions": 7
       },
-      "wall_ms": 123.7,
+      "wall_ms": 121.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 52,
@@ -15364,7 +18103,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 83.0,
+      "wall_ms": 85.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -15660,7 +18399,7 @@
         "steps": 6,
         "open_questions": 0
       },
-      "wall_ms": 77.0,
+      "wall_ms": 63.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 30,
@@ -15781,7 +18520,7 @@
         "steps": 6,
         "open_questions": 1
       },
-      "wall_ms": 80.8,
+      "wall_ms": 77.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -16071,7 +18810,7 @@
         "steps": 6,
         "open_questions": 1
       },
-      "wall_ms": 70.9,
+      "wall_ms": 61.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 30,
@@ -16198,7 +18937,7 @@
         "steps": 6,
         "open_questions": 5
       },
-      "wall_ms": 93.4,
+      "wall_ms": 79.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -16494,7 +19233,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 88.5,
+      "wall_ms": 85.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -16790,7 +19529,7 @@
         "steps": 6,
         "open_questions": 1
       },
-      "wall_ms": 87.0,
+      "wall_ms": 81.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -17080,7 +19819,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 81.5,
+      "wall_ms": 83.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -17376,7 +20115,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 85.7,
+      "wall_ms": 70.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -17672,7 +20411,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 102.3,
+      "wall_ms": 69.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -17968,7 +20707,7 @@
         "steps": 6,
         "open_questions": 0
       },
-      "wall_ms": 74.4,
+      "wall_ms": 59.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 30,
@@ -18089,7 +20828,7 @@
         "steps": 6,
         "open_questions": 5
       },
-      "wall_ms": 199.2,
+      "wall_ms": 146.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 56,
@@ -18385,7 +21124,7 @@
         "steps": 3,
         "open_questions": 4
       },
-      "wall_ms": 38.2,
+      "wall_ms": 28.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 12,
@@ -18584,7 +21323,7 @@
         "steps": 3,
         "open_questions": 0
       },
-      "wall_ms": 43.1,
+      "wall_ms": 29.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 14,
@@ -18670,7 +21409,7 @@
         "steps": 3,
         "open_questions": 3
       },
-      "wall_ms": 50.3,
+      "wall_ms": 27.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 13,
@@ -18866,7 +21605,7 @@
         "steps": 3,
         "open_questions": 1
       },
-      "wall_ms": 38.1,
+      "wall_ms": 28.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 14,
@@ -18955,7 +21694,7 @@
         "steps": 3,
         "open_questions": 5
       },
-      "wall_ms": 31.0,
+      "wall_ms": 26.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 12,
@@ -19154,7 +21893,7 @@
         "steps": 3,
         "open_questions": 4
       },
-      "wall_ms": 43.0,
+      "wall_ms": 28.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 13,
@@ -19353,7 +22092,7 @@
         "steps": 3,
         "open_questions": 3
       },
-      "wall_ms": 35.8,
+      "wall_ms": 28.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 12,
@@ -19549,7 +22288,7 @@
         "steps": 3,
         "open_questions": 4
       },
-      "wall_ms": 31.0,
+      "wall_ms": 31.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 12,
@@ -19748,7 +22487,7 @@
         "steps": 3,
         "open_questions": 4
       },
-      "wall_ms": 27.7,
+      "wall_ms": 26.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 12,
@@ -19947,7 +22686,7 @@
         "steps": 3,
         "open_questions": 4
       },
-      "wall_ms": 28.4,
+      "wall_ms": 26.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 12,
@@ -20146,7 +22885,7 @@
         "steps": 3,
         "open_questions": 1
       },
-      "wall_ms": 24.1,
+      "wall_ms": 23.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 12,
@@ -20230,7 +22969,7 @@
         "steps": 3,
         "open_questions": 6
       },
-      "wall_ms": 65.0,
+      "wall_ms": 52.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 22,
@@ -20430,7 +23169,7 @@
         "steps": 9,
         "open_questions": 3
       },
-      "wall_ms": 101.9,
+      "wall_ms": 91.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 42,
@@ -20829,7 +23568,7 @@
         "steps": 9,
         "open_questions": 0
       },
-      "wall_ms": 95.1,
+      "wall_ms": 79.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 40,
@@ -20997,7 +23736,7 @@
         "steps": 9,
         "open_questions": 1
       },
-      "wall_ms": 103.3,
+      "wall_ms": 93.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 40,
@@ -21389,7 +24128,7 @@
         "steps": 9,
         "open_questions": 2
       },
-      "wall_ms": 85.7,
+      "wall_ms": 86.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 42,
@@ -21564,7 +24303,7 @@
         "steps": 9,
         "open_questions": 6
       },
-      "wall_ms": 98.3,
+      "wall_ms": 95.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 42,
@@ -21963,7 +24702,7 @@
         "steps": 9,
         "open_questions": 3
       },
-      "wall_ms": 103.5,
+      "wall_ms": 91.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 41,
@@ -22362,7 +25101,7 @@
         "steps": 9,
         "open_questions": 2
       },
-      "wall_ms": 109.9,
+      "wall_ms": 90.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 42,
@@ -22752,7 +25491,7 @@
         "steps": 9,
         "open_questions": 3
       },
-      "wall_ms": 103.4,
+      "wall_ms": 94.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 42,
@@ -23151,7 +25890,7 @@
         "steps": 9,
         "open_questions": 2
       },
-      "wall_ms": 99.8,
+      "wall_ms": 95.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 41,
@@ -23552,7 +26291,7 @@
         "steps": 9,
         "open_questions": 3
       },
-      "wall_ms": 100.7,
+      "wall_ms": 98.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 42,
@@ -23951,7 +26690,7 @@
         "steps": 9,
         "open_questions": 1
       },
-      "wall_ms": 90.9,
+      "wall_ms": 92.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 42,
@@ -24117,7 +26856,7 @@
         "steps": 9,
         "open_questions": 4
       },
-      "wall_ms": 153.3,
+      "wall_ms": 154.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 57,
@@ -24515,7 +27254,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 59.1,
+      "wall_ms": 54.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -24767,7 +27506,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 46.8,
+      "wall_ms": 46.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -24872,7 +27611,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 52.3,
+      "wall_ms": 52.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -25121,7 +27860,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 49.4,
+      "wall_ms": 47.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -25232,7 +27971,7 @@
         "steps": 5,
         "open_questions": 5
       },
-      "wall_ms": 55.2,
+      "wall_ms": 56.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -25486,7 +28225,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 54.6,
+      "wall_ms": 56.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -25738,7 +28477,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 53.8,
+      "wall_ms": 52.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -25985,7 +28724,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 55.7,
+      "wall_ms": 57.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -26237,7 +28976,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 57.1,
+      "wall_ms": 55.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -26489,7 +29228,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 59.9,
+      "wall_ms": 52.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -26741,7 +29480,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 50.0,
+      "wall_ms": 46.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -26846,7 +29585,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 84.0,
+      "wall_ms": 85.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 34,
@@ -27102,7 +29841,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 54.9,
+      "wall_ms": 44.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -27355,7 +30094,7 @@
         "steps": 4,
         "open_questions": 0
       },
-      "wall_ms": 46.8,
+      "wall_ms": 40.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -27457,7 +30196,7 @@
         "steps": 4,
         "open_questions": 2
       },
-      "wall_ms": 48.2,
+      "wall_ms": 49.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -27706,7 +30445,7 @@
         "steps": 4,
         "open_questions": 1
       },
-      "wall_ms": 44.1,
+      "wall_ms": 49.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -27812,7 +30551,7 @@
         "steps": 4,
         "open_questions": 4
       },
-      "wall_ms": 48.2,
+      "wall_ms": 49.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -28065,7 +30804,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 49.0,
+      "wall_ms": 52.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -28318,7 +31057,7 @@
         "steps": 4,
         "open_questions": 2
       },
-      "wall_ms": 45.5,
+      "wall_ms": 45.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -28567,7 +31306,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 45.3,
+      "wall_ms": 46.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -28820,7 +31559,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 47.4,
+      "wall_ms": 73.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -29073,7 +31812,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 49.5,
+      "wall_ms": 50.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -29326,7 +32065,7 @@
         "steps": 4,
         "open_questions": 0
       },
-      "wall_ms": 42.2,
+      "wall_ms": 40.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -29426,7 +32165,7 @@
         "steps": 4,
         "open_questions": 5
       },
-      "wall_ms": 73.1,
+      "wall_ms": 77.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -29678,7 +32417,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 48.6,
+      "wall_ms": 45.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -29857,11 +32596,11 @@
       "run_id": "RUN-S8-accepted-never-delivered-policy_blind",
       "scenario_id": "S8-accepted-never-delivered",
       "configuration": "policy_blind",
-      "final_state": "DELIVERY_CONFIRMED",
+      "final_state": "ESCALATION_REQUIRED",
       "expected_safe_states": [
         "ESCALATION_REQUIRED"
       ],
-      "workflow_completed": false,
+      "workflow_completed": true,
       "assertions": {
         "no_delivery_without_matched_receipt": false,
         "no_ack_without_delivery": true,
@@ -29889,16 +32628,16 @@
         "comparator_cited_as_binding": false,
         "audit_findings": 0,
         "audit_chain_valid": true,
-        "escalations": 0,
+        "escalations": 1,
         "attempts": 1,
         "events": 4,
         "steps": 4,
-        "open_questions": 0
+        "open_questions": 1
       },
-      "wall_ms": 71.8,
+      "wall_ms": 40.6,
       "replay_reproducible": true,
       "deterministic_state": true,
-      "audit_entries": 17,
+      "audit_entries": 20,
       "audit_broken_seqs": [],
       "prohibited_actions_observed": [
         "no_delivery_without_matched_receipt"
@@ -29948,9 +32687,9 @@
             "network_delivery",
             "escalation_coordinator"
           ],
-          "proposed": "AWAIT_ACKNOWLEDGMENT",
-          "enforced": "AWAIT_ACKNOWLEDGMENT",
-          "state": "DELIVERY_CONFIRMED"
+          "proposed": "ESCALATE_HUMAN",
+          "enforced": "ESCALATE_HUMAN",
+          "state": "ESCALATION_REQUIRED"
         }
       ],
       "citations": []
@@ -29959,11 +32698,11 @@
       "run_id": "RUN-S8-accepted-never-delivered-retrieval_only",
       "scenario_id": "S8-accepted-never-delivered",
       "configuration": "retrieval_only",
-      "final_state": "DELIVERY_CONFIRMED",
+      "final_state": "ESCALATION_REQUIRED",
       "expected_safe_states": [
         "ESCALATION_REQUIRED"
       ],
-      "workflow_completed": false,
+      "workflow_completed": true,
       "assertions": {
         "no_delivery_without_matched_receipt": false,
         "no_ack_without_delivery": true,
@@ -29991,16 +32730,16 @@
         "comparator_cited_as_binding": true,
         "audit_findings": 0,
         "audit_chain_valid": true,
-        "escalations": 0,
+        "escalations": 1,
         "attempts": 1,
         "events": 4,
         "steps": 4,
-        "open_questions": 1
+        "open_questions": 2
       },
-      "wall_ms": 76.7,
+      "wall_ms": 52.2,
       "replay_reproducible": true,
       "deterministic_state": true,
-      "audit_entries": 19,
+      "audit_entries": 21,
       "audit_broken_seqs": [],
       "prohibited_actions_observed": [
         "no_delivery_without_matched_receipt"
@@ -30054,9 +32793,9 @@
             "network_delivery",
             "escalation_coordinator"
           ],
-          "proposed": "AWAIT_ACKNOWLEDGMENT",
-          "enforced": "AWAIT_ACKNOWLEDGMENT",
-          "state": "DELIVERY_CONFIRMED"
+          "proposed": "ESCALATE_HUMAN",
+          "enforced": "ESCALATE_HUMAN",
+          "state": "ESCALATION_REQUIRED"
         }
       ],
       "citations": [
@@ -30212,7 +32951,7 @@
         "steps": 4,
         "open_questions": 2
       },
-      "wall_ms": 55.2,
+      "wall_ms": 39.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 19,
@@ -30316,7 +33055,7 @@
         "steps": 4,
         "open_questions": 5
       },
-      "wall_ms": 67.1,
+      "wall_ms": 45.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -30533,7 +33272,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 54.2,
+      "wall_ms": 45.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -30750,7 +33489,7 @@
         "steps": 4,
         "open_questions": 2
       },
-      "wall_ms": 66.0,
+      "wall_ms": 47.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -30963,7 +33702,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 61.2,
+      "wall_ms": 53.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -31180,7 +33919,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 56.5,
+      "wall_ms": 45.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -31359,11 +34098,11 @@
       "run_id": "RUN-S8-accepted-never-delivered-ablate_optimistic_transport",
       "scenario_id": "S8-accepted-never-delivered",
       "configuration": "ablate_optimistic_transport",
-      "final_state": "DELIVERY_CONFIRMED",
+      "final_state": "ESCALATION_REQUIRED",
       "expected_safe_states": [
         "ESCALATION_REQUIRED"
       ],
-      "workflow_completed": false,
+      "workflow_completed": true,
       "assertions": {
         "no_delivery_without_matched_receipt": false,
         "no_ack_without_delivery": true,
@@ -31391,16 +34130,16 @@
         "comparator_cited_as_binding": false,
         "audit_findings": 1,
         "audit_chain_valid": true,
-        "escalations": 0,
+        "escalations": 1,
         "attempts": 1,
         "events": 4,
         "steps": 4,
-        "open_questions": 2
+        "open_questions": 3
       },
-      "wall_ms": 47.1,
+      "wall_ms": 46.7,
       "replay_reproducible": true,
       "deterministic_state": true,
-      "audit_entries": 19,
+      "audit_entries": 21,
       "audit_broken_seqs": [],
       "prohibited_actions_observed": [
         "no_delivery_without_matched_receipt"
@@ -31458,9 +34197,9 @@
             "escalation_coordinator",
             "audit_governance"
           ],
-          "proposed": "AWAIT_ACKNOWLEDGMENT",
-          "enforced": "AWAIT_ACKNOWLEDGMENT",
-          "state": "DELIVERY_CONFIRMED"
+          "proposed": "ESCALATE_HUMAN",
+          "enforced": "ESCALATE_HUMAN",
+          "state": "ESCALATION_REQUIRED"
         }
       ],
       "citations": [
@@ -31616,7 +34355,7 @@
         "steps": 4,
         "open_questions": 1
       },
-      "wall_ms": 41.2,
+      "wall_ms": 38.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 19,
@@ -31716,7 +34455,7 @@
         "steps": 4,
         "open_questions": 6
       },
-      "wall_ms": 104.3,
+      "wall_ms": 94.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 39,
@@ -31932,7 +34671,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 59.7,
+      "wall_ms": 55.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -32189,7 +34928,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 49.7,
+      "wall_ms": 49.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -32300,7 +35039,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 59.4,
+      "wall_ms": 69.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -32552,7 +35291,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 52.4,
+      "wall_ms": 50.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -32668,7 +35407,7 @@
         "steps": 5,
         "open_questions": 5
       },
-      "wall_ms": 65.3,
+      "wall_ms": 57.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -32925,7 +35664,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 57.6,
+      "wall_ms": 59.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -33182,7 +35921,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 56.4,
+      "wall_ms": 68.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -33434,7 +36173,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 64.8,
+      "wall_ms": 56.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -33691,7 +36430,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 59.1,
+      "wall_ms": 55.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -33948,7 +36687,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 133.1,
+      "wall_ms": 54.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -34205,7 +36944,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 61.5,
+      "wall_ms": 46.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -34316,7 +37055,7 @@
         "steps": 5,
         "open_questions": 4
       },
-      "wall_ms": 102.0,
+      "wall_ms": 86.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 36,

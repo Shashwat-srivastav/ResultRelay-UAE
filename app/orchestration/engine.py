@@ -355,6 +355,17 @@ def configure_adviser() -> Any:
     )
 
 
+def _scenario_minutes(at: Any, default: float) -> float:
+    """Minutes since the simulated clock's start (BASE_TIME) for an ISO timestamp; ``default`` if unparseable."""
+    from app.transport.simulator import BASE_TIME
+
+    try:
+        when = datetime.fromisoformat(str(at).replace("Z", "+00:00"))
+        return round((when - BASE_TIME).total_seconds() / 60.0, 1)
+    except (TypeError, ValueError):
+        return default
+
+
 def _parse_minutes(at: Any) -> float | None:
     """Parse a simulated timestamp (``HH:MM`` or ISO) back to minutes since day start."""
     if at is None:
@@ -563,7 +574,10 @@ class Orchestrator:
                 attempt.accepted = True
                 attempt.outcome = "DELIVERED"
                 attempt.delivered_at = event.get("at")
-                attempt.delivered_at_minutes = _parse_minutes(event.get("at"))
+                # Minutes since the scenario's clock start - the same clock as at_minutes_current. Parsing the
+                # wall-clock time gave minutes since midnight (~540 for 09:00), so "time since delivery" was always
+                # negative and the delivered-but-never-acknowledged escalation could never fire (found by S11).
+                attempt.delivered_at_minutes = _scenario_minutes(event.get("at"), self.rt.at_minutes_current)
                 self.rt.network.ledger.append({
                     "at": event.get("at"),
                     "event": "ENDPOINT_DELIVERY_RECEIPT",

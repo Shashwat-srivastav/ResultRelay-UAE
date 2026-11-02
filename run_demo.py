@@ -57,6 +57,8 @@ HEADLINE = [
      "Delivered and 'acknowledged' from a verified number, but the reply says it is the patient's daughter. Rules close the case; the agents read the words and escalate."),
     ("SC-07", "failure", "S10-escalation-nobody-answers", "ESCALATION_REQUIRED",
      "Escalated to the supervisor, who never answers. Past the deadline the escalation is raised to the clinical lead (tier 2), not left open."),
+    ("SC-08", "failure", "S11-delivered-not-acknowledged", "ESCALATION_REQUIRED",
+     "The SMS is delivered with a receipt, but nobody acknowledges it. When the acknowledgment window passes, ResultRelay escalates; a receipt is not a person."),
 ]
 
 
