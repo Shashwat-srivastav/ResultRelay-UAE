@@ -45,8 +45,8 @@ a genetic result** — DHA's standard routes those to the referring physician.
 ```console
 $ python run_demo.py 4
 ── SC-04 [controversial] A generic walk-in rule retrieved for a genetic result  (S4-genetic-scope-exclusion)
-   FINAL RESULT_FINALIZED                 VERDICT VIOLATION              ✓ expected RESULT_FINALIZED
-   policy-blind final → DELIVERY_CONFIRMED
+   FINAL ESCALATION_REQUIRED              VERDICT VIOLATION              ✓ expected ESCALATION_REQUIRED
+   policy-blind final → DELIVERY_CONFIRMED · rules only (no agents) → ESCALATION_REQUIRED
 ```
 
 ## Multi-agent orchestration — LLMs only where reasoning is needed
@@ -161,7 +161,7 @@ model needs the ITU Lab compute requested in [submission/DESIGN-BRIEF.md](submis
 | **SRC** | Synthetic result revisions, contacts, channels; the verified corpus | Data/Model Marketplace (1), Contextualization and Regional Impact (4) | DHA ST-28 §11.1 (walk-in tests) |
 | **C** | Staged event streams: transport, patient and supervisor events | Level of Integration of AI in Workflows (5) | DHA ST-28 §11.1.1–3 |
 | **PP** | Normalised states; report version, action id and provenance preserved | AI & Policies (10) | HL7 FHIR Task, IHE XDW (comparators) |
-| **M** | Council: network, health and reviewer agents, fact check + critic, coordinator (any LLM); hybrid retrieval | Collaboration with AI (8), Impacts of Humans in AI Integration (9) | DHA AI policy PP-09 §4.3.1, §4.4.2; UAE AI Charter |
+| **M** | Policy Evidence Analyst (DHA lens), conditional TDRA-lens analyst, adversarial reviewer (any LLM, per role); deterministic assurance | Collaboration with AI (8), Impacts of Humans in AI Integration (9) | DHA AI policy PP-09 §4.3.1, §4.4.2; UAE AI Charter |
 | **P** | Gate: scope (§13.4 genetic results), version binding, reconcile-before-retry, no false closure | AI & Policies (10), Strategy Alignment (7) | DHA ST-28 §11.1, §13.4 |
 | **D** | Mock transport that separates acceptance, delivery and acknowledgment; idempotency keys | Digital Infrastructure (13), Granular Priorities (12) | Federal Law 2/2019 Art. 4, 13; TDRA Mobile Spam §1-23 |
 | **SINK** | Supervisor queue, React console, hash-chained audit re-verified on read | Human Interface (6), AI for Inclusion (11) | DHA ST-28 §11.1.3; NABIDH Audit Policy §3.2.10–11 |
@@ -285,7 +285,7 @@ its own legislation.
 ```bash
 python -m pip install -r requirements.txt
 python -m pytest -q                          # 257 tests (one skips unless every source text is cached)
-python run_demo.py                           # five scenarios; the agent council replays recorded answers offline
+python run_demo.py                           # six scenarios; the agent council replays recorded answers offline
 python scripts/run_evaluation.py             # 120-run matrix → evaluation/report.md
 python -m uvicorn app.main:app --port 8000   # API + built UI on http://127.0.0.1:8000  (docs at /api/docs)
 python scripts/fetch_sources.py              # optional: download the official texts and re-verify every quote

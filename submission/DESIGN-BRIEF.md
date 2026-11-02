@@ -1,6 +1,6 @@
 # ResultRelay — design brief for ITU AI for Good Lab resources
 
-Prepared by Shashwat Srivastava (team leader), shashwat1322001@gmail.com · ITU AI for Good Sandbox Hackathon — UAE
+Prepared by Team Aabyss (leader Priya Singh) · ITU AI for Good Sandbox Hackathon — UAE
 
 ## What it does
 
