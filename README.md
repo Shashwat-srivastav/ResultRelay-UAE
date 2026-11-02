@@ -21,6 +21,20 @@ result version, and refuses another jurisdiction's rule as binding.
 
 ---
 
+## Team
+
+**Team Aabyss** — submission to the
+[ITU AI for Good Sandbox Hackathon — United Arab Emirates](https://aiforgood.itu.int/), healthcare track.
+
+| | |
+| :--- | :--- |
+| **Team** | Team Aabyss |
+| **Leader** | Priya Singh |
+| **Members** | Shashwat Srivastava · Divyansh Vishwakarma · Anushka Gupta |
+| **Hosts / partners** | ITU · TDRA (Telecommunications and Digital Government Regulatory Authority) |
+
+---
+
 ## The one-sentence version
 
 A critical result is flagged, the SMS gateway says "accepted", and a dashboard turns green. Nobody knows
