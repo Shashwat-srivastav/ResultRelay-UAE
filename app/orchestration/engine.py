@@ -280,6 +280,8 @@ class Runtime:
     #: Blocking conditions are workflow defects that must prevent a case being closed (INV-10).
     blocking_conditions: list[str] = field(default_factory=list)
     escalations: list[dict[str, Any]] = field(default_factory=list)
+    #: Human sign-offs on completion (the documentation record): not escalations, never left open.
+    signoffs: list[dict[str, Any]] = field(default_factory=list)
     documentation_recorded: bool = False
     pending_action: GateDecision | None = None
     at_minutes_current: float = 0.0
@@ -1031,6 +1033,11 @@ class Orchestrator:
                             summary=f"{delib['decision']}; conflicts {delib['conflicts'] or 'none'}"[:300],
                             payload={"decision": delib["decision"], "reason": delib["escalation"],
                                      "conflicts": delib["conflicts"], "provider": delib["provider"]}, at=event.get("at"))
+            down = [r for r, m in delib["messages"].items() if m.get("status") in ("UNAVAILABLE", "REFUSED_RESIDENCY")]
+            if down:
+                note = f"agent council unavailable at step {step_no} ({', '.join(down)}): the step was decided by rules alone"
+                if note not in rt.unresolved:
+                    rt.unresolved.append(note)
             gaps = {m.get("answers", {}).get("gap", {}).get("choice") for m in delib["messages"].values()} - {None, "NONE"}
             for g in sorted(gaps):
                 note = f"policy gap surfaced at step {step_no}: {g}"
@@ -1139,8 +1146,15 @@ class Orchestrator:
                 at=event["at"],
             )
 
-        # 5. Escalation bookkeeping when the gate demands a human.
-        if (gate.requires_human and not rt.escalations
+        # 5. Human involvement the gate requires. Writing the communication record is a sign-off by the named
+        #    role, not an escalation: booking it as one left an OPEN escalation on every completed case.
+        if gate.requires_human and gate.enforced_action == RecommendedAction.RECORD_DOCUMENTATION:
+            signoff = {"signoff_id": f"SIGN-{len(rt.signoffs) + 1:03d}",
+                       "role": rt.profile.get("escalation_role", "SUPERVISOR"),
+                       "reason": gate.reason[:300], "status": "RECORDED", "at": event["at"]}
+            rt.signoffs.append(signoff)
+            result["human_signoff"] = signoff
+        elif (gate.requires_human and not rt.escalations
                 and rt.state != CaseState.ESCALATION_REQUIRED):
             esc = {
                 "escalation_id": f"ESC-{len(rt.escalations) + 1:03d}",
@@ -1149,9 +1163,18 @@ class Orchestrator:
                 "triggered_by": "gate.requires_human",
                 "status": "OPEN",
                 "at": event["at"],
+                "at_minutes": at_minutes,
+                "due_by_minutes": at_minutes + float(rt.profile.get("escalation_response_minutes", 30)),
+                "tier": 1,
             }
             rt.escalations.append(esc)
             result["human_intervention"] = esc
+        # A case that reaches completion closes whatever escalations it still carries.
+        if rt.state in (CaseState.COMMUNICATION_DOCUMENTED, CaseState.CORRECTED_RESULT_ACKNOWLEDGED):
+            for e in rt.escalations:
+                if e.get("status") in ("OPEN", "IN_REVIEW"):
+                    e["status"] = "CLOSED_ON_COMPLETION"
+                    e["closed_at"] = event["at"]
 
         if rt.escalations and rt.state in (CaseState.ESCALATION_REQUIRED, CaseState.ESCALATION_IN_REVIEW):
             result["human_intervention"] = rt.escalations[-1]

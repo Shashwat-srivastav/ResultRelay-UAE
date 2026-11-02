@@ -9,7 +9,13 @@ from __future__ import annotations
 from typing import Any
 
 from app.agents.base import Agent, assessment_confidence, citation, scope_view
-from app.kb.retriever import search
+from functools import partial
+
+from app.kb.retriever import search as _search
+
+# The gate's inputs come from BM25 over the verified index, always: they must not change with whether a vector
+# store or Ollama happens to be available. Hybrid ranking serves /api/kb/search and the retrieval check.
+search = partial(_search, engine="bm25")
 from app.models.schemas import (
     AgentAssessment,
     AssessmentStatus,

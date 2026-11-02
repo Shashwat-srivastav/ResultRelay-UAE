@@ -38,6 +38,8 @@ class EventType(str, Enum):
     DOCUMENTATION_RECORDED = "documentation.recorded"
     SUPERSEDE = "result.supersede"
     POLICY_SOURCE_UPDATED = "policy.source_updated"
+    #: The passage of time, with nothing else happening: drives escalation follow-up.
+    TIMER_TICK = "timer.tick"
 
 
 @dataclass
@@ -622,7 +624,8 @@ TRANSITIONS: tuple[TransitionRule, ...] = (
 # Transitions that are legal from *any* non-terminal state because they carry information
 # forward without resolving anything (they must still be recorded).
 INFORMATIONAL_EVENTS: frozenset[EventType] = frozenset(
-    {EventType.PATIENT_CALLBACK_NO_ACCESS, EventType.FALLBACK_CHANNEL_PROPOSED, EventType.POLICY_SOURCE_UPDATED}
+    {EventType.PATIENT_CALLBACK_NO_ACCESS, EventType.FALLBACK_CHANNEL_PROPOSED, EventType.POLICY_SOURCE_UPDATED,
+     EventType.TIMER_TICK}
 )
 
 
