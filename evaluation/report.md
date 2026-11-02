@@ -1,7 +1,7 @@
 # ResultRelay evaluation report
 
-Generated: 2026-11-02T10:52:26.300249+00:00  
-Runs: 120 (10 scenarios x 12 configurations)
+Generated: 2026-11-02T15:01:18.438041+00:00  
+Runs: 132 (11 scenarios x 12 configurations)
 
 > All data is synthetic. These results are **not** evidence of clinical safety, clinical effectiveness, or regulatory compliance.
 
@@ -17,14 +17,14 @@ The rows answer two different questions and are separated for that reason.
 
 | Configuration | Safe scenarios | Assertions passed | False closures | False deliveries | Stale-ack uses | Unauthorised channels | Scope violations | Comparator cited as binding | Transmission provenance | Replay stable |
 |---|---|---|---|---|---|---|---|---|---|---|
-| ResultRelay (policy-gated assessors, deterministic) | 9/10 | 42/42 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
-| Ablation: knowledge base off (one flag) | 7/10 | 40/42 (95%) | 0 | 0 | 0 | 0 | 2 | 0 | 0.00 | yes |
-| Ablation: jurisdiction filter off (one flag) | 8/10 | 41/42 (98%) | 0 | 0 | 0 | 0 | 0 | 10 | 1.00 | yes |
-| Ablation: invariant gate off (one flag) | 7/10 | 41/42 (98%) | 0 | 0 | 0 | 1 | 0 | 0 | 1.00 | yes |
-| Ablation: audit assessor off (one flag) | 9/10 | 42/42 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
-| Ablation: full context to every assessor (one flag) | 9/10 | 42/42 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
-| Ablation: acknowledgement scope any revision (one flag) | 7/10 | 40/42 (95%) | 0 | 0 | 2 | 0 | 0 | 0 | 1.00 | yes |
-| Ablation: optimistic transport semantics (one flag) | 7/10 | 40/42 (95%) | 0 | 2 | 0 | 0 | 0 | 0 | 1.00 | yes |
+| ResultRelay (policy-gated assessors, deterministic) | 10/11 | 46/46 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
+| Ablation: knowledge base off (one flag) | 8/11 | 44/46 (96%) | 0 | 0 | 0 | 0 | 2 | 0 | 0.00 | yes |
+| Ablation: jurisdiction filter off (one flag) | 9/11 | 45/46 (98%) | 0 | 0 | 0 | 0 | 0 | 11 | 1.00 | yes |
+| Ablation: invariant gate off (one flag) | 7/11 | 44/46 (96%) | 0 | 0 | 0 | 2 | 0 | 0 | 1.00 | yes |
+| Ablation: audit assessor off (one flag) | 10/11 | 46/46 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
+| Ablation: full context to every assessor (one flag) | 10/11 | 46/46 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
+| Ablation: acknowledgement scope any revision (one flag) | 8/11 | 44/46 (96%) | 0 | 0 | 2 | 0 | 0 | 0 | 1.00 | yes |
+| Ablation: optimistic transport semantics (one flag) | 8/11 | 44/46 (96%) | 0 | 2 | 0 | 0 | 0 | 0 | 1.00 | yes |
 
 | Ablation | Single input changed | Full configuration | Ablation | Isolates |
 |---|---|---|---|---|
@@ -40,10 +40,10 @@ The rows answer two different questions and are separated for that reason.
 
 | Configuration | Safe scenarios | Assertions passed | False closures | False deliveries | Stale-ack uses | Unauthorised channels | Scope violations | Comparator cited as binding | Transmission provenance | Replay stable |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Policy-blind baseline (no knowledge base) | 2/10 | 35/42 (83%) | 0 | 3 | 2 | 1 | 2 | 0 | 0.00 | yes |
-| Citation-only RAG baseline | 3/10 | 36/42 (86%) | 0 | 3 | 2 | 1 | 0 | 10 | 1.00 | yes |
-| Conventional deterministic rules baseline | 9/10 | 42/42 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 0.00 | yes |
-| ResultRelay + agent council (policy analyst, TDRA-lens analyst, adversarial reviewer, deterministic assurance) | 10/10 | 42/42 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
+| Policy-blind baseline (no knowledge base) | 2/11 | 38/46 (83%) | 0 | 4 | 2 | 2 | 2 | 0 | 0.00 | yes |
+| Citation-only RAG baseline | 3/11 | 39/46 (85%) | 0 | 4 | 2 | 2 | 0 | 11 | 1.00 | yes |
+| Conventional deterministic rules baseline | 10/11 | 46/46 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 0.00 | yes |
+| ResultRelay + agent council (policy analyst, TDRA-lens analyst, adversarial reviewer, deterministic assurance) | 11/11 | 46/46 (100%) | 0 | 0 | 0 | 0 | 0 | 0 | 1.00 | yes |
 
 | Baseline | Inputs that differ from the full configuration |
 |---|---|
@@ -57,6 +57,7 @@ The rows answer two different questions and are separated for that reason.
 | Scenario | resultrelay | policy_blind | retrieval_only | ablate_no_kb | ablate_no_applicability_filter | ablate_no_invariants | ablate_no_audit_agent | ablate_full_context | ablate_ack_any | ablate_optimistic_transport | static_rules | resultrelay_council |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | S1-ambiguous-delivery | PASS `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | FAIL `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` |
+| S10-escalation-nobody-answers | PASS `ESCALATION_REQUIRED` | FAIL `DELIVERY_CONFIRMED` | FAIL `DELIVERY_CONFIRMED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | FAIL `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` |
 | S2-correction-after-acknowledgment | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | FAIL `ESCALATION_REQUIRED` | FAIL `ESCALATION_REQUIRED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | FAIL `ESCALATION_REQUIRED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | FAIL `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` | PASS `CORRECTED_RESULT_ACKNOWLEDGED` |
 | S3a-channel-outage-no-evidence | PASS `ESCALATION_REQUIRED` | FAIL `DELIVERY_CONFIRMED` | FAIL `DELIVERY_CONFIRMED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | FAIL `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` | PASS `ESCALATION_REQUIRED` |
 | S3b-channel-outage-approved-procedure | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` | PASS `COMMUNICATION_DOCUMENTED` |
@@ -72,6 +73,9 @@ The rows answer two different questions and are separated for that reason.
 - **S1-ambiguous-delivery / policy_blind** -> final `COMMUNICATION_DOCUMENTED`: no_delivery_without_matched_receipt
 - **S1-ambiguous-delivery / retrieval_only** -> final `COMMUNICATION_DOCUMENTED`: no_delivery_without_matched_receipt
 - **S1-ambiguous-delivery / ablate_optimistic_transport** -> final `COMMUNICATION_DOCUMENTED`: no_delivery_without_matched_receipt
+- **S10-escalation-nobody-answers / policy_blind** -> final `DELIVERY_CONFIRMED`: no_unauthorised_channel
+- **S10-escalation-nobody-answers / retrieval_only** -> final `DELIVERY_CONFIRMED`: no_unauthorised_channel
+- **S10-escalation-nobody-answers / ablate_no_invariants** -> final `ESCALATION_REQUIRED`: no_unauthorised_channel
 - **S2-correction-after-acknowledgment / policy_blind** -> final `ESCALATION_REQUIRED`: stale_ack_not_used_for_current_revision
 - **S2-correction-after-acknowledgment / retrieval_only** -> final `ESCALATION_REQUIRED`: stale_ack_not_used_for_current_revision
 - **S2-correction-after-acknowledgment / ablate_ack_any** -> final `CORRECTED_RESULT_ACKNOWLEDGED`: stale_ack_not_used_for_current_revision

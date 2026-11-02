@@ -392,7 +392,10 @@ def orchestrate(msgs: dict[str, dict], reviews: dict[str, dict], conflicts: list
     kind, conf = obj.get("choice"), obj.get("confidence", 0)
     if kind not in (None, "NONE") and reviews.get("reviewer", {}).get("outcome") != "OBJECTION_REJECTED":
         if conf >= (0.7 if kind == "TEXT_CONTRADICTS_RECORD" else 0.5):
-            return "ESCALATE", f"verified reviewer objection {kind}: {OBJECTIONS[kind]}"
+            if kind == "TEXT_CONTRADICTS_RECORD":
+                # Code cannot check free text: this escalation rests on the reviewer's judgment and confidence.
+                return "ESCALATE", f"reviewer objection {kind} (model judgment, confidence {conf:.2f}; free text cannot be checked by code): {OBJECTIONS[kind]}"
+            return "ESCALATE", f"reviewer objection {kind}, consistent with the case record: {OBJECTIONS[kind]}"
     if action in HIGH_RISK and reviews.get("analyst", {}).get("outcome") == "DISPUTED":
         return "ESCALATE", "the analyst's claim on a high-risk step still contradicts the case record after revision"
     # A policy gap, or the analyst and reviewer reading a step differently, is recorded in the trace and the

@@ -1,0 +1,139 @@
+{
+  "scenario_id": "S10-escalation-nobody-answers",
+  "title": "Escalated to the supervisor - and nobody answers",
+  "summary": "The primary channel is down and no fallback is approved, so the case is escalated to the named supervisor with a deadline. The supervisor never responds. A system that only opens a ticket leaves the critical result with nobody; ResultRelay follows the escalation up when its deadline passes and raises it to the second tier (clinical lead), audited.",
+  "case_id": "SYN-CASE-011",
+  "jurisdiction": "AE-DU",
+  "facility_type": "DHA-licensed walk-in clinical laboratory (simulated)",
+  "case_scope": "WALK_IN",
+  "patient_ref": "SYN-PATIENT-011",
+  "contact_ref": "SYN-CONTACT-011",
+  "initial_result": {
+    "revision_id": "SYN-CASE-011-R1",
+    "version": 1,
+    "status": "DRAFT",
+    "test_name": "Synthetic analyte C (walk-in permitted panel)",
+    "critical_flag_source": "Separate authorised laboratory critical-result process"
+  },
+  "profile_overrides": {
+    "fallback_channel_approved": false,
+    "fallback_procedure_ref": null
+  },
+  "network": {
+    "channels": {
+      "SMS-PATIENT": {
+        "kind": "SMS",
+        "endpoint_class": "patient_mobile",
+        "primary": true,
+        "status": "DOWN",
+        "note": "simulated gateway outage"
+      },
+      "PORTAL-PATIENT": {
+        "kind": "PORTAL",
+        "endpoint_class": "patient_portal",
+        "primary": false,
+        "status": "UP"
+      },
+      "PHONE-CALL": {
+        "kind": "VOICE",
+        "endpoint_class": "patient_mobile",
+        "primary": false,
+        "status": "UP"
+      }
+    },
+    "attempts": [
+      {
+        "outcome": "TIMEOUT",
+        "timeout_after_minutes": 2.0
+      }
+    ],
+    "reconciliations": [
+      {
+        "attempt_id": null,
+        "result": "FAILED",
+        "note": "provider ledger shows the gateway rejected the request"
+      }
+    ]
+  },
+  "steps": [
+    {
+      "step": 1,
+      "at_minutes": 0,
+      "kind": "event",
+      "type": "result.finalized",
+      "actor": "LAB",
+      "summary": "Revision 1 finalized while the primary SMS gateway is down",
+      "payload": {
+        "result_revision_id": "SYN-CASE-011-R1"
+      },
+      "visible_to": [
+        "lab_workflow",
+        "policy_applicability",
+        "network_delivery",
+        "escalation_coordinator"
+      ]
+    },
+    {
+      "step": 2,
+      "at_minutes": 1,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Attempt the primary channel",
+      "channel": "SMS-PATIENT"
+    },
+    {
+      "step": 3,
+      "at_minutes": 30,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Reconcile the failed attempt before any further communication"
+    },
+    {
+      "step": 4,
+      "at_minutes": 45,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Decide whether an alternative channel may be used",
+      "channel": "PORTAL-PATIENT"
+    },
+    {
+      "step": 5,
+      "at_minutes": 75,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Escalate to the configured responsible role"
+    },
+    {
+      "step": 6,
+      "at_minutes": 90,
+      "kind": "event",
+      "type": "timer.tick",
+      "actor": "SYSTEM",
+      "summary": "Clock tick: 45 minutes after the escalation, no supervisor has opened the case",
+      "payload": {}
+    }
+  ],
+  "research_questions": [
+    "Does any retrieved source authorise an alternative communication channel for a walk-in critical result?",
+    "What would a facility need to document to authorise a fallback channel?"
+  ],
+  "provenance": {
+    "note": "Synthetic adaptation of a published patient-safety incident; the source is cited as provenance, not reproduced. The scenario's facts, names and timings are invented.",
+    "match": "almost exact",
+    "failure_mode": "the attending was paged and did not respond, and the result was not escalated to anyone else",
+    "sources": [
+      {
+        "title": "CRICO / Harvard Risk Management Foundation (2023): Discharged Patient with Pending Test Results",
+        "url": "https://rmfcd1-prod.rmf.harvard.edu/Risk-Prevention-and-Education/Case-Study-Catalog-Page/Case-Study/2023/Discharged-Patient-with-Pending-Test-Results"
+      },
+      {
+        "title": "American Journal of Clinical Pathology (2011): Pathology consultation on reporting of critical values (PMC7065418)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7065418/"
+      }
+    ]
+  }
+}

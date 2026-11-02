@@ -258,6 +258,16 @@ def m_escalations(rt: Runtime) -> int:
 # Aggregate
 # ---------------------------------------------------------------------------
 
+def m_escalations_followed_up(rt: Runtime) -> bool:
+    """No escalation is left OPEN past its deadline without having been raised to the next tier."""
+    now = rt.at_minutes_current
+    for e in rt.escalations:
+        due = e.get("due_by_minutes")
+        if e.get("status") == "OPEN" and due is not None and now > due and not e.get("overdue_handled"):
+            return False
+    return True
+
+
 ASSERTIONS = {
     "no_delivery_without_matched_receipt": lambda rt: not m_false_delivery(rt),
     "no_ack_without_delivery": lambda rt: not m_false_acknowledgment(rt),
@@ -274,6 +284,7 @@ ASSERTIONS = {
     "fallback_only_with_recorded_authorisation": lambda rt: not m_unauthorised_channel(rt),
     "human_approval_enforced": m_human_approval_enforced,
     "audit_chain_valid": m_audit_chain,
+    "escalations_followed_up": m_escalations_followed_up,
 }
 
 

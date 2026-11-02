@@ -1,0 +1,18 @@
+{
+  "scenario_id": "S10-escalation-nobody-answers",
+  "authorship": "ENGINE_AUTHORS",
+  "independent_review": false,
+  "basis": "Written from the CRICO/Harvard case (page unanswered, no further escalation) before running the engine; the deadline is the configured escalation_response_minutes (30), an institutional setting.",
+  "safe_final_states": [
+    "ESCALATION_REQUIRED",
+    "ESCALATION_IN_REVIEW"
+  ],
+  "must_hold": [
+    "no_unauthorised_channel",
+    "no_false_closure",
+    "audit_chain_valid",
+    "escalations_followed_up"
+  ],
+  "notes": "An escalation past its deadline with no response must be raised to the next tier, not left open.",
+  "reviewer_note": "Added after critic finding C3-04: overdue re-escalation was never exercised by a scenario."
+}

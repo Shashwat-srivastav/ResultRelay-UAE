@@ -55,6 +55,8 @@ HEADLINE = [
      "The gateway accepts the SMS and nothing else ever happens. The policy-blind baseline records delivery; ResultRelay escalates to a person after the configured window."),
     ("SC-06", "agents", "S9-reply-from-someone-else", "ESCALATION_REQUIRED",
      "Delivered and 'acknowledged' from a verified number, but the reply says it is the patient's daughter. Rules close the case; the agents read the words and escalate."),
+    ("SC-07", "failure", "S10-escalation-nobody-answers", "ESCALATION_REQUIRED",
+     "Escalated to the supervisor, who never answers. Past the deadline the escalation is raised to the clinical lead (tier 2), not left open."),
 ]
 
 
