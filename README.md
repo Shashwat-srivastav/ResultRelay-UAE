@@ -82,27 +82,36 @@ what code cannot: an answer whose cited clause does not say what the answer reli
 wrong too, so its flag only ever buys a revision. Each flagged agent sees the critique and answers once
 more; the outcome is `CORRECTED`, `UPHELD` or `DISPUTED`.
 
-**Recorded run** (`python run_demo.py`, five scenarios, provider Jev, replayed offline from
-`evaluation/agent_runs/`):
+**Three recorded runs, same five scenarios, same 16 decision points** (`python run_demo.py`):
 
-| Measure | Result |
-| :--- | :--- |
-| Final state matches expected | **5/5** |
-| Decision points deliberated · agent answers · tool calls | 16 · 48 · 28 |
-| Answers flagged by fact check or critic | 18 → **6 corrected**, 12 upheld, 0 disputed |
-| Coordinator agrees with the rule cross-check | 10/16 |
-| Supervisor-review requests raised by the coordinator | 14/16 (over-cautious: logged, never acted on by the gate) |
+| Model per role | Final states | Flagged → corrected · upheld · disputed | Coordinator usable · matches rule check | Supervisor requests |
+| :--- | :---: | :--- | :--- | :---: |
+| Jev for every role | 5/5 | 18 → 6 · 12 · 0 | 16/16 · 10/16 | 14 |
+| Mistral `ministral-14b-2512` for every role | 5/5 | 15 → 5 · 8 · **2** | 11/16 · 5/11 | 11 |
+| **Mistral agents · Jev critic and coordinator** (recommended, the offline default) | **5/5** | 16 → **11** · 3 · 2 | **16/16 · 12/16** | 8 |
 
-What the critic caught, for example (SC-05, step 4): the health agent claimed the result was
-*communicated*; the fact check found no acknowledgment of the current revision; shown the finding, the
-agent corrected itself to *awaiting acknowledgment*. On SC-04 it caught the reviewer objecting to an
-action while proposing the same action as its alternative.
+A critic from a different model family than the agents it reviews made the agents correct **more than
+twice as many answers** (11 vs 5), and the coordinator always gave a valid answer, agreed with the rule
+check far more often and over-escalated less. Jev, asked beforehand, had only been 49% sure this would help:
+it was measured, not assumed. Logs: `evaluation/council_run_*.log`.
+
+What the critic caught. The health agent repeatedly claimed a result was *communicated* when no one had
+acknowledged the current revision; shown the fact-check finding, it corrected itself to *awaiting
+acknowledgment*. On Mistral, the network agent twice insisted on a delivery receipt that does not exist
+even after revision: the answer was marked `DISPUTED`, excluded from the conflict check, and the
+supervisor was told.
 
 ```console
-   step  4 ESCALATE_HUMAN       gate → ESCALATE_HUMAN       network ACCEPTED_ONLY · health AWAITING_ACK · reviewer objection p=0.52
-           critic: network corrected; health corrected (claims the result was communicated, but no one acknowledged the current revision); reviewer upheld · tools transport_ledger,kb_search,kb_search
-           coordinator ESCALATE_HUMAN / DELIVERY_WITHOUT_COMMUNICATION · rule check ['REVIEWER_OBJECTS']  ⚠ coordinator disagrees with the rule check
+council: network mistral:ministral-14b-2512 · health mistral:ministral-14b-2512 · reviewer mistral:ministral-14b-2512 · critic jev:jev-latest · coordinator jev:jev-latest
+   critic: network disputed (claims a delivery receipt, but no attempt for the current revision has one); health corrected (claims the result was communicated, but no one acknowledged the current revision)
+council: 16 decision points, 48 agent answers, 9 tool calls; critic flagged 16 → 11 corrected, 3 upheld, 2 disputed; coordinator matched the rule check 12/16; 8 supervisor-review requests; 0 unavailable
 ```
+
+Replay: `python run_demo.py` replays the recommended run exactly;
+`RESULTRELAY_AGENT_PROVIDER=replay RESULTRELAY_AGENT_REPLAY_FROM=jev python run_demo.py` replays the all-Jev
+run exactly. The Mistral-only run is kept as its log: its first-round recordings share questions with the
+mixed run, and Mistral is not fully deterministic at temperature 0, so replaying it gives close but not
+identical figures.
 
 **Any model.** One setting picks the provider; every agent asks typed questions (named options or a
 probability), and a chat model's JSON answer is validated against them — an option that is not on the
@@ -115,6 +124,16 @@ list is rejected, never repaired.
 | `openai` | any OpenAI-compatible server (`RESULTRELAY_AGENT_URL`) | decided by the endpoint |
 | `jev` | TypeSafe Jev (`TYPESAFE_API_KEY`) | outside the State: synthetic cases only |
 | `replay` | recorded answers (default offline); refused if the case view changed | no request leaves the machine |
+
+Each role can run on its own model: `RESULTRELAY_<ROLE>_PROVIDER` / `_MODEL` for `NETWORK`, `HEALTH`,
+`REVIEWER`, `CRITIC`, `COORDINATOR` override the defaults. The recommended setup:
+
+```bash
+RESULTRELAY_AGENT_PROVIDER=mistral
+RESULTRELAY_AGENT_MODEL=ministral-14b-2512       # mandate agents (open weights; the same size class as qwen2.5:14b)
+RESULTRELAY_CRITIC_PROVIDER=jev                  # a different model family checks the agents
+RESULTRELAY_COORDINATOR_PROVIDER=jev
+```
 
 Keys go in `.env` at the repo root (git-ignored; see `.env.example`). On a 6 GB laptop a 3B local model
 (`qwen2.5:3b`) ran end to end but returned malformed answers and out-of-memory errors; the 14B reference

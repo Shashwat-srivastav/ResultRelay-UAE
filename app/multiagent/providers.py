@@ -34,6 +34,7 @@ from typing import Any
 from app.advisers.residency import authorise
 
 RUNS = Path(__file__).resolve().parents[2] / "evaluation" / "agent_runs"
+_LAST_CALL: dict[str, float] = {}
 
 PRESETS = {
     "ollama": {"url": "http://localhost:11434/v1", "model": "qwen2.5:14b", "key_env": None},
@@ -63,6 +64,8 @@ class Provider:
     url: str
     model: str
     key_env: str | None = None
+    #: For a replay provider: whose recordings to serve (jev, mistral, ollama ...), or * for any.
+    replay_from: str = "*"
 
     @property
     def label(self) -> str:
@@ -70,27 +73,45 @@ class Provider:
 
     # -- transport ---------------------------------------------------------------------------------
     def _post(self, url: str, body: dict, timeout: float = 180.0) -> dict:
+        import time
+        import urllib.error
+
         headers = {"Content-Type": "application/json"}
         if self.key_env:
             key = os.environ.get(self.key_env)
             if not key:
                 raise ProviderError(f"{self.key_env} is not set")
             headers["Authorization"] = f"Bearer {key}"
-        req = urllib.request.Request(url, data=json.dumps(body).encode(), headers=headers)
-        with urllib.request.urlopen(req, timeout=timeout) as r:  # noqa: S310 - endpoint vetted by residency
-            return json.loads(r.read())
+        # Hosted tiers allow ~0.5-2 requests per second: pace requests and back off on 429.
+        gap = float(os.environ.get("RESULTRELAY_AGENT_MIN_INTERVAL", "0" if self.kind in ("ollama", "jev") else "1.1"))
+        for attempt in range(6):
+            wait = gap - (time.monotonic() - _LAST_CALL.get(self.kind, 0.0))
+            if wait > 0:
+                time.sleep(wait)
+            _LAST_CALL[self.kind] = time.monotonic()
+            req = urllib.request.Request(url, data=json.dumps(body).encode(), headers=headers)
+            try:
+                with urllib.request.urlopen(req, timeout=timeout) as r:  # noqa: S310 - endpoint vetted by residency
+                    return json.loads(r.read())
+            except urllib.error.HTTPError as exc:
+                if exc.code != 429 or attempt == 5:
+                    raise ProviderError(f"HTTP {exc.code}: {exc.read()[:160]!r}") from exc
+                time.sleep(min(30.0, 2.0 * 2 ** attempt))
+        raise ProviderError("rate limited")
 
     def _ask_live(self, state: dict, questions: dict) -> dict:
         if self.kind == "jev":
             return self._post(self.url, {"model": self.model, "state": state, "questions": questions})
         body = {
-            "model": self.model, "temperature": 0, "response_format": {"type": "json_object"},
+            "model": self.model, "temperature": 0, "top_p": 1, "response_format": {"type": "json_object"},
             "messages": [{"role": "system", "content": SYSTEM},
                          {"role": "user", "content": json.dumps({"state": state, "questions": questions},
                                                                 ensure_ascii=False)}],
         }
         resp = self._post(self.url.rstrip("/") + "/chat/completions", body)
         text = resp["choices"][0]["message"]["content"]
+        if isinstance(text, list):  # reasoning models return [{"type": "thinking", ...}, {"type": "text", "text": ...}]
+            text = "".join(part.get("text", "") for part in text if isinstance(part, dict) and part.get("type") == "text")
         m = re.search(r"\{.*\}", text, re.S)
         if not m:
             raise ProviderError("model returned no JSON object")
@@ -115,8 +136,7 @@ class Provider:
             path.write_text(json.dumps({"provider": self.label, "state": state, "questions": questions,
                                         "response": raw}, ensure_ascii=False, indent=1), encoding="utf-8")
         else:
-            source = os.environ.get("RESULTRELAY_AGENT_REPLAY_FROM", "*")  # e.g. jev, mistral, ollama
-            hits = sorted(RUNS.glob(f"agent-{source}-{digest}.json")) if self.kind == "replay" else [path]
+            hits = sorted(RUNS.glob(f"agent-{self.replay_from}-{digest}.json")) if self.kind == "replay" else [path]
             hits = [h for h in hits if h.exists()]
             if not hits:
                 raise ProviderError("no recorded answer for this exact case view (replay is refused, not guessed)")
@@ -161,22 +181,39 @@ def load_dotenv(path: Path | None = None) -> None:
         if not line or line.startswith("#") or "=" not in line:
             continue
         k, v = line.split("=", 1)
-        os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+        v = v.strip()
+        if v[:1] in ('"', "'") and v[1:].find(v[0]) >= 0:
+            v = v[1:1 + v[1:].find(v[0])]           # quoted: take what is inside the quotes
+        else:
+            v = v.split(" #", 1)[0].split("	#", 1)[0].strip()  # unquoted: drop an inline comment
+        if v:  # an empty KEY= line must not mask a real environment variable
+            os.environ.setdefault(k.strip(), v)
 
 
-def configured() -> Provider | None:
-    """Provider from the environment (and .env), or None when agents are off."""
+ROLES = ("network", "health", "reviewer", "critic", "coordinator")
+
+
+def configured(role: str | None = None) -> Provider | None:
+    """Provider for one council role, from the environment (and .env); None when agents are off.
+
+    RESULTRELAY_AGENT_PROVIDER / _MODEL / _URL set every role. A role can be given its own model with
+    RESULTRELAY_<ROLE>_PROVIDER / _MODEL / _URL, e.g. RESULTRELAY_CRITIC_PROVIDER=jev, so that the
+    critic is a different model family from the agents it reviews.
+    """
     load_dotenv()
-    kind = os.environ.get("RESULTRELAY_AGENT_PROVIDER", "").lower()
+    own = os.environ.get(f"RESULTRELAY_{role.upper()}_PROVIDER", "").lower() if role else ""
+    kind = own or os.environ.get("RESULTRELAY_AGENT_PROVIDER", "").lower()
     if not kind:
         return None
+    prefix = f"RESULTRELAY_{role.upper()}_" if own else "RESULTRELAY_AGENT_"
     if kind == "replay":
-        return Provider("replay", "", os.environ.get("RESULTRELAY_AGENT_MODEL", "recorded"))
+        src = os.environ.get(prefix + "REPLAY_FROM") or os.environ.get("RESULTRELAY_AGENT_REPLAY_FROM") or "*"
+        return Provider("replay", "", f"recorded-{src}", replay_from=src)
     if kind not in PRESETS:
-        raise ProviderError(f"unknown RESULTRELAY_AGENT_PROVIDER {kind!r}; use one of {sorted(PRESETS)} or replay")
+        raise ProviderError(f"unknown provider {kind!r} for {role or 'agents'}; use one of {sorted(PRESETS)} or replay")
     p = PRESETS[kind]
-    url = os.environ.get("RESULTRELAY_AGENT_URL") or p["url"]
-    model = os.environ.get("RESULTRELAY_AGENT_MODEL") or p["model"]
+    url = os.environ.get(prefix + "URL") or p["url"]
+    model = os.environ.get(prefix + "MODEL") or p["model"]
     if not url or not model:
-        raise ProviderError("set RESULTRELAY_AGENT_URL and RESULTRELAY_AGENT_MODEL for the openai provider")
+        raise ProviderError(f"set {prefix}URL and {prefix}MODEL for the openai provider")
     return Provider(kind, url, model, p["key_env"])

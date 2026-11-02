@@ -1,0 +1,84 @@
+
+SYNTHETIC DATA — hackathon exercise only. Not a clinical service or a compliance determination.
+agents: mistral / ministral-14b-2512
+
+── SC-01 [normal] A genetic result routed to the referring physician by a retrieved clause  (S7-genetic-physician-route)
+   A genetic result is routed to the referring physician as DHA ST-28 §13.4 requires, and the communication is documented.
+   FINAL COMMUNICATION_DOCUMENTED         VERDICT COMPLIANT              ✓ expected COMMUNICATION_DOCUMENTED
+   policy-blind final → COMMUNICATION_DOCUMENTED
+   step  2 SEND_PRIMARY         gate → SEND_PRIMARY         network NOT_SENT · health DIRECT_NOT_PERMITTED · reviewer objection p=0.0
+           critic: all answers accepted · tools transport_ledger
+           coordinator ESCALATE_HUMAN / None · rule check ['SCOPE_CONFLICT']
+   step  4 RECORD_DOCUMENTATION gate → RECORD_DOCUMENTATION network DELIVERED_RECEIPT · health COMMUNICATED · reviewer objection p=0.0
+           critic: all answers accepted
+           coordinator PROCEED / NONE · rule check none
+   audit 34 entries, hash chain valid=True
+
+── SC-02 [failure] Primary channel outage, no verified authorisation for a fallback  (S3a-channel-outage-no-evidence)
+   The primary channel is down and no approved fallback exists. The policy-blind baseline invents a channel and reports delivery; ResultRelay escalates.
+   FINAL ESCALATION_REQUIRED              VERDICT INSUFFICIENT_EVIDENCE  ✓ expected ESCALATION_REQUIRED
+   policy-blind final → DELIVERY_CONFIRMED
+   step  2 SEND_PRIMARY         gate → SEND_PRIMARY         network NOT_SENT · health NOT_YET_SENT · reviewer objection p=0.0
+           critic: network upheld; health upheld; reviewer upheld · tools transport_ledger
+           coordinator ESCALATE_HUMAN / SCOPE_CONFLICT · rule check none  ⚠ coordinator disagrees with the rule check
+   step  3 RECONCILE_ATTEMPT    gate → RECONCILE_ATTEMPT    network OUTCOME_UNKNOWN · health AWAITING_ACK · reviewer objection p=0.0
+           critic: network corrected; reviewer corrected · tools transport_ledger
+           coordinator PROCEED / NONE · rule check none
+   step  4 PROPOSE_FALLBACK     gate → ESCALATE_HUMAN       network FAILED · health AWAITING_ACK · reviewer objection p=0.0
+           critic: all answers accepted
+           coordinator ESCALATE_HUMAN / None · rule check none
+   step  5 PROPOSE_FALLBACK     gate → NO_ACTION            network FAILED · health AWAITING_ACK · reviewer objection p=0.0
+           critic: all answers accepted
+           coordinator ESCALATE_HUMAN / None · rule check none
+   audit 52 entries, hash chain valid=True
+
+── SC-03 [failure] Corrected result after a previous acknowledgment  (S2-correction-after-acknowledgment)
+   A corrected report arrives after the patient acknowledged version 1. The old acknowledgment cannot close version 2.
+   FINAL CORRECTED_RESULT_ACKNOWLEDGED    VERDICT COMPLIANT              ✓ expected CORRECTED_RESULT_ACKNOWLEDGED
+   policy-blind final → ESCALATION_REQUIRED
+   step  2 SEND_PRIMARY         gate → SEND_PRIMARY         network NOT_SENT · health NOT_YET_SENT · reviewer objection p=0.0
+           critic: all answers accepted · tools transport_ledger
+           coordinator ESCALATE_HUMAN / None · rule check none
+   step  4 RECORD_DOCUMENTATION gate → RECORD_DOCUMENTATION network DELIVERED_RECEIPT · health COMMUNICATED · reviewer objection p=0.0
+           critic: all answers accepted
+           coordinator PROCEED / NONE · rule check none
+   step  7 SEND_PRIMARY         gate → NO_ACTION            network ACCEPTED_ONLY · health AWAITING_ACK · reviewer objection p=0.0
+           critic: network disputed (claims a delivery receipt, but no attempt for the current revision has one); health corrected (claims the result was communicated, but no one acknowledged the current revision)
+           coordinator ESCALATE_HUMAN / DELIVERY_WITHOUT_COMMUNICATION · rule check none  ⚠ coordinator disagrees with the rule check
+   step  9 SEND_PRIMARY         gate → SEND_PRIMARY         network ACCEPTED_ONLY · health AWAITING_ACK · reviewer objection p=0.0
+           critic: network disputed (claims a delivery receipt, but no attempt for the current revision has one); health corrected (claims the result was communicated, but no one acknowledged the current revision)
+           coordinator ESCALATE_HUMAN / DELIVERY_WITHOUT_COMMUNICATION · rule check none  ⚠ coordinator disagrees with the rule check
+   step 11 ESCALATE_HUMAN       gate → NO_ACTION            network DELIVERED_RECEIPT · health COMMUNICATED · reviewer objection p=0.0
+           critic: all answers accepted
+           coordinator PROCEED / NONE · rule check none
+   audit 84 entries, hash chain valid=True
+
+── SC-04 [controversial] A generic walk-in rule retrieved for a genetic result  (S4-genetic-scope-exclusion)
+   The generic walk-in rule is retrieved for a genetic result. Both baselines message the patient directly; the scope gate refuses and escalates.
+   FINAL RESULT_FINALIZED                 VERDICT VIOLATION              ✓ expected RESULT_FINALIZED
+   policy-blind final → DELIVERY_CONFIRMED
+   step  2 SEND_PRIMARY         gate → SEND_PRIMARY         network NOT_SENT · health DIRECT_NOT_PERMITTED · reviewer objection p=0.0
+           critic: network upheld; reviewer upheld · tools transport_ledger
+           coordinator ESCALATE_HUMAN / REVIEWER_OBJECTS · rule check ['SCOPE_CONFLICT']  ⚠ coordinator disagrees with the rule check
+   step  3 SEND_PRIMARY         gate → SEND_PRIMARY         network NOT_SENT · health DIRECT_NOT_PERMITTED · reviewer objection p=0.0
+           critic: all answers accepted · tools transport_ledger
+           coordinator ESCALATE_HUMAN / None · rule check ['SCOPE_CONFLICT']
+   audit 25 entries, hash chain valid=True
+
+── SC-05 [failure] Gateway accepts the SMS; no delivery receipt ever arrives  (S8-accepted-never-delivered)
+   The gateway accepts the SMS and nothing else ever happens. The policy-blind baseline records delivery; ResultRelay escalates to a person after the configured window.
+   FINAL ESCALATION_REQUIRED              VERDICT INSUFFICIENT_EVIDENCE  ✓ expected ESCALATION_REQUIRED
+   policy-blind final → DELIVERY_CONFIRMED
+   step  2 SEND_PRIMARY         gate → SEND_PRIMARY         network NOT_SENT · health NOT_YET_SENT · reviewer objection p=0.0
+           critic: network upheld; health upheld; reviewer upheld · tools transport_ledger
+           coordinator ESCALATE_HUMAN / SCOPE_CONFLICT · rule check none  ⚠ coordinator disagrees with the rule check
+   step  3 RECONCILE_ATTEMPT    gate → RECONCILE_ATTEMPT    network ACCEPTED_ONLY · health AWAITING_ACK · reviewer objection p=0.0
+           critic: all answers accepted · tools transport_ledger
+           coordinator PROCEED / NONE · rule check none
+   step  4 ESCALATE_HUMAN       gate → ESCALATE_HUMAN       network ACCEPTED_ONLY · health AWAITING_ACK · reviewer objection p=0.0
+           critic: health corrected (claims the result was communicated, but no one acknowledged the current revision) · tools transport_ledger
+           coordinator ESCALATE_HUMAN / DELIVERY_WITHOUT_COMMUNICATION · rule check none  ⚠ coordinator disagrees with the rule check
+   audit 41 entries, hash chain valid=True
+
+council: 16 decision points, 48 agent answers, 9 tool calls; critic flagged 15 → 5 corrected, 8 upheld, 2 disputed; coordinator matched the rule check 5/11; 11 supervisor-review requests; 0 unavailable
+5/5 matched expected

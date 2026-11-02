@@ -1,0 +1,107 @@
+{
+ "provider": "mistral:ministral-14b-2512",
+ "state": {
+  "you_speak_for": "the telecom side (TDRA, the Telecommunications and Digital Government Regulatory Authority)",
+  "case": {
+   "case_scope": "WALK_IN",
+   "jurisdiction": "AE-DU",
+   "state_before_this_step": "CLINICAL_ACKNOWLEDGMENT_CONFIRMED",
+   "this_step_event": "system.action (SYSTEM)",
+   "current_result_revision": "SYN-CASE-002-R1",
+   "recipient_route": "PATIENT",
+   "attempts": [
+    {
+     "channel": "SMS-PATIENT",
+     "revision": "SYN-CASE-002-R1",
+     "provider_accepted": true,
+     "delivery_receipt": true,
+     "outcome": "DELIVERED",
+     "failed": false
+    }
+   ],
+   "acknowledgments": [
+    {
+     "revision": "SYN-CASE-002-R1",
+     "role": "PATIENT",
+     "identity_verified": true
+    }
+   ],
+   "minutes_elapsed": 13.0,
+   "configured_ack_window_minutes": 60,
+   "approved_fallback_procedure": true
+  },
+  "step": {
+   "action_under_review": "RECORD_DOCUMENTATION"
+  },
+  "evidence": [
+   {
+    "chunk_id": "U8-1-23-delivery-definition",
+    "section": "1-23 (Definitions)",
+    "text": "Delivery of Marketing Text Messages means the stage that follows the Licensee's Reception of Marketing Text Messages from the MSC and where the Licensee delivers the Marketing Text Messages to the relevant Mobile Customer across its Telecommunications Network."
+   },
+   {
+    "chunk_id": "U8-8-1-licensee-responsibility",
+    "section": "8-1 (Other Obligations)",
+    "text": "The Licensees are deemed responsible for the Delivery of Marketing Text Messages whether their Own or the MSCs' to a Mobile Customer."
+   },
+   {
+    "chunk_id": "U8-8-3-quiet-hours",
+    "section": "8-3 (Other Obligations)",
+    "text": "The Licensees shall not send Licensee's own or the MSC's Marketing Text Messages to Mobile Customers between 9pm and 7am."
+   },
+   {
+    "chunk_id": "U8-3-scope",
+    "section": "3-1, 3-2 (Scope)",
+    "text": "This Regulatory Policy shall be applied to all text messages with a UAE link. 3-2 This Regulatory Policy sets out in general terms the rules which will apply to Unsolicited Marketing Text Messages having a UAE Link."
+   }
+  ]
+ },
+ "questions": {
+  "delivery_status": {
+   "type": "choice",
+   "criteria": {
+    "DELIVERED_RECEIPT": "The network returned a delivery receipt for the current result revision.",
+    "ACCEPTED_ONLY": "The provider accepted a message but no delivery receipt exists.",
+    "OUTCOME_UNKNOWN": "An attempt timed out or its outcome is unknown and not yet reconciled.",
+    "FAILED": "The provider reported that delivery failed.",
+    "NOT_SENT": "No message has been sent for the current result revision."
+   },
+   "instructions": "From `case.attempts` and any tool result: what does the transport evidence show for the current revision? Provider acceptance is not delivery."
+  },
+  "clause": {
+   "type": "choice",
+   "criteria": {
+    "U8-1-23-delivery-definition": "1-23 (Definitions): Delivery of Marketing Text Messages means the stage that follows the Licensee's Reception of Marketing Text Messages from the MSC and where the Licensee delivers the Marketing Text Messages to the rel",
+    "U8-8-1-licensee-responsibility": "8-1 (Other Obligations): The Licensees are deemed responsible for the Delivery of Marketing Text Messages whether their Own or the MSCs' to a Mobile Customer.",
+    "U8-8-3-quiet-hours": "8-3 (Other Obligations): The Licensees shall not send Licensee's own or the MSC's Marketing Text Messages to Mobile Customers between 9pm and 7am.",
+    "U8-3-scope": "3-1, 3-2 (Scope): This Regulatory Policy shall be applied to all text messages with a UAE link. 3-2 This Regulatory Policy sets out in general terms the rules which will apply to Unsolicited Marketing Text Messages hav",
+    "NONE": "None of the shown clauses bears on this step."
+   },
+   "instructions": "Which shown clause did you rely on? Choose NONE only if no shown clause bears on this step."
+  },
+  "tool_request": {
+   "type": "choice",
+   "criteria": {
+    "NONE": "No tool needed.",
+    "transport_ledger": "Read the provider ledger entries for this case."
+   },
+   "instructions": "Do you need one read-only tool before your answer is final? If any attempt in `case.attempts` has no delivery receipt, or its outcome is not DELIVERED, read the transport ledger before your answer is final."
+  }
+ },
+ "response": {
+  "answers": {
+   "delivery_status": {
+    "choice": "DELIVERED_RECEIPT",
+    "confidence": 1.0
+   },
+   "clause": {
+    "choice": "U8-1-23-delivery-definition",
+    "confidence": 1.0
+   },
+   "tool_request": {
+    "choice": "NONE",
+    "confidence": 1.0
+   }
+  }
+ }
+}

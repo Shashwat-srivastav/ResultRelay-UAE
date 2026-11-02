@@ -131,3 +131,28 @@ def test_an_agent_that_keeps_contradicting_the_record_is_disputed_and_escalated(
     assert d["messages"]["health"]["status"] == "DISPUTED"
     assert d["critique_summary"]["disputed"] == ["health"]
     assert d["escalate"] is True
+
+
+def test_dotenv_drops_inline_comments_and_keeps_quoted_values(tmp_path, monkeypatch):
+    from app.multiagent.providers import load_dotenv
+
+    f = tmp_path / ".env"
+    f.write_text('A_KEY=abc123          # a comment\nB_KEY="x # not a comment"\nC_KEY=\n', encoding="utf-8")
+    for k in ("A_KEY", "B_KEY", "C_KEY"):
+        monkeypatch.delenv(k, raising=False)
+    load_dotenv(f)
+    import os
+    assert os.environ["A_KEY"] == "abc123" and os.environ["B_KEY"] == "x # not a comment" and "C_KEY" not in os.environ
+
+
+def test_a_role_can_run_on_a_different_model_family(monkeypatch):
+    from app.multiagent.council import configured_council
+
+    monkeypatch.setenv("RESULTRELAY_AGENT_PROVIDER", "mistral")
+    monkeypatch.setenv("RESULTRELAY_AGENT_MODEL", "ministral-14b-2512")
+    monkeypatch.setenv("RESULTRELAY_CRITIC_PROVIDER", "jev")
+    monkeypatch.delenv("RESULTRELAY_CRITIC_MODEL", raising=False)
+    c = configured_council()
+    assert c.providers["network"].label == "mistral:ministral-14b-2512"
+    assert c.providers["critic"].label == "jev:jev-latest"
+    assert c.providers["coordinator"].label == "mistral:ministral-14b-2512"

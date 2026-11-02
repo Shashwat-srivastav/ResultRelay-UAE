@@ -25,8 +25,14 @@ sys.path.insert(0, str(ROOT))
 from app.multiagent.providers import load_dotenv  # noqa: E402
 
 load_dotenv()
-if "--no-agents" not in sys.argv:
-    os.environ.setdefault("RESULTRELAY_AGENT_PROVIDER", "replay")
+if "--no-agents" not in sys.argv and not os.environ.get("RESULTRELAY_AGENT_PROVIDER"):
+    # Offline default: replay the recorded run of the recommended allocation — mandate agents on
+    # Mistral ministral-14b, critic and coordinator on Jev (a different model family checks the agents).
+    os.environ["RESULTRELAY_AGENT_PROVIDER"] = "replay"
+    os.environ.setdefault("RESULTRELAY_AGENT_REPLAY_FROM", "mistral")
+    for role in ("CRITIC", "COORDINATOR"):
+        os.environ.setdefault(f"RESULTRELAY_{role}_PROVIDER", "replay")
+        os.environ.setdefault(f"RESULTRELAY_{role}_REPLAY_FROM", "jev")
 
 from app.orchestration.engine import load_scenario, run_scenario  # noqa: E402
 
@@ -57,8 +63,10 @@ def _g(m: dict, role: str, key: str, field: str):
 def main(argv: list[str]) -> int:
     picks = {int(a) for a in argv if a.isdigit()}
     print("\nSYNTHETIC DATA — hackathon exercise only. Not a clinical service or a compliance determination.")
-    print(f"agents: {os.environ.get('RESULTRELAY_AGENT_PROVIDER', 'off')}"
-          f"{' / ' + os.environ['RESULTRELAY_AGENT_MODEL'] if os.environ.get('RESULTRELAY_AGENT_MODEL') else ''}\n")
+    from app.multiagent.providers import ROLES, configured
+
+    roles = {r: configured(r) for r in ROLES} if "--no-agents" not in sys.argv else {}
+    print("council: " + (" · ".join(f"{r} {p.label}" for r, p in roles.items() if p) or "off") + "\n")
     matched, out = 0, []
     tot = {"decision_points": 0, "answers": 0, "flagged": 0, "corrected": 0, "upheld": 0, "disputed": 0,
            "tool_calls": 0, "coordinator_checked": 0, "coordinator_matches_rules": 0, "escalations": 0, "unavailable": 0}

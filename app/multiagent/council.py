@@ -151,8 +151,13 @@ def rule_conflicts(msgs: dict[str, dict], action: str) -> list[str]:
 
 
 class Council:
-    def __init__(self, provider: Provider):
-        self.provider = provider
+    def __init__(self, provider: Provider | dict[str, Provider]):
+        # One provider for every role, or a role -> provider map (e.g. agents on Mistral, critic on Jev).
+        self.providers = provider if isinstance(provider, dict) else {r: provider for r in
+                                                                       ("network", "health", "reviewer", "critic", "coordinator")}
+
+    def _p(self, role: str) -> Provider:
+        return self.providers[role]
 
     # -- tools (read-only) ------------------------------------------------------------------------
     def _search(self, role: str, query: str, jurisdiction: str, top_k: int = 4) -> list[dict]:
@@ -194,7 +199,7 @@ class Council:
             state["instruction"] = ("A critic reviewed your previous answer. Where the feedback is right, correct your "
                                     "answer; where it is wrong, keep your answer. Judge only from `case` and `evidence`.")
         try:
-            ans, bad = self.provider.ask(state, _questions(role, chunks, feedback is None), data_class=data_class)
+            ans, bad = self._p(role).ask(state, _questions(role, chunks, feedback is None), data_class=data_class)
             tool = ans.get("tool_request", {}).get("choice", "NONE") if feedback is None else "NONE"
             if tool != "NONE" and tool in MANDATES[role]["tools"]:
                 tr = self._tool(tool, role, rt, str(case.get("this_step_event", "")))
@@ -202,7 +207,7 @@ class Council:
                                    "result_size": len(tr["result"]) if isinstance(tr["result"], list) else 1})
                 chunks = chunks + [c for c in tr.pop("chunks", []) if c["chunk_id"] not in {x["chunk_id"] for x in chunks}]
                 state = {**state, "evidence": _brief(chunks), "tool_result": tr}
-                ans, bad = self.provider.ask(state, _questions(role, chunks, False), data_class=data_class)
+                ans, bad = self._p(role).ask(state, _questions(role, chunks, False), data_class=data_class)
             return {"status": "ANSWERED" if not bad else "PARTIAL", "answers": ans, "invalid": bad,
                     "evidence": [c["chunk_id"] for c in chunks], "tool": tool, "_chunks": chunks}
         except PermissionError as exc:
@@ -233,7 +238,7 @@ class Council:
                 f"What, if anything, is wrong with agent `{r}`'s answer?"}
         state = {"case": case, "step": {"action_under_review": action}, "agent_answers": board}
         try:
-            ans, bad = self.provider.ask(state, q, data_class=data_class)
+            ans, bad = self._p("critic").ask(state, q, data_class=data_class)
             return {"status": "ANSWERED" if not bad else "PARTIAL", "answers": ans, "invalid": bad}
         except PermissionError as exc:
             return {"status": "REFUSED_RESIDENCY", "reason": str(exc)[:200]}
@@ -306,7 +311,7 @@ class Council:
                  "conflict": {"type": "choice", "criteria": CONFLICTS, "instructions":
                      "Which conflict between the agents' trusted answers, if any, do you see?"}}
             try:
-                ans, bad = self.provider.ask(state, q, data_class=data_class)
+                ans, bad = self._p("coordinator").ask(state, q, data_class=data_class)
                 coord = {"status": "ANSWERED" if not bad else "PARTIAL", "answers": ans, "invalid": bad}
             except PermissionError as exc:
                 coord = {"status": "REFUSED_RESIDENCY", "reason": str(exc)[:200]}
@@ -317,7 +322,7 @@ class Council:
         for m in msgs.values():
             m.pop("_chunks", None)
         return {
-            "provider": self.provider.label, "action_under_review": action,
+            "provider": {r: p.label for r, p in self.providers.items()}, "action_under_review": action,
             "messages": msgs, "tool_calls": tool_calls, "critic": critic, "reviews": reviews,
             "critique_summary": {"flagged": sum(rv["flagged"] for rv in reviews.values()), "revisions": revisions,
                                  "corrected": sum(rv.get("outcome") == "CORRECTED" for rv in reviews.values()),
@@ -378,10 +383,12 @@ def fact_check(role: str, answers: dict[str, Any], case: dict[str, Any], action:
 
 
 def configured_council() -> Council | None:
-    from app.multiagent.providers import configured
+    from app.multiagent.providers import ROLES, configured
 
-    p = configured()
-    return Council(p) if p else None
+    providers = {r: configured(r) for r in ROLES}
+    if not all(providers.values()):
+        return None
+    return Council(providers)
 
 
 def enabled_for(spec: dict[str, Any]) -> bool:
