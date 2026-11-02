@@ -480,5 +480,3 @@ tests/        257 tests
 
 [MIT](LICENSE). Source documents belong to their issuing bodies and are not redistributed; quotations are
 minimal and attributed with section and page.
-#   R e s u l t R e l a y - U A E  
- 
