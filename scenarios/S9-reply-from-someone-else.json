@@ -120,5 +120,20 @@
   ],
   "research_questions": [
     "What evidence of identity does an SMS reply carry, and who may acknowledge a critical result on a patient's behalf (gap GR-09)?"
-  ]
+  ],
+  "provenance": {
+    "note": "Synthetic adaptation of a published patient-safety incident or clinical-workflow study; the source is cited as provenance, not reproduced. The scenario's facts, names and timings are invented.",
+    "match": "very strong",
+    "failure_mode": "a relative receives or answers for the patient; consent and identity decide, not the phone number",
+    "sources": [
+      {
+        "title": "Medical Protection Asia Casebook, July 2017, Case 2: a relative asks for a patient's blood-test result",
+        "url": "https://www.medicalprotection.org/docs/medicalprotectioninternationallibraries/pdfs/casebook-pdfs/asia-casebook-pdfs/july-2017.pdf"
+      },
+      {
+        "title": "Medical Protection: Digital dilemmas - communicating with patients by text (results received by a relative)",
+        "url": "https://www.medicalprotection.org/uk/articles/digital-dilemmas-communicating-with-patients-by-text"
+      }
+    ]
+  }
 }

@@ -108,5 +108,20 @@
   "research_questions": [
     "Which instrument assigns responsibility for a transactional clinical message lost after gateway acceptance (gap GR-15)?",
     "Does a telecom delivery receipt satisfy the DHA ST-28 §11.1.3 communication record?"
-  ]
+  ],
+  "provenance": {
+    "note": "Synthetic adaptation of a published patient-safety incident or clinical-workflow study; the source is cited as provenance, not reproduced. The scenario's facts, names and timings are invented.",
+    "match": "strong",
+    "failure_mode": "outgoing notification counted as done; acknowledgment by a person absent",
+    "sources": [
+      {
+        "title": "BMJ Open Quality (2021): closed-loop critical-result communication with team smartphones (PMC8442100)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8442100/"
+      },
+      {
+        "title": "AHRQ PSNet WebM&M (2017): Delayed Recognition of a Positive Blood Culture",
+        "url": "https://psnet.ahrq.gov/web-mm/delayed-recognition-positive-blood-culture"
+      }
+    ]
+  }
 }

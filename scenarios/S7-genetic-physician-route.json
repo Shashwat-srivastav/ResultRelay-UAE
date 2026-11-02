@@ -95,5 +95,20 @@
   "research_questions": [
     "When a clause names the referring physician as recipient, what proves the physician received it?",
     "Is a physician addressee sufficient for a genetic result whose ordering physician is unknown?"
-  ]
+  ],
+  "provenance": {
+    "note": "Synthetic adaptation of a published patient-safety incident or clinical-workflow study; the source is cited as provenance, not reproduced. The scenario's facts, names and timings are invented.",
+    "match": "related, not exact",
+    "failure_mode": "who receives a genetic result is planned in advance, not decided by the channel",
+    "sources": [
+      {
+        "title": "Illustrative case studies in the return of exome and genome sequencing results (2015, PMC4607287)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4607287/"
+      },
+      {
+        "title": "Adverse events in genetic testing: the fourth case series (2019, PubMed 31335384)",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/31335384/"
+      }
+    ]
+  }
 }

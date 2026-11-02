@@ -22,34 +22,125 @@
   },
   "network": {
     "channels": {
-      "SMS-PATIENT": {"kind": "SMS", "endpoint_class": "patient_mobile", "primary": true, "status": "DOWN", "note": "simulated gateway outage"},
-      "PORTAL-PATIENT": {"kind": "PORTAL", "endpoint_class": "patient_portal", "primary": false, "status": "UP"},
-      "PHONE-CALL": {"kind": "VOICE", "endpoint_class": "patient_mobile", "primary": false, "status": "UP"}
+      "SMS-PATIENT": {
+        "kind": "SMS",
+        "endpoint_class": "patient_mobile",
+        "primary": true,
+        "status": "DOWN",
+        "note": "simulated gateway outage"
+      },
+      "PORTAL-PATIENT": {
+        "kind": "PORTAL",
+        "endpoint_class": "patient_portal",
+        "primary": false,
+        "status": "UP"
+      },
+      "PHONE-CALL": {
+        "kind": "VOICE",
+        "endpoint_class": "patient_mobile",
+        "primary": false,
+        "status": "UP"
+      }
     },
     "attempts": [
-      {"outcome": "TIMEOUT", "timeout_after_minutes": 2.0},
-      {"outcome": "DELIVERED", "accept_after_minutes": 0.4, "deliver_after_minutes": 1.5}
+      {
+        "outcome": "TIMEOUT",
+        "timeout_after_minutes": 2.0
+      },
+      {
+        "outcome": "DELIVERED",
+        "accept_after_minutes": 0.4,
+        "deliver_after_minutes": 1.5
+      }
     ],
-    "reconciliations": [{"attempt_id": null, "result": "FAILED", "note": "primary gateway rejected the request"}]
+    "reconciliations": [
+      {
+        "attempt_id": null,
+        "result": "FAILED",
+        "note": "primary gateway rejected the request"
+      }
+    ]
   },
   "steps": [
-    {"step": 1, "at_minutes": 0, "kind": "event", "type": "result.finalized", "actor": "LAB",
-     "summary": "Revision 1 finalized while the primary gateway is down",
-     "payload": {"result_revision_id": "SYN-CASE-004-R1"},
-     "visible_to": ["lab_workflow", "policy_applicability", "network_delivery", "escalation_coordinator"]},
-    {"step": 2, "at_minutes": 1, "kind": "action", "type": "system.action", "actor": "SYSTEM",
-     "summary": "Attempt the primary channel", "channel": "SMS-PATIENT"},
-    {"step": 3, "at_minutes": 30, "kind": "action", "type": "system.action", "actor": "SYSTEM",
-     "summary": "Reconcile the failed attempt"},
-    {"step": 4, "at_minutes": 45, "kind": "action", "type": "system.action", "actor": "SYSTEM",
-     "summary": "Use the approved fallback channel", "channel": "PORTAL-PATIENT"},
-    {"step": 5, "at_minutes": 60, "kind": "event", "type": "clinical.acknowledgment", "actor": "HUMAN",
-     "summary": "Patient acknowledges the message received on the portal",
-     "payload": {"result_revision_id": "SYN-CASE-004-R1", "role": "PATIENT", "actor": "SYN-PATIENT-004", "channel": "PORTAL-PATIENT", "identity_verified": true}},
-    {"step": 6, "at_minutes": 61, "kind": "action", "type": "system.action", "actor": "SYSTEM",
-     "summary": "Record the communication, citing the authorising procedure"}
+    {
+      "step": 1,
+      "at_minutes": 0,
+      "kind": "event",
+      "type": "result.finalized",
+      "actor": "LAB",
+      "summary": "Revision 1 finalized while the primary gateway is down",
+      "payload": {
+        "result_revision_id": "SYN-CASE-004-R1"
+      },
+      "visible_to": [
+        "lab_workflow",
+        "policy_applicability",
+        "network_delivery",
+        "escalation_coordinator"
+      ]
+    },
+    {
+      "step": 2,
+      "at_minutes": 1,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Attempt the primary channel",
+      "channel": "SMS-PATIENT"
+    },
+    {
+      "step": 3,
+      "at_minutes": 30,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Reconcile the failed attempt"
+    },
+    {
+      "step": 4,
+      "at_minutes": 45,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Use the approved fallback channel",
+      "channel": "PORTAL-PATIENT"
+    },
+    {
+      "step": 5,
+      "at_minutes": 60,
+      "kind": "event",
+      "type": "clinical.acknowledgment",
+      "actor": "HUMAN",
+      "summary": "Patient acknowledges the message received on the portal",
+      "payload": {
+        "result_revision_id": "SYN-CASE-004-R1",
+        "role": "PATIENT",
+        "actor": "SYN-PATIENT-004",
+        "channel": "PORTAL-PATIENT",
+        "identity_verified": true
+      }
+    },
+    {
+      "step": 6,
+      "at_minutes": 61,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Record the communication, citing the authorising procedure"
+    }
   ],
   "research_questions": [
     "Which body inside a facility can approve a fallback channel, and what must the record contain?"
-  ]
+  ],
+  "provenance": {
+    "note": "Synthetic adaptation of a published patient-safety incident or clinical-workflow study; the source is cited as provenance, not reproduced. The scenario's facts, names and timings are invented.",
+    "match": "close",
+    "failure_mode": "an approved escalation path (on-call pathologist) reaches a responsible clinician",
+    "sources": [
+      {
+        "title": "American Journal of Clinical Pathology (2011): Pathology consultation on reporting of critical values (PMC7065418)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7065418/"
+      }
+    ]
+  }
 }

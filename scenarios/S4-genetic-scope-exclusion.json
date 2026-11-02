@@ -17,25 +17,80 @@
   },
   "network": {
     "channels": {
-      "SMS-PATIENT": {"kind": "SMS", "endpoint_class": "patient_mobile", "primary": true, "status": "UP"},
-      "PHONE-CALL": {"kind": "VOICE", "endpoint_class": "patient_mobile", "primary": false, "status": "UP"}
+      "SMS-PATIENT": {
+        "kind": "SMS",
+        "endpoint_class": "patient_mobile",
+        "primary": true,
+        "status": "UP"
+      },
+      "PHONE-CALL": {
+        "kind": "VOICE",
+        "endpoint_class": "patient_mobile",
+        "primary": false,
+        "status": "UP"
+      }
     },
-    "attempts": [{"outcome": "DELIVERED", "accept_after_minutes": 0.2, "deliver_after_minutes": 1.0}],
+    "attempts": [
+      {
+        "outcome": "DELIVERED",
+        "accept_after_minutes": 0.2,
+        "deliver_after_minutes": 1.0
+      }
+    ],
     "reconciliations": []
   },
   "steps": [
-    {"step": 1, "at_minutes": 0, "kind": "event", "type": "result.finalized", "actor": "LAB",
-     "summary": "A synthetic genetic result is finalized and flagged critical by a separate process",
-     "payload": {"result_revision_id": "SYN-CASE-005-R1"},
-     "visible_to": ["lab_workflow", "policy_applicability", "escalation_coordinator"]},
-    {"step": 2, "at_minutes": 2, "kind": "action", "type": "system.action", "actor": "SYSTEM",
-     "summary": "The system proposes to notify the patient directly under the generic walk-in clause",
-     "channel": "SMS-PATIENT"},
-    {"step": 3, "at_minutes": 15, "kind": "action", "type": "system.action", "actor": "SYSTEM",
-     "summary": "Escalate for a route that complies with the genetic-result provision"}
+    {
+      "step": 1,
+      "at_minutes": 0,
+      "kind": "event",
+      "type": "result.finalized",
+      "actor": "LAB",
+      "summary": "A synthetic genetic result is finalized and flagged critical by a separate process",
+      "payload": {
+        "result_revision_id": "SYN-CASE-005-R1"
+      },
+      "visible_to": [
+        "lab_workflow",
+        "policy_applicability",
+        "escalation_coordinator"
+      ]
+    },
+    {
+      "step": 2,
+      "at_minutes": 2,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "The system proposes to notify the patient directly under the generic walk-in clause",
+      "channel": "SMS-PATIENT"
+    },
+    {
+      "step": 3,
+      "at_minutes": 15,
+      "kind": "action",
+      "type": "system.action",
+      "actor": "SYSTEM",
+      "summary": "Escalate for a route that complies with the genetic-result provision"
+    }
   ],
   "research_questions": [
     "What must a laboratory do when the ordering physician is unknown for a genetic result?",
     "Is there a Dubai-scoped requirement for documenting that a genetic result was routed to a physician?"
-  ]
+  ],
+  "provenance": {
+    "note": "Synthetic adaptation of a published patient-safety incident or clinical-workflow study; the source is cited as provenance, not reproduced. The scenario's facts, names and timings are invented.",
+    "match": "related, not exact",
+    "failure_mode": "genetic results need consent-aware routing and counselling",
+    "sources": [
+      {
+        "title": "Adverse events in genetic testing: the fourth case series (2019, PubMed 31335384)",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/31335384/"
+      },
+      {
+        "title": "Illustrative case studies in the return of exome and genome sequencing results (2015, PMC4607287)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4607287/"
+      }
+    ]
+  }
 }

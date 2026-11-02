@@ -184,6 +184,28 @@ token from an independent Time-Stamping Authority (FreeTSA by default; only the 
 example in `evaluation/timestamps/`. The console's decision trace shows the council at each step: each
 agent's answers and rationale, assurance outcomes, and the orchestrator's decision.
 
+## Where the scenarios come from
+
+The scenarios are **synthetic adaptations of published patient-safety incidents** and clinical-workflow studies:
+the failure mode is taken from the published case, the facts, names and timings are invented, and the
+source is cited as provenance in each scenario file (`"provenance"`), not reproduced.
+
+| Scenario | Failure mode in the published case | Match | Source |
+| :--- | :--- | :--- | :--- |
+| S1 | notification reached a device or intermediary; the responsible person never acknowledged | strong | [AHRQ PSNet WebM&M (2017)](https://psnet.ahrq.gov/web-mm/delayed-recognition-positive-blood-culture) · [BMJ Open Quality (2021)](https://pmc.ncbi.nlm.nih.gov/articles/PMC8442100/) |
+| S8 | outgoing notification counted as done; acknowledgment by a person absent | strong | [BMJ Open Quality (2021)](https://pmc.ncbi.nlm.nih.gov/articles/PMC8442100/) · [AHRQ PSNet WebM&M (2017)](https://psnet.ahrq.gov/web-mm/delayed-recognition-positive-blood-culture) |
+| S9 | a relative receives or answers for the patient; consent and identity decide, not the phone number | very strong | [Medical Protection Asia Casebook, July 2017, Case 2](https://www.medicalprotection.org/docs/medicalprotectioninternationallibraries/pdfs/casebook-pdfs/asia-casebook-pdfs/july-2017.pdf) · [Medical Protection](https://www.medicalprotection.org/uk/articles/digital-dilemmas-communicating-with-patients-by-text) |
+| S2 | an amended result reached a unit, not the clinician who had acted on the first version | almost exact | [AHRQ PSNet WebM&M (2012)](https://psnet.ahrq.gov/web-mm/amended-lab-results-communication-slip) |
+| S5 | an acknowledgment that belongs to an earlier version must not close the amended one | related | [AHRQ PSNet WebM&M (2012)](https://psnet.ahrq.gov/web-mm/amended-lab-results-communication-slip) |
+| S3a | the intended recipient could not be reached and no escalation path was followed | almost exact | [CRICO / Harvard Risk Management Foundation (2023)](https://rmfcd1-prod.rmf.harvard.edu/Risk-Prevention-and-Education/Case-Study-Catalog-Page/Case-Study/2023/Discharged-Patient-with-Pending-Test-Results) · [American Journal of Clinical Pathology (2011)](https://pmc.ncbi.nlm.nih.gov/articles/PMC7065418/) |
+| S3b | an approved escalation path (on-call pathologist) reaches a responsible clinician | close | [American Journal of Clinical Pathology (2011)](https://pmc.ncbi.nlm.nih.gov/articles/PMC7065418/) |
+| S4 | genetic results need consent-aware routing and counselling | related, not exact | [Adverse events in genetic testing](https://pubmed.ncbi.nlm.nih.gov/31335384/) · [Illustrative case studies in the return of exome and genome sequencing results (2015, PMC4607287)](https://pmc.ncbi.nlm.nih.gov/articles/PMC4607287/) |
+| S7 | who receives a genetic result is planned in advance, not decided by the channel | related, not exact | [Illustrative case studies in the return of exome and genome sequencing results (2015, PMC4607287)](https://pmc.ncbi.nlm.nih.gov/articles/PMC4607287/) · [Adverse events in genetic testing](https://pubmed.ncbi.nlm.nih.gov/31335384/) |
+
+S6 (a clause from another jurisdiction) has no incident source: it tests the applicability filter. The
+genetic-routing sources show that genetic results need consent-aware, planned routing; they do not establish
+that every genetic result must go to a particular specialist — that routing comes from DHA ST-28 §13.4.
+
 ## Evaluation — `python scripts/run_evaluation.py`
 
 10 scenarios × 12 configurations = 120 runs. *Fully safe* = every must-hold assertion passed **and** the case
@@ -244,13 +266,13 @@ transcriptions — are listed with official links and the steps to add them in
 
 | Gap | Type | Global comparison |
 | :--- | :--- | :--- |
-| **GR-15** TDRA's policy defines "delivery" only for marketing SMS, as network delivery to the subscriber (§1-23, §8-1); DHA ST-28 §11.1.3 needs a record of communication. Nothing joins them, or assigns responsibility for an accepted-but-lost clinical SMS | Coordination (health ↔ telecom) | ETSI TS 123 040 §9.2.3.15: SMS status stops at "received by the SME" (a handset); RCPath G158 §5 (UK): feedback on "received, read, understood" |
+| **GR-15** TDRA's policy defines "delivery" only for marketing SMS, as network delivery to the subscriber (§1-23, §8-1); DHA ST-28 §11.1.3 needs a record of communication. Nothing joins them, or assigns responsibility for an accepted-but-lost clinical SMS | Coordination (health ↔ telecom) | ETSI TS 123 040 §9.2.3.15: SMS status stops at "received by the SME" (the receiving entity: a handset or application, not a person); RCPath G158 §5 (UK): feedback on "received, read, understood" |
 | **GR-16** DHA ST-28 §11.1 provides for walk-in results to the patient, with no acknowledgment standard for a lay recipient of a critical value | Conflict between objectives | RCPath G158 §8: critical results "only communicated with the requesting clinical team" |
 | **GR-11** Is the communication record an audit log (NABIDH §3.2.11: 3 years) or health data (Law 2/2019 Art. 20: 25 years)? | Standards ambiguity | RCPath G158 §7 names the record's fields, leaves retention local |
-| **GR-17** DHA PP-09 requires agreed accountability, independent validation and AI-incident reporting, but names no default owner, validator or deadline; its revision date (1 July 2026) has passed | AI governance | EU AI Act Art. 26(2) names the overseer; Art. 73 sets a 15-day incident deadline |
+| **GR-17** DHA PP-09 requires agreed accountability, independent validation and AI-incident reporting, but names no default owner, validator or deadline; its revision date (1 July 2026) has passed | AI governance | EU AI Act Art. 26(2) requires deployers to assign oversight to competent persons; Art. 73(2) sets a 15-day serious-incident deadline |
 | **GR-03** No retrieved source sets an acknowledgment clock for walk-in results | Unclear responsibility | Joint Commission NPSG.02.03.01 leaves the time frame to the organisation |
 | **GR-18** No route for a clinical SMS to show it is not marketing (quiet hours 9pm–7am, §8-3) | Implementation | none retrieved |
-| **GR-19** The exceptions to the UAE ban on processing health data abroad sit in Ministerial Resolution 51/2021, which no official portal served | AI governance / residency | Saudi PDPL Art. 29: transfer purposes set in the law itself (GCC) |
+| **GR-19** The exceptions to the UAE ban on processing health data abroad sit in Ministerial Resolution 51/2021, which no official portal served | AI governance / residency | Saudi PDPL Art. 29: lists transfer purposes in the law and delegates the rest, and the adequacy test, to Regulations (GCC) |
 
 18 entries in total; each lists the sources reviewed, what they establish, what remains unclear and the
 product control that follows. Gaps that rest on an absence say what was searched (the full corpus, 2 Nov 2026):

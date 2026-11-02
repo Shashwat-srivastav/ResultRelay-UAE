@@ -191,5 +191,16 @@
   "research_questions": [
     "Do any retrieved instruments require re-communication after a correction, and if so to whom?",
     "Is there any source that states whether a prior acknowledgment transfers to a corrected result?"
-  ]
+  ],
+  "provenance": {
+    "note": "Synthetic adaptation of a published patient-safety incident or clinical-workflow study; the source is cited as provenance, not reproduced. The scenario's facts, names and timings are invented.",
+    "match": "almost exact",
+    "failure_mode": "an amended result reached a unit, not the clinician who had acted on the first version",
+    "sources": [
+      {
+        "title": "AHRQ PSNet WebM&M (2012): Amended Lab Results - Communication Slip",
+        "url": "https://psnet.ahrq.gov/web-mm/amended-lab-results-communication-slip"
+      }
+    ]
+  }
 }
