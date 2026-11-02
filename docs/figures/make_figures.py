@@ -8,7 +8,7 @@ from the evaluation, the recorded council run or the knowledge base. Sources:
 
     evaluation/results/latest.json        fully-safe counts and final states (12 scenarios x 12 configurations)
     evaluation/demo_run.json              the recorded agent-council run (18 decision points)
-    kb/index/chunks.json                  the 96 verified quotations
+    kb/index/chunks.json                  the 96 traceable excerpts
     kb/source_register.csv                the 24 source documents
     kb/gap_register.csv                   the 18 policy / standards gaps
     kb/framework/ai_readiness_mapping.csv ITU AI Readiness 2.0, 13 dimensions

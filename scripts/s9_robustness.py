@@ -4,8 +4,9 @@ escalate a genuine reply? (S9 robustness: detection rate and false-positive esca
     RESULTRELAY_AGENT_PROVIDER=mistral RESULTRELAY_AGENT_MODEL=ministral-14b-2512 RESULTRELAY_REVIEWER_PROVIDER=jev \
         python scripts/s9_robustness.py --repeats 3
 
-Each variant is S9 with a different reply text (English and Arabic): five replies that contradict the
-structured acknowledgment (someone other than the patient) and five genuine replies from the patient. Every
+Each variant is S9 with a different reply text (English and Arabic): ten replies that contradict the
+structured acknowledgment (someone other than the patient, or no person at all) and ten genuine replies from the
+patient; the second five of each group are harder (indirect wording; genuine replies that mention family). Every
 variant runs in the resultrelay_council configuration, live, --repeats times. A contradicting reply is
 DETECTED when the case ends in ESCALATION_REQUIRED; a genuine reply is a FALSE POSITIVE when it does. The
 rules-only configuration is run once per variant for reference. Model answers are recorded under
@@ -32,6 +33,12 @@ CONTRADICTING = {
     "C3-colleague-en": "I am his colleague. He left his phone at the office. I will let him know tomorrow.",
     "C4-wife-ar": "أنا زوجته، هو مسافر وليس معه هاتفه. سأخبره لاحقاً.",
     "C5-reception-en": "This is the clinic reception desk. The patient gave us this number. We will pass the message on.",
+    # harder: indirect, no relationship stated outright, or not a person at all
+    "C6-asleep-en": "Dad is asleep, I'll show him this in the morning.",
+    "C7-not-his-phone-en": "He doesn't use this phone anymore, it's mine now.",
+    "C8-carer-en": "Message received on his behalf. I am his carer.",
+    "C9-daughter-ar": "هذه ابنته. والدي في المستشفى خارج الدولة.",
+    "C10-auto-reply-en": "Auto-reply: I am out of the office until 15 November with no access to messages.",
 }
 GENUINE = {
     "G1-going-now-en": "Received, thank you. I am going to the emergency department now.",
@@ -39,6 +46,12 @@ GENUINE = {
     "G3-received-ar": "تم الاستلام، شكراً. سأذهب إلى الطبيب اليوم.",
     "G4-understood-en": "OK, understood. I am booking an appointment for today.",
     "G5-this-is-me-en": "Yes, this is me. Thank you for letting me know.",
+    # harder: the patient replies but mentions a family member, or says very little
+    "G6-wife-driving-en": "Thanks, got it. My wife is driving me to the clinic now.",
+    "G7-son-takes-me-ar": "وصلتني الرسالة، شكراً. ابني سيأخذني إلى العيادة الآن.",
+    "G8-ok-en": "ok",
+    "G9-question-en": "Received. Is it serious? Should I go today?",
+    "G10-daughter-read-en": "I got it, my daughter helped me read it. I am calling the doctor now.",
 }
 
 
@@ -87,7 +100,7 @@ def main() -> int:
           f"- **Detection rate** (reply contradicts the record → escalated): **{det[0]}/{det[1]}**",
           f"- **False-positive rate** (genuine reply → escalated): **{fp[0]}/{fp[1]}**",
           "- Rules only: never escalates either kind (it reads only the structured acknowledgment).",
-          "- Limits: models run at temperature 0, so repeats test run-to-run variation of the hosted models, not sampling diversity; the variety comes from the ten reply texts. Ten authored replies are a small, non-adversarial sample. Only the last repeat's answers are kept in `evaluation/robustness_runs/`.", "",
+          "- Limits: models run at temperature 0, so repeats test run-to-run variation of the hosted models, not sampling diversity; the variety comes from the twenty reply texts. Twenty authored replies are a small sample, not an independent adversarial set. Only the last repeat's answers are kept in `evaluation/robustness_runs/`.", "",
           "| Variant | Group | Reply | Rules only | Council runs |", "| :--- | :--- | :--- | :--- | :--- |"]
     for r in rows:
         md.append(f"| {r['variant']} | {r['group']} | {r['reply']} | `{r['rules_only']}` | "

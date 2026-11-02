@@ -11,8 +11,9 @@ result version, and refuses another jurisdiction's rule as binding.
 
 ![Standard](https://img.shields.io/badge/ITU--T-Y.3172-0ea5e9)
 ![Data](https://img.shields.io/badge/data-100%25%20synthetic-success)
+[![CI](https://github.com/Shashwat-srivastav/ResultRelay-UAE/actions/workflows/ci.yml/badge.svg)](https://github.com/Shashwat-srivastav/ResultRelay-UAE/actions/workflows/ci.yml)
 ![Tests](https://img.shields.io/badge/tests-258%20passing-success)
-![KB](https://img.shields.io/badge/quotes-96%20verified-success)
+![KB](https://img.shields.io/badge/excerpts-96%20traceable%20(74%20official)-success)
 
 </div>
 
@@ -63,7 +64,7 @@ flowchart TB
         direction LR
         CS["<b>Case services</b><br/>revision binding<br/>transport reconciliation<br/>recipient routing"]
         AS["<b>Rule assessors</b><br/>propose the<br/>step's action"]
-        RT["<b>Evidence retrieval</b><br/>BM25 + ChromaDB<br/>jurisdiction filter<br/>verified quotes only"]
+        RT["<b>Evidence retrieval</b><br/>BM25 + ChromaDB<br/>jurisdiction filter<br/>traceable excerpts only"]
         CS --> AS --> RT
     end
 
@@ -112,7 +113,7 @@ flowchart TB
  DETERMINISTIC CASE SERVICES  revision binding · transport reconciliation · recipient routing · applicability
       │                       5 rule-based assessors propose the step's action
       ▼
- EVIDENCE RETRIEVAL  BM25 (+ ChromaDB via the ITU ingest) · jurisdiction filter · 96 verified quotations
+ EVIDENCE RETRIEVAL  BM25 (+ ChromaDB via the ITU ingest) · jurisdiction filter · 96 traceable excerpts
       │
       ├─▶ ① POLICY EVIDENCE ANALYST   (LLM, DHA lens)   obligation status · governing clause · settled? · policy gap
       ├─▶ ② INSTITUTIONAL ANALYST     (LLM, TDRA lens)  only when transport is unresolved: does any telecom
@@ -384,6 +385,12 @@ that every genetic result must go to a particular specialist — that routing co
 ended in a state its expectation allows (assertions alone had scored a case closed on the daughter's reply
 as safe).
 
+> **What the 144 runs are, and are not.** They are 144 deterministic scenario × configuration runs. Only the
+> `resultrelay_council` column involves language models, and it **replays one recorded live run** (providers
+> `replay:recorded-mistral`, `replay:recorded-jev`), so that anyone can reproduce it offline. They are **not**
+> 144 independent model experiments. Evidence about model reliability comes from the separate, live
+> [S9 robustness study](evaluation/s9_robustness.md) (below).
+
 | Configuration | Fully safe | Assertions | Provenance |
 | :--- | ---: | ---: | ---: |
 | `resultrelay_council` (rules + agent council) | **12/12** | **53/53** | 1.00 |
@@ -413,11 +420,13 @@ cannot read (S9). `ablate_no_audit_agent` and `ablate_full_context` are **contro
 outcome by construction and score 11/12 like `resultrelay`. All scenarios and expectations were written by
 the team that wrote the engine (each file says so); the council figures come from one recorded run, and S9
 was repeated live with ten reply variants (15/15 detected, 0/15 false escalations). DHA's
-AI policy (PP-09 §4.3.3) requires independent third-party validation; this system has had none.
+AI policy (PP-09 §4.3.3) requires independent third-party validation; this system has had none. A two-hour
+protocol for one outside reviewer (check the 12 expected outcomes, write held-out cases, try to fool the reply
+reader) is in [docs/independent-review.md](docs/independent-review.md).
 
 ## Knowledge base — `GET /api/kb/search?q=…&jurisdiction=AE-DU`
 
-**96 quotations from 24 documents**, each with issuing body, jurisdiction, section, printed page and a
+**96 traceable excerpts from 24 policy and standards documents**, each with issuing body, jurisdiction, section, printed page and a
 claim class; only `BINDING_REQUIREMENT` can block an action, and only sources that bind the case
 jurisdiction carry it. **74 are verified against official downloads** (PDF, eCFR, ETSI, WIPO Lex, Dubai Legal Portal); **2 against a mirror** (the PDPL's unofficial English translation) (the quote must appear on the
 declared page, or the excerpt is rejected and never indexed); **7 against third-party copies** (TDRA Mobile Spam policy; EU AI Act articles) because the official sites refuse scripted clients; **13 (Federal Law 2/2019,
@@ -435,12 +444,18 @@ SHA-256 and re-checked on load.
 <sub>Sources by layer (kb/source_register.csv); quotations by verification class and by claim class (kb/index/chunks.json).</sub>
 
 **Vector KB built with the ITU reference code — shipped in `kb/chroma`.** `python scripts/export_itu_kb.py
---ingest PATH/TO/ITUAIReadiness` writes every verified excerpt to `kb/itu_inputdocs/` in the ITU InputDocs
+--ingest PATH/TO/ITUAIReadiness` writes every excerpt to `kb/itu_inputdocs/` in the ITU InputDocs
 format and runs the ITU `ingest.py` (Ollama `nomic-embed-text`, ChromaDB, cosine), with clause id, authority,
-jurisdiction, section, page and URL as metadata. **Search is hybrid by default** (BM25 fused with the vector
+jurisdiction, section, page and URL as metadata. **The search API is hybrid by default** (BM25 fused with the vector
 ranking); it falls back to BM25 with a note when Ollama is not running. The vector store only *ranks*: text
-always comes from the verified, SHA-pinned index. The agent council retrieves with BM25 explicitly, so its
-recorded answers replay exactly on any machine.
+always comes from the checked, SHA-pinned index.
+
+**Which retrieval drives decisions.** The vector index is part of the ITU-compatible retrieval stack and
+serves the search API and the console. Everything that feeds a decision, the rule assessors and the agent
+council, uses deterministic **BM25** (`engine="bm25"` in `app/multiagent/council.py`,
+`app/agents/policy_applicability.py`, `app/agents/lab_workflow.py`), so the recorded agent answers, the demo
+and the 144-run evaluation replay exactly on any machine, with or without Ollama. No decision in the
+recorded results was driven by vector search; hybrid retrieval is available separately.
 
 On seven plain-language questions ([evaluation/retrieval_check.md](evaluation/retrieval_check.md)) the
 expected clause is in the top 5 for **hybrid 4/7, BM25 1/7**; Arabic questions are mapped to the English
@@ -484,7 +499,8 @@ python -m pip install -r requirements.txt
 python -m pytest -q                          # 258 tests (one skips unless every source text is cached)
 python run_demo.py                           # DEMO: 8 headline scenarios (SC-01…SC-08); the council replays recorded answers offline
 python scripts/run_evaluation.py             # EVALUATION: all 12 scenarios × 12 configurations = 144 runs → evaluation/report.md
-python scripts/s9_robustness.py --repeats 3  # optional, live models: 10 reply variants of S9 → evaluation/s9_robustness.md
+python scripts/s9_robustness.py --repeats 3  # optional, live models: 20 reply variants of S9 → evaluation/s9_robustness.md
+python scripts/smoke_api.py                  # API smoke test (also run by CI): S9 through the API with the council
 python -m uvicorn app.main:app --port 8000   # API + built UI on http://127.0.0.1:8000  (docs at /api/docs)
 python scripts/fetch_sources.py              # optional: download the official texts and re-verify every quote
 
@@ -506,7 +522,7 @@ data only.
 app/          gateway: agents/, multiagent/ (council, providers), advisers/ (guard, residency), orchestration/ (gate, engine),
               state_machine/, transport/, kb/ (ingest + verified retrieval), audit/, api/, static/ (built UI)
 web/          React console (CaseTimeline, Simulator, Standards & gaps, Evaluation, Audit, Decision trace)
-kb/           records/ (verified excerpts) · index/ (pinned) · framework/ (Y.3172 + Readiness mappings) · itu_inputdocs/
+kb/           records/ (checked excerpts) · index/ (pinned) · framework/ (Y.3172 + Readiness mappings) · itu_inputdocs/
 scenarios/    S1–S11 (12 files) staged event streams · expected/ (assertions)
 evaluation/   report.md · results/latest.json · agent_runs/ (recorded adviser responses)
 submission/   technical report · design brief · build scripts
