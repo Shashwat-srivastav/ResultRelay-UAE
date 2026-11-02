@@ -174,8 +174,21 @@ the case; the policy-blind baseline does too. The reviewer read the words, raise
 Said plainly: an earlier recording of this design missed S9 because one assurance rule rejected the
 objection on a consistency heuristic (the reviewer named the same action as its "alternative"); that rule
 was changed after seeing that run, so only checks against the case record can now reject an objection. The
-recording above was made after the change and caught S9 on its own. Each figure comes from a single
+recording above was made after the change and caught S9 on its own. Each figure above comes from a single
 recorded run of a non-deterministic model.
+
+**Is S9 a one-off? Repeated with ten different replies** ([evaluation/s9_robustness.md](evaluation/s9_robustness.md)).
+S9 was re-run live with five replies that contradict the structured acknowledgment (daughter, wrong number,
+colleague, wife in Arabic, clinic reception) and five genuine replies from the patient (three English, one
+Arabic, one "yes, this is me"), three live runs each (Mistral `ministral-14b-2512` analysts, Jev reviewer):
+
+| | Escalated by the council | Escalated by rules only |
+| :--- | :---: | :---: |
+| Reply contradicts the record (detection) | **15/15** | 0/15 |
+| Genuine reply from the patient (false positive) | **0/15** | 0/15 |
+
+Limits: temperature 0, so repeats measure run-to-run variation, not sampling diversity; ten authored,
+non-adversarial replies are a small sample; an independent, adversarial reply set is still needed.
 
 **One decision point, step by step** — SC-06 (scenario S9), action `RECORD_DOCUMENTATION`, as recorded in
 [evaluation/demo_run.json](evaluation/demo_run.json):
@@ -267,6 +280,13 @@ flowchart LR
 <sub>Each of the 13 ITU AI Readiness 2.0 dimensions and its status in ResultRelay, from kb/framework/ai_readiness_mapping.csv.</sub>
 
 ## The eight scenarios — `python run_demo.py`
+
+> **Demo (8) vs evaluation (12).** `run_demo.py` walks through **eight headline scenarios** (SC-01 … SC-08) in one
+> configuration, `resultrelay_council`, with a rules-only and policy-blind comparison. The **evaluation suite**
+> (`scripts/run_evaluation.py`) runs **all twelve scenario files** in **twelve configurations** (144 runs). The
+> demo set is a subset: SC-01…SC-08 = S7, S3a, S2, S4, S8, S9, S10, S11. S1 (ambiguous delivery), S3b (approved
+> fallback procedure), S5 (late-acknowledgment race) and S6 (clause from another jurisdiction) are in the
+> evaluation only.
 
 | # | Scenario | Final state | Verdict | Rules only · policy-blind |
 | :--- | :--- | :--- | :--- | :--- |
@@ -375,7 +395,8 @@ ResultRelay's rules on structured events — ResultRelay's added value there is 
 decision cites a verified clause; 1.00 vs 0.00) and jurisdiction gating. The agents add the one case rules
 cannot read (S9). `ablate_no_audit_agent` and `ablate_full_context` are **controls**: they cannot change an
 outcome by construction and score 11/12 like `resultrelay`. All scenarios and expectations were written by
-the team that wrote the engine (each file says so); the council figures come from one recorded run. DHA's
+the team that wrote the engine (each file says so); the council figures come from one recorded run, and S9
+was repeated live with ten reply variants (15/15 detected, 0/15 false escalations). DHA's
 AI policy (PP-09 §4.3.3) requires independent third-party validation; this system has had none.
 
 ## Knowledge base — `GET /api/kb/search?q=…&jurisdiction=AE-DU`
@@ -445,8 +466,9 @@ its own legislation.
 ```bash
 python -m pip install -r requirements.txt
 python -m pytest -q                          # 258 tests (one skips unless every source text is cached)
-python run_demo.py                           # eight scenarios; the agent council replays recorded answers offline
-python scripts/run_evaluation.py             # 144-run matrix (12 × 12) → evaluation/report.md
+python run_demo.py                           # DEMO: 8 headline scenarios (SC-01…SC-08); the council replays recorded answers offline
+python scripts/run_evaluation.py             # EVALUATION: all 12 scenarios × 12 configurations = 144 runs → evaluation/report.md
+python scripts/s9_robustness.py --repeats 3  # optional, live models: 10 reply variants of S9 → evaluation/s9_robustness.md
 python -m uvicorn app.main:app --port 8000   # API + built UI on http://127.0.0.1:8000  (docs at /api/docs)
 python scripts/fetch_sources.py              # optional: download the official texts and re-verify every quote
 

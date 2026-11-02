@@ -33,7 +33,7 @@ from typing import Any
 
 from app.advisers.residency import authorise
 
-RUNS = Path(__file__).resolve().parents[2] / "evaluation" / "agent_runs"
+RUNS = Path(os.environ.get("RESULTRELAY_AGENT_RUNS_DIR") or Path(__file__).resolve().parents[2] / "evaluation" / "agent_runs")
 _LAST_CALL: dict[str, float] = {}
 
 PRESETS = {

@@ -1,6 +1,6 @@
-# ResultRelay — technical report
+# ResultRelay — technical report (ARCHIVED)
 
-> **Reading note (2 Nov 2026).** This is an earlier long-form report, kept for its history; its numbers are
+> **Archived (2 Nov 2026). Do not cite.** This is an earlier long-form report (88 runs, 8 scenarios, 11 configurations, `backend/` layout), kept for its history; its numbers are
 > out of date. Current figures: 144 runs (12 scenarios × 12 configurations), 96 verified quotations from 24
 > documents, 18 gaps, 258 tests. `README.md` and `evaluation/report.md` are authoritative.
 

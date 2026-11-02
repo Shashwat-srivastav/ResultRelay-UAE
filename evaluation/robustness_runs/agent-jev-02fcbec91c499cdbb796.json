@@ -1,0 +1,223 @@
+{
+ "provider": "jev:jev-latest",
+ "state": {
+  "you_speak_for": "independent adversarial review: challenge every claim; do not approve by default",
+  "case": {
+   "case_scope": "WALK_IN",
+   "jurisdiction": "AE-DU",
+   "state_before_this_step": "RESULT_FINALIZED",
+   "this_step_event": "system.action (SYSTEM)",
+   "current_result_revision": "SYN-CASE-010-R1",
+   "recipient_route": "PATIENT",
+   "attempts": [],
+   "recent_events": [
+    {
+     "kind": "result.finalized",
+     "actor": "LAB",
+     "summary": "Laboratory finalizes synthetic result revision 1, already flagged critical by a separate authorised process"
+    }
+   ],
+   "acknowledgments": [],
+   "minutes_elapsed": 1.0,
+   "configured_ack_window_minutes": 60,
+   "approved_fallback_procedure": false
+  },
+  "step": {
+   "action_under_review": "SEND_PRIMARY"
+  },
+  "evidence": [
+   {
+    "chunk_id": "S1-11.1.3",
+    "authority_class": "BINDING_REQUIREMENT",
+    "jurisdiction": "AE-DU",
+    "section": "11.1.3",
+    "text": "The laboratory shall keep record of the communication with the patient."
+   },
+   {
+    "chunk_id": "S1-11.1.1",
+    "authority_class": "BINDING_REQUIREMENT",
+    "jurisdiction": "AE-DU",
+    "section": "11.1.1",
+    "text": "Critical laboratory results shall be reported clearly to the patient."
+   },
+   {
+    "chunk_id": "S1-11.1",
+    "authority_class": "BINDING_REQUIREMENT",
+    "jurisdiction": "AE-DU",
+    "section": "11.1",
+    "text": "Licensed Clinical Laboratories may accept walk-in patients for specific laboratory tests that do not require a physician's order. Refer to the list of services permitted elaborated in Appendix 3."
+   },
+   {
+    "chunk_id": "U11-art6-21-health-information-system",
+    "authority_class": "BINDING_REQUIREMENT",
+    "jurisdiction": "AE-DU",
+    "section": "Article 6 (functions), item 21",
+    "text": "establish, manage, and operate a comprehensive health information system in accordance with international health and medical standards and in collaboration and cooperation with the DAHI and the private sector;"
+   }
+  ],
+  "claims": {
+   "analyst": {
+    "answers": {
+     "obligation": {
+      "choice": "NOT_YET_SENT",
+      "confidence": 0.98
+     },
+     "clause": {
+      "choice": "S1-11.1.1",
+      "confidence": 0.98
+     },
+     "settled": {
+      "noul": 0.05
+     },
+     "gap": {
+      "choice": "NO_ACK_CLOCK",
+      "confidence": 0.95
+     },
+     "rationale": {
+      "text": "The result is critical and must be communicated directly to the patient under **S1-11.1.1**, and no acknowledgment has been recorded for the current revision, leaving the duty unsettled. The case facts show no prior communication attempt or acknowledgment, and the binding clauses do not define escalation timelines or alternative channels.",
+      "source": "model"
+     }
+    },
+    "cited_clause": "S1-11.1.1",
+    "cited_text": "Critical laboratory results shall be reported clearly to the patient."
+   }
+  }
+ },
+ "questions": {
+  "objection": {
+   "type": "choice",
+   "criteria": {
+    "NONE": "No concrete objection to the action under review.",
+    "ACCEPTANCE_AS_DELIVERY": "The action treats a provider acceptance as delivery: no delivery receipt exists.",
+    "STALE_REVISION_ACK": "The action relies on an acknowledgment of an older result revision.",
+    "SCOPE_ROUTES_ELSEWHERE": "The clauses route this result to a physician, but the action sends it to the patient.",
+    "UNAPPROVED_CHANNEL": "The action uses an alternative channel with no approved fallback procedure.",
+    "RETRY_BEFORE_RECONCILE": "The action retries while an earlier attempt's outcome is still unknown.",
+    "ACK_WINDOW_EXPIRED": "The action keeps waiting although the configured acknowledgment window has passed.",
+    "UNVERIFIED_RECIPIENT": "The acknowledgment on record is not from a verified recipient.",
+    "TEXT_CONTRADICTS_RECORD": "What a person said in `case.recent_events` contradicts the structured record (for example the reply is from someone other than the patient)."
+   },
+   "instructions": "Is there a concrete reason NOT to take `step.action_under_review` now? Read `case` and `case.recent_events`. Choose the one objection that applies, or NONE."
+  },
+  "own_reading": {
+   "type": "choice",
+   "criteria": {
+    "COMMUNICATED": "A person acknowledged the current revision; the communication record can be written.",
+    "AWAITING_ACK": "The result was sent or delivered but no one has acknowledged the current revision.",
+    "DIRECT_NOT_PERMITTED": "The shown clauses route this result to a physician, not directly to the patient.",
+    "NOT_YET_SENT": "Nothing has been communicated yet and nothing prevents a first send.",
+    "INSUFFICIENT_EVIDENCE": "The case facts and clauses shown do not settle it."
+   },
+   "instructions": "Independently of the analysts: where does the duty to communicate stand now?"
+  },
+  "analyst_supported": {
+   "type": "noul",
+   "criteria": {
+    "true": "Supported",
+    "false": "Not supported"
+   },
+   "instructions": "Is the claim in `claims.analyst` supported by the facts in `case` and by its `cited_text`? A claim that contradicts the case record, or relies on a comparator as if it were binding, is unsupported."
+  },
+  "analyst_issue": {
+   "type": "choice",
+   "criteria": {
+    "NONE": "Nothing wrong: the claim follows from the case facts and the cited clause.",
+    "CONTRADICTS_CASE_FACTS": "The claim asserts something the case record does not show (a receipt, an acknowledgment, an attempt).",
+    "CLAUSE_DOES_NOT_SUPPORT": "The cited clause does not say what the claim relies on.",
+    "WRONG_AUTHORITY": "The cited clause is a comparator or from another jurisdiction, so it cannot govern this case.",
+    "WRONG_REVISION": "The claim relies on an acknowledgment or receipt for an older result revision.",
+    "IGNORES_WHAT_WAS_SAID": "The claim ignores what a person said in `case.recent_events`."
+   },
+   "instructions": "What, if anything, is wrong with the claim in `claims.analyst`?"
+  },
+  "alternative": {
+   "type": "choice",
+   "criteria": {
+    "SEND_PRIMARY": "Send the result notification on the approved primary channel.",
+    "AWAIT_EVIDENCE": "Wait: a receipt or other required evidence has not arrived yet.",
+    "RECONCILE_ATTEMPT": "Ask the provider what happened to an attempt whose outcome is unknown before doing anything else.",
+    "RETRY_SAME_CHANNEL": "Retry on the same channel (only after the earlier attempt is reconciled).",
+    "PROPOSE_FALLBACK": "Propose an alternative channel, which needs an approved fallback procedure.",
+    "AWAIT_ACKNOWLEDGMENT": "Delivery is evidenced; wait for the patient's acknowledgment of the current result version.",
+    "RECORD_DOCUMENTATION": "The communication is evidenced end to end; record it as required.",
+    "OPEN_CORRECTION_TASK": "The result was corrected; cancel stale messages and open a reviewed correction task.",
+    "ESCALATE_HUMAN": "Identity, scope, wording or next step is uncertain; hand to the named supervisor.",
+    "VERIFY_RECIPIENT": "The recipient or contact is not verified; verify before sending.",
+    "NO_ACTION": "Nothing should be done at this step."
+   },
+   "instructions": "If the action under review were not taken, which action would the evidence support instead?"
+  }
+ },
+ "response": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "objection": {
+    "type": "choice",
+    "choice": "NONE",
+    "confidence": 0.88,
+    "probabilities": {
+     "NONE": 0.89,
+     "ACCEPTANCE_AS_DELIVERY": 0.06,
+     "STALE_REVISION_ACK": 0.0,
+     "SCOPE_ROUTES_ELSEWHERE": 0.0,
+     "UNAPPROVED_CHANNEL": 0.04,
+     "RETRY_BEFORE_RECONCILE": 0.0,
+     "ACK_WINDOW_EXPIRED": 0.0,
+     "UNVERIFIED_RECIPIENT": 0.0,
+     "TEXT_CONTRADICTS_RECORD": 0.01
+    }
+   },
+   "own_reading": {
+    "type": "choice",
+    "choice": "NOT_YET_SENT",
+    "confidence": 0.87,
+    "probabilities": {
+     "COMMUNICATED": 0.0,
+     "AWAITING_ACK": 0.03,
+     "DIRECT_NOT_PERMITTED": 0.0,
+     "NOT_YET_SENT": 0.9,
+     "INSUFFICIENT_EVIDENCE": 0.07
+    }
+   },
+   "analyst_supported": {
+    "type": "noul",
+    "noul": 0.72
+   },
+   "analyst_issue": {
+    "type": "choice",
+    "choice": "NONE",
+    "confidence": 0.52,
+    "probabilities": {
+     "NONE": 0.6,
+     "CONTRADICTS_CASE_FACTS": 0.22,
+     "CLAUSE_DOES_NOT_SUPPORT": 0.14,
+     "WRONG_AUTHORITY": 0.01,
+     "WRONG_REVISION": 0.01,
+     "IGNORES_WHAT_WAS_SAID": 0.02
+    }
+   },
+   "alternative": {
+    "type": "choice",
+    "choice": "SEND_PRIMARY",
+    "confidence": 0.86,
+    "probabilities": {
+     "SEND_PRIMARY": 0.87,
+     "AWAIT_EVIDENCE": 0.07,
+     "RECONCILE_ATTEMPT": 0.0,
+     "RETRY_SAME_CHANNEL": 0.0,
+     "PROPOSE_FALLBACK": 0.0,
+     "AWAIT_ACKNOWLEDGMENT": 0.0,
+     "RECORD_DOCUMENTATION": 0.0,
+     "OPEN_CORRECTION_TASK": 0.0,
+     "ESCALATE_HUMAN": 0.03,
+     "VERIFY_RECIPIENT": 0.02,
+     "NO_ACTION": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 2273,
+   "output_tokens": 444
+  }
+ }
+}
