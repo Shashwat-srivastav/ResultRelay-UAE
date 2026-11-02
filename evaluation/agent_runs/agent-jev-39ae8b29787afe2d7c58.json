@@ -1,0 +1,165 @@
+{
+ "provider": "jev:jev-latest",
+ "state": {
+  "you_speak_for": "policy and legal review of the action proposed at this step",
+  "case": {
+   "case_scope": "WALK_IN",
+   "jurisdiction": "AE-DU",
+   "state_before_this_step": "CORRECTION_PENDING",
+   "this_step_event": "system.action (SYSTEM)",
+   "current_result_revision": "SYN-CASE-002-R2",
+   "recipient_route": "PATIENT",
+   "attempts": [
+    {
+     "channel": "SMS-PATIENT",
+     "revision": "SYN-CASE-002-R1",
+     "provider_accepted": true,
+     "delivery_receipt": true,
+     "outcome": "DELIVERED",
+     "failed": false
+    }
+   ],
+   "acknowledgments": [
+    {
+     "revision": "SYN-CASE-002-R1",
+     "role": "PATIENT",
+     "identity_verified": true
+    },
+    {
+     "revision": "SYN-CASE-002-R1",
+     "role": "PATIENT",
+     "identity_verified": true
+    }
+   ],
+   "minutes_elapsed": 100.0,
+   "configured_ack_window_minutes": 60,
+   "approved_fallback_procedure": true
+  },
+  "step": {
+   "action_under_review": "SEND_PRIMARY"
+  },
+  "evidence": [
+   {
+    "chunk_id": "S1-11.1.1",
+    "section": "11.1.1",
+    "text": "Critical laboratory results shall be reported clearly to the patient."
+   },
+   {
+    "chunk_id": "S1-11.1.3",
+    "section": "11.1.3",
+    "text": "The laboratory shall keep record of the communication with the patient."
+   },
+   {
+    "chunk_id": "S1-11.1.2",
+    "section": "11.1.2",
+    "text": "The laboratory should direct the patient to seek further medical advice."
+   },
+   {
+    "chunk_id": "S1-9.1.5.e",
+    "section": "9.1.5(e)",
+    "text": "The laboratory shall have a policy for identifying and reporting critical results."
+   }
+  ],
+  "your_previous_answer": {
+   "objection": {
+    "noul": 0.77
+   },
+   "alternative": {
+    "choice": "RECORD_DOCUMENTATION",
+    "confidence": 0.27
+   },
+   "clause": {
+    "choice": "S1-11.1.1",
+    "confidence": 0.57
+   }
+  },
+  "critic_feedback": {
+   "fact_check_findings": [],
+   "critic_issue": "CLAUSE_DOES_NOT_SUPPORT",
+   "critic_issue_meaning": "The cited clause does not say what the answer relies on.",
+   "critic_probability_supported": 0.4
+  },
+  "instruction": "A critic reviewed your previous answer. Where the feedback is right, correct your answer; where it is wrong, keep your answer. Judge only from `case` and `evidence`."
+ },
+ "questions": {
+  "objection": {
+   "type": "noul",
+   "criteria": {
+    "true": "A concrete objection exists",
+    "false": "No concrete objection"
+   },
+   "instructions": "Is there a concrete reason NOT to take `step.action_under_review` now: acceptance treated as delivery, an acknowledgment for an older revision, a scope the clauses route elsewhere, an unapproved channel, or a retry before reconciliation? The absence of a clause naming this exact step is not a reason."
+  },
+  "alternative": {
+   "type": "choice",
+   "criteria": {
+    "SEND_PRIMARY": "Send the result notification on the approved primary channel.",
+    "AWAIT_EVIDENCE": "Wait: a receipt or other required evidence has not arrived yet.",
+    "RECONCILE_ATTEMPT": "Ask the provider what happened to an attempt whose outcome is unknown before doing anything else.",
+    "RETRY_SAME_CHANNEL": "Retry on the same channel (only after the earlier attempt is reconciled).",
+    "PROPOSE_FALLBACK": "Propose an alternative channel, which needs an approved fallback procedure.",
+    "AWAIT_ACKNOWLEDGMENT": "Delivery is evidenced; wait for the patient's acknowledgment of the current result version.",
+    "RECORD_DOCUMENTATION": "The communication is evidenced end to end; record it as required.",
+    "OPEN_CORRECTION_TASK": "The result was corrected; cancel stale messages and open a reviewed correction task.",
+    "ESCALATE_HUMAN": "Identity, scope, wording or next step is uncertain; hand to the named supervisor.",
+    "VERIFY_RECIPIENT": "The recipient or contact is not verified; verify before sending.",
+    "NO_ACTION": "Nothing should be done at this step."
+   },
+   "instructions": "If the action under review were not taken, which action would the evidence support instead?"
+  },
+  "clause": {
+   "type": "choice",
+   "criteria": {
+    "S1-11.1.1": "11.1.1: Critical laboratory results shall be reported clearly to the patient.",
+    "S1-11.1.3": "11.1.3: The laboratory shall keep record of the communication with the patient.",
+    "S1-11.1.2": "11.1.2: The laboratory should direct the patient to seek further medical advice.",
+    "S1-9.1.5.e": "9.1.5(e): The laboratory shall have a policy for identifying and reporting critical results.",
+    "NONE": "None of the shown clauses bears on this step."
+   },
+   "instructions": "Which shown clause did you rely on? Choose NONE only if no shown clause bears on this step."
+  }
+ },
+ "response": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "objection": {
+    "type": "noul",
+    "noul": 0.89
+   },
+   "alternative": {
+    "type": "choice",
+    "choice": "RECORD_DOCUMENTATION",
+    "confidence": 0.38,
+    "probabilities": {
+     "SEND_PRIMARY": 0.06,
+     "AWAIT_EVIDENCE": 0.01,
+     "RECONCILE_ATTEMPT": 0.0,
+     "RETRY_SAME_CHANNEL": 0.0,
+     "PROPOSE_FALLBACK": 0.1,
+     "AWAIT_ACKNOWLEDGMENT": 0.08,
+     "RECORD_DOCUMENTATION": 0.44,
+     "OPEN_CORRECTION_TASK": 0.27,
+     "ESCALATE_HUMAN": 0.02,
+     "VERIFY_RECIPIENT": 0.0,
+     "NO_ACTION": 0.02
+    }
+   },
+   "clause": {
+    "type": "choice",
+    "choice": "S1-11.1.1",
+    "confidence": 0.64,
+    "probabilities": {
+     "S1-11.1.1": 0.71,
+     "S1-11.1.3": 0.11,
+     "S1-11.1.2": 0.01,
+     "S1-9.1.5.e": 0.03,
+     "NONE": 0.14
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 1636,
+   "output_tokens": 253
+  }
+ }
+}

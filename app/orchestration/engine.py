@@ -457,6 +457,16 @@ class Orchestrator:
         )
 
     # -- agent dispatch ----------------------------------------------------
+    def _council(self):
+        """The multi-agent council, for the full system only (baselines and ablations never call a model)."""
+        if not hasattr(self, "_council_obj"):
+            self._council_obj = None
+            if self.rt.config.name == "resultrelay" and os.environ.get("RESULTRELAY_AGENT_PROVIDER"):
+                from app.multiagent.council import configured_council
+
+                self._council_obj = configured_council()
+        return self._council_obj
+
     def run_agents(self, event: dict[str, Any], visible_to: list[str] | None = None) -> list[AgentAssessment]:
         rt = self.rt
         allowed = [a for a in rt.config.agents if a in self.agents]
@@ -951,6 +961,38 @@ class Orchestrator:
             require_evidence_for_high_risk=rt.config.use_kb,
             block_on_jurisdiction_violation=rt.config.applicability_filter,
         )
+        # 3b. Multi-agent deliberation (network, health, reviewer agents + coordinator), when configured.
+        #     It runs before the gate and is logged into the hash chain, but the gate never reads it; its
+        #     only effect on the case is an added human-review question when the coordinator escalates.
+        council = self._council()
+        if council is not None and _council_enabled_for(spec):
+            delib = council.deliberate(rt, event, proposal.value, _case_view(rt, event))
+            result["agent_deliberation"] = delib
+            for role, msg in delib["messages"].items():
+                rt.audit.append(event="agent.message", actor=f"AGENT:{role}",
+                                summary=f"{role} {msg.get('status')}: " + json.dumps(msg.get("answers", {}), default=str)[:240],
+                                payload={"role": role, **msg}, at=event.get("at"))
+            for role, rv in delib.get("reviews", {}).items():
+                rt.audit.append(event="critic.review", actor="AGENT:critic+FACT_CHECK",
+                                summary=(f"{role}: {rv.get('outcome')}; fact check {rv.get('fact_check') or 'clean'}; "
+                                         f"critic issue {rv.get('critic_issue')} (p supported {rv.get('critic_supported')})")[:300],
+                                payload={"role": role, **rv}, at=event.get("at"))
+            for call in delib["tool_calls"]:
+                rt.audit.append(event="agent.tool_call", actor=f"AGENT:{call['agent']}",
+                                summary=f"{call['agent']} used read-only tool {call['tool']}", payload=call, at=event.get("at"))
+            rt.audit.append(event="coordinator.resolution", actor="AGENT:coordinator",
+                            summary=(f"coordinator {delib['coordinator'].get('status')}: "
+                                     + json.dumps(delib["coordinator"].get("answers", {}), default=str)[:200]
+                                     + f"; rule check {delib['rule_conflicts'] or 'no conflict'}"),
+                            payload={"coordinator": delib["coordinator"], "rule_conflicts": delib["rule_conflicts"],
+                                     "coordinator_matches_rules": delib["coordinator_matches_rules"],
+                                     "provider": delib["provider"]}, at=event.get("at"))
+            if delib["escalate"]:
+                named = delib["coordinator"].get("answers", {}).get("conflict", {}).get("choice", "unnamed")
+                note = f"agent coordinator requested supervisor review at step {step_no} ({named})"
+                if note not in rt.unresolved:
+                    rt.unresolved.append(note)
+
         advisory = None
         if settings.enable_llm:
             from app.advisers import advise
@@ -1178,6 +1220,33 @@ def _adviser_evidence(rt: "Runtime", event: dict[str, Any] | None, assessments: 
     query = " ".join([_event_summary(event) if event else "", rt.state.value, rt.case_scope,
                       "critical result communication patient delivery acknowledgment record"])
     return [c.model_dump() for c in retriever.search(query, jurisdiction=rt.jurisdiction, scope="applicable", top_k=6).chunks]
+
+
+def _council_enabled_for(spec: dict[str, Any]) -> bool:
+    from app.multiagent.council import enabled_for
+
+    return enabled_for(spec)
+
+
+def _case_view(rt: "Runtime", event: dict[str, Any] | None) -> dict[str, Any]:
+    """Facts the agents may see: the case, never the gate's conclusion for this step."""
+    current = rt.current_revision_id
+    return {
+        "case_scope": rt.case_scope,
+        "jurisdiction": rt.jurisdiction,
+        "state_before_this_step": rt.state.value,
+        "this_step_event": _event_summary(event) if event else None,
+        "current_result_revision": current,
+        "recipient_route": rt.recipient,
+        "attempts": [{"channel": a.channel, "revision": a.result_revision_id, "provider_accepted": a.accepted,
+                      "delivery_receipt": bool(a.receipt_recorded), "outcome": a.outcome, "failed": a.failed}
+                     for a in rt.network.attempts][-4:],
+        "acknowledgments": [{"revision": k.get("result_revision_id"), "role": k.get("role"),
+                             "identity_verified": k.get("identity_verified")} for k in rt.acknowledgments][-4:],
+        "minutes_elapsed": rt.at_minutes_current,
+        "configured_ack_window_minutes": rt.profile.get("acknowledgment_clock_minutes"),
+        "approved_fallback_procedure": bool(rt.profile.get("fallback_channel_id")),
+    }
 
 
 def _event_summary(event: dict[str, Any]) -> str:

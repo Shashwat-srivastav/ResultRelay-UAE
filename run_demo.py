@@ -1,12 +1,16 @@
-"""ResultRelay — the four headline scenarios, end to end, in the terminal.
+"""ResultRelay — the five headline scenarios, end to end, in the terminal.
 
-    python run_demo.py              # adviser on (TypeSafe Jev live if TYPESAFE_API_KEY is set, else recorded replay)
-    python run_demo.py --no-adviser # deterministic path only
-    python run_demo.py 2            # one scenario
+    python run_demo.py                 # multi-agent council on (recorded replay offline; live if a provider is set)
+    python run_demo.py --no-agents     # deterministic path only
+    python run_demo.py 2               # one scenario
+    RESULTRELAY_AGENT_PROVIDER=mistral python run_demo.py      # live on Mistral (MISTRAL_API_KEY, e.g. in .env)
+    RESULTRELAY_AGENT_PROVIDER=ollama RESULTRELAY_AGENT_MODEL=qwen2.5:14b python run_demo.py   # fully local
 
-For each step: the five assessors propose, the policy & legal adviser (M node) proposes through the
-containment guard (residency → grounding → jurisdiction), and the deterministic gate (P node) decides
-without reading the proposal. The policy-blind baseline runs on the same events. Exits 1 on a mismatch.
+At every decision point the council runs: network (TDRA lens), health (DHA lens) and policy & legal
+reviewer agents answer from their own clauses and may use read-only tools; a fact check and a critic
+agent review every answer and send flagged ones back for one revision; a coordinator agent resolves; a
+rule cross-check recomputes the conflicts. The deterministic gate (P node) decides without reading any of
+it. The policy-blind baseline runs on the same events. Exits 1 on a final-state mismatch.
 """
 from __future__ import annotations
 
@@ -17,13 +21,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
-if "--no-adviser" not in sys.argv:
-    os.environ.setdefault("RESULTRELAY_ADVISE", "1")
-    os.environ.setdefault("RESULTRELAY_ADVISE_PROVIDER", "jev")
-    if not os.environ.get("TYPESAFE_API_KEY"):
-        os.environ["RESULTRELAY_ADVISE_REPLAY"] = "1"
 
-from app.advisers import institutions  # noqa: E402
+from app.multiagent.providers import load_dotenv  # noqa: E402
+
+load_dotenv()
+if "--no-agents" not in sys.argv:
+    os.environ.setdefault("RESULTRELAY_AGENT_PROVIDER", "replay")
+
 from app.orchestration.engine import load_scenario, run_scenario  # noqa: E402
 
 VERDICT = {  # final state → policy-gap verdict (P node classification, deterministic)
@@ -46,10 +50,18 @@ HEADLINE = [
 ]
 
 
+def _g(m: dict, role: str, key: str, field: str):
+    return m.get(role, {}).get("answers", {}).get(key, {}).get(field)
+
+
 def main(argv: list[str]) -> int:
     picks = {int(a) for a in argv if a.isdigit()}
-    print("\nSYNTHETIC DATA — hackathon exercise only. Not a clinical service or a compliance determination.\n")
+    print("\nSYNTHETIC DATA — hackathon exercise only. Not a clinical service or a compliance determination.")
+    print(f"agents: {os.environ.get('RESULTRELAY_AGENT_PROVIDER', 'off')}"
+          f"{' / ' + os.environ['RESULTRELAY_AGENT_MODEL'] if os.environ.get('RESULTRELAY_AGENT_MODEL') else ''}\n")
     matched, out = 0, []
+    tot = {"decision_points": 0, "answers": 0, "flagged": 0, "corrected": 0, "upheld": 0, "disputed": 0,
+           "tool_calls": 0, "coordinator_checked": 0, "coordinator_matches_rules": 0, "escalations": 0, "unavailable": 0}
     for sid, kind, scen_id, expected, summary in HEADLINE:
         if picks and int(sid[-1]) not in picks:
             continue
@@ -62,42 +74,43 @@ def main(argv: list[str]) -> int:
         print(f"── {sid} [{kind}] {spec['title']}  ({scen_id})\n   {summary}")
         print(f"   FINAL {final:<32} VERDICT {VERDICT.get(final, 'AMBIGUITY'):<22} {'✓' if ok else '✗'} expected {expected}")
         print(f"   policy-blind final → {blind.state.value}")
-        agree = considered = 0
-        for i, st in enumerate(rt.steps):
-            adv = st.get("advisory")
-            if not adv:
+        for st in rt.steps:
+            d = st.get("agent_deliberation")
+            if not d:
                 continue
-            enforced = st.get("enforced_action")
-            if adv["status"] == "ADVISORY_ONLY":
-                considered += 1
-                agree += adv["candidate_action"] == enforced
-            print(f"   step {i:>2} adviser {adv['status']:<26} proposes {str(adv['candidate_action']):<20} "
-                  f"gate → {enforced:<20} cites {adv['citation_chunk_ids'] or '-'}")
-        print(f"   reviewer agreed with the gate on {agree}/{considered} considered steps")
-        inst = institutions.review(rt) if "--no-adviser" not in sys.argv else None
-        if inst is not None:
-            # Runs after the gate decided: evidence for the supervisor, written into the same hash chain
-            # as every gate decision.
-            rt.audit.append(event="institutional.review", actor="AGENTS(DHA,TDRA)+COORDINATOR",
-                            summary=f"institutional review {inst.status}; conflicts "
-                                    f"{[c['type'] for c in inst.conflicts] or 'none'}", payload=inst.to_dict())
-            if inst.status == "REVIEWED":
-                print(f"   DHA agent   communication established p={inst.dha['communication_established']:.2f} "
-                      f"· clause {inst.dha['governing_clause']} · AI use conforms to PP-09 p={inst.dha['ai_use_conforms']:.2f}")
-                print(f"   TDRA agent  network delivery evidenced p={inst.tdra['network_delivery_evidenced']:.2f} "
-                      f"· clause {inst.tdra['governing_clause']}")
-                for c in inst.conflicts:
-                    print(f"   ⚠ {c['type']}: {c['detail']}")
-                print(f"   coordinator: DHA agent {'agrees' if inst.agrees_with_gate else 'DISAGREES'} with the gate")
-            else:
-                print(f"   institutional review {inst.status}: {inst.residency[:120]}")
+            m, c, cs = d["messages"], d["coordinator"].get("answers", {}), d["critique_summary"]
+            tot["decision_points"] += 1
+            tot["answers"] += sum(1 for x in m.values() if x.get("answers"))
+            tot["unavailable"] += sum(1 for x in m.values() if x.get("status") in ("UNAVAILABLE", "REFUSED_RESIDENCY"))
+            tot["flagged"] += cs["flagged"]
+            tot["corrected"] += cs["corrected"]
+            tot["disputed"] += len(cs["disputed"])
+            tot["upheld"] += sum(1 for rv in d["reviews"].values() if rv.get("outcome") == "UPHELD")
+            tot["tool_calls"] += len(d["tool_calls"])
+            if d["coordinator_matches_rules"] is not None:
+                tot["coordinator_checked"] += 1
+                tot["coordinator_matches_rules"] += bool(d["coordinator_matches_rules"])
+            tot["escalations"] += bool(d["escalate"])
+            print(f"   step {st['step']:>2} {d['action_under_review']:<20} gate → {st['enforced_action']:<20} "
+                  f"network {_g(m, 'network', 'delivery_status', 'choice')} · health {_g(m, 'health', 'obligation', 'choice')} "
+                  f"· reviewer objection p={_g(m, 'reviewer', 'objection', 'noul')}")
+            notes = [f"{r} {rv['outcome'].lower()}" + (f" ({rv['fact_check'][0]})" if rv.get("fact_check") else "")
+                     for r, rv in d["reviews"].items() if rv.get("flagged")]
+            print(f"           critic: {'; '.join(notes) or 'all answers accepted'}"
+                  f"{' · tools ' + ','.join(x['tool'] for x in d['tool_calls']) if d['tool_calls'] else ''}")
+            print(f"           coordinator {c.get('resolution', {}).get('choice')} / {c.get('conflict', {}).get('choice')}"
+                  f" · rule check {d['rule_conflicts'] or 'none'}"
+                  f"{'' if d['coordinator_matches_rules'] in (None, True) else '  ⚠ coordinator disagrees with the rule check'}")
         chain = rt.audit.verify_chain()[0] if rt.audit else None
-        print(f"   audit chain {chain}\n")
+        print(f"   audit {len(rt.audit.entries)} entries, hash chain valid={chain}\n")
         out.append({"scenario": sid, "source": scen_id, "final": final, "matched": ok,
-                    "reviewer_agreement": [agree, considered],
-                    "institutional": inst.to_dict() if inst else None,
-                    "steps": [{"advisory": s.get("advisory"), "enforced_action": s.get("enforced_action")} for s in rt.steps]})
-    (ROOT / "evaluation" / "demo_run.json").write_text(json.dumps(out, indent=1, default=str), encoding="utf-8")
+                    "deliberations": [s.get("agent_deliberation") for s in rt.steps if s.get("agent_deliberation")]})
+    if tot["decision_points"]:
+        print(f"council: {tot['decision_points']} decision points, {tot['answers']} agent answers, {tot['tool_calls']} tool calls; "
+              f"critic flagged {tot['flagged']} → {tot['corrected']} corrected, {tot['upheld']} upheld, {tot['disputed']} disputed; "
+              f"coordinator matched the rule check {tot['coordinator_matches_rules']}/{tot['coordinator_checked']}; "
+              f"{tot['escalations']} supervisor-review requests; {tot['unavailable']} unavailable")
+    (ROOT / "evaluation" / "demo_run.json").write_text(json.dumps({"totals": tot, "runs": out}, indent=1, default=str), encoding="utf-8")
     print(f"{matched}/{len(out)} matched expected")
     return 0 if matched == len(out) else 1
 

@@ -240,3 +240,18 @@ def test_self_hosted_fonts_are_served_as_fonts(client):
             f"{name} served as {r.headers['content-type']}"
         )
         assert r.content[:4] == b"wOF2", f"{name} is not a woff2 payload"
+
+
+def test_a_judge_can_inject_an_error_event_into_a_live_run(client):
+    """Sequenced error chunks released at runtime go through the same agents, gate and audit chain."""
+    run = client.post("/api/runs", json={"scenario_id": "S8-accepted-never-delivered", "configuration": "resultrelay"}).json()
+    rid = run["run"]["run_id"]
+    client.post(f"/api/runs/{rid}/step")  # result finalised
+    res = client.post(f"/api/runs/{rid}/events", json={
+        "type": "system.action", "kind": "action", "at_minutes": 2, "channel": "SMS-PATIENT",
+        "summary": "Judge-released chunk: decide whether to send now"})
+    assert res.status_code == 200, res.text
+    body = res.json()
+    assert body["injected"] is True
+    assert body["step"]["enforced_action"]
+    assert client.post(f"/api/runs/{rid}/events", json={"type": "made.up"}).status_code == 422

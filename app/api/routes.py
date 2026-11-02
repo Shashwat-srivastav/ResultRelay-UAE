@@ -821,6 +821,63 @@ def step_run(run_id: str, request: Request, body: StepRequest | None = None) -> 
         })
 
 
+class InjectedEvent(BaseModel):
+    """An error event supplied by a judge or operator at runtime, not taken from a scenario file."""
+
+    type: str = Field(..., description="an EventType value, e.g. transport.timeout, or system.action for a decision point")
+    kind: str = Field("event", pattern="^(event|action)$")
+    at_minutes: float | None = None
+    actor: str = "OPERATOR"
+    summary: str | None = Field(None, max_length=400)
+    payload: dict[str, Any] = Field(default_factory=dict)
+    channel: str | None = None
+
+
+@router.post("/runs/{run_id}/events")
+def inject_event(run_id: str, body: InjectedEvent) -> dict[str, Any]:
+    """Apply one externally supplied event to a live run, through the same agents, gate and audit chain.
+
+    This is how sequenced error scenarios released at runtime are fed in, chunk by chunk, without a
+    scenario file: each call is one chunk. The event is validated against the state machine's event
+    vocabulary; an unknown type is refused rather than guessed. Scripted steps not yet released stay
+    queued behind it.
+    """
+    from app.state_machine.transitions import EventType
+
+    allowed = {e.value for e in EventType} | {"system.action"}
+    if body.type not in allowed:
+        raise HTTPException(422, f"unknown event type {body.type!r}; allowed: {sorted(allowed)}")
+    if body.kind == "action" and body.type != "system.action":
+        raise HTTPException(422, "a decision point (kind=action) must have type system.action")
+    with run_registry.run_lock(run_id):
+        entry = _entry(run_id)
+        if entry is None:
+            raise HTTPException(404, "run not found in this registry or store; start a new run")
+        rt = entry["runtime"]
+        steps = entry["scenario"]["steps"]
+        cursor = entry["cursor"]
+        spec = {
+            "step": (max((int(s.get("step", 0)) for s in steps), default=0) + 1),
+            "at_minutes": body.at_minutes if body.at_minutes is not None else rt.at_minutes_current + 1,
+            "kind": body.kind, "type": body.type, "actor": body.actor,
+            "summary": body.summary or f"injected {body.type}", "payload": body.payload,
+            **({"channel": body.channel} if body.channel else {}),
+        }
+        entry["busy"] = entry.get("busy", 0) + 1
+        try:
+            rt.audit.append(event="event.injected", actor=body.actor,
+                            summary=f"runtime-injected {body.kind} {body.type}", payload=spec)
+            result = entry["orchestrator"].step(spec)
+            steps.insert(cursor, spec)
+            entry["cursor"] = cursor + 1
+            _record_run(rt, cursor=entry["cursor"], total_steps=len(steps))
+            _persist(rt)
+        finally:
+            entry["busy"] = max(0, entry.get("busy", 1) - 1)
+        return {"injected": True, "step": serialise_step(result), "run": serialise_runtime(rt),
+                "progress": {"released": entry["cursor"], "total": len(steps)}}
+
+
 @router.post("/runs/{run_id}/play")
 def play_run(run_id: str) -> dict[str, Any]:
     with run_registry.run_lock(run_id):
