@@ -1,0 +1,3 @@
+42 CFR 493.1291 Standard: Test report (Clinical Laboratory Improvement Amendments) — 493.1291(g) (p.1)
+
+( g ) The laboratory must immediately alert the individual or entity requesting the test and, if applicable, the individual responsible for using the test results when any test result indicates an imminently life-threatening condition, or panic or alert values.

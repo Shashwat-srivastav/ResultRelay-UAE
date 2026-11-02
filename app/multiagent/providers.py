@@ -50,7 +50,8 @@ SYSTEM = (
     '{"answers": {"<question id>": {"choice": "<one option id>", "confidence": <0..1>}  for choice questions, '
     '"<question id>": {"noul": <probability 0..1 that the statement is true>}  for noul questions, '
     '"<question id>": {"score": <number on the given scale>}  for score questions}}. '
-    "Use the exact option ids given. Do not add commentary."
+    "Also include a top-level \"rationale\": one or two sentences, citing the case facts and the clause id you relied on. "
+    "Use the exact option ids given. Do not add other commentary."
 )
 
 
@@ -116,7 +117,7 @@ class Provider:
         if not m:
             raise ProviderError("model returned no JSON object")
         parsed = json.loads(m.group(0))
-        return {"answers": parsed.get("answers", parsed)}
+        return {"answers": parsed.get("answers", parsed), "rationale": parsed.get("rationale")}
 
     # -- public ------------------------------------------------------------------------------------
     def ask(self, state: dict, questions: dict, *, data_class: str) -> tuple[dict, list[str]]:
@@ -141,7 +142,16 @@ class Provider:
             if not hits:
                 raise ProviderError("no recorded answer for this exact case view (replay is refused, not guessed)")
             raw = json.loads(hits[0].read_text(encoding="utf-8"))["response"]
-        return validate(raw.get("answers", {}), questions)
+        ans, bad = validate(raw.get("answers", {}), questions)
+        why = raw.get("rationale")
+        if isinstance(why, str) and why.strip():
+            ans["rationale"] = {"text": why.strip()[:400], "source": "model"}
+        elif ans:
+            # Jev answers typed questions only: its rationale is the judgment itself, stated with probabilities.
+            ans["rationale"] = {"source": "typed-judgment", "text": "; ".join(
+                f"{k}={v.get('choice', v.get('noul', v.get('score')))}"
+                + (f" (p={v['confidence']:.2f})" if "confidence" in v else "") for k, v in ans.items())[:400]}
+        return ans, bad
 
 
 def validate(answers: dict, questions: dict) -> tuple[dict, list[str]]:
@@ -190,14 +200,14 @@ def load_dotenv(path: Path | None = None) -> None:
             os.environ.setdefault(k.strip(), v)
 
 
-ROLES = ("network", "health", "reviewer", "critic", "coordinator")
+ROLES = ("analyst", "institution", "reviewer")
 
 
 def configured(role: str | None = None) -> Provider | None:
     """Provider for one council role, from the environment (and .env); None when agents are off.
 
     RESULTRELAY_AGENT_PROVIDER / _MODEL / _URL set every role. A role can be given its own model with
-    RESULTRELAY_<ROLE>_PROVIDER / _MODEL / _URL, e.g. RESULTRELAY_CRITIC_PROVIDER=jev, so that the
+    RESULTRELAY_<ROLE>_PROVIDER / _MODEL / _URL, e.g. RESULTRELAY_REVIEWER_PROVIDER=jev, so that the
     critic is a different model family from the agents it reviews.
     """
     load_dotenv()

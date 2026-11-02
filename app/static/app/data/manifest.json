@@ -1,14 +1,14 @@
 {
   "manifest_version": "1.0",
-  "generated_at": "2026-11-02T05:18:53.147545+00:00",
+  "generated_at": "2026-11-02T10:55:07.739321+00:00",
   "synthetic_data_only": true,
   "disclaimer": "Demonstration prototype with synthetic data. Not a clinical service and not evidence of clinical safety, effectiveness or regulatory compliance.",
   "knowledge_base": {
-    "built_at": "2026-11-02T05:13:08.104256+00:00",
-    "chunk_count": 82,
-    "index_sha256": "5098e273db663d69a5ea27f85c8d1a3341dcf60080dd0ce6c3878e5585c39c20",
+    "built_at": "2026-11-02T10:33:49.825732+00:00",
+    "chunk_count": 96,
+    "index_sha256": "10ff5f5b4774c9b7bc122a163689e84c84c22f49419f900a526b9716f8a94c60",
     "verification": {
-      "verified": 82,
+      "verified": 96,
       "unverified": 0,
       "rejected": 0,
       "method": "Each quotation is normalised and required to appear as a contiguous substring of the declared source page. Wrong page or wrong wording is rejected and excluded from the index."
@@ -391,6 +391,132 @@
         "verification_status": "VERIFIED_OFFICIAL",
         "relevant_sections": "5; 6; 8",
         "limitations": "Professional guidance, not law. Its scope is communication to clinical teams; it explicitly does not cover patient-direct communication methods."
+      },
+      {
+        "source_id": "U10",
+        "title": "Federal Law by Decree No. 3 of 2003 Regarding the Organization of Telecommunications Sector, as amended",
+        "issuing_authority": "UAE federal legislation; consolidated English text published by the Telecommunications Regulatory Authority (now TDRA)",
+        "jurisdiction": "AE-FED",
+        "document_type": "Federal law",
+        "document_code": "Federal Decree-Law No. 3 of 2003",
+        "version_or_issue": "Consolidated, as amended (TRA edition; WIPO Lex lists year of version 2008)",
+        "publication_date": "2003-11-15",
+        "effective_date": "2003-11-15",
+        "revision_or_expiry_date": "not stated",
+        "official_url": "https://www.wipo.int/wipolex/en/legislation/details/13914",
+        "retrieved_at": "2026-11-02",
+        "applicability": "Establishes the telecom regulator's mandate (functions and powers) over licensees serving the State.",
+        "legal_or_guidance_status": "BINDING_REQUIREMENT (on the regulator and licensees); mandate context for a laboratory",
+        "license_or_reuse_notes": "Public legislation; English translation (the Arabic version prevails). Minimal excerpts only.",
+        "local_file_path": "kb/records/U10_uae_telecom_law.yaml",
+        "verification_status": "VERIFIED_OFFICIAL_REPOSITORY",
+        "relevant_sections": "Article 13",
+        "limitations": "English text; the Arabic prevails. The edition predates the 2020 renaming to TDRA (Federal Decree-Law 23/2020); later amendments were not retrieved. The Arabic PDF was retrieved but its text layer extracts with reversed and broken glyphs, so no Arabic quotation is stored."
+      },
+      {
+        "source_id": "G6",
+        "title": "Technical realization of the Short Message Service (SMS)",
+        "issuing_authority": "ETSI / 3GPP",
+        "jurisdiction": "GLOBAL",
+        "document_type": "Technical specification",
+        "document_code": "ETSI TS 123 040 (3GPP TS 23.040)",
+        "version_or_issue": "V17.2.0 (Release 17)",
+        "publication_date": "2022-05-01",
+        "effective_date": "2022-05-01",
+        "revision_or_expiry_date": "superseded by later releases",
+        "official_url": "https://www.etsi.org/deliver/etsi_ts/123000_123099/123040/17.02.00_60/ts_123040v170200p.pdf",
+        "retrieved_at": "2026-11-02",
+        "applicability": "Defines SMS delivery semantics used by operators worldwide, including status reports.",
+        "legal_or_guidance_status": "GLOBAL_COMPARATOR (technical standard)",
+        "license_or_reuse_notes": "ETSI copyright; minimal quotation with attribution.",
+        "local_file_path": "kb/records/G6_etsi_ts123040.yaml",
+        "verification_status": "VERIFIED_OFFICIAL",
+        "relevant_sections": "3.1 (SME definition); 9.2.3.15 (TP-Status)",
+        "limitations": "Release 17 text; later releases were not compared. It defines network semantics, not obligations on laboratories."
+      },
+      {
+        "source_id": "G7",
+        "title": "42 CFR 493.1291 Standard: Test report (Clinical Laboratory Improvement Amendments)",
+        "issuing_authority": "United States, Centers for Medicare & Medicaid Services (eCFR)",
+        "jurisdiction": "GLOBAL",
+        "document_type": "Federal regulation (United States)",
+        "document_code": "42 CFR 493.1291",
+        "version_or_issue": "eCFR current as retrieved",
+        "publication_date": "not stated",
+        "effective_date": "not stated",
+        "revision_or_expiry_date": "not stated",
+        "official_url": "https://www.ecfr.gov/current/title-42/chapter-IV/subchapter-G/part-493/subpart-K/section-493.1291",
+        "retrieved_at": "2026-11-02",
+        "applicability": "US clinical laboratories under CLIA (not UAE facilities).",
+        "legal_or_guidance_status": "GLOBAL_COMPARATOR",
+        "license_or_reuse_notes": "US government work; public domain.",
+        "local_file_path": "kb/records/G7_clia_493_1291.yaml",
+        "verification_status": "VERIFIED_OFFICIAL",
+        "relevant_sections": "493.1291(g); 493.1291(h)",
+        "limitations": "Binds the laboratory to alert the requester, not the patient; no numeric clock."
+      },
+      {
+        "source_id": "G8",
+        "title": "Regulation (EU) 2024/1689 laying down harmonised rules on artificial intelligence (AI Act)",
+        "issuing_authority": "European Parliament and Council of the European Union",
+        "jurisdiction": "GLOBAL",
+        "document_type": "EU regulation",
+        "document_code": "Regulation (EU) 2024/1689",
+        "version_or_issue": "OJ L, 12.7.2024",
+        "publication_date": "2024-07-12",
+        "effective_date": "2024-08-01",
+        "revision_or_expiry_date": "obligations phased in to 2026-2027",
+        "official_url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+        "retrieved_at": "2026-11-02",
+        "applicability": "Providers and deployers of AI systems in the EU (not UAE facilities).",
+        "legal_or_guidance_status": "GLOBAL_COMPARATOR",
+        "license_or_reuse_notes": "EU legislation, reusable with attribution; text taken from the artificialintelligenceact.eu copy because EUR-Lex refuses scripted clients.",
+        "local_file_path": "kb/records/G8_eu_ai_act.yaml",
+        "verification_status": "VERIFIED_THIRD_PARTY_COPY",
+        "relevant_sections": "Article 14(1); Article 26(2); Article 73(2)",
+        "limitations": "Verified against a third-party copy, not the Official Journal; that copy inserts glossary pop-ups into sentences, so only clean spans are quoted. High-risk obligations apply from 2026-2027."
+      },
+      {
+        "source_id": "G9",
+        "title": "Personal Data Protection Law",
+        "issuing_authority": "Kingdom of Saudi Arabia; English text published by SDAIA (Saudi Data and AI Authority)",
+        "jurisdiction": "GLOBAL",
+        "document_type": "National law (Saudi Arabia)",
+        "document_code": "Personal Data Protection Law (Royal Decree M/19, 1443H, as amended)",
+        "version_or_issue": "SDAIA English text V2 (April 2023)",
+        "publication_date": "2023-04-23",
+        "effective_date": "2023-09-14",
+        "revision_or_expiry_date": "not stated",
+        "official_url": "https://sdaia.gov.sa/en/SDAIA/about/Documents/Personal%20Data%20English%20V2-23April2023-%20Reviewed-.pdf",
+        "retrieved_at": "2026-11-02",
+        "applicability": "Controllers processing personal data in Saudi Arabia (not UAE facilities). GCC comparator.",
+        "legal_or_guidance_status": "GLOBAL_COMPARATOR",
+        "license_or_reuse_notes": "Official English translation published by SDAIA; the Arabic text prevails. Minimal excerpts only.",
+        "local_file_path": "kb/records/G9_saudi_pdpl.yaml",
+        "verification_status": "VERIFIED_OFFICIAL",
+        "relevant_sections": "Article 1(13); Article 29(1)",
+        "limitations": "English translation; the implementing transfer regulations were not retrieved, so only the law's own transfer clause is quoted."
+      },
+      {
+        "source_id": "U11",
+        "title": "Law No. (6) of 2018 Concerning the Dubai Health Authority, as amended by Law No. (14) of 2021",
+        "issuing_authority": "Government of Dubai (Ruler of Dubai); Dubai Legal Portal English text",
+        "jurisdiction": "AE-DU",
+        "document_type": "Local law (Emirate of Dubai)",
+        "document_code": "Law No. (14) of 2021 amending Law No. (6) of 2018",
+        "version_or_issue": "Law No. (14) of 2021 (amends Articles 2, 5, 6, 9, 10, 11 of Law No. 6 of 2018)",
+        "publication_date": "2021-07-17",
+        "effective_date": "2021-07-17",
+        "revision_or_expiry_date": "not stated",
+        "official_url": "https://dlp.dubai.gov.ae/Legislation%20Reference/2021/Law%20No.%20(14)%20of%202021%20Amending%20Law%20No.%20(6)%20of%202018.html",
+        "retrieved_at": "2026-11-02",
+        "applicability": "Establishes DHA's mandate as the regulator of the health sector in the Emirate of Dubai.",
+        "legal_or_guidance_status": "BINDING_REQUIREMENT (institutional mandate, Dubai)",
+        "license_or_reuse_notes": "Official English text published on the Dubai Legal Portal; the Arabic prevails. Minimal excerpts only.",
+        "local_file_path": "kb/records/U11_dha_law.yaml",
+        "verification_status": "VERIFIED_OFFICIAL",
+        "relevant_sections": "Article 5(4); Article 6(a); Article 6(c)(21)",
+        "limitations": "English translation of the amending law, which restates the amended articles; the consolidated text of Law No. 6 of 2018 was not compared."
       }
     ]
   },
@@ -1008,6 +1134,159 @@
       "text_sha256": "970f29105d331e13"
     },
     {
+      "chunk_id": "G6-3-sme-definition",
+      "source_id": "G6",
+      "section": "3.1 (Definitions): Short Message Entity",
+      "printed_pages": [
+        15,
+        15
+      ],
+      "pdf_pages": [
+        15,
+        15
+      ],
+      "claim_classification": "GLOBAL_COMPARATOR",
+      "jurisdiction": "GLOBAL",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "748c165592e7dffd"
+    },
+    {
+      "chunk_id": "G6-9.2.3.15-tp-status",
+      "source_id": "G6",
+      "section": "9.2.3.15 TP-Status",
+      "printed_pages": [
+        70,
+        70
+      ],
+      "pdf_pages": [
+        70,
+        70
+      ],
+      "claim_classification": "GLOBAL_COMPARATOR",
+      "jurisdiction": "GLOBAL",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "8c22a0b96aafde6a"
+    },
+    {
+      "chunk_id": "G7-493.1291g-immediate-alert",
+      "source_id": "G7",
+      "section": "493.1291(g)",
+      "printed_pages": [
+        1,
+        1
+      ],
+      "pdf_pages": [
+        1,
+        1
+      ],
+      "claim_classification": "GLOBAL_COMPARATOR",
+      "jurisdiction": "GLOBAL",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "189afaeba20fe10d"
+    },
+    {
+      "chunk_id": "G7-493.1291h-delayed-results",
+      "source_id": "G7",
+      "section": "493.1291(h)",
+      "printed_pages": [
+        1,
+        1
+      ],
+      "pdf_pages": [
+        1,
+        1
+      ],
+      "claim_classification": "GLOBAL_COMPARATOR",
+      "jurisdiction": "GLOBAL",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "574ab2f804b41d02"
+    },
+    {
+      "chunk_id": "G8-art14-1-human-oversight",
+      "source_id": "G8",
+      "section": "Article 14(1)",
+      "printed_pages": [
+        1,
+        1
+      ],
+      "pdf_pages": [
+        1,
+        1
+      ],
+      "claim_classification": "GLOBAL_COMPARATOR",
+      "jurisdiction": "GLOBAL",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "0f58d9de45d9d2e0"
+    },
+    {
+      "chunk_id": "G8-art26-2-deployer-oversight",
+      "source_id": "G8",
+      "section": "Article 26(2)",
+      "printed_pages": [
+        2,
+        2
+      ],
+      "pdf_pages": [
+        2,
+        2
+      ],
+      "claim_classification": "GLOBAL_COMPARATOR",
+      "jurisdiction": "GLOBAL",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "ec6fcc70732e1560"
+    },
+    {
+      "chunk_id": "G8-art73-2-incident-deadline",
+      "source_id": "G8",
+      "section": "Article 73(2)",
+      "printed_pages": [
+        3,
+        3
+      ],
+      "pdf_pages": [
+        3,
+        3
+      ],
+      "claim_classification": "GLOBAL_COMPARATOR",
+      "jurisdiction": "GLOBAL",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "bf8f73cc9a382980"
+    },
+    {
+      "chunk_id": "G9-art1-13-health-data",
+      "source_id": "G9",
+      "section": "Article 1(13) Health Data",
+      "printed_pages": [
+        3,
+        3
+      ],
+      "pdf_pages": [
+        3,
+        3
+      ],
+      "claim_classification": "GLOBAL_COMPARATOR",
+      "jurisdiction": "GLOBAL",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "b611e3bf5cacdf36"
+    },
+    {
+      "chunk_id": "G9-art29-1-transfer-outside",
+      "source_id": "G9",
+      "section": "Article 29(1)",
+      "printed_pages": [
+        11,
+        11
+      ],
+      "pdf_pages": [
+        11,
+        11
+      ],
+      "claim_classification": "GLOBAL_COMPARATOR",
+      "jurisdiction": "GLOBAL",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "67c0f0d36ccac626"
+    },
+    {
       "chunk_id": "S1-11.1",
       "source_id": "S1",
       "section": "11.1",
@@ -1244,6 +1523,91 @@
       "jurisdiction": "AE-DU",
       "excerpt_status": "VERIFIED_AGAINST_SOURCE",
       "text_sha256": "01a617d831ff2e58"
+    },
+    {
+      "chunk_id": "U10-art13-1-2-mandate",
+      "source_id": "U10",
+      "section": "Article 13(1)-(2)",
+      "printed_pages": [
+        12,
+        12
+      ],
+      "pdf_pages": [
+        12,
+        12
+      ],
+      "claim_classification": "BINDING_REQUIREMENT",
+      "jurisdiction": "AE-FED",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "3b17e024765cf2e8"
+    },
+    {
+      "chunk_id": "U10-art13-3-quality",
+      "source_id": "U10",
+      "section": "Article 13(3)",
+      "printed_pages": [
+        12,
+        12
+      ],
+      "pdf_pages": [
+        12,
+        12
+      ],
+      "claim_classification": "BINDING_REQUIREMENT",
+      "jurisdiction": "AE-FED",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "44af623280535dd5"
+    },
+    {
+      "chunk_id": "U11-art6a-competent-regulator",
+      "source_id": "U11",
+      "section": "Article 6(a) (Functions of the DHA)",
+      "printed_pages": [
+        1,
+        1
+      ],
+      "pdf_pages": [
+        1,
+        1
+      ],
+      "claim_classification": "BINDING_REQUIREMENT",
+      "jurisdiction": "AE-DU",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "32e8cea5a268fe89"
+    },
+    {
+      "chunk_id": "U11-art5-4-smart-health",
+      "source_id": "U11",
+      "section": "Article 5(4) (Objectives of the DHA)",
+      "printed_pages": [
+        1,
+        1
+      ],
+      "pdf_pages": [
+        1,
+        1
+      ],
+      "claim_classification": "BINDING_REQUIREMENT",
+      "jurisdiction": "AE-DU",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "2f5410a0fbd44b35"
+    },
+    {
+      "chunk_id": "U11-art6-21-health-information-system",
+      "source_id": "U11",
+      "section": "Article 6 (functions), item 21",
+      "printed_pages": [
+        1,
+        1
+      ],
+      "pdf_pages": [
+        1,
+        1
+      ],
+      "claim_classification": "BINDING_REQUIREMENT",
+      "jurisdiction": "AE-DU",
+      "excerpt_status": "VERIFIED_AGAINST_SOURCE",
+      "text_sha256": "427737038907d3da"
     },
     {
       "chunk_id": "U1-art4-confidentiality",
@@ -1832,12 +2196,12 @@
       "classification": "SOURCE_AMBIGUITY",
       "jurisdictions_compared": "AE-DU vs US",
       "sources_reviewed": "S1 \u00a79.1.5(e); S1 \u00a79.1.5(f); S1 \u00a711.1; G1 NPSG.02.03.01 EP1",
-      "source_evidence": "S1-9.1.5.e (p29); S1-9.1.5.f (p29); G1-npsg-02-03-01-ep1 (p1)",
+      "source_evidence": "S1-9.1.5.e (p29); S1-9.1.5.f (p29); G1-npsg-02-03-01-ep1 (p1); G7-493.1291h-delayed-results (p1)",
       "what_existing_sources_establish": "Both instruments delegate timing to the organisation: DHA requires a critical-results policy and an internally defined turnaround time; the Joint Commission requires written procedures stating 'the acceptable length of time between the availability and reporting'.",
       "what_remains_unclear": "No numeric clock is fixed by either instrument. The retrieved set does not establish what a 'timely' communication means for a walk-in result.",
       "technical_consequence": "A system that hardcodes a deadline would be inventing a requirement.",
       "proposed_product_control": "The clock and escalation window live in an explicit institutional profile, labelled PRODUCT_DESIGN_CONTROL, and are shown as such in the UI and the audit record.",
-      "global_comparator": "G1 EP1 requires the organisation to define the acceptable length of time rather than setting a universal limit.",
+      "global_comparator": "G1 EP1 requires the organisation to define the acceptable length of time rather than setting a universal limit.; G7 CLIA 493.1291(h): delays are judged against the laboratory's own 'established time frames'.",
       "confidence": "high",
       "verification_status": "VERIFIED_OFFICIAL",
       "review_needed": "no - but the facility must still adopt and document its own clock"
@@ -1851,12 +2215,12 @@
       "sources_reviewed": "S1 \u00a79.3.4; S1 \u00a711.1.1-11.1.3; S1 \u00a79.3.3; AD1 PP.11.2(c)",
       "source_evidence": "S1-9.3.4 (p37); S1-9.3.3 (p37); AD1-PP.11.2.c (p13)",
       "what_existing_sources_establish": "S1 \u00a79.3.4 requires electronic laboratory reports to be secured; \u00a79.3.3 addresses electronic signature and telephone provision of critical information to a physician. The Abu Dhabi comparator delegates the means of notification to the facility.",
-      "what_remains_unclear": "No retrieved Dubai clause states which alternative channel may be used for a walk-in patient, who may authorise it, or what must be recorded. The documented search did not locate such a clause; this is not evidence that none exists.",
+      "what_remains_unclear": "No retrieved Dubai clause states which alternative channel may be used for a walk-in patient, who may authorise it, or what must be recorded. The documented search did not locate such a clause; this is not evidence that none exists. Absence searched on 2026-11-02 across the full 24-source verified corpus (BM25 and hybrid retrieval, jurisdiction AE-DU with the federal layer); no clause found. An absence cannot be proven: this records the search, not a finding that no rule exists anywhere.",
       "technical_consequence": "An implementation may silently switch to an unverified phone number or portal, creating a confidentiality and identity risk.",
       "proposed_product_control": "INV-9: alternative channels are blocked unless verified evidence or an explicitly approved institutional procedure authorises them; the authorising reference is recorded.",
       "global_comparator": "AD1 PP.11.2(c) defines the means of notification in facility policy, showing the comparator also delegates rather than mandates.",
       "confidence": "medium",
-      "verification_status": "NEEDS_VERIFICATION",
+      "verification_status": "ABSENCE_SEARCHED",
       "review_needed": "yes - this is the strongest candidate gap for a facility-level review"
     },
     {
@@ -1866,12 +2230,12 @@
       "classification": "SOURCE_AMBIGUITY",
       "jurisdictions_compared": "AE-DU",
       "sources_reviewed": "S1 \u00a711.1.1; S1 \u00a713.4; S1 \u00a713.3; S1 Appendix 3",
-      "source_evidence": "S1-11.1.1 (p40); S1-13.4 (p42); S1-13.3 (p42); S1-app3.genetics (p65)",
+      "source_evidence": "S1-11.1.1 (p40); S1-13.4 (p42); S1-13.3 (p42); S1-app3.genetics (p65); G7-493.1291g-immediate-alert (p1)",
       "what_existing_sources_establish": "\u00a713.4 states genetic results shall not be communicated to patients directly and shall be directed to the referring/treating physician; Appendix 3 lists genetics as requiring a prescription, which excludes it from the walk-in category in \u00a711.1.",
       "what_remains_unclear": "Nothing, once \u00a711.1 is read with its scope: genetic testing needs a prescription (Appendix 3), so it is outside the walk-in category. The ambiguity is in retrieval, not in the instrument: a relevance-ranked search returns \u00a711.1 for a genetic result.",
       "technical_consequence": "A system that matches on keyword relevance alone will retrieve \u00a711.1 for a genetic result and communicate directly to the patient.",
       "proposed_product_control": "Scope gate: the policy agent returns scope_permitted=false with a \u00a713.4 citation; the deterministic gate blocks any transmission for that scope and escalates.",
-      "global_comparator": "n/a - the conflict is internal to the Dubai instrument",
+      "global_comparator": "G7 US CLIA 493.1291(g) and G1 Joint Commission NPSG.02.03.01 both address critical results to the requesting or responsible clinician, consistent with ST-28 \u00a713.4 routing genetic results to the referring physician.",
       "confidence": "high",
       "verification_status": "VERIFIED_OFFICIAL",
       "review_needed": "no - resolved by scope; retained as a documented apparent conflict"
@@ -1885,12 +2249,12 @@
       "sources_reviewed": "S1; AD1; S2 (circular index)",
       "source_evidence": "S1-11.1.1 (p40); AD1-PP.11.2.intro (p13); AD1-PP.11.4.b (p14)",
       "what_existing_sources_establish": "Dubai and Abu Dhabi each publish their own laboratory standards with different recipient models (walk-in patient vs responsible clinician) and different read-back provisions.",
-      "what_remains_unclear": "No national harmonising instrument was located in this search. The DHA circular index could not be enumerated programmatically; this is an unverified search, not a finding of absence.",
+      "what_remains_unclear": "No national harmonising instrument was located in this search. The DHA circular index could not be enumerated programmatically; this is an unverified search, not a finding of absence. Absence searched on 2026-11-02 across the full 24-source verified corpus (BM25 and hybrid retrieval, jurisdiction AE-DU with the federal layer); no clause found. An absence cannot be proven: this records the search, not a finding that no rule exists anywhere.",
       "technical_consequence": "A multi-emirate deployment cannot reuse one rule set; jurisdiction must be a first-class input.",
       "proposed_product_control": "Jurisdiction is stored on every case and every source; the retriever filters by jurisdiction and the audit agent flags any binding citation from outside the case jurisdiction.",
       "global_comparator": "None located - no comparator establishes cross-jurisdiction equivalence.",
       "confidence": "low",
-      "verification_status": "NEEDS_VERIFICATION",
+      "verification_status": "ABSENCE_SEARCHED",
       "review_needed": "yes - requires manual search of DHA and DoH publications and federal health legislation"
     },
     {
@@ -1936,12 +2300,12 @@
       "sources_reviewed": "S1 \u00a79.3.4; S1 \u00a711.1.3",
       "source_evidence": "S1-9.3.4 (p37); S1-11.1.3 (p40)",
       "what_existing_sources_establish": "S1 requires secure electronic reports and a record of the communication.",
-      "what_remains_unclear": "No retrieved clause specifies identity binding for a mobile number, or what to do when the number is shared or stale. The search did not locate such a requirement.",
+      "what_remains_unclear": "No retrieved clause specifies identity binding for a mobile number, or what to do when the number is shared or stale. The search did not locate such a requirement. Absence searched on 2026-11-02 across the full 24-source verified corpus (BM25 and hybrid retrieval, jurisdiction AE-DU with the federal layer); no clause found. An absence cannot be proven: this records the search, not a finding that no rule exists anywhere.",
       "technical_consequence": "A message may reach the wrong person, and the record will still look complete.",
       "proposed_product_control": "Contact reference is stored separately from the patient reference; an unverified-recipient state can be raised; the gate refuses sends whose recipient is not verified in the profile.",
       "global_comparator": "AD1 PP.11.2(d) requires identification of the individual notified, which presupposes identity verification.",
       "confidence": "medium",
-      "verification_status": "NEEDS_VERIFICATION",
+      "verification_status": "ABSENCE_SEARCHED",
       "review_needed": "yes - registration-desk procedure review required"
     },
     {
@@ -1985,14 +2349,14 @@
       "classification": "CANDIDATE_POLICY_GAP",
       "jurisdictions_compared": "AE-DU vs US",
       "sources_reviewed": "S1 \u00a711.1.3; G2 Worksheet 2.1",
-      "source_evidence": "S1-11.1.3 (p40); G2-2.1 (p6)",
+      "source_evidence": "S1-11.1.3 (p40); G2-2.1 (p6); G6-9.2.3.15-tp-status (p70)",
       "what_existing_sources_establish": "S1 requires a record of the communication. The US comparator requires the EHR to track order and result status so that problems with delivery can be detected.",
-      "what_remains_unclear": "No retrieved Dubai clause addresses an indeterminate delivery outcome, or whether a retry is required, permitted, or forbidden while the outcome is unknown.",
+      "what_remains_unclear": "No retrieved Dubai clause addresses an indeterminate delivery outcome, or whether a retry is required, permitted, or forbidden while the outcome is unknown. Absence searched on 2026-11-02 across the full 24-source verified corpus (BM25 and hybrid retrieval, jurisdiction AE-DU with the federal layer); no clause found. An absence cannot be proven: this records the search, not a finding that no rule exists anywhere.",
       "technical_consequence": "A retry may duplicate the message; a suppressed retry may leave the patient uninformed.",
       "proposed_product_control": "Explicit DELIVERY_STATE_UNKNOWN state; reconciliation required before retry (INV-4); idempotency keys prevent duplicate sends; escalation when uncertainty persists.",
-      "global_comparator": "G2 2.1 order tracking is the closest comparator concept for detecting delivery problems.",
+      "global_comparator": "G2 2.1 order tracking is the closest comparator concept for detecting delivery problems.; G6 ETSI TS 123 040 \u00a79.2.3.15 defines a status for exactly this case: 'Short message forwarded by the SC to the SME but the SC is unable to confirm delivery'.",
       "confidence": "medium",
-      "verification_status": "NEEDS_VERIFICATION",
+      "verification_status": "ABSENCE_SEARCHED",
       "review_needed": "yes - facility-level decision with clinical governance sign-off"
     },
     {
@@ -2018,13 +2382,13 @@
       "question": "Who is responsible when a critical-result SMS is accepted by the gateway but never delivered, and what does a delivery receipt prove?",
       "classification": "CANDIDATE_POLICY_GAP",
       "jurisdictions_compared": "AE-FED (telecom) vs AE-DU (health) vs UK comparator",
-      "sources_reviewed": "U8 \u00a71-23, \u00a73, \u00a78-1; S1 \u00a711.1.1, \u00a711.1.3; G5 \u00a75",
-      "source_evidence": "U8-1-23-delivery-definition (p5); U8-8-1-licensee-responsibility (p6); U8-3-scope (p5); S1-11.1.3 (p40); G5-6-feedback-received-read (p7)",
+      "sources_reviewed": "U8 \u00a71-23, \u00a73, \u00a78-1; S1 \u00a711.1.1, \u00a711.1.3; G5 \u00a75; U10 Art. 13; G6 \u00a73.1, \u00a79.2.3.15",
+      "source_evidence": "U8-1-23-delivery-definition (p5); U8-8-1-licensee-responsibility (p6); U8-3-scope (p5); S1-11.1.3 (p40); G5-6-feedback-received-read (p7); U10-art13-1-2-mandate (p12); G6-3-sme-definition (p15); G6-9.2.3.15-tp-status (p70)",
       "what_existing_sources_establish": "The only UAE telecom instrument retrieved defines delivery for marketing messages, as the licensee delivering to the subscriber across its network, and makes the licensee responsible for that delivery. The health instrument requires a record of communication with the patient.",
       "what_remains_unclear": "No instrument joins the two: telecom delivery ends at a handset, the health record needs a person. No rule assigns responsibility for a transactional clinical message lost after gateway acceptance.",
       "technical_consequence": "Dashboards treat 'accepted' or 'delivered' as 'communicated' and close the case; the \u00a711.1.3 record then documents a communication no person received.",
       "proposed_product_control": "TRANSPORT_ACCEPTED, DELIVERY_CONFIRMED and CLINICAL_ACKNOWLEDGMENT_CONFIRMED are separate states; only a named human acknowledgment of the current revision closes a case (INV-1, INV-2, INV-8). Scenario S8 exercises accepted-but-never-delivered.",
-      "global_comparator": "G5 RCPath G158 \u00a75: electronic alerts should have a feedback mechanism to ascertain whether an alert has been 'received, read, understood and even actioned'.",
+      "global_comparator": "G6 ETSI TS 123 040 (3GPP SMS) \u00a79.2.3.15: the status report distinguishes 'Short message received by the SME' from 'forwarded ... but the SC is unable to confirm delivery', and an SME is an 'entity which may send or receive Short Messages' (\u00a73.1) - the global standard stops at the handset. G5 RCPath G158 \u00a75: alerts need feedback on whether 'received, read, understood'. U10 (UAE Telecom Law Art. 13) gives TDRA a subscriber-interest mandate with no clinical-delivery rule.",
       "confidence": "medium",
       "verification_status": "VERIFIED_OFFICIAL",
       "review_needed": "yes - TDRA's newer marketing-SMS policy (reported 2025) was not retrieved"
@@ -2036,12 +2400,12 @@
       "classification": "SOURCE_AMBIGUITY",
       "jurisdictions_compared": "AE-DU vs AE-AZ vs UK",
       "sources_reviewed": "S1 \u00a711.1, \u00a711.1.1; AD1 PP.11.2; G5 \u00a78",
-      "source_evidence": "S1-11.1 (p39); S1-11.1.1 (p40); AD1-PP.11.2.intro (p13); G5-8-clinical-team-only (p9); G5-8-care-team-first (p9)",
+      "source_evidence": "S1-11.1 (p39); S1-11.1.1 (p40); AD1-PP.11.2.intro (p13); G5-8-clinical-team-only (p9); G5-8-care-team-first (p9); G7-493.1291g-immediate-alert (p1)",
       "what_existing_sources_establish": "DHA ST-28 \u00a711.1 provides for walk-in results reported to the patient. Abu Dhabi routes critical results to the responsible clinician. RCPath G158 (May 2026) recommends that critical results are only communicated with the requesting clinical team, and that the care team is told before a result appears in a patient app.",
       "what_remains_unclear": "The Dubai instrument sets no acknowledgment standard for a lay recipient of a critical value and no sequencing rule when the patient later names a physician.",
       "technical_consequence": "The patient becomes the only safety net for a life-threatening value, through a channel with no read-back.",
       "proposed_product_control": "Patient-direct sends require an acknowledgment bound to the revision; non-acknowledgment escalates to a supervisor, never to silent closure. A comparator may inform the reviewer but cannot override \u00a711.1 (jurisdiction guard).",
-      "global_comparator": "G5 RCPath G158 \u00a78 (UK); G1 Joint Commission NPSG.02.03.01 routes to the responsible licensed caregiver (US).",
+      "global_comparator": "G5 RCPath G158 \u00a78 (UK); G1 Joint Commission NPSG.02.03.01 routes to the responsible licensed caregiver (US).; G7 US CLIA 42 CFR 493.1291(g): the laboratory must 'immediately alert the individual or entity requesting the test'.",
       "confidence": "high",
       "verification_status": "VERIFIED_OFFICIAL",
       "review_needed": "no - documented policy divergence"
@@ -2053,12 +2417,12 @@
       "classification": "CANDIDATE_POLICY_GAP",
       "jurisdictions_compared": "AE-DU vs AE-FED vs EU",
       "sources_reviewed": "U6 \u00a74.2.1, \u00a74.3.3, \u00a74.4.2, \u00a74.8.1; U5 Principles 6-7",
-      "source_evidence": "U6-4.2.1-accountability (p7); U6-4.3.3-independent-validation (p8); U6-4.4.2-override (p8); U6-4.8.1-incident-reporting (p12); U5-p06-human-oversight; U5-p07-governance-accountability",
+      "source_evidence": "U6-4.2.1-accountability (p7); U6-4.3.3-independent-validation (p8); U6-4.4.2-override (p8); U6-4.8.1-incident-reporting (p12); U5-p06-human-oversight; U5-p07-governance-accountability; G8-art14-1-human-oversight (p1); G8-art26-2-deployer-oversight (p2); G8-art73-2-incident-deadline (p3)",
       "what_existing_sources_establish": "DHA PP-09 requires accountability to be agreed among designer, developer, operator and end user, independent third-party validation, human override, and reporting of AI incidents to DHA-HRS. The UAE AI Charter states human oversight as a principle.",
       "what_remains_unclear": "No default owner when nothing has been agreed, no named validating body or route, and no timeframe or format for incident reports. PP-09's own revision date (1 July 2026) has passed with no successor found.",
       "technical_consequence": "A deployment can run an AI component nobody is accountable for, and report incidents whenever it chooses.",
       "proposed_product_control": "The model never decides: the deterministic gate owns every transition and each decision records the accountable human role. Every model proposal, its probabilities and its cited clauses are logged in the hash chain for incident reconstruction.",
-      "global_comparator": "EU AI Act, Regulation (EU) 2024/1689: Art. 14 (human oversight), Art. 26 (deployer obligations), Art. 73 (serious-incident reporting with fixed deadlines). Cited from the Official Journal; not quoted in this KB because EUR-Lex refuses scripted retrieval.",
+      "global_comparator": "G8 EU AI Act (Reg. 2024/1689): Art. 14(1) human oversight by natural persons; Art. 26(2) deployers 'shall assign human oversight to natural persons who have the necessary competence, training and authority'; Art. 73(2) serious incidents reported 'in any event, not later than 15 days'. Verified against a third-party copy of the text.",
       "confidence": "medium",
       "verification_status": "VERIFIED_OFFICIAL",
       "review_needed": "yes - confirm whether DHA has issued a successor to PP-09"
@@ -2079,6 +2443,23 @@
       "confidence": "low",
       "verification_status": "VERIFIED_OFFICIAL",
       "review_needed": "yes - check TDRA's current sender-ID categories"
+    },
+    {
+      "gap_id": "GR-19",
+      "workflow_stage": "data residency (AI processing)",
+      "question": "On what basis may an AI service outside the UAE process a critical-result case, and where is that basis published?",
+      "classification": "CANDIDATE_POLICY_GAP",
+      "jurisdictions_compared": "AE-FED vs Saudi Arabia",
+      "sources_reviewed": "U1 Art. 13, Art. 24; G9 Art. 1(13), Art. 29; Ministerial Resolution 51/2021 (not retrieved)",
+      "source_evidence": "U1-art13-localisation; U1-art24-penalty; G9-art29-1-transfer-outside (p11); G9-art1-13-health-data (p3)",
+      "what_existing_sources_establish": "UAE Law 2/2019 Art. 13 bars storing or processing health data outside the State except under a resolution; Art. 24 sets the penalty. Saudi Arabia's PDPL states purpose-based transfer routes in the law itself (Art. 29) and treats health data as a category of personal data.",
+      "what_remains_unclear": "The UAE exception list sits in Ministerial Resolution 51/2021, which no official portal served to us; none of the exceptions reported in commentary names AI inference for patient messaging.",
+      "technical_consequence": "A deployment cannot show, from published text alone, that a hosted model may see a real case.",
+      "proposed_product_control": "Residency guard: a real case on an endpoint outside the State is refused unless a resolution reference is recorded; MR 51/2021 exceptions go to a person, never to code. Synthetic cases only on hosted models.",
+      "global_comparator": "G9 Saudi PDPL Art. 29(1): transfer outside the Kingdom allowed for listed purposes set in the law (GCC comparator).",
+      "confidence": "medium",
+      "verification_status": "VERIFIED_OFFICIAL",
+      "review_needed": "yes - obtain the official text of MR 51/2021"
     }
   ],
   "mappings": {
@@ -2086,431 +2467,332 @@
       {
         "mapping_id": "Y1",
         "framework_concept": "SRC (source)",
-        "framework_definition_source": "ITU-T Y.3172 (06/2019) \u00a78.1, p14",
-        "implemented_component": "Synthetic laboratory, transport and human event generators; scenario JSON event stream",
-        "code_location": "scenarios/*.json",
-        "inputs": "Ordered scenario steps with synthetic result, transport, patient and supervisor events",
+        "framework_definition_source": "ITU-T Y.3172 (06/2019) \u00a78.1, p14 (F1-8.1-src)",
+        "implemented_component": "Synthetic laboratory, transport and human event streams; the verified policy corpus",
+        "code_location": "scenarios/*.json ; kb/index/chunks.json",
+        "inputs": "Scenario steps; runtime-injected events (POST /api/runs/{id}/events)",
         "outputs": "Event records with sequence numbers",
-        "evidence_of_existence": "7 scenario files, 51 ordered steps in total",
-        "demonstrating_test": "tests/test_scenarios.py::test_scenario_event_order",
-        "limitations": "Sources are fabricated fixtures, not live feed handlers. No telecom data source exists."
+        "evidence_of_existence": "10 scenario files; injection endpoint",
+        "demonstrating_test": "tests/test_scenarios.py ; tests/test_api.py",
+        "limitations": "Synthetic data only."
       },
       {
         "mapping_id": "Y2",
         "framework_concept": "C (collector)",
-        "framework_definition_source": "ITU-T Y.3172 \u00a78.1, p14",
-        "implemented_component": "Event ingestion and append-only event store",
-        "code_location": "app/orchestration/engine.py::Orchestrator.step ; app/models/db.py::EventRow",
-        "inputs": "Raw step specification",
-        "outputs": "Persisted event row with seq, at, kind, actor, source_layer",
-        "evidence_of_existence": "events table populated for every run; exported in the audit bundle",
-        "demonstrating_test": "tests/test_api.py::test_case_timeline_separates_event_layers",
-        "limitations": "Collector is in-process; no queue, no backpressure handling, no multi-tenant isolation."
+        "framework_definition_source": "\u00a78.1, p14 (F1-8.1-c)",
+        "implemented_component": "Event ingestion: each event recorded in the hash chain before it is applied",
+        "code_location": "app/orchestration/engine.py",
+        "inputs": "Event payloads",
+        "outputs": "event.received / event.injected audit entries",
+        "evidence_of_existence": "audit chain",
+        "demonstrating_test": "tests/test_audit.py",
+        "limitations": "No real message bus; one process."
       },
       {
         "mapping_id": "Y3",
         "framework_concept": "PP (preprocessor)",
-        "framework_definition_source": "ITU-T Y.3172 \u00a78.1, p15",
-        "implemented_component": "Normalisation, schema validation, scope and revision tagging of incoming events",
-        "code_location": "app/orchestration/engine.py::ingest_external ; app/state_machine/transitions.py::MachineContext",
-        "inputs": "Raw event dict",
-        "outputs": "Typed MachineContext with current revision, attempts, acknowledgments, scope",
-        "evidence_of_existence": "Every guard reads MachineContext; malformed agent output is rejected by Pydantic",
-        "demonstrating_test": "tests/test_state_machine.py",
-        "limitations": "Preprocessing is rule-based; no anomaly detection on the event stream."
+        "framework_definition_source": "\u00a78.1, p15 (F1-8.1-pp)",
+        "implemented_component": "Normalisation into case state, revision binding, transport reconciliation; jurisdiction-filtered retrieval",
+        "code_location": "app/orchestration/engine.py ; app/kb/retriever.py ; app/transport/simulator.py",
+        "inputs": "Events, attempts, clauses",
+        "outputs": "Case view and evidence for the agents",
+        "evidence_of_existence": "_case_view in the engine",
+        "demonstrating_test": "tests/test_transport.py ; tests/test_kb.py",
+        "limitations": "Transport is simulated."
       },
       {
         "mapping_id": "Y4",
         "framework_concept": "M (model)",
-        "framework_definition_source": "ITU-T Y.3172 \u00a78.1, p15",
-        "implemented_component": "Five role-scoped agents producing validated structured assessments",
-        "code_location": "app/agents/*.py",
-        "inputs": "Role-scoped view dict + BM25 evidence",
-        "outputs": "AgentAssessment (Pydantic-validated)",
-        "evidence_of_existence": "Each agent has distinct allowed_fields and a distinct assessment contract",
-        "demonstrating_test": "tests/test_agents.py",
-        "limitations": "Agents are deterministic rule engines in this build. No LLM provider is wired in; the 'model' analogy is structural, not statistical."
+        "framework_definition_source": "\u00a78.1, p15 (F1-8.1-m)",
+        "implemented_component": "Policy Evidence Analyst and conditional TDRA-lens analyst (LLMs), adversarial reviewer (LLM, different model family); typed judgments with probabilities",
+        "code_location": "app/multiagent/council.py ; app/multiagent/providers.py",
+        "inputs": "Case view, verified clauses",
+        "outputs": "Obligation, governing clause, gap, objections",
+        "evidence_of_existence": "agent.message entries",
+        "demonstrating_test": "tests/test_multiagent.py",
+        "limitations": "Hosted models for synthetic cases; local qwen2.5:14b not yet run end to end."
       },
       {
         "mapping_id": "Y5",
         "framework_concept": "P (policy)",
-        "framework_definition_source": "ITU-T Y.3172 \u00a78.1, p15 - 'applies policies to the output of the model node'",
-        "implemented_component": "Deterministic gate: invariants, scope decision, approval withholding",
-        "code_location": "app/orchestration/gate.py::enforce ; app/state_machine/transitions.py",
-        "inputs": "Agent proposals + MachineContext + facility profile",
-        "outputs": "GateDecision (permitted / enforced action / invariant / reason)",
-        "evidence_of_existence": "No agent can move state directly; every consequential action passes enforce()",
-        "demonstrating_test": "tests/test_state_machine.py::test_llm_output_cannot_bypass_invariants",
-        "limitations": "The gate is code, not a policy language; changing it requires a code change and review."
+        "framework_definition_source": "\u00a78.1, p15 (F1-8.1-p)",
+        "implemented_component": "Deterministic assurance (fact check, policy-rules check, conflicts) and the gate's invariants decide what may happen",
+        "code_location": "app/multiagent/council.py ; app/orchestration/gate.py",
+        "inputs": "Model output, case state",
+        "outputs": "Permitted action or escalation",
+        "evidence_of_existence": "assurance.review, orchestrator.decision, gate decision",
+        "demonstrating_test": "tests/test_multiagent.py ; tests/test_state_machine.py",
+        "limitations": "Invariants are written by the authors and not independently validated."
       },
       {
         "mapping_id": "Y6",
         "framework_concept": "D (distributor)",
-        "framework_definition_source": "ITU-T Y.3172 \u00a78.1, p15",
-        "implemented_component": "Simulated transport adapter with idempotency, channel authorisation and reconciliation",
-        "code_location": "app/transport/simulator.py ; app/orchestration/engine.py::perform_action",
-        "inputs": "Authorised channel + idempotency key + revision",
-        "outputs": "Attempt record, provider events, delivery receipts, reconciliation outcomes",
-        "evidence_of_existence": "REAL_NETWORK_ACCESS = False asserted in /api/health; no sockets are opened",
-        "demonstrating_test": "tests/test_transport.py",
-        "limitations": "Simulation only; no real SMS/portal gateway, no carrier semantics, no delivery-report lag modelling beyond the script."
+        "framework_definition_source": "\u00a78.1, p15 (F1-8.1-d)",
+        "implemented_component": "Execution of permitted actions to the right SINK; failed actions audited and escalated",
+        "code_location": "app/orchestration/engine.py",
+        "inputs": "Permitted action",
+        "outputs": "action.performed / action.failed entries",
+        "evidence_of_existence": "S4 escalates on NO_PHYSICIAN_CHANNEL",
+        "demonstrating_test": "tests/test_scenarios.py",
+        "limitations": "Simulated transport."
       },
       {
         "mapping_id": "Y7",
         "framework_concept": "SINK",
-        "framework_definition_source": "ITU-T Y.3172 \u00a78.1, p15",
-        "implemented_component": "Synthetic patient endpoint, supervisor queue, communication record",
-        "code_location": "app/orchestration/engine.py::perform_action (documentation, escalation) ; web/src/pages/CaseTimeline.tsx",
-        "inputs": "Gate-approved action",
-        "outputs": "Mock delivery target state, escalation ticket, documentation record",
-        "evidence_of_existence": "Escalation tickets and documentation records persisted per case",
-        "demonstrating_test": "tests/test_scenarios.py",
-        "limitations": "No human is actually notified. The 'patient' is a synthetic reference string."
+        "framework_definition_source": "\u00a78.1, p15 (F1-8.1-sink)",
+        "implemented_component": "Mock transport, supervisor queue with owner and deadline, communication record",
+        "code_location": "app/transport/simulator.py ; app/api/routes.py",
+        "inputs": "Messages, escalations",
+        "outputs": "Delivery, acknowledgment, documentation states",
+        "evidence_of_existence": "case timeline",
+        "demonstrating_test": "tests/test_transport.py",
+        "limitations": "No real recipients."
       },
       {
         "mapping_id": "Y8",
-        "framework_concept": "MLFO (machine learning function orchestrator)",
-        "framework_definition_source": "ITU-T Y.3172 \u00a73.2.2, p2",
-        "implemented_component": "Orchestration engine: dispatch, context scoping, proposal resolution, audit",
-        "code_location": "app/orchestration/engine.py::Orchestrator",
-        "inputs": "Event + configuration",
-        "outputs": "Per-step record: assessments, gate decision, transitions, unresolved questions",
-        "evidence_of_existence": "Documented in docs/architecture.md and exposed at /api/meta/state-machine",
-        "demonstrating_test": "tests/test_scenarios.py::test_information_asymmetry",
-        "limitations": "Single-process orchestrator; no distributed placement, no model selection, no performance-based reselection as Y.3172 envisages."
+        "framework_concept": "MLFO (ML function orchestrator)",
+        "framework_definition_source": "\u00a73.2.2, p2 (F1-3.2.2-mlfo)",
+        "implemented_component": "Deterministic orchestrator: chains SRC to SINK per step, decides when the council runs and whether to escalate; no LLM coordinator",
+        "code_location": "app/orchestration/engine.py ; app/multiagent/council.py",
+        "inputs": "Each step",
+        "outputs": "Ordered node execution",
+        "evidence_of_existence": "step.completed entries",
+        "demonstrating_test": "tests/test_scenarios.py",
+        "limitations": "Single-node orchestration."
       },
       {
         "mapping_id": "Y9",
-        "framework_concept": "Separation of ML pipeline from underlay (conceptual)",
-        "framework_definition_source": "ITU-T Y.3172 \u00a73.2.4 (ML overlay), p2",
-        "implemented_component": "No separate underlay: the transport simulator is in-process",
-        "code_location": "app/transport/simulator.py",
-        "inputs": "n/a",
-        "outputs": "n/a",
-        "evidence_of_existence": "None",
-        "demonstrating_test": "Not implemented",
-        "limitations": "NOT IMPLEMENTED. ResultRelay does not implement an ML overlay/underlay split and claims no Y.3172 conformance."
+        "framework_concept": "ML sandbox (containment)",
+        "framework_definition_source": "\u00a78.3, p19",
+        "implemented_component": "Models run behind the residency guard and the gate; recorded answers replay offline; council-on vs council-off measured in the evaluation",
+        "code_location": "app/advisers/residency.py ; scripts/run_evaluation.py",
+        "inputs": "Model endpoint, data class",
+        "outputs": "Permitted or refused calls",
+        "evidence_of_existence": "resultrelay vs resultrelay_council rows",
+        "demonstrating_test": "tests/test_adviser.py",
+        "limitations": "The sandbox is a design analogy; Y.3172 does not address health-data residency."
       },
       {
         "mapping_id": "Y10",
-        "framework_concept": "P (policy) constrained by an external legal layer",
-        "framework_definition_source": "ITU-T Y.3172 (06/2019) \u00a78.1, p15 - the policy node applies policies to model output",
-        "implemented_component": "The policy node is implemented as deterministic rules, and the rules it may apply are bounded before ranking by jurisdiction and claim class",
-        "code_location": "app/orchestration/gate.py ; app/agents/policy_applicability.py ; app/kb/retriever.py::applicable_jurisdictions",
-        "inputs": "Retrieved chunks with jurisdiction and claim_classification, plus the case jurisdiction",
-        "outputs": "Only AE-DU/AE-FED material may become binding for a Dubai case; other material is comparator-only and cannot reach the action",
-        "evidence_of_existence": "63 chunks across 14 sources of which the binding classes are confined to two jurisdictions; retriever widens a case jurisdiction upwards to the federal layer only",
-        "demonstrating_test": "tests/test_kb.py::test_applicability_filter_excludes_other_jurisdictions ; tests/test_scenarios.py::test_jurisdiction_isolation",
-        "limitations": "Y.3172 says nothing about law. The mapping is architectural (where the constraint sits), not a compliance claim: a policy node that is legally bounded is still not a legal opinion."
+        "framework_concept": "P constrained by an external legal layer",
+        "framework_definition_source": "\u00a78.1, p15",
+        "implemented_component": "Only clauses that bind the case jurisdiction can block or authorise an action; comparators can never govern",
+        "code_location": "app/kb/retriever.py ; app/multiagent/council.py",
+        "inputs": "Clause metadata",
+        "outputs": "Applicability decisions",
+        "evidence_of_existence": "policy-rules check",
+        "demonstrating_test": "tests/test_kb.py ; tests/test_multiagent.py",
+        "limitations": "Effective and revision dates are recorded but not enforced automatically."
       },
       {
         "mapping_id": "Y11",
-        "framework_concept": "ML sandbox / isolated environment",
-        "framework_definition_source": "ITU-T Y.3172 \u00a73.2.6, p2; \u00a78.3, p19",
-        "implemented_component": "The proposed adviser, if enabled, runs behind the unchanged deterministic gate and can only propose; every proposal is classified PRODUCT_DESIGN_CONTROL and re-checked against the gate",
-        "code_location": "app/core/config.py (provider stub) ; app/orchestration/gate.py",
-        "inputs": "Case snapshot and retrieved evidence",
-        "outputs": "A proposal that the gate may reject, downgrade or mark as needing evidence",
-        "evidence_of_existence": "Deterministic mode is the default; the sandbox analogy is used only to describe containment, and is labelled as an analogy",
-        "demonstrating_test": "Implemented: the Jev reviewer and regulator agents run behind the residency, grounding and jurisdiction guard; tests assert the gate decision is unchanged when a proposal is attached",
-        "limitations": "Art. 13 of Federal Law 2/2019 governs where such a model may run, which Y.3172 does not address. The residency question is recorded in R16 and GR-11's sibling row, and remains open."
-      },
-      {
-        "mapping_id": "Y12",
-        "framework_concept": "Governance / audit (traceability of ML application behaviour)",
-        "framework_definition_source": "ITU-T Y.3172 (06/2019) \u00a77.5 (management) and \u00a78.3 (general architectural guidelines)",
-        "implemented_component": "Per-step decision trace published as ordered artefacts; two-configuration comparison of the same scenario and seed",
-        "code_location": "app/api/routes.py::run_trace ; web/src/pages/Trace.tsx ; web/src/pages/Compare.tsx",
-        "inputs": "Run id; optional second configuration",
-        "outputs": "Ordered artefacts: event, evidence, proposals with derived confidence, gate decision, transition, resulting state",
-        "evidence_of_existence": "Trace JSON produced for every run; the compare view shows the citation difference between configurations rather than the final state",
-        "demonstrating_test": "tests/test_api.py (trace endpoint shape)",
-        "limitations": "Artefacts, not reasoning. No retention policy on traces beyond the in-process run registry."
+        "framework_concept": "Audit of the pipeline",
+        "framework_definition_source": "Y.3172 does not specify one; added for the hackathon's auditability criterion",
+        "implemented_component": "Hash-chained audit log re-verified on read, holding every node's output",
+        "code_location": "app/audit/log.py",
+        "inputs": "Every node's record",
+        "outputs": "Verifiable chain",
+        "evidence_of_existence": "verify_chain",
+        "demonstrating_test": "tests/test_audit.py",
+        "limitations": "Hash chain only: no signature or trusted timestamp."
       }
     ],
     "ai_readiness": [
       {
         "mapping_id": "R01",
-        "framework_dimension": "Data",
-        "framework_index": "Data Interoperability",
-        "source_reference": "ITU AI Readiness Report 2.0, \u00a72, p12-13 (F2-2-ai-policy-dimension / basic framework table)",
-        "implemented_capability": "Standardised chunk metadata with provenance, plus typed JSON APIs",
-        "code_location": "kb/index/chunks.json ; app/models/schemas.py::EvidenceChunk",
-        "evidence": "63 chunks, each with source_id, section, page, jurisdiction, classification, sha256",
-        "demonstrating_test": "tests/test_kb.py::test_chunk_metadata_complete",
+        "framework_dimension": "1 Data/Model Marketplace",
+        "framework_index": "Basic-framework pillar: Data",
+        "source_reference": "ITUAIReadiness simulation/data/framework/dimensions.json (13 dimensions); ITU AI Readiness Report 2.0 (F2)",
+        "implemented_capability": "Versioned, provenance-tagged corpus of verified quotations served over typed APIs; exported in the ITU InputDocs format",
+        "code_location": "kb/index/chunks.json ; app/kb/ingest.py ; scripts/export_itu_kb.py",
+        "evidence": "every chunk carries source, section, page, jurisdiction, claim class and verification class",
+        "demonstrating_test": "tests/test_kb_integrity.py",
         "status": "IMPLEMENTED",
-        "limitations": "Single internal schema; not mapped to FHIR/OMOP or any national data standard."
+        "limitations": "A curated corpus of quotations, not a marketplace; no data or model exchange with other parties."
       },
       {
         "mapping_id": "R02",
-        "framework_dimension": "Data",
-        "framework_index": "Data Governance",
-        "source_reference": "Report 2.0 \u00a72 (data governance indices)",
-        "implemented_capability": "Provenance verification, claim classification, append-only audit chain",
-        "code_location": "app/kb/ingest.py ; app/audit/log.py",
-        "evidence": "63/63 quotations machine-verified against official sources; hash-chained audit log",
-        "demonstrating_test": "tests/test_kb.py::test_every_excerpt_verifies ; test_audit_chain",
-        "status": "IMPLEMENTED",
-        "limitations": "Governance is bounded to the prototype's own corpus and records; no enterprise data governance process."
+        "framework_dimension": "2 Generated Content Marketplace",
+        "framework_index": "Basic-framework pillar: Innovation Ecosystem",
+        "source_reference": "ITUAIReadiness simulation/data/framework/dimensions.json (13 dimensions); ITU AI Readiness Report 2.0 (F2)",
+        "implemented_capability": "Agent outputs are typed judgments with probabilities, recorded and replayable, never free text that could be republished as policy",
+        "code_location": "app/multiagent/providers.py ; evaluation/agent_runs",
+        "evidence": "recorded answers under evaluation/agent_runs replay exactly",
+        "demonstrating_test": "tests/test_multiagent.py",
+        "status": "PARTIAL",
+        "limitations": "No content is generated for distribution; the dimension applies only to how model output is recorded."
       },
       {
         "mapping_id": "R03",
-        "framework_dimension": "Data",
-        "framework_index": "Data Accessibility",
-        "source_reference": "Report 2.0 \u00a72",
-        "implemented_capability": "Public source retrieval with documented licensing boundaries; no redistribution of restricted documents",
-        "code_location": "scripts/fetch_sources.py ; kb/source_register.csv",
-        "evidence": "source register records official URLs, licence notes and verification status for 14 sources",
-        "demonstrating_test": "manual review of source_register.csv",
-        "status": "PARTIAL",
-        "limitations": "Full texts are fetched to a local cache and not redistributed; offline use therefore degrades to the verified excerpts."
+        "framework_dimension": "3 Cross-Domain Correlation Analysis",
+        "framework_index": "Basic-framework pillar: Data",
+        "source_reference": "ITUAIReadiness simulation/data/framework/dimensions.json (13 dimensions); ITU AI Readiness Report 2.0 (F2)",
+        "implemented_capability": "Health and telecom evidence are read side by side: the Policy Evidence Analyst (DHA lens) and the conditional institutional analyst (TDRA lens); conflicts detected in code",
+        "code_location": "app/multiagent/council.py",
+        "evidence": "TELECOM_GAP and READINGS_DIFFER conflicts in the audit chain",
+        "demonstrating_test": "tests/test_multiagent.py",
+        "status": "IMPLEMENTED",
+        "limitations": "Two domains (health, telecom); financial, insurance and civil-registry data are out of scope."
       },
       {
         "mapping_id": "R04",
-        "framework_dimension": "Digital Infrastructure",
-        "framework_index": "Usability / Access to AI",
-        "source_reference": "Report 2.0 \u00a72",
-        "implemented_capability": "Single-container deployment; no GPU, no external model API; deterministic offline operation",
-        "code_location": "docker-compose.yml ; app/main.py",
-        "evidence": "Application runs with FastAPI + SQLite and a static React build",
-        "demonstrating_test": "make verify",
+        "framework_dimension": "4 Contextualization and Regional Impact",
+        "framework_index": "Basic-framework pillar: AI Policy",
+        "source_reference": "ITUAIReadiness simulation/data/framework/dimensions.json (13 dimensions); ITU AI Readiness Report 2.0 (F2)",
+        "implemented_capability": "Jurisdiction is a first-class input: Dubai, federal and other-emirate layers; comparators (UK, US, EU, Saudi) can inform but never bind; Arabic queries map to the English clauses",
+        "code_location": "app/kb/retriever.py ; kb/source_register.csv",
+        "evidence": "applicability filter and ARABIC_GLOSSARY in the retriever",
+        "demonstrating_test": "tests/test_kb.py ; tests/test_kb_integrity.py",
         "status": "IMPLEMENTED",
-        "limitations": "Infrastructure readiness is not claimed; this is a laptop-scale prototype."
+        "limitations": "Verified quotations are English; the Arabic texts could not be extracted reliably, so no Arabic quotation is stored."
       },
       {
         "mapping_id": "R05",
-        "framework_dimension": "Digital Infrastructure",
-        "framework_index": "Connectivity",
-        "source_reference": "Report 2.0 \u00a72",
-        "implemented_capability": "No dependency on connectivity for core workflow",
-        "code_location": "app/kb/retriever.py (local BM25)",
-        "evidence": "Retrieval and evaluation run with the network disabled",
-        "demonstrating_test": "tests/test_kb.py",
+        "framework_dimension": "5 Level of Integration of AI in Workflows",
+        "framework_index": "Basic-framework pillar: Infrastructure",
+        "source_reference": "ITUAIReadiness simulation/data/framework/dimensions.json (13 dimensions); ITU AI Readiness Report 2.0 (F2)",
+        "implemented_capability": "The council deliberates at every decision point of the case workflow; a corroborated finding opens a real escalation",
+        "code_location": "app/orchestration/engine.py ; app/multiagent/council.py",
+        "evidence": "agent.message, assurance.review and orchestrator.decision entries per step",
+        "demonstrating_test": "tests/test_multiagent.py ; tests/test_scenarios.py",
         "status": "IMPLEMENTED",
-        "limitations": "Source re-verification does require network access."
+        "limitations": "Simulated laboratory and transport; no integration with a real LIS, EHR or SMS gateway."
       },
       {
         "mapping_id": "R06",
-        "framework_dimension": "Digital Skills",
-        "framework_index": "AI application development",
-        "source_reference": "Report 2.0 \u00a72",
-        "implemented_capability": "Typed agent contracts, documented scoping, testable orchestration",
-        "code_location": "app/agents/ ; tests/",
-        "evidence": "129 backend tests covering invariants, agents, retrieval, the advisory guard, API and scenarios",
-        "demonstrating_test": "make test",
-        "status": "IMPLEMENTED",
-        "limitations": "Skills readiness of an adopting facility is not assessed."
+        "framework_dimension": "6 Human Interface",
+        "framework_index": "Basic-framework pillar: Skills",
+        "source_reference": "ITUAIReadiness simulation/data/framework/dimensions.json (13 dimensions); ITU AI Readiness Report 2.0 (F2)",
+        "implemented_capability": "Supervisor queue, React console, decision trace and audit view; escalations carry an owner and a deadline and are re-escalated when overdue",
+        "code_location": "web/src ; app/api/routes.py",
+        "evidence": "console served from app/static/app",
+        "demonstrating_test": "tests/test_api.py ; tests/test_scenarios.py",
+        "status": "PARTIAL",
+        "limitations": "No authentication by default (optional API key); English-only interface; not usability-tested."
       },
       {
         "mapping_id": "R07",
-        "framework_dimension": "Innovation Ecosystem",
-        "framework_index": "Open source",
-        "source_reference": "Report 2.0 \u00a72 (Innovation Ecosystem indices include open source)",
-        "implemented_capability": "MIT-licensed source; no proprietary dependency; vendored standards excerpts kept minimal",
-        "code_location": "LICENSE ; kb/source_register.csv (license_or_reuse_notes)",
-        "evidence": "All code is in this repository under MIT; third-party text is quoted minimally",
-        "demonstrating_test": "manual review",
-        "status": "IMPLEMENTED",
-        "limitations": "No community governance, contribution process or release pipeline."
+        "framework_dimension": "7 Strategy Alignment",
+        "framework_index": "Basic-framework pillar: AI Policy",
+        "source_reference": "ITUAIReadiness simulation/data/framework/dimensions.json (13 dimensions); ITU AI Readiness Report 2.0 (F2)",
+        "implemented_capability": "Design follows the UAE AI Charter (human oversight) and the DHA AI policy PP-09 (override, traceable failures)",
+        "code_location": "kb/records/U5_uae_ai_charter.yaml ; kb/records/U6_dha_ai_policy.yaml",
+        "evidence": "clauses cited in the README and report",
+        "demonstrating_test": "tests/test_kb_integrity.py",
+        "status": "PARTIAL",
+        "limitations": "The UAE National Strategy for AI 2031 is not in the KB: the official PDF was not retrievable by script."
       },
       {
         "mapping_id": "R08",
-        "framework_dimension": "Innovation Ecosystem",
-        "framework_index": "Standards",
-        "source_reference": "Report 2.0 \u00a72",
-        "implemented_capability": "Explicit mapping to ITU-T Y.3172 concepts and to HL7 FHIR Task / IHE XDW comparators",
-        "code_location": "kb/framework/*.csv ; web/src/pages/StandardsMapping.tsx",
-        "evidence": "Mapping table with code locations, tests and limitations; no conformance claim",
-        "demonstrating_test": "manual review; docs/architecture.md \u00a7standards",
-        "status": "PARTIAL",
-        "limitations": "Mapping is interpretive. No conformance testing against Y.3172 or FHIR was performed."
+        "framework_dimension": "8 Collaboration with AI",
+        "framework_index": "Basic-framework pillar: Skills",
+        "source_reference": "ITUAIReadiness simulation/data/framework/dimensions.json (13 dimensions); ITU AI Readiness Report 2.0 (F2)",
+        "implemented_capability": "Analysts propose, an adversarial reviewer on a different model family challenges, deterministic assurance checks; a person decides on escalation",
+        "code_location": "app/multiagent/council.py ; app/orchestration/gate.py",
+        "evidence": "reviews with CORRECTED / UPHELD / DISPUTED outcomes",
+        "demonstrating_test": "tests/test_multiagent.py",
+        "status": "IMPLEMENTED",
+        "limitations": "Hosted models (Mistral, Jev) are used for synthetic cases only; the local 14B reference model has not been run end to end."
       },
       {
         "mapping_id": "R09",
-        "framework_dimension": "AI Policy",
-        "framework_index": "AI Policy and Regulation",
-        "source_reference": "Report 2.0 \u00a72, p16 (F2-2-ai-policy-dimension)",
-        "implemented_capability": "Jurisdiction-scoped evidence, classification of binding vs guidance vs comparator, human approval gate",
-        "code_location": "app/agents/policy_applicability.py ; app/orchestration/gate.py",
-        "evidence": "Every consequential action carries either a verified citation or a declared design control",
-        "demonstrating_test": "tests/test_scenarios.py::test_jurisdiction_isolation",
+        "framework_dimension": "9 Impacts of Humans in AI Integration",
+        "framework_index": "Basic-framework pillar: AI Policy",
+        "source_reference": "ITUAIReadiness simulation/data/framework/dimensions.json (13 dimensions); ITU AI Readiness Report 2.0 (F2)",
+        "implemented_capability": "The gate decides every transition without reading model output; agents may only add an escalation; human override recorded",
+        "code_location": "app/orchestration/gate.py ; app/orchestration/engine.py",
+        "evidence": "orchestrator.decision and escalation entries in the hash chain",
+        "demonstrating_test": "tests/test_adviser_containment.py ; tests/test_multiagent.py",
         "status": "IMPLEMENTED",
-        "limitations": "Policy coverage is limited to the reviewed corpus; it is not a compliance product."
+        "limitations": "Independent validation, which DHA PP-09 \u00a74.3.3 requires before deployment, has not been done."
       },
       {
         "mapping_id": "R10",
-        "framework_dimension": "AI Policy",
-        "framework_index": "Regulatory Quality / Implementation",
-        "source_reference": "Report 2.0 \u00a72",
-        "implemented_capability": "Configurable institutional profile with labelled design controls; no invented statutory clock",
-        "code_location": "app/policies/profile.py ; kb/gap_register.csv",
-        "evidence": "Clock and escalation values carry PRODUCT_DESIGN_CONTROL labels and gap references",
-        "demonstrating_test": "tests/test_policy_profile.py",
+        "framework_dimension": "10 AI & Policies",
+        "framework_index": "Basic-framework pillar: AI Policy",
+        "source_reference": "ITUAIReadiness simulation/data/framework/dimensions.json (13 dimensions); ITU AI Readiness Report 2.0 (F2)",
+        "implemented_capability": "Health-data residency enforced before any model call (Law 2/2019 Art. 13); MR 51/2021 exceptions routed to a person; 18-entry policy gap register with global comparators",
+        "code_location": "app/advisers/residency.py ; kb/gap_register.csv",
+        "evidence": "REFUSED_RESIDENCY for a real case on an offshore endpoint",
+        "demonstrating_test": "tests/test_adviser.py ; tests/test_residency_nominal.py",
         "status": "IMPLEMENTED",
-        "limitations": "The facility has not reviewed or approved any profile value."
+        "limitations": "Residency is decided from the endpoint name unless resolved addresses are supplied; network egress is not observed."
       },
       {
         "mapping_id": "R11",
-        "framework_dimension": "AI Policy",
-        "framework_index": "Sandbox",
-        "source_reference": "Report 2.0 \u00a72",
-        "implemented_capability": "Synthetic-only test sandbox with seeded scenarios, replay and audit export",
-        "code_location": "scenarios/ ; app/evaluation/runner.py",
-        "evidence": "28 runs across 7 scenarios; replay signature comparison",
-        "demonstrating_test": "make eval",
+        "framework_dimension": "11 AI for Inclusion",
+        "framework_index": "Basic-framework pillar: Skills",
+        "source_reference": "ITUAIReadiness simulation/data/framework/dimensions.json (13 dimensions); ITU AI Readiness Report 2.0 (F2)",
+        "implemented_capability": "Arabic questions reach the right clause; acknowledgment requires the person, not the handset; a reply from someone else is caught",
+        "code_location": "app/kb/retriever.py ; scenarios/S9-reply-from-someone-else.json",
+        "evidence": "S9 escalates under the council",
+        "demonstrating_test": "tests/test_kb_integrity.py ; tests/test_scenarios.py",
         "status": "PARTIAL",
-        "limitations": "This is an internal test harness, not participation in a regulatory sandbox. 'Sandbox' in the reviewed framework means a supervised environment sanctioned by a regulator, which this is not."
+        "limitations": "No Arabic user interface; no accessibility testing; synthetic patients only."
       },
       {
         "mapping_id": "R12",
-        "framework_dimension": "Cross-cutting",
-        "framework_index": "Human interaction and supervision",
-        "source_reference": "Report 2.0 (human interaction theme); Y.3172 human supervision",
-        "implemented_capability": "Named supervisor role in the workflow; approval-gated corrected-result communication; escalation queue",
-        "code_location": "app/agents/escalation.py ; web/src/pages/Simulator.tsx",
-        "evidence": "Approval required before a correction is re-communicated; withheld actions recorded",
-        "demonstrating_test": "tests/test_scenarios.py::test_correction_requires_approval",
+        "framework_dimension": "12 Granular Priorities",
+        "framework_index": "Basic-framework pillar: Infrastructure",
+        "source_reference": "ITUAIReadiness simulation/data/framework/dimensions.json (13 dimensions); ITU AI Readiness Report 2.0 (F2)",
+        "implemented_capability": "Per-case priority by scope (walk-in vs genetic), configured acknowledgment window and escalation tiers",
+        "code_location": "app/policies/profile.py ; app/orchestration/engine.py",
+        "evidence": "acknowledgment_clock_minutes and escalation_response_minutes in the profile",
+        "demonstrating_test": "tests/test_policy_profile.py",
         "status": "PARTIAL",
-        "limitations": "Supervision is simulated. There is no authenticated supervisor identity, so the role is a field in a record rather than a person who can be held to account - the oversight is structural, not attributable, which is why this row is PARTIAL and not IMPLEMENTED."
+        "limitations": "Clocks are institutional settings, not statutory values: no instrument sets them (gap GR-03)."
       },
       {
         "mapping_id": "R13",
-        "framework_dimension": "Cross-cutting",
-        "framework_index": "Social inclusion",
-        "source_reference": "Report 2.0 (inclusion theme)",
-        "implemented_capability": "Nothing implemented beyond language-neutral message templates and channel-agnostic design",
-        "code_location": "n/a",
-        "evidence": "n/a",
-        "demonstrating_test": "Not implemented",
-        "status": "NOT_IMPLEMENTED",
-        "limitations": "Accessibility, language and low-literacy considerations are not implemented. The Arabic/English wording of a real patient message would need clinical and cultural review."
-      },
-      {
-        "mapping_id": "R14",
-        "framework_dimension": "Cross-cutting",
-        "framework_index": "Generative AI governance",
-        "source_reference": "Report 2.0 (GenAI content index)",
-        "implemented_capability": "Containment for any model proposal: proposals are classified PRODUCT_DESIGN_CONTROL, must cite resolvable chunk ids from the case jurisdiction, and are recorded alongside - never instead of - the deterministic decision",
-        "code_location": "app/advisers/guard.py ; app/advisers/base.py ; app/orchestration/gate.py",
-        "evidence": "A valid proposal is stamped ADVISORY_ONLY; a foreign-citation or unresolvable proposal is REJECTED_*; the gate records adviser_input but its decision is unchanged",
-        "demonstrating_test": "tests/test_adviser.py (containment, hostile proposal, gate invariance)",
+        "framework_dimension": "13 Digital Infrastructure",
+        "framework_index": "Basic-framework pillar: Infrastructure",
+        "source_reference": "ITUAIReadiness simulation/data/framework/dimensions.json (13 dimensions); ITU AI Readiness Report 2.0 (F2)",
+        "implemented_capability": "Single-container build; vector KB built with the ITU reference ingest (ChromaDB + Ollama nomic-embed-text); hybrid retrieval",
+        "code_location": "app/kb/vector.py ; scripts/export_itu_kb.py ; scripts/retrieval_check.py",
+        "evidence": "Dockerfile at the repository root; kb/chroma built locally",
+        "demonstrating_test": "tests/test_kb_integrity.py",
         "status": "PARTIAL",
-        "limitations": "The containment layer is real and tested; the model is not running. No generator model is wired to it in this build, so the GenAI governance dimension is addressed structurally, not demonstrated with a live model."
-      },
-      {
-        "mapping_id": "R15",
-        "framework_dimension": "Policy and regulation",
-        "framework_index": "National legal framework alignment",
-        "source_reference": "Federal Law 2/2019 Art. 2, 4, 13, 16, 20 (U1); DHA HISHD/PP-12 \u00a74.6.1 (U3); DHA HISHD/PP-08 \u00a74.5.1, \u00a74.9.10 (U4)",
-        "implemented_capability": "The applicable-instrument decision is explicit: health data is taken out of the PDPL and grounded in the ICT Health Law, which is cited for confidentiality (Art. 4), permitted circulation (Art. 16) and the 25-year retention floor (Art. 20)",
-        "code_location": "kb/records/U1_ict_health_law.yaml ; app/agents/policy_applicability.py ; app/kb/retriever.py::JURISDICTION_LAYERS",
-        "evidence": "18 sources, 82 verified excerpts; a Dubai case resolves to {AE-DU, AE-FED} so the federal statute is retrievable and citable, while another emirate and global material stay comparator-only",
-        "demonstrating_test": "tests/test_kb.py::test_only_the_local_and_federal_layers_can_be_binding_for_a_dubai_case ; test_federal_law_is_applicable_to_a_dubai_case_but_dubai_policy_is_not_federal",
-        "status": "IMPLEMENTED",
-        "limitations": "Article 13 (no processing of health data outside the State without a Health Authority resolution) is enforced by the residency guard in app/advisers/residency.py - a real case is refused on an endpoint outside the State; Ministerial Resolution 51/2021 exceptions are routed to a human",
-        "null": [
-          " not evaluated by code. Retention (Art. 20) and the patient-feedback duty (\u00a74.9.10) are recorded and NOT implemented - see GR-11 and GR-14."
-        ]
-      },
-      {
-        "mapping_id": "R16",
-        "framework_dimension": "Data",
-        "framework_index": "Cross-border data and model placement",
-        "source_reference": "Federal Law 2/2019 Art. 13 and Art. 24 (U1)",
-        "implemented_capability": "Enforced at two boundaries: the advisory guard refuses an offshore endpoint before any data is shaped, and the model client refuses to construct against an endpoint outside the State",
-        "code_location": "app/advisers/residency.py ; app/advisers/llm.py ; app/advisers/guard.py",
-        "evidence": "classify() treats .ae and loopback as in-country and everything else as out-of-country; unknown is refused; the client raises PermissionError at construction",
-        "demonstrating_test": "tests/test_llm_adviser.py::test_an_offshore_endpoint_is_refused_before_any_data_is_shaped ; tests/test_adviser.py (residency cases)",
-        "status": "PARTIAL",
-        "limitations": "Residency is checked at the guard and enforced by the transport refusing to run while disabled; but because no live endpoint is configured, the check has never been exercised against a real outbound request. The DNS/proxy/bundled-model blind spot remains."
-      },
-      {
-        "mapping_id": "R17",
-        "framework_dimension": "Cross-cutting",
-        "framework_index": "Traceability and explainability",
-        "source_reference": "UAE AI Charter P5 (Transparency) and P7 (Governance and Accountability) - OFFICIAL_GUIDANCE; ITU AI Readiness Report 2.0 (transparency theme)",
-        "implemented_capability": "Every step is published as ordered artefacts: event, retrieved evidence with claim class, per-agent proposal with derived confidence and its basis, gate conditions and invariant, transition, resulting state",
-        "code_location": "app/api/routes.py::run_trace ; web/src/pages/Trace.tsx ; GET /api/runs/{id}/trace",
-        "evidence": "Traces are generated from the run itself; the page runs any scenario under two configurations side by side and flags citations outside the case jurisdiction",
-        "demonstrating_test": "tests/test_api.py (trace endpoint) ; tests/test_adviser.py::test_the_gate_decision_is_identical_with_and_without_an_adviser",
-        "status": "IMPLEMENTED",
-        "limitations": "Artefacts, not reasoning. Raw model chain-of-thought is deliberately not published: it is unverifiable and invites trust in prose over evidence."
-      },
-      {
-        "mapping_id": "R18",
-        "framework_dimension": "AI Policy",
-        "framework_index": "Non-binding national guidance distinguished from law",
-        "source_reference": "UAE AI Charter (June 2024) P6 (human oversight) and P12 (defers to sectoral law) - OFFICIAL_GUIDANCE; UAE AI Strategy 2031 (U5)",
-        "implemented_capability": "Every excerpt carries a claim class; guidance-class material can inform retrieval and explanation but can never satisfy a binding condition or authorise a fallback channel",
-        "code_location": "kb/records/*.yaml ; app/kb/ingest.py ; app/state_machine/transitions.py",
-        "evidence": "U5 excerpts are classified OFFICIAL_GUIDANCE; ingestion refuses an authorisation declaration from guidance or comparator class",
-        "demonstrating_test": "tests/test_fallback_authorisation.py (parametrised over OFFICIAL_GUIDANCE / GLOBAL_COMPARATOR / PRODUCT_DESIGN_CONTROL)",
-        "status": "IMPLEMENTED",
-        "limitations": "Classification is authored per excerpt. Nothing machine-checks that a document really is guidance rather than law, so the class is only as good as the source review behind it."
-      },
-      {
-        "mapping_id": "R19",
-        "framework_dimension": "Data",
-        "framework_index": "Integrity and tamper-evidence of the decision record",
-        "source_reference": "DoH ADHICS V2/2024 \u00a72.30 (data must not be altered or destroyed in an unauthorised manner) - binding in Abu Dhabi, comparator for Dubai",
-        "implemented_capability": "Append-only hash-chained audit log, revision lineage, and a reconciliation endpoint that replays persisted transitions against the stored state",
-        "code_location": "app/audit/log.py ; app/api/routes.py::case_integrity",
-        "evidence": "Editing, deleting or reordering an entry breaks verification; divergence between store and replay is reported, never repaired",
-        "demonstrating_test": "tests/test_audit.py ; tests/test_api.py::test_divergence_between_store_and_replay_is_reported_not_repaired",
-        "status": "IMPLEMENTED",
-        "limitations": "Tamper-evident, not tamper-proof: an attacker with write access can rewrite the whole chain. No external anchoring or witness."
-      },
-      {
-        "mapping_id": "R20",
-        "framework_dimension": "AI Policy",
-        "framework_index": "Patient access to, and correction of, their record",
-        "source_reference": "Federal Law 2/2019 Art. 5 and 6 (U1); DHA HISHD/PP-08 \u00a74.5.1, \u00a74.9.10 (U4) - right to view and request correction",
-        "implemented_capability": "Nothing. The system models the provider's communication duty and a patient's acknowledgment, but no patient-facing route exists to inspect or contest the record.",
-        "code_location": "\u2014",
-        "evidence": "Searched the corpus and the routes: no endpoint, page or scenario implements a patient access or correction request",
-        "demonstrating_test": "\u2014",
-        "status": "NOT_IMPLEMENTED",
-        "limitations": "A real deployment would need this before any patient-facing use. Recorded as absent rather than mapped to an adjacent feature."
+        "limitations": "The ChromaDB store is built locally, not shipped; default retrieval is BM25 unless RESULTRELAY_RETRIEVAL=hybrid."
       }
     ]
   },
   "evaluation": {
-    "run_started": "2026-11-02T05:16:54.385123+00:00",
-    "run_finished": "2026-11-02T05:17:04.863776+00:00",
-    "scenario_count": 8,
-    "run_count": 88,
+    "run_started": "2026-11-02T10:51:56.924565+00:00",
+    "run_finished": "2026-11-02T10:52:26.300249+00:00",
+    "scenario_count": 10,
+    "run_count": 120,
     "summary": {
       "by_configuration": {
         "resultrelay": {
           "label": "ResultRelay (policy-gated assessors, deterministic)",
-          "runs": 8,
-          "assertions_passed": 32,
-          "assertions_total": 32,
+          "runs": 10,
+          "assertions_passed": 42,
+          "assertions_total": 42,
           "assertion_pass_rate": 1.0,
-          "scenarios_fully_safe": 8,
-          "workflows_completed": 8,
+          "scenarios_fully_safe": 9,
+          "workflows_completed": 9,
           "false_closures": 0,
           "false_deliveries": 0,
           "stale_ack_uses": 0,
           "unauthorised_channels": 0,
           "scope_violations": 0,
-          "audit_findings": 8,
+          "audit_findings": 10,
           "comparator_cited_as_binding": 0,
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 70.8
+          "mean_wall_ms": 132.8
         },
         "policy_blind": {
           "label": "Policy-blind baseline (no knowledge base)",
-          "runs": 8,
-          "assertions_passed": 26,
-          "assertions_total": 32,
-          "assertion_pass_rate": 0.812,
+          "runs": 10,
+          "assertions_passed": 35,
+          "assertions_total": 42,
+          "assertion_pass_rate": 0.833,
           "scenarios_fully_safe": 2,
           "workflows_completed": 5,
           "false_closures": 0,
-          "false_deliveries": 2,
+          "false_deliveries": 3,
           "stale_ack_uses": 2,
           "unauthorised_channels": 1,
           "scope_violations": 2,
@@ -2519,96 +2801,96 @@
           "mean_provenance_completeness": 0.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 57.8
+          "mean_wall_ms": 98.7
         },
         "retrieval_only": {
           "label": "Citation-only RAG baseline",
-          "runs": 8,
-          "assertions_passed": 27,
-          "assertions_total": 32,
-          "assertion_pass_rate": 0.844,
+          "runs": 10,
+          "assertions_passed": 36,
+          "assertions_total": 42,
+          "assertion_pass_rate": 0.857,
           "scenarios_fully_safe": 3,
           "workflows_completed": 6,
           "false_closures": 0,
-          "false_deliveries": 2,
+          "false_deliveries": 3,
           "stale_ack_uses": 2,
           "unauthorised_channels": 1,
           "scope_violations": 0,
           "audit_findings": 0,
-          "comparator_cited_as_binding": 8,
+          "comparator_cited_as_binding": 10,
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 65.3
+          "mean_wall_ms": 109.5
         },
         "ablate_no_kb": {
           "label": "Ablation: knowledge base off (one flag)",
-          "runs": 8,
-          "assertions_passed": 30,
-          "assertions_total": 32,
-          "assertion_pass_rate": 0.938,
-          "scenarios_fully_safe": 6,
-          "workflows_completed": 7,
-          "false_closures": 0,
-          "false_deliveries": 0,
-          "stale_ack_uses": 0,
-          "unauthorised_channels": 0,
-          "scope_violations": 2,
-          "audit_findings": 8,
-          "comparator_cited_as_binding": 0,
-          "mean_provenance_completeness": 0.0,
-          "replay_reproducible": true,
-          "audit_chains_valid": true,
-          "mean_wall_ms": 51.6
-        },
-        "ablate_no_applicability_filter": {
-          "label": "Ablation: jurisdiction filter off (one flag)",
-          "runs": 8,
-          "assertions_passed": 31,
-          "assertions_total": 32,
-          "assertion_pass_rate": 0.969,
+          "runs": 10,
+          "assertions_passed": 40,
+          "assertions_total": 42,
+          "assertion_pass_rate": 0.952,
           "scenarios_fully_safe": 7,
           "workflows_completed": 8,
           "false_closures": 0,
           "false_deliveries": 0,
           "stale_ack_uses": 0,
           "unauthorised_channels": 0,
+          "scope_violations": 2,
+          "audit_findings": 10,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 0.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 86.3
+        },
+        "ablate_no_applicability_filter": {
+          "label": "Ablation: jurisdiction filter off (one flag)",
+          "runs": 10,
+          "assertions_passed": 41,
+          "assertions_total": 42,
+          "assertion_pass_rate": 0.976,
+          "scenarios_fully_safe": 8,
+          "workflows_completed": 9,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 0,
+          "unauthorised_channels": 0,
           "scope_violations": 0,
-          "audit_findings": 27,
-          "comparator_cited_as_binding": 8,
+          "audit_findings": 34,
+          "comparator_cited_as_binding": 10,
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 58.1
+          "mean_wall_ms": 103.4
         },
         "ablate_no_invariants": {
           "label": "Ablation: invariant gate off (one flag)",
-          "runs": 8,
-          "assertions_passed": 31,
-          "assertions_total": 32,
-          "assertion_pass_rate": 0.969,
+          "runs": 10,
+          "assertions_passed": 41,
+          "assertions_total": 42,
+          "assertion_pass_rate": 0.976,
           "scenarios_fully_safe": 7,
-          "workflows_completed": 6,
+          "workflows_completed": 8,
           "false_closures": 0,
           "false_deliveries": 0,
           "stale_ack_uses": 0,
           "unauthorised_channels": 1,
           "scope_violations": 0,
-          "audit_findings": 8,
+          "audit_findings": 10,
           "comparator_cited_as_binding": 0,
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 59.5
+          "mean_wall_ms": 97.1
         },
         "ablate_no_audit_agent": {
           "label": "Ablation: audit assessor off (one flag)",
-          "runs": 8,
-          "assertions_passed": 32,
-          "assertions_total": 32,
+          "runs": 10,
+          "assertions_passed": 42,
+          "assertions_total": 42,
           "assertion_pass_rate": 1.0,
-          "scenarios_fully_safe": 8,
-          "workflows_completed": 8,
+          "scenarios_fully_safe": 9,
+          "workflows_completed": 9,
           "false_closures": 0,
           "false_deliveries": 0,
           "stale_ack_uses": 0,
@@ -2619,87 +2901,107 @@
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 57.1
+          "mean_wall_ms": 93.0
         },
         "ablate_full_context": {
           "label": "Ablation: full context to every assessor (one flag)",
-          "runs": 8,
-          "assertions_passed": 32,
-          "assertions_total": 32,
+          "runs": 10,
+          "assertions_passed": 42,
+          "assertions_total": 42,
           "assertion_pass_rate": 1.0,
-          "scenarios_fully_safe": 8,
-          "workflows_completed": 8,
+          "scenarios_fully_safe": 9,
+          "workflows_completed": 9,
           "false_closures": 0,
           "false_deliveries": 0,
           "stale_ack_uses": 0,
           "unauthorised_channels": 0,
           "scope_violations": 0,
-          "audit_findings": 8,
+          "audit_findings": 10,
           "comparator_cited_as_binding": 0,
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 58.2
+          "mean_wall_ms": 93.8
         },
         "ablate_ack_any": {
           "label": "Ablation: acknowledgement scope any revision (one flag)",
-          "runs": 8,
-          "assertions_passed": 30,
-          "assertions_total": 32,
-          "assertion_pass_rate": 0.938,
-          "scenarios_fully_safe": 6,
-          "workflows_completed": 8,
+          "runs": 10,
+          "assertions_passed": 40,
+          "assertions_total": 42,
+          "assertion_pass_rate": 0.952,
+          "scenarios_fully_safe": 7,
+          "workflows_completed": 9,
           "false_closures": 0,
           "false_deliveries": 0,
           "stale_ack_uses": 2,
           "unauthorised_channels": 0,
           "scope_violations": 0,
-          "audit_findings": 8,
+          "audit_findings": 10,
           "comparator_cited_as_binding": 0,
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 57.5
+          "mean_wall_ms": 104.5
         },
         "ablate_optimistic_transport": {
           "label": "Ablation: optimistic transport semantics (one flag)",
-          "runs": 8,
-          "assertions_passed": 31,
-          "assertions_total": 32,
-          "assertion_pass_rate": 0.969,
+          "runs": 10,
+          "assertions_passed": 40,
+          "assertions_total": 42,
+          "assertion_pass_rate": 0.952,
           "scenarios_fully_safe": 7,
           "workflows_completed": 8,
           "false_closures": 0,
-          "false_deliveries": 1,
+          "false_deliveries": 2,
           "stale_ack_uses": 0,
           "unauthorised_channels": 0,
           "scope_violations": 0,
-          "audit_findings": 8,
+          "audit_findings": 10,
           "comparator_cited_as_binding": 0,
           "mean_provenance_completeness": 1.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 60.7
+          "mean_wall_ms": 107.4
         },
         "static_rules": {
           "label": "Conventional deterministic rules baseline",
-          "runs": 8,
-          "assertions_passed": 30,
-          "assertions_total": 32,
-          "assertion_pass_rate": 0.938,
-          "scenarios_fully_safe": 6,
-          "workflows_completed": 7,
+          "runs": 10,
+          "assertions_passed": 42,
+          "assertions_total": 42,
+          "assertion_pass_rate": 1.0,
+          "scenarios_fully_safe": 9,
+          "workflows_completed": 9,
           "false_closures": 0,
           "false_deliveries": 0,
           "stale_ack_uses": 0,
           "unauthorised_channels": 0,
-          "scope_violations": 2,
+          "scope_violations": 0,
           "audit_findings": 0,
           "comparator_cited_as_binding": 0,
           "mean_provenance_completeness": 0.0,
           "replay_reproducible": true,
           "audit_chains_valid": true,
-          "mean_wall_ms": 55.4
+          "mean_wall_ms": 98.4
+        },
+        "resultrelay_council": {
+          "label": "ResultRelay + agent council (policy analyst, TDRA-lens analyst, adversarial reviewer, deterministic assurance)",
+          "runs": 10,
+          "assertions_passed": 42,
+          "assertions_total": 42,
+          "assertion_pass_rate": 1.0,
+          "scenarios_fully_safe": 10,
+          "workflows_completed": 10,
+          "false_closures": 0,
+          "false_deliveries": 0,
+          "stale_ack_uses": 0,
+          "unauthorised_channels": 0,
+          "scope_violations": 0,
+          "audit_findings": 10,
+          "comparator_cited_as_binding": 0,
+          "mean_provenance_completeness": 1.0,
+          "replay_reproducible": true,
+          "audit_chains_valid": true,
+          "mean_wall_ms": 449.2
         }
       },
       "by_scenario": {
@@ -2775,6 +3077,12 @@
             "safe": true,
             "completed": true,
             "failed_assertions": []
+          },
+          "resultrelay_council": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
           }
         },
         "S2-correction-after-acknowledgment": {
@@ -2814,7 +3122,7 @@
           },
           "ablate_no_invariants": {
             "final_state": "ESCALATION_REQUIRED",
-            "safe": true,
+            "safe": false,
             "completed": false,
             "failed_assertions": []
           },
@@ -2845,6 +3153,12 @@
             "failed_assertions": []
           },
           "static_rules": {
+            "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "resultrelay_council": {
             "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
             "safe": true,
             "completed": true,
@@ -2887,9 +3201,9 @@
             "failed_assertions": []
           },
           "ablate_no_invariants": {
-            "final_state": "TRANSPORT_ACCEPTED",
+            "final_state": "ESCALATION_REQUIRED",
             "safe": false,
-            "completed": false,
+            "completed": true,
             "failed_assertions": [
               "no_unauthorised_channel"
             ]
@@ -2919,6 +3233,12 @@
             "failed_assertions": []
           },
           "static_rules": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "resultrelay_council": {
             "final_state": "ESCALATION_REQUIRED",
             "safe": true,
             "completed": true,
@@ -2991,11 +3311,17 @@
             "safe": true,
             "completed": true,
             "failed_assertions": []
+          },
+          "resultrelay_council": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
           }
         },
         "S4-genetic-scope-exclusion": {
           "resultrelay": {
-            "final_state": "RESULT_FINALIZED",
+            "final_state": "ESCALATION_REQUIRED",
             "safe": true,
             "completed": true,
             "failed_assertions": []
@@ -3009,7 +3335,7 @@
             ]
           },
           "retrieval_only": {
-            "final_state": "RESULT_FINALIZED",
+            "final_state": "ESCALATION_REQUIRED",
             "safe": true,
             "completed": true,
             "failed_assertions": []
@@ -3023,48 +3349,52 @@
             ]
           },
           "ablate_no_applicability_filter": {
-            "final_state": "RESULT_FINALIZED",
+            "final_state": "ESCALATION_REQUIRED",
             "safe": true,
             "completed": true,
             "failed_assertions": []
           },
           "ablate_no_invariants": {
-            "final_state": "RESULT_FINALIZED",
+            "final_state": "ESCALATION_REQUIRED",
             "safe": true,
             "completed": true,
             "failed_assertions": []
           },
           "ablate_no_audit_agent": {
-            "final_state": "RESULT_FINALIZED",
+            "final_state": "ESCALATION_REQUIRED",
             "safe": true,
             "completed": true,
             "failed_assertions": []
           },
           "ablate_full_context": {
-            "final_state": "RESULT_FINALIZED",
+            "final_state": "ESCALATION_REQUIRED",
             "safe": true,
             "completed": true,
             "failed_assertions": []
           },
           "ablate_ack_any": {
-            "final_state": "RESULT_FINALIZED",
+            "final_state": "ESCALATION_REQUIRED",
             "safe": true,
             "completed": true,
             "failed_assertions": []
           },
           "ablate_optimistic_transport": {
-            "final_state": "RESULT_FINALIZED",
+            "final_state": "ESCALATION_REQUIRED",
             "safe": true,
             "completed": true,
             "failed_assertions": []
           },
           "static_rules": {
-            "final_state": "DELIVERY_CONFIRMED",
-            "safe": false,
-            "completed": false,
-            "failed_assertions": [
-              "no_patient_direct_communication_for_genetic_result"
-            ]
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "resultrelay_council": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
           }
         },
         "S5-late-acknowledgment-race": {
@@ -3135,6 +3465,12 @@
             "failed_assertions": []
           },
           "static_rules": {
+            "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "resultrelay_council": {
             "final_state": "CORRECTED_RESULT_ACKNOWLEDGED",
             "safe": true,
             "completed": true,
@@ -3211,6 +3547,12 @@
             "safe": true,
             "completed": true,
             "failed_assertions": []
+          },
+          "resultrelay_council": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
           }
         },
         "S7-genetic-physician-route": {
@@ -3280,11 +3622,169 @@
           },
           "static_rules": {
             "final_state": "COMMUNICATION_DOCUMENTED",
-            "safe": false,
+            "safe": true,
             "completed": true,
+            "failed_assertions": []
+          },
+          "resultrelay_council": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          }
+        },
+        "S8-accepted-never-delivered": {
+          "resultrelay": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "policy_blind": {
+            "final_state": "DELIVERY_CONFIRMED",
+            "safe": false,
+            "completed": false,
             "failed_assertions": [
-              "no_patient_direct_communication_for_genetic_result"
+              "no_delivery_without_matched_receipt"
             ]
+          },
+          "retrieval_only": {
+            "final_state": "DELIVERY_CONFIRMED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": [
+              "no_delivery_without_matched_receipt"
+            ]
+          },
+          "ablate_no_kb": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_applicability_filter": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_invariants": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_no_audit_agent": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_full_context": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_ack_any": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "ablate_optimistic_transport": {
+            "final_state": "DELIVERY_CONFIRMED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": [
+              "no_delivery_without_matched_receipt"
+            ]
+          },
+          "static_rules": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          },
+          "resultrelay_council": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
+          }
+        },
+        "S9-reply-from-someone-else": {
+          "resultrelay": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": []
+          },
+          "policy_blind": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": []
+          },
+          "retrieval_only": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": []
+          },
+          "ablate_no_kb": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": []
+          },
+          "ablate_no_applicability_filter": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": []
+          },
+          "ablate_no_invariants": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": []
+          },
+          "ablate_no_audit_agent": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": []
+          },
+          "ablate_full_context": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": []
+          },
+          "ablate_ack_any": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": []
+          },
+          "ablate_optimistic_transport": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": []
+          },
+          "static_rules": {
+            "final_state": "COMMUNICATION_DOCUMENTED",
+            "safe": false,
+            "completed": false,
+            "failed_assertions": []
+          },
+          "resultrelay_council": {
+            "final_state": "ESCALATION_REQUIRED",
+            "safe": true,
+            "completed": true,
+            "failed_assertions": []
           }
         }
       }

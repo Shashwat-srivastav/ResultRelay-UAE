@@ -67,3 +67,31 @@ def test_the_log_exposes_no_update_or_delete_path():
     log = AuditLog(run_id="RUN-T", case_id="CASE-T")
     public = {n for n in dir(log) if not n.startswith("_")}
     assert not {"update", "delete", "remove", "edit"} & public
+
+
+def test_a_signed_checkpoint_detects_a_rebuilt_chain():
+    """A consistent but forged chain passes verify_entries; it must not pass the signed checkpoint."""
+    import hashlib
+
+    from app.audit.log import AuditLog, _canonical, sign_checkpoint, verify_checkpoint, verify_entries
+
+    log = AuditLog("RUN-1", "SYN-CASE-1")
+    for i in range(3):
+        log.append(event="step", actor="SYSTEM", summary=f"step {i}", at=f"2026-01-01T00:00:0{i}Z")
+    key = b"held-outside-the-store"
+    cp = sign_checkpoint(log, key)
+    entries = log.as_list()
+    assert verify_checkpoint(entries, cp, key)
+    # Rewrite entry 2 and rebuild a fully consistent chain, as someone with write access could.
+    forged, prev = [], "GENESIS"
+    for e in entries:
+        e = dict(e)
+        if e["seq"] == 2:
+            e["summary"] = "something else happened"
+        body = {k: e[k] for k in ("seq", "at", "run_id", "case_id", "event", "actor", "summary", "payload")}
+        body["kb_index_sha256"] = e.get("kb_index_sha256") or ""
+        e["prev_hash"], e["hash"] = prev, hashlib.sha256((prev + _canonical(body)).encode("utf-8")).hexdigest()
+        prev = e["hash"]
+        forged.append(e)
+    assert verify_entries(forged)[0] is True          # the chain alone is fooled
+    assert verify_checkpoint(forged, cp, key) is False  # the signed checkpoint is not

@@ -31,7 +31,7 @@ def arrow(p1, p2, ls="-", color="#222222"):
 
 Y, H = 25, 12
 box(1,  Y, 17, H, "Corpus", f"{_SOURCES} sources\n{_EXCERPTS} verified excerpts")
-box(23, Y, 17, H, "Agents", "structured\nassessments only")
+box(23, Y, 17, H, "Agent council", "policy analyst · TDRA lens\nadversarial reviewer")
 box(45, Y, 17, H, "Deterministic gate", "state machine\n+ invariants")
 box(67, Y, 17, H, "Transport", "attempt ≠ delivery\n≠ acknowledgment")
 box(89, Y, 10, H, "Audit", "hash-\nchained")
@@ -43,7 +43,7 @@ arrow((84.4, Y+H/2), (88.6, Y+H/2))
 
 box(23, 6, 17, 11, "Jurisdiction layer", "AE-DU → {AE-DU, AE-FED}\nwidens up, never down",
     fc="#eef4fb", ec="#1f4e79")
-box(45, 6, 17, 11, "Adviser", "may propose,\nnever decide", fc="#fff6e5", ec="#a06000", ls="--")
+box(45, 6, 17, 11, "Assurance", "fact check · policy rules\nagents may only escalate", fc="#fff6e5", ec="#a06000", ls="--")
 
 arrow((31.5, 17.4), (31.5, 24.6))
 arrow((53.5, 17.4), (53.5, 24.6), ls="--", color="#a06000")

@@ -11,8 +11,8 @@ result version, and refuses another jurisdiction's rule as binding.
 
 ![Standard](https://img.shields.io/badge/ITU--T-Y.3172-0ea5e9)
 ![Data](https://img.shields.io/badge/data-100%25%20synthetic-success)
-![Tests](https://img.shields.io/badge/tests-248%20passing-success)
-![KB](https://img.shields.io/badge/quotes-82%20verified-success)
+![Tests](https://img.shields.io/badge/tests-257%20passing-success)
+![KB](https://img.shields.io/badge/quotes-96%20verified-success)
 
 </div>
 
@@ -35,87 +35,88 @@ $ python run_demo.py 4
    policy-blind final → DELIVERY_CONFIRMED
 ```
 
-## Multi-agent orchestration — who does what at every decision point
+## Multi-agent orchestration — LLMs only where reasoning is needed
+
+The design rule: **use a language model only where the problem needs probabilistic reasoning** (reading
+policy, reading what people said); decide everything else in code — transport status, revision binding,
+idempotency, and whether to escalate.
 
 ```
  event chunk  ── from a scenario file, or injected by a judge:  POST /api/runs/{id}/events
       │
       ▼
- ORCHESTRATOR (Y.3172 MLFO) ─ records the event in the hash-chained audit log
+ DETERMINISTIC CASE SERVICES  revision binding · transport reconciliation · recipient routing · applicability
+      │                       5 rule-based assessors propose the step's action
+      ▼
+ EVIDENCE RETRIEVAL  BM25 (+ ChromaDB via the ITU ingest) · jurisdiction filter · 96 verified quotations
       │
-      ├─▶ 5 ASSESSORS (rules) ─ lab workflow · KB applicability · network delivery · escalation timers · audit
-      │        └─▶ proposed action for this step, e.g. RECONCILE_ATTEMPT
-      │
-      ├─▶ COUNCIL  (app/multiagent/council.py — any LLM: Ollama, Mistral, OpenAI-compatible, Jev)
-      │     ① NETWORK agent   TDRA lens    "what does the transport evidence show?"
-      │     ② HEALTH agent    DHA lens     "where does the duty to communicate this result stand?"
-      │     ③ REVIEWER        policy/legal "is there a concrete objection to the proposed action?"
-      │         each sees only its own authority's clauses; each may call one read-only tool
-      │         (transport_ledger · kb_search) and answer again with the result in view
-      │     ④ FACT CHECK (code) ─ every claim vs the case record ─────────┐  flagged answers get the
-      │     ⑤ CRITIC agent      ─ supported by facts + cited clause? ─────┘  critique and ONE revision
-      │         still contradicts the record after revision → DISPUTED (kept, not trusted, supervisor told)
-      │     ⑥ COORDINATOR agent ─ PROCEED / GATHER_EVIDENCE / ESCALATE_HUMAN + the conflict it sees
-      │     ⑦ RULE CROSS-CHECK (code) ─ recomputes the conflicts; a coordinator that misses one is visible
-      │
-      ├─▶ GATE (P node, code) ─ decides the transition from 18 states and named invariants.
-      │        It never reads the council. Agents can only ADD a supervisor-review request.
-      │
-      └─▶ AUDIT ─ agent.message · agent.tool_call · critic.review · coordinator.resolution · gate decision,
-                  all in one hash chain re-verified on read: the step's reasoning trace
+      ├─▶ ① POLICY EVIDENCE ANALYST   (LLM, DHA lens)   obligation status · governing clause · settled? · policy gap
+      ├─▶ ② INSTITUTIONAL ANALYST     (LLM, TDRA lens)  only when transport is unresolved: does any telecom
+      │                                                 clause cover delivery of this message to a person?
+      └─▶ ③ ADVERSARIAL REVIEWER      (LLM, a different model family)  challenges each claim, reads the case
+                                                        independently, raises a typed objection
+      ▼
+ ④ INDEPENDENT ASSURANCE (code)  fact check vs the case record · policy-rules check (a comparator can never
+      │                          govern) · conflict detection · one feedback round: CORRECTED / UPHELD / DISPUTED
+      ▼
+ ⑤ DETERMINISTIC ORCHESTRATOR    PROCEED, or ESCALATE to a named owner with a deadline — on a verified
+      │                          objection or a disputed claim. Gaps and differing readings are recorded.
+      ▼
+ GATE (P node, code)  18 states, named invariants — decides the transition; never reads the agents
+      ▼
+ EXECUTION & AUDIT    failed actions logged and escalated · overdue escalations re-escalated to tier 2 ·
+                      every message, check and decision in a hash chain · HMAC-signed checkpoints
 ```
 
-| # | Actor | Kind | Sees | Produces | Can change the case? |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| ① | Network agent | LLM | TDRA Mobile Spam policy; attempts; ledger (tool) | delivery status (receipt / accepted-only / unknown / failed / not sent) + cited clause | No |
-| ② | Health agent | LLM | DHA ST-28, AI policy PP-09, NABIDH, ICT Health Law; acknowledgments | obligation status (communicated / awaiting ack / must go to physician / not sent / insufficient) + clause | No |
-| ③ | Policy & legal reviewer | LLM | all clauses that bind the case | objection probability + alternative action + clause | No |
-| ④ | Fact check | code | case record | contradictions between a claim and the record | No — **authoritative** over the critic |
-| ⑤ | Critic | LLM | each answer, its cited text, the case | supported? (probability) + issue type | No — triggers a revision only |
-| ⑥ | Coordinator | LLM | trusted answers + critic verdicts | resolution + named conflict | Only adds a supervisor-review request |
-| ⑦ | Rule cross-check | code | trusted answers | the conflicts, recomputed | No |
-| — | Gate | code | invariants, case state | **the transition** | **Yes — only this** |
+| Actor | Kind | Produces | Can it change the case? |
+| :--- | :--- | :--- | :--- |
+| ① Policy Evidence Analyst | LLM | obligation status, governing clause, "settled?", policy gap, rationale | No |
+| ② Institutional analyst (TDRA) | LLM, conditional | whether a telecom clause covers this message | No |
+| ③ Adversarial reviewer | LLM, independent model family | typed objection, own reading, per-claim support | No |
+| ④ Assurance | code | fact/policy-rule findings; rejects objections the record contradicts | No |
+| ⑤ Orchestrator | code | PROCEED or ESCALATE | Only an escalation to a person |
+| Gate | code | the transition | **Yes — only this** |
 
-**Why a critic, and why two layers.** Agents hallucinate. The fact check catches claims that contradict
-the record; it is code, so it cannot hallucinate, and it overrules the critic. The critic agent catches
-what code cannot: an answer whose cited clause does not say what the answer relies on. A critic can be
-wrong too, so its flag only ever buys a revision. Each flagged agent sees the critique and answers once
-more; the outcome is `CORRECTED`, `UPHELD` or `DISPUTED`.
+Why this shape: in an earlier version an LLM "network agent" re-derived transport facts the system already
+knew and **hallucinated delivery receipts**, and an LLM coordinator over-escalated and decided nothing a
+rule could not; both were replaced by code. A reviewer from a different model family was kept because it
+measurably caught more: with the critic on the same family as the agents it reviewed, 5 answers were
+corrected; on a different family, 11 (same scenarios, one run each).
 
-**Three recorded runs, same five scenarios, same 16 decision points** (`python run_demo.py`):
+**Recorded run** — `python run_demo.py` replays it offline (Mistral `ministral-14b-2512` analysts, TypeSafe
+Jev reviewer; synthetic cases only):
 
-| Model per role | Final states | Flagged → corrected · upheld · disputed | Coordinator usable · matches rule check | Supervisor requests |
-| :--- | :---: | :--- | :--- | :---: |
-| Jev for every role | 5/5 | 18 → 6 · 12 · 0 | 16/16 · 10/16 | 14 |
-| Mistral `ministral-14b-2512` for every role | 5/5 | 15 → 5 · 8 · **2** | 11/16 · 5/11 | 11 |
-| **Mistral agents · Jev critic and coordinator** (recommended, the offline default) | **5/5** | 16 → **11** · 3 · 2 | **16/16 · 12/16** | 8 |
+| | Result |
+| :--- | :--- |
+| Final state as expected | **6/6** scenarios |
+| Decision points · agent answers · TDRA lens invoked | 18 · 41 · 5 |
+| Analyst claims flagged by assurance | 15 → 7 corrected after feedback, 8 upheld, 0 disputed |
+| Reviewer objections | 13 → 10 rejected by code (each contradicted the case record), 3 acted on |
+| Policy gaps surfaced per case | 13 (e.g. no acknowledgment clock, delivery evidence undefined) |
+| Escalations raised by the agents | 3: S9 (the only one rules miss) and twice in SC-02, an unapproved fallback channel the gate also refuses |
 
-A critic from a different model family than the agents it reviews made the agents correct **more than
-twice as many answers** (11 vs 5), and the coordinator always gave a valid answer, agreed with the rule
-check far more often and over-escalated less. Jev, asked beforehand, had only been 49% sure this would help:
-it was measured, not assumed. Logs: `evaluation/council_run_*.log`.
-
-What the critic caught. The health agent repeatedly claimed a result was *communicated* when no one had
-acknowledged the current revision; shown the fact-check finding, it corrected itself to *awaiting
-acknowledgment*. On Mistral, the network agent twice insisted on a delivery receipt that does not exist
-even after revision: the answer was marked `DISPUTED`, excluded from the conflict check, and the
-supervisor was told.
+**What the agents add that rules cannot (SC-06, scenario S9).** The SMS is delivered with a receipt and a
+reply arrives from the registered number, marked as an acknowledgment from a verified number. The reply
+says: *"This is his daughter. My father is in hospital abroad…"*. Rules read the structured fields and close
+the case; the policy-blind baseline does too. The reviewer read the words, raised
+`TEXT_CONTRADICTS_RECORD` (confidence 0.93), and the orchestrator escalated:
 
 ```console
-council: network mistral:ministral-14b-2512 · health mistral:ministral-14b-2512 · reviewer mistral:ministral-14b-2512 · critic jev:jev-latest · coordinator jev:jev-latest
-   critic: network disputed (claims a delivery receipt, but no attempt for the current revision has one); health corrected (claims the result was communicated, but no one acknowledged the current revision)
-council: 16 decision points, 48 agent answers, 9 tool calls; critic flagged 16 → 11 corrected, 3 upheld, 2 disputed; coordinator matched the rule check 12/16; 8 supervisor-review requests; 0 unavailable
+   FINAL ESCALATION_REQUIRED   ✓ expected ESCALATION_REQUIRED
+   policy-blind final → COMMUNICATION_DOCUMENTED · rules only (no agents) → COMMUNICATION_DOCUMENTED
+           reviewer objection TEXT_CONTRADICTS_RECORD · own reading COMMUNICATED
+           orchestrator ESCALATE ▶ verified reviewer objection TEXT_CONTRADICTS_RECORD
 ```
 
-Replay: `python run_demo.py` replays the recommended run exactly;
-`RESULTRELAY_AGENT_PROVIDER=replay RESULTRELAY_AGENT_REPLAY_FROM=jev python run_demo.py` replays the all-Jev
-run exactly. The Mistral-only run is kept as its log: its first-round recordings share questions with the
-mixed run, and Mistral is not fully deterministic at temperature 0, so replaying it gives close but not
-identical figures.
+Said plainly: an earlier recording of this design missed S9 because one assurance rule rejected the
+objection on a consistency heuristic (the reviewer named the same action as its "alternative"); that rule
+was changed after seeing that run, so only checks against the case record can now reject an objection. The
+recording above was made after the change and caught S9 on its own. Each figure comes from a single
+recorded run of a non-deterministic model.
 
-**Any model.** One setting picks the provider; every agent asks typed questions (named options or a
-probability), and a chat model's JSON answer is validated against them — an option that is not on the
-list is rejected, never repaired.
+**Any model, per role.** Agents ask typed questions (named options or a probability); a chat model's JSON
+answer is validated against them and anything off-list is rejected, never repaired. Every request passes the
+residency guard first.
 
 | `RESULTRELAY_AGENT_PROVIDER` | Endpoint | Residency (Federal Law 2/2019 Art. 13) |
 | :--- | :--- | :--- |
@@ -125,24 +126,19 @@ list is rejected, never repaired.
 | `jev` | TypeSafe Jev (`TYPESAFE_API_KEY`) | outside the State: synthetic cases only |
 | `replay` | recorded answers (default offline); refused if the case view changed | no request leaves the machine |
 
-Each role can run on its own model: `RESULTRELAY_<ROLE>_PROVIDER` / `_MODEL` for `NETWORK`, `HEALTH`,
-`REVIEWER`, `CRITIC`, `COORDINATOR` override the defaults. The recommended setup:
+Each role can run on its own model with `RESULTRELAY_<ANALYST|INSTITUTION|REVIEWER>_PROVIDER` / `_MODEL`.
+Recommended (and the recorded run):
 
 ```bash
 RESULTRELAY_AGENT_PROVIDER=mistral
-RESULTRELAY_AGENT_MODEL=ministral-14b-2512       # mandate agents (open weights; the same size class as qwen2.5:14b)
-RESULTRELAY_CRITIC_PROVIDER=jev                  # a different model family checks the agents
-RESULTRELAY_COORDINATOR_PROVIDER=jev
+RESULTRELAY_AGENT_MODEL=ministral-14b-2512     # analysts; open weights, the size class of qwen2.5:14b
+RESULTRELAY_REVIEWER_PROVIDER=jev              # the adversarial reviewer on a different model family
 ```
 
-Keys go in `.env` at the repo root (git-ignored; see `.env.example`). On a 6 GB laptop a 3B local model
-(`qwen2.5:3b`) ran end to end but returned malformed answers and out-of-memory errors; the 14B reference
+Keys go in `.env` at the repo root (git-ignored; see `.env.example`). The council runs in the
+`resultrelay_council` configuration only, so the council-off configurations stay a clean comparison. On a
+6 GB laptop a 3B local model ran but returned malformed answers and out-of-memory errors; the 14B reference
 model needs the ITU Lab compute requested in [submission/DESIGN-BRIEF.md](submission/DESIGN-BRIEF.md).
-
-**Containment.** A separate single-adviser path ([app/advisers/guard.py](app/advisers/guard.py)) applies
-residency, grounding (cite only what was shown) and jurisdiction (a comparator can inform a human, never
-underwrite an action) checks to any model proposal before the gate sees it; a test asserts the gate's
-decision is unchanged when a proposal is attached.
 
 ## Architecture — ITU-T Y.3172, node for node
 
@@ -156,80 +152,95 @@ decision is unchanged when a proposal is attached.
 | **D** | Mock transport that separates acceptance, delivery and acknowledgment; idempotency keys | Digital Infrastructure (13), Granular Priorities (12) | Federal Law 2/2019 Art. 4, 13; TDRA Mobile Spam §1-23 |
 | **SINK** | Supervisor queue, React console, hash-chained audit re-verified on read | Human Interface (6), AI for Inclusion (11) | DHA ST-28 §11.1.3; NABIDH Audit Policy §3.2.10–11 |
 
-## The four scenarios — `python run_demo.py`
+## The six scenarios — `python run_demo.py`
 
-| # | Scenario | Final state | Verdict | Policy-blind |
+| # | Scenario | Final state | Verdict | Rules only · policy-blind |
 | :--- | :--- | :--- | :--- | :--- |
-| **SC-01** normal | Genetic result routed to the referring physician | `COMMUNICATION_DOCUMENTED` | `COMPLIANT` | same |
-| **SC-02** failure | Primary channel down, no approved fallback | `ESCALATION_REQUIRED` | `INSUFFICIENT_EVIDENCE` | invents a channel → `DELIVERY_CONFIRMED` |
-| **SC-03** failure | Corrected result after acknowledgment of version 1 | `CORRECTED_RESULT_ACKNOWLEDGED` | `COMPLIANT` | `ESCALATION_REQUIRED` |
-| **SC-04** controversial | Generic walk-in rule retrieved for a genetic result | `RESULT_FINALIZED` (direct path refused) | `VIOLATION` | messages the patient → `DELIVERY_CONFIRMED` |
-| **SC-05** failure | Gateway accepts the SMS; no receipt ever arrives | `ESCALATION_REQUIRED` | `INSUFFICIENT_EVIDENCE` | records delivery → `DELIVERY_CONFIRMED` |
+| **SC-01** normal | Genetic result routed to the referring physician | `COMMUNICATION_DOCUMENTED` | `COMPLIANT` | same · same |
+| **SC-02** failure | Primary channel down, no approved fallback | `ESCALATION_REQUIRED` | `INSUFFICIENT_EVIDENCE` | same · invents a channel → `DELIVERY_CONFIRMED` |
+| **SC-03** failure | Corrected result after acknowledgment of version 1 | `CORRECTED_RESULT_ACKNOWLEDGED` | `COMPLIANT` | same · `ESCALATION_REQUIRED` |
+| **SC-04** controversial | Generic walk-in rule retrieved for a genetic result; no physician channel | `ESCALATION_REQUIRED` (failed send logged and escalated) | `VIOLATION` (prevented) | same · messages the patient |
+| **SC-05** failure | Gateway accepts the SMS; no receipt ever arrives | `ESCALATION_REQUIRED` | `INSUFFICIENT_EVIDENCE` | same · records delivery |
+| **SC-06** agents | Delivered and "acknowledged", but the reply is from the patient's daughter | `ESCALATION_REQUIRED` | `INSUFFICIENT_EVIDENCE` | **closes the case** · closes the case |
+
+Every run prints the audit checkpoint; set `RESULTRELAY_AUDIT_KEY` to sign it (HMAC-SHA256 over the chain
+head): a rebuilt, internally consistent chain passes the hash check but not the signed checkpoint.
+`python scripts/timestamp_audit.py S8-accepted-never-delivered` anchors a checkpoint in time with an RFC 3161
+token from an independent Time-Stamping Authority (FreeTSA by default; only the hash leaves the machine) —
+example in `evaluation/timestamps/`. The console's decision trace shows the council at each step: each
+agent's answers and rationale, assurance outcomes, and the orchestrator's decision.
 
 ## Evaluation — `python scripts/run_evaluation.py`
 
-9 scenarios × 11 configurations = 99 runs; seven configurations differ from the full system in exactly
-one input.
+10 scenarios × 12 configurations = 120 runs. *Fully safe* = every must-hold assertion passed **and** the case
+ended in a state its expectation allows (assertions alone had scored a case closed on the daughter's reply
+as safe).
 
-| Configuration | Fully safe | Assertions |
-| :--- | ---: | ---: |
-| `resultrelay` | **9/9** | **38/38** |
-| `static_rules` (competent hand-written rules) | 7/9 | 36/38 |
-| `ablate_optimistic_transport` (acceptance recorded as delivery) | 7/9 | 36/38 |
-| `ablate_no_kb` · `ablate_ack_any` | 7/9 | 36/38 |
-| `retrieval_only` | 3/9 | 32/38 |
-| `policy_blind` | 2/9 | 31/38 |
+| Configuration | Fully safe | Assertions | Provenance |
+| :--- | ---: | ---: | ---: |
+| `resultrelay_council` (rules + agent council) | **10/10** | **42/42** | 1.00 |
+| `resultrelay` (rules, no agents) | 9/10 — misses S9 | 42/42 | 1.00 |
+| `static_rules` (competent hand-written rules, genetic rule hard-coded) | 9/10 — misses S9 | 42/42 | 0.00 |
+| `ablate_no_applicability_filter` | 8/10 | 41/42 | 1.00 |
+| `ablate_no_kb` · `ablate_ack_any` · `ablate_optimistic_transport` · `ablate_no_invariants` | 7/10 | 40–41/42 | 0.00–1.00 |
+| `retrieval_only` | 3/10 | 36/42 | 1.00 |
+| `policy_blind` | 2/10 | 35/42 | 0.00 |
 
-"Acceptance is not delivery" is now tested: the delivery check reads the transport ledger, so a conflated
-receipt fails S1, and S8 (accepted, never delivered) fails every configuration that conflates.
-
-What these numbers do not show, said plainly: the scenarios and expectations were written by the same
-team that wrote the engine, and every expectation file says so (`"authorship": "ENGINE_AUTHORS"`).
-`static_rules` loses only the two genetic-scope scenarios, because it was built without a genetic rule.
-Two ablations (`ablate_no_audit_agent`, `ablate_full_context`) cannot change an outcome by construction.
-DHA's AI policy (PP-09 §4.3.3) requires independent third-party validation; this system has had none.
+What this shows, and does not: a competent rules engine with the same state machine is as safe as
+ResultRelay's rules on structured events — ResultRelay's added value there is **provenance** (every
+decision cites a verified clause; 1.00 vs 0.00) and jurisdiction gating. The agents add the one case rules
+cannot read (S9). `ablate_no_audit_agent` and `ablate_full_context` are **controls**: they cannot change an
+outcome by construction and score 9/10 like `resultrelay`. All scenarios and expectations were written by
+the team that wrote the engine (each file says so); the council figures come from one recorded run. DHA's
+AI policy (PP-09 §4.3.3) requires independent third-party validation; this system has had none.
 
 ## Knowledge base — `GET /api/kb/search?q=…&jurisdiction=AE-DU`
 
-**82 quotations from 18 documents**, each with issuing body, jurisdiction, section, printed page and a
+**96 quotations from 24 documents**, each with issuing body, jurisdiction, section, printed page and a
 claim class; only `BINDING_REQUIREMENT` can block an action, and only sources that bind the case
-jurisdiction carry it. **65 are verified against downloaded official PDFs** (the quote must appear on the
-declared page, or the excerpt is rejected and never indexed); **4 (TDRA Mobile Spam policy v9.0) against a
-third-party copy** of the policy, because tdra.gov.ae refuses scripted clients; **13 (Federal Law 2/2019,
+jurisdiction carry it. **74 are verified against official downloads** (PDF, eCFR, ETSI, WIPO Lex, Dubai Legal Portal); **2 against a mirror** (the PDPL's unofficial English translation) (the quote must appear on the
+declared page, or the excerpt is rejected and never indexed); **7 against third-party copies** (TDRA Mobile Spam policy; EU AI Act articles) because the official sites refuse scripted clients; **13 (Federal Law 2/2019,
 UAE AI Charter, ADHICS) against recorded transcriptions** of portal pages. The served index is pinned by
 SHA-256 and re-checked on load.
 
 | Layer | Sources |
 | :--- | :--- |
-| Dubai (binding) | DHA ST-28 laboratory standards · DHA AI in Healthcare policy PP-09 · NABIDH Audit Policy · DHA health-information and data-quality policies |
-| Federal | Federal Law 2/2019 (ICT in health) · PDPL (scope exclusion only) · UAE AI Charter · TDRA Mobile Spam policy |
-| Comparators | DoH Abu Dhabi lab standard and ADHICS · RCPath G158 (UK, 2026) · Joint Commission NPSG · ONC SAFER Guide 8 · HL7 FHIR R5 Task · IHE XDW · ITU-T Y.3172 · ITU AI Readiness 2.0 |
+| Dubai (binding) | DHA establishment law (Law No. 6 of 2018 as amended, Art. 5–6: DHA's mandate) · DHA ST-28 laboratory standards · DHA AI in Healthcare policy PP-09 · NABIDH Audit Policy · DHA health-information and data-quality policies |
+| Federal | Federal Law 2/2019 (ICT in health) · Telecom Law (Decree-Law 3/2003, Art. 13: TDRA's mandate) · PDPL (scope exclusion only) · UAE AI Charter · TDRA Mobile Spam policy |
+| Comparators | DoH Abu Dhabi lab standard and ADHICS · RCPath G158 (UK) · US CLIA 42 CFR 493.1291 · EU AI Act Arts 14/26/73 · Saudi PDPL (GCC) · ETSI TS 123 040 (3GPP SMS) · Joint Commission NPSG · ONC SAFER Guide 8 · HL7 FHIR R5 Task · IHE XDW · ITU-T Y.3172 · ITU AI Readiness 2.0 |
 
-**Vector KB built with the ITU reference code.** `python scripts/export_itu_kb.py --ingest
-PATH/TO/ITUAIReadiness` writes every verified excerpt to `kb/itu_inputdocs/` in the ITU InputDocs format
-and runs the ITU `ingest.py` (Ollama `nomic-embed-text`, ChromaDB, cosine) into `kb/chroma`: 82 clauses,
-each carrying clause id, authority, jurisdiction, section, page and URL as metadata. With
-`RESULTRELAY_RETRIEVAL=hybrid` the retriever fuses BM25 with the vector ranking (reciprocal-rank fusion).
-The vector store only *ranks*: the text always comes from the verified, SHA-pinned index, so a vector hit
-that is not a verified clause cannot be cited. Without the store or Ollama it falls back to BM25.
+**Vector KB built with the ITU reference code — shipped in `kb/chroma`.** `python scripts/export_itu_kb.py
+--ingest PATH/TO/ITUAIReadiness` writes every verified excerpt to `kb/itu_inputdocs/` in the ITU InputDocs
+format and runs the ITU `ingest.py` (Ollama `nomic-embed-text`, ChromaDB, cosine), with clause id, authority,
+jurisdiction, section, page and URL as metadata. **Search is hybrid by default** (BM25 fused with the vector
+ranking); it falls back to BM25 with a note when Ollama is not running. The vector store only *ranks*: text
+always comes from the verified, SHA-pinned index. The agent council retrieves with BM25 explicitly, so its
+recorded answers replay exactly on any machine.
 
-On seven plain-language questions ([evaluation/retrieval_check.md](evaluation/retrieval_check.md)), the
-expected clause is in the top 5 for **hybrid 4/7, BM25 1/7**. For example, "send health data abroad cloud"
-now finds Federal Law 2/2019 Art. 13. The questions are ours, so this is a smoke test, not a benchmark.
+On seven plain-language questions ([evaluation/retrieval_check.md](evaluation/retrieval_check.md)) the
+expected clause is in the top 5 for **hybrid 4/7, BM25 1/7**; Arabic questions are mapped to the English
+clauses ("نقل البيانات الصحية خارج الدولة" → Law 2/2019 Art. 13 first). The questions are ours: a smoke test.
+
+**Sources a script cannot download** — the UAE National Strategy for AI 2031, Ministerial Resolution 51/2021,
+the National Cybersecurity Strategy, a MOHAP health-AI instrument, and the official texts behind the
+transcriptions — are listed with official links and the steps to add them in
+[kb/sources/MANUAL_RETRIEVAL.md](kb/sources/MANUAL_RETRIEVAL.md).
 
 ## Policy and standards gaps — [kb/gap_register.csv](kb/gap_register.csv)
 
 | Gap | Type | Global comparison |
 | :--- | :--- | :--- |
-| **GR-15** TDRA's policy defines "delivery" only for marketing SMS, as network delivery to the subscriber (§1-23, §8-1); DHA ST-28 §11.1.3 needs a record of communication. Nothing joins them, or assigns responsibility for an accepted-but-lost clinical SMS | Coordination (health ↔ telecom) | RCPath G158 §5 (UK): alerts need feedback on whether "received, read, understood" |
+| **GR-15** TDRA's policy defines "delivery" only for marketing SMS, as network delivery to the subscriber (§1-23, §8-1); DHA ST-28 §11.1.3 needs a record of communication. Nothing joins them, or assigns responsibility for an accepted-but-lost clinical SMS | Coordination (health ↔ telecom) | ETSI TS 123 040 §9.2.3.15: SMS status stops at "received by the SME" (a handset); RCPath G158 §5 (UK): feedback on "received, read, understood" |
 | **GR-16** DHA ST-28 §11.1 provides for walk-in results to the patient, with no acknowledgment standard for a lay recipient of a critical value | Conflict between objectives | RCPath G158 §8: critical results "only communicated with the requesting clinical team" |
 | **GR-11** Is the communication record an audit log (NABIDH §3.2.11: 3 years) or health data (Law 2/2019 Art. 20: 25 years)? | Standards ambiguity | RCPath G158 §7 names the record's fields, leaves retention local |
-| **GR-17** DHA PP-09 requires agreed accountability, independent validation and AI-incident reporting, but names no default owner, validator or deadline; its revision date (1 July 2026) has passed | AI governance | EU AI Act (Reg. 2024/1689) Art. 14, 26, 73 |
+| **GR-17** DHA PP-09 requires agreed accountability, independent validation and AI-incident reporting, but names no default owner, validator or deadline; its revision date (1 July 2026) has passed | AI governance | EU AI Act Art. 26(2) names the overseer; Art. 73 sets a 15-day incident deadline |
 | **GR-03** No retrieved source sets an acknowledgment clock for walk-in results | Unclear responsibility | Joint Commission NPSG.02.03.01 leaves the time frame to the organisation |
 | **GR-18** No route for a clinical SMS to show it is not marketing (quiet hours 9pm–7am, §8-3) | Implementation | none retrieved |
+| **GR-19** The exceptions to the UAE ban on processing health data abroad sit in Ministerial Resolution 51/2021, which no official portal served | AI governance / residency | Saudi PDPL Art. 29: transfer purposes set in the law itself (GCC) |
 
-17 entries in total; each lists the sources reviewed, what they establish, what remains unclear and the
-product control that follows. PDPL (Federal Decree-Law
+18 entries in total; each lists the sources reviewed, what they establish, what remains unclear and the
+product control that follows. Gaps that rest on an absence say what was searched (the full corpus, 2 Nov 2026):
+an absence cannot be proven, only searched for. PDPL (Federal Decree-Law
 45/2021) is cited only for its scope exclusion: **Article 2, exclusion (e)** — health data governed by
 its own legislation.
 
@@ -237,9 +248,9 @@ its own legislation.
 
 ```bash
 python -m pip install -r requirements.txt
-python -m pytest -q                          # 248 tests (one skips unless every source text is cached)
+python -m pytest -q                          # 257 tests (one skips unless every source text is cached)
 python run_demo.py                           # five scenarios; the agent council replays recorded answers offline
-python scripts/run_evaluation.py             # 99-run matrix → evaluation/report.md
+python scripts/run_evaluation.py             # 120-run matrix → evaluation/report.md
 python -m uvicorn app.main:app --port 8000   # API + built UI on http://127.0.0.1:8000  (docs at /api/docs)
 python scripts/fetch_sources.py              # optional: download the official texts and re-verify every quote
 
@@ -252,7 +263,7 @@ RESULTRELAY_RETRIEVAL=hybrid python scripts/retrieval_check.py
 Live adviser: set `TYPESAFE_API_KEY` and `RESULTRELAY_ADVISE=1`, `RESULTRELAY_ADVISE_PROVIDER=jev`
 (PowerShell: `$env:RESULTRELAY_ADVISE='1'`). A local OpenAI-compatible model (Ollama) works through
 `RESULTRELAY_ADVISE_URL=http://localhost:11434/v1`. The UI is pre-built in `app/static/app`; rebuild with
-`cd web && npm ci && npm run build`. The build has no authentication: bind to 127.0.0.1 and use synthetic
+`cd web && npm ci && npm run build`. Authentication is off by default (set `RESULTRELAY_API_KEY` to require an `X-API-Key` header): bind to 127.0.0.1 and use synthetic
 data only.
 
 ## Repository
@@ -262,11 +273,11 @@ app/          gateway: agents/, multiagent/ (council, providers), advisers/ (gua
               state_machine/, transport/, kb/ (ingest + verified retrieval), audit/, api/, static/ (built UI)
 web/          React console (CaseTimeline, Simulator, Standards & gaps, Evaluation, Audit, Decision trace)
 kb/           records/ (verified excerpts) · index/ (pinned) · framework/ (Y.3172 + Readiness mappings) · itu_inputdocs/
-scenarios/    S1–S8 staged event streams · expected/ (assertions)
+scenarios/    S1–S9 staged event streams · expected/ (assertions)
 evaluation/   report.md · results/latest.json · agent_runs/ (recorded adviser responses)
 submission/   technical report · design brief · build scripts
 docs/         architecture, REPORT, audit disposition, design notes
-tests/        248 tests
+tests/        257 tests
 ```
 
 ## License

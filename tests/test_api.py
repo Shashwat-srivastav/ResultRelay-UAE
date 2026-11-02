@@ -89,7 +89,7 @@ def test_case_detail_exposes_transitions_and_citations(client):
     detail = client.get(f"/api/cases/{started['run']['case_id']}").json()
 
     assert detail["transitions"]
-    assert all(t["status"] in {"APPLIED", "BLOCKED", "FORBIDDEN", "NO_RULE"} for t in detail["transitions"])
+    assert all(t["status"] in {"APPLIED", "BLOCKED", "FORBIDDEN", "NO_RULE", "RECORDED"} for t in detail["transitions"])
     assert detail["citations"]
     assert all(c["page"] >= 1 for c in detail["citations"])
     assert detail["revisions"]

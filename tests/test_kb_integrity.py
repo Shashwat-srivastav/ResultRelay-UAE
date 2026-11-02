@@ -109,3 +109,11 @@ def test_hybrid_retrieval_falls_back_to_bm25_when_no_vector_store(monkeypatch):
     assert res.filters["engine"] == "bm25"
     assert res.chunks
     assert any("BM25 only" in n for n in res.notes)
+
+
+def test_an_arabic_question_reaches_the_english_clause():
+    """Critic RJ-12/RJ-25: Arabic queries returned nothing."""
+    from app.kb import retriever
+
+    res = retriever.search("نقل البيانات الصحية خارج الدولة", jurisdiction="AE-DU", top_k=3)
+    assert res.chunks and res.chunks[0].chunk_id == "U1-art13-localisation"

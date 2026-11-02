@@ -8,18 +8,18 @@ A policy-governed agent for communicating critical walk-in laboratory results (D
 
 ## How it works today
 
-FastAPI + React console, 18-state machine, 63 quotations from 14 documents machine-checked against their source pages, jurisdiction-filtered retrieval, 8 scenarios × 11 configurations, 229 tests, hash-chained audit re-verified on read. The policy & legal reviewer runs on TypeSafe Jev behind a containment guard (residency under Federal Law 2/2019 Art. 13, grounding, jurisdiction); a synthetic case may use an offshore model, a real case is refused.
+FastAPI + React console, 18-state machine, 96 quotations from 24 documents machine-checked against their source pages, hybrid retrieval (BM25 + ChromaDB built with the ITU reference ingest and nomic-embed-text), 10 scenarios × 12 configurations, hash-chained audit re-verified on read. At every decision point a council runs: a Policy Evidence Analyst (DHA lens), a conditional TDRA-lens analyst, and an adversarial reviewer on a different model family, checked by deterministic assurance; a deterministic orchestrator escalates to a person on a verified objection. Recorded runs use Mistral ministral-14b and TypeSafe Jev, synthetic cases only: the residency guard (Federal Law 2/2019 Art. 13) refuses a real case on an offshore endpoint.
 
 ## What we will run in the Lab
 
-1. Ingest the 63 verified excerpts (scripts/export_itu_kb.py --ingest) into the Lab's vectorised knowledge base, keeping page, section, jurisdiction and claim class as metadata, and add hybrid (vector + BM25) retrieval behind the existing applicability filter.
-2. Run the reviewer on a local model on the same Lab machine (RESULTRELAY_ADVISE_URL=http://localhost:11434/v1): the residency guard accepts loopback endpoints, so no case view leaves the host. Where the Lab machine sits is recorded as a declared fact, not inferred from a hostname.
-3. Re-run the 88-run evaluation with the reviewer in the loop and report endorsement, dissent and containment rejections per scenario.
+1. Run the whole council on the ITU reference model, Ollama qwen2.5:14b, on the Lab machine (RESULTRELAY_AGENT_PROVIDER=ollama): the residency guard accepts loopback endpoints, so no case view leaves the host. Our 6 GB laptop cannot hold a 14B model; this is the run we cannot do without the Lab.
+2. Rebuild the vector knowledge base on the Lab's ChromaDB with the ITU ingest (scripts/export_itu_kb.py --ingest), keeping page, section, jurisdiction and claim class as metadata.
+3. Re-run the 120-run evaluation with the council on the local model, repeated over several runs, and report corrections, disputes, verified objections and escalations with ranges.
 4. Accept organiser-released free-text error events into the same staged pipeline for the live exercise.
 
 ## Boundaries
 
-The model cannot change a case state, choose an unapproved channel, diagnose or interpret a result. The gate computes its decision without reading the proposal. No real patient data, ever.
+The agents cannot send, close or change a case; their only possible effect is an escalation to a person. The gate computes its decision without reading the council. No diagnosis or interpretation of results. No real patient data, ever.
 
 ## Resources requested
 

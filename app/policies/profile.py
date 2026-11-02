@@ -35,6 +35,9 @@ DEFAULT_PROFILE: dict[str, Any] = {
     "fallback_procedure_ref": None,
     "fallback_channel_id": "PORTAL-PATIENT",
     "escalation_role": "SUPERVISOR",
+    # An escalation keeps an owner and a deadline; unanswered past it, it goes to the second tier.
+    "escalation_response_minutes": 30,
+    "escalation_role_tier2": "CLINICAL_LEAD",
     "escalation_after_minutes": 60,
     "escalation_basis": (
         "PRODUCT_DESIGN_CONTROL: routed to a named supervisor role; not a statutory deadline."

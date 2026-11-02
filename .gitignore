@@ -22,4 +22,5 @@ evaluation/results/run-*.json
 evaluation/demo_run.json
 app/resultrelay.db*
 web/tsconfig.tsbuildinfo
-kb/chroma/
+# kb/chroma/ is shipped: the vector KB built with the ITU reference ingest (rebuild: scripts/export_itu_kb.py --ingest)
+resultrelay.db*

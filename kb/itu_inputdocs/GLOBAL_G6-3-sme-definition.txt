@@ -1,0 +1,3 @@
+Technical realization of the Short Message Service (SMS) — 3.1 (Definitions): Short Message Entity (p.15)
+
+Short Message Entity (SME): entity which may send or receive Short Messages

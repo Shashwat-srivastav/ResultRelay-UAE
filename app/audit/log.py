@@ -101,3 +101,44 @@ def verify_entries(entries: list[dict[str, Any]]) -> tuple[bool, list[int]]:
             broken.append(int(entry["seq"]))
         prev = entry.get("hash", "")
     return (not broken, broken)
+
+
+# --- signed checkpoints ---------------------------------------------------------------------------
+# A hash chain proves the entries are consistent with each other, not that they are the ones that were
+# written: anyone who can rewrite the store can rebuild a consistent chain. A checkpoint signs the chain
+# head with a key held outside the store (RESULTRELAY_AUDIT_KEY), so a rebuilt chain no longer matches.
+# It is not a trusted timestamp; an external timestamping service would be the next step.
+
+def _checkpoint_message(run_id: str, case_id: str, count: int, head: str) -> bytes:
+    return f"{run_id}|{case_id}|{count}|{head}".encode("utf-8")
+
+
+def sign_checkpoint(log: "AuditLog", key: bytes | None = None) -> dict[str, Any]:
+    import hmac
+    import os
+
+    key = key or os.environ.get("RESULTRELAY_AUDIT_KEY", "").encode("utf-8")
+    head = log.entries[-1].hash if log.entries else "GENESIS"
+    cp = {"run_id": log.run_id, "case_id": log.case_id, "entries": len(log.entries), "head": head,
+          "signed_at": datetime.now(timezone.utc).isoformat(), "alg": "HMAC-SHA256"}
+    if not key:
+        return {**cp, "signature": None, "note": "unsigned: set RESULTRELAY_AUDIT_KEY to sign checkpoints"}
+    cp["signature"] = hmac.new(key, _checkpoint_message(log.run_id, log.case_id, len(log.entries), head),
+                               hashlib.sha256).hexdigest()
+    return cp
+
+
+def verify_checkpoint(entries: list[dict[str, Any]], checkpoint: dict[str, Any], key: bytes) -> bool:
+    """True only if the chain is intact, its head is the checkpointed head, and the signature matches."""
+    import hmac
+
+    ok, _ = verify_entries(entries)
+    if not ok or not checkpoint.get("signature"):
+        return False
+    count = int(checkpoint["entries"])
+    if count > len(entries):
+        return False
+    head = entries[count - 1]["hash"] if count else "GENESIS"
+    expected = hmac.new(key, _checkpoint_message(checkpoint["run_id"], checkpoint["case_id"], count, head),
+                        hashlib.sha256).hexdigest()
+    return head == checkpoint["head"] and hmac.compare_digest(expected, checkpoint["signature"])

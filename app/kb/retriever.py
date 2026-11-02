@@ -4,7 +4,7 @@ A small BM25 implementation, on purpose:
 
 * no embedding service means no network dependency, no key handling and no non-determinism in an
   evaluation that claims replayability;
-* the corpus is 63 verified excerpts, where the ranking is dominated by the applicability
+* the corpus is 93 verified excerpts, where the ranking is dominated by the applicability
   filter, not by semantic similarity.
 
 The applicability filter is the load-bearing part and is deliberately separate from scoring:
@@ -272,6 +272,30 @@ def all_chunks() -> list[dict[str, Any]]:
     return _load_index().chunks
 
 
+#: Arabic legal and clinical terms -> the corpus's English terms. The official UAE texts are Arabic, but the
+#: verified excerpts are English (Arabic PDF text layers extract with reversed, broken glyphs, so no Arabic
+#: quotation is stored); this lets an Arabic question reach the right English clause. Longest terms first.
+ARABIC_GLOSSARY = {
+    "البيانات الصحية": "health data", "بيانات صحية": "health data", "المعلومات الصحية": "health information",
+    "خارج الدولة": "outside the State", "نقل": "transfer", "تخزين": "store", "معالجة": "process",
+    "النتائج الحرجة": "critical result", "نتيجة حرجة": "critical result", "المختبر": "laboratory",
+    "مختبر": "laboratory", "المريض": "patient", "الطبيب": "physician", "إشعار": "notification",
+    "رسالة نصية": "text message SMS", "الرسائل النصية": "text message SMS", "تأكيد الاستلام": "acknowledgment",
+    "إقرار": "acknowledgment", "الاحتفاظ": "retention retained", "سجل": "record", "الذكاء الاصطناعي": "artificial intelligence AI",
+    "الموافقة": "consent", "الهوية": "identity", "وراثي": "genetic", "جيني": "genetic", "تسليم": "delivery",
+    "الاتصالات": "telecommunications", "المرخص له": "licensee", "المشتركين": "subscribers", "السرية": "confidentiality",
+}
+_ARABIC = re.compile(r"[؀-ۿ]")
+
+
+def expand_arabic(query: str) -> str:
+    """Append the English terms for any Arabic glossary term found in the query (no-op for other queries)."""
+    if not _ARABIC.search(query):
+        return query
+    terms = [en for ar, en in sorted(ARABIC_GLOSSARY.items(), key=lambda kv: -len(kv[0])) if ar in query]
+    return f"{query} {' '.join(terms)}" if terms else query
+
+
 def search(
     query: str,
     *,
@@ -281,7 +305,7 @@ def search(
     scope: str = "all",  # all | applicable | comparator
     top_k: int = 6,
     min_score: float = 0.0,
-    engine: str | None = None,  # bm25 | hybrid (default from RESULTRELAY_RETRIEVAL, else bm25)
+    engine: str | None = None,  # bm25 | hybrid (default from RESULTRELAY_RETRIEVAL, else hybrid)
 ) -> RetrievalResult:
     """Rank the corpus, then apply filters.
 
@@ -293,7 +317,8 @@ def search(
       * ``all``         - everything, with each chunk's jurisdiction carried on the result
     """
     idx = _load_index()
-    query_tokens = tokenize(query)
+    expanded = expand_arabic(query)
+    query_tokens = tokenize(expanded)
     filtered: list[int] = []
     excluded = 0
     notes: list[str] = []
@@ -325,12 +350,13 @@ def search(
             scored.append((s, i, matched))
     scored.sort(key=lambda x: (-x[0], idx.chunks[x[1]]["chunk_id"]))
 
-    engine = (engine or os.environ.get("RESULTRELAY_RETRIEVAL", "bm25")).lower()
+    # Hybrid by default; it falls back to BM25 (with a note) when the vector store or Ollama is unavailable.
+    engine = (engine or os.environ.get("RESULTRELAY_RETRIEVAL", "hybrid")).lower()
     used = "bm25"
     if engine == "hybrid":
         from app.kb import vector
 
-        semantic = vector.rank(query)
+        semantic = vector.rank(expanded)
         if semantic is None:
             notes.append("hybrid retrieval requested but the ChromaDB store or Ollama is unavailable; BM25 only.")
         else:

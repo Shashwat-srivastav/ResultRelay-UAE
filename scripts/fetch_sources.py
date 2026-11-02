@@ -10,7 +10,7 @@ minimum quotation needed for each excerpt, in ``kb/records/``.
 
 The verifier in ``app/kb/ingest.py`` reads this cache and refuses to index any excerpt
 whose text cannot be found on the page the register claims. When the cache is absent, ingestion
-still runs but labels every excerpt ``UNVERIFIED_THIS_RUN`` and prints the list; the index is
+still runs but labels every excerpt ``UNVERIFIED_NO_CACHE`` and prints the list; the index is
 then not reproducible as evidence.
 
 Usage
@@ -160,6 +160,45 @@ SOURCES: dict[str, dict[str, str]] = {
         "kind": "pdf",
         "file": "G5_rcpath_g158_v2.pdf",
         "title": "RCPath G158: The communication of critical and unexpected pathology results (V2, May 2026)",
+    },
+    "U10": {
+        "url": "https://wipolex-res.wipo.int/edocs/lexdocs/laws/en/ae/ae029en.pdf",
+        "kind": "manual",
+        "file": "U10_uae_telecom_law_en.pdf",
+        "title": "Federal Law by Decree No. 3 of 2003 Regarding the Organization of Telecommunications Sector, as amended",
+        "note": "WIPO Lex serves the PDF only through a signed link from https://www.wipo.int/wipolex/en/legislation/details/13914; "
+                "u.ae and elaws.moj.gov.ae refuse scripted clients.",
+    },
+    "G6": {
+        "url": "https://www.etsi.org/deliver/etsi_ts/123000_123099/123040/17.02.00_60/ts_123040v170200p.pdf",
+        "kind": "pdf",
+        "file": "G6_etsi_ts123040_v17.pdf",
+        "title": "ETSI TS 123 040 V17.2.0 (3GPP TS 23.040 Release 17): Technical realization of the Short Message Service",
+    },
+    "G7": {
+        "url": "https://www.ecfr.gov/api/renderer/v1/content/enhanced/current/title-42?part=493&section=493.1291",
+        "kind": "html",
+        "file": "G7_ecfr_42cfr493_1291.html",
+        "title": "42 CFR 493.1291 Standard: Test report (CLIA), eCFR",
+    },
+    "G8": {
+        "url": "https://artificialintelligenceact.eu/article/14/ ; /article/26/ ; /article/73/",
+        "kind": "manual",
+        "file": "G8_eu_ai_act_art14.html",
+        "title": "Regulation (EU) 2024/1689 (AI Act), Articles 14, 26 and 73",
+        "note": "EUR-Lex refuses scripted clients; text taken from the artificialintelligenceact.eu copy (one page per article).",
+    },
+    "G9": {
+        "url": "https://sdaia.gov.sa/en/SDAIA/about/Documents/Personal%20Data%20English%20V2-23April2023-%20Reviewed-.pdf",
+        "kind": "pdf",
+        "file": "G9_saudi_pdpl_en.pdf",
+        "title": "Kingdom of Saudi Arabia, Personal Data Protection Law (SDAIA English text, V2, April 2023)",
+    },
+    "U11": {
+        "url": "https://dlp.dubai.gov.ae/Legislation%20Reference/2021/Law%20No.%20(14)%20of%202021%20Amending%20Law%20No.%20(6)%20of%202018.html",
+        "kind": "html",
+        "file": "U11_dha_law_14_2021.html",
+        "title": "Dubai Law No. (14) of 2021 Amending Law No. (6) of 2018 Concerning the Dubai Health Authority",
     },
 }
 

@@ -4,7 +4,7 @@
 #   make kb        fetch sources (optional) and rebuild the verified index
 #   make verify    re-check every quotation against the official source text
 #   make test      run the backend test suite
-#   make eval      run the 7 x 4 evaluation matrix and regenerate the report
+#   make eval      run the 10 x 12 evaluation matrix and regenerate the report
 #   make build     build the frontend into the backend's static directory
 #   make dev       serve API + built UI on :8000
 #   make manifest  export a static JSON manifest of evidence claims
@@ -20,7 +20,7 @@ help:
 	@grep -E '^#   ' Makefile | sed 's/^#   //'
 
 setup:
-	$(PY) -m pip install --quiet pypdf fastapi "uvicorn[standard]" sqlalchemy httpx pyyaml pytest
+	$(PY) -m pip install --quiet -r requirements.txt
 	cd $(FRONTEND) && npm install
 
 # Fetching is optional: without the cache the index still builds, but every excerpt is labelled

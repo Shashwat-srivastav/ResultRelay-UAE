@@ -597,9 +597,11 @@ TRANSITIONS: tuple[TransitionRule, ...] = (
     # the state machine could not express: the gate refused the transition and the case sat finalised
     # with nobody asked (red-team finding H-6).
     TransitionRule(
+        # CLINICAL_ACKNOWLEDGMENT_CONFIRMED: an acknowledgment valid on its face can be contradicted by what
+        # the person actually said (scenario S9); the case must be escalatable before it is documented.
         (CaseState.RESULT_FINALIZED, CaseState.TRANSPORT_ACCEPTED, CaseState.DELIVERY_CONFIRMED,
          CaseState.DELIVERY_STATE_UNKNOWN, CaseState.RETRY_PENDING, CaseState.DELIVERY_FAILED,
-         CaseState.CORRECTION_PENDING, CaseState.ESCALATION_IN_REVIEW),
+         CaseState.CORRECTION_PENDING, CaseState.ESCALATION_IN_REVIEW, CaseState.CLINICAL_ACKNOWLEDGMENT_CONFIRMED),
         EventType.ESCALATION_REQUESTED,
         CaseState.ESCALATION_REQUIRED,
         g_escalation_target_exists,
@@ -656,7 +658,7 @@ def evaluate(ctx: MachineContext, event_type: EventType) -> TransitionResult:
     # 2. Informational events are recorded but never move the state.
     if event_type in INFORMATIONAL_EVENTS:
         return TransitionResult(
-            status="BLOCKED",
+            status="RECORDED",
             next_state=ctx.state,
             reason="informational event recorded; it does not by itself change workflow state",
             audit_event="event.informational",

@@ -1,0 +1,41 @@
+# Dubai Law No. (6) of 2018 Concerning the Dubai Health Authority, as amended by Law No. (14) of 2021.
+# DHA's statutory mandate: the institutional basis for the Policy Evidence Analyst's DHA lens.
+source_id: U11
+excerpts:
+  - chunk_id: U11-art6a-competent-regulator
+    section_id: "Article 6(a) (Functions of the DHA)"
+    page_start: 1
+    page_end: 1
+    claim_classification: BINDING_REQUIREMENT
+    topics: [regulator_mandate, dha, health_sector, licensing, institutional]
+    text: >-
+      The DHA is the competent Government Entity in charge of regulating the Health Sector throughout the
+      Emirate, including in Special Development Zones and free zones, such as the Dubai International Financial
+      Centre.
+    support_note: >-
+      Why DHA's standards (ST-28, PP-09, NABIDH) bind a Dubai laboratory, including in free zones: the
+      institutional mandate the analyst speaks for.
+
+  - chunk_id: U11-art5-4-smart-health
+    section_id: "Article 5(4) (Objectives of the DHA)"
+    page_start: 1
+    page_end: 1
+    claim_classification: BINDING_REQUIREMENT
+    topics: [regulator_mandate, innovation, smart_health, ai_governance]
+    text: >-
+      promote and support innovation and forward thinking in all health-related fields and the use of smart
+      technologies, including Smart Health technologies;
+    support_note: >-
+      The statutory basis for DHA's AI policy PP-09, since promoting smart technologies is part of DHA's mandate.
+
+  - chunk_id: U11-art6-21-health-information-system
+    section_id: "Article 6 (functions), item 21"
+    page_start: 1
+    page_end: 1
+    claim_classification: BINDING_REQUIREMENT
+    topics: [regulator_mandate, health_information, interoperability, nabidh]
+    text: >-
+      establish, manage, and operate a comprehensive health information system in accordance with international
+      health and medical standards and in collaboration and cooperation with the DAHI and the private sector;
+    support_note: >-
+      The statutory basis for NABIDH, whose audit policy (U7) bears on the communication record (GR-11).

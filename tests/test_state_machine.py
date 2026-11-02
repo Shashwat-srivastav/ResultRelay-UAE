@@ -238,7 +238,7 @@ def test_informational_events_never_move_the_state():
     for event in INFORMATIONAL_EVENTS:
         for state in CaseState:
             result = evaluate(_ctx(state), event)
-            assert result.status == "BLOCKED"
+            assert result.status == "RECORDED"  # recorded, never shown as a block (critic RT-32)
             assert result.next_state is state
 
 
@@ -247,7 +247,7 @@ def test_every_event_has_a_defined_answer_in_every_state(event):
     """Unknown input must be an explicit, explained answer — never an exception or a silent pass."""
     for state in CaseState:
         result = evaluate(_ctx(state), event)
-        assert result.status in {"APPLIED", "BLOCKED", "FORBIDDEN", "NO_RULE"}
+        assert result.status in {"APPLIED", "BLOCKED", "FORBIDDEN", "NO_RULE", "RECORDED"}
         assert result.reason
         if result.status != "APPLIED":
             assert result.next_state is state

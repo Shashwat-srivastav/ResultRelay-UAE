@@ -259,7 +259,10 @@ def build_chunks(strict: bool = True) -> tuple[list[dict[str, Any]], dict[str, A
             "claim_classification": excerpt["claim_classification"],
             "text": text,
             "source_url": src["official_url"],
-            "verification_status": f"(not committed) {excerpt['_file']}",
+            # The source's verification class from the register (VERIFIED_OFFICIAL, VERIFIED_TRANSCRIPTION,
+            # VERIFIED_THIRD_PARTY_COPY ...). It used to hold the excerpt's file path (critic RT-26).
+            "verification_status": src["verification_status"],
+            "excerpt_file": excerpt["_file"],
             "excerpt_status": status,
             "topics": excerpt.get("topics", []),
             # Explicit, author-declared authorisation. Deliberately not derived from the text: a

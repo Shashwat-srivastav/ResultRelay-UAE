@@ -24,7 +24,7 @@ from docx import Document
 from docx.shared import Emu
 
 HERE = Path(__file__).resolve().parent
-DOCX = HERE / "ResultRelay_ITU_paper.docx"
+DOCX = HERE / "ResultRelay_ITU_Submission.docx"
 OUT = HERE / "LENGTH.md"
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"
 FONT_BOLD = "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"
@@ -142,7 +142,7 @@ def main() -> int:
     m = measure()
     OUT.write_text(
         "# Report length\n\n"
-        "Computed by `submission/measure_length.py` from `submission/ResultRelay_ITU_paper.docx`. **This is an "
+        "Computed by `submission/measure_length.py` from `submission/ResultRelay_ITU_Submission.docx`. **This is an "
         "estimate, not a render**: the workspace has no LibreOffice/Word/LaTeX, so the page count the "
         "official ITU template will produce cannot be measured here. The estimator wraps every "
         "paragraph with real font metrics at the document's own page geometry, measures tables row by "

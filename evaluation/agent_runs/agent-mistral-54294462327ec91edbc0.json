@@ -1,0 +1,96 @@
+{
+ "provider": "mistral:ministral-14b-2512",
+ "state": {
+  "you_speak_for": "the telecom regulator (TDRA, the Telecommunications and Digital Government Regulatory Authority), as an institutional participant",
+  "case": {
+   "case_scope": "WALK_IN",
+   "jurisdiction": "AE-DU",
+   "state_before_this_step": "ESCALATION_REQUIRED",
+   "this_step_event": "system.action (SYSTEM)",
+   "current_result_revision": "SYN-CASE-003-R1",
+   "recipient_route": "PATIENT",
+   "attempts": [
+    {
+     "channel": "SMS-PATIENT",
+     "revision": "SYN-CASE-003-R1",
+     "provider_accepted": false,
+     "delivery_receipt": false,
+     "outcome": "FAILED",
+     "failed": true,
+     "reconciled": true
+    }
+   ],
+   "recent_events": [],
+   "acknowledgments": [],
+   "minutes_elapsed": 75.0,
+   "configured_ack_window_minutes": 60,
+   "approved_fallback_procedure": false
+  },
+  "step": {
+   "action_under_review": "PROPOSE_FALLBACK"
+  },
+  "evidence": [
+   {
+    "chunk_id": "U8-1-23-delivery-definition",
+    "authority_class": "BINDING_REQUIREMENT",
+    "jurisdiction": "AE-FED",
+    "section": "1-23 (Definitions)",
+    "text": "Delivery of Marketing Text Messages means the stage that follows the Licensee's Reception of Marketing Text Messages from the MSC and where the Licensee delivers the Marketing Text Messages to the relevant Mobile Customer across its Telecommunications Network."
+   },
+   {
+    "chunk_id": "G6-9.2.3.15-tp-status",
+    "authority_class": "GLOBAL_COMPARATOR",
+    "jurisdiction": "GLOBAL",
+    "section": "9.2.3.15 TP-Status",
+    "text": "Indicate whether the previously submitted short message was successfully forwarded to the SME, or whether an error condition has been encountered, as follows: Short message transaction completed 0000000 Short message received by the SME 0000001 Short message forwarded by the SC to the SME but the SC is unable to confir"
+   },
+   {
+    "chunk_id": "G6-3-sme-definition",
+    "authority_class": "GLOBAL_COMPARATOR",
+    "jurisdiction": "GLOBAL",
+    "section": "3.1 (Definitions): Short Message Entity",
+    "text": "Short Message Entity (SME): entity which may send or receive Short Messages"
+   },
+   {
+    "chunk_id": "U8-8-1-licensee-responsibility",
+    "authority_class": "BINDING_REQUIREMENT",
+    "jurisdiction": "AE-FED",
+    "section": "8-1 (Other Obligations)",
+    "text": "The Licensees are deemed responsible for the Delivery of Marketing Text Messages whether their Own or the MSCs' to a Mobile Customer."
+   }
+  ]
+ },
+ "questions": {
+  "telecom_covers": {
+   "type": "noul",
+   "criteria": {
+    "true": "Covered",
+    "false": "Not covered"
+   },
+   "instructions": "Does any shown telecom clause define what counts as delivery of THIS message to a person, or assign responsibility for it, in the situation in `case.attempts`? Marketing-only or handset-only definitions do not cover a person receiving a clinical result."
+  },
+  "clause": {
+   "type": "choice",
+   "criteria": {
+    "U8-1-23-delivery-definition": "[AE-FED · ClaimClassification.BINDING_REQUIREMENT] 1-23 (Definitions): Delivery of Marketing Text Messages means the stage that follows the Licensee's Reception of Marketing Text Messages from the MSC and where the Licensee delivers the Marketing Text Messages to the rel",
+    "G6-9.2.3.15-tp-status": "[GLOBAL · ClaimClassification.GLOBAL_COMPARATOR] 9.2.3.15 TP-Status: Indicate whether the previously submitted short message was successfully forwarded to the SME, or whether an error condition has been encountered, as follows: Short message transaction completed 00000",
+    "G6-3-sme-definition": "[GLOBAL · ClaimClassification.GLOBAL_COMPARATOR] 3.1 (Definitions): Short Message Entity: Short Message Entity (SME): entity which may send or receive Short Messages",
+    "U8-8-1-licensee-responsibility": "[AE-FED · ClaimClassification.BINDING_REQUIREMENT] 8-1 (Other Obligations): The Licensees are deemed responsible for the Delivery of Marketing Text Messages whether their Own or the MSCs' to a Mobile Customer.",
+    "NONE": "None of the shown clauses bears on this step."
+   },
+   "instructions": "Which shown telecom clause comes closest to governing this message?"
+  }
+ },
+ "response": {
+  "answers": {
+   "telecom_covers": {
+    "noul": 0.85
+   },
+   "clause": {
+    "choice": "U8-1-23-delivery-definition",
+    "confidence": 0.95
+   }
+  },
+  "rationale": "Clause **U8-1-23-delivery-definition** defines 'Delivery of Marketing Text Messages' as the stage where the Licensee delivers the message to the Mobile Customer, which is the closest binding requirement governing the message delivery process in this case. The other clauses either lack binding authority or do not address delivery to a person in this context. The case involves a failed SMS delivery to a patient, and the clause explicitly assigns responsibility for delivery to the Licensee, making it the most relevant."
+ }
+}

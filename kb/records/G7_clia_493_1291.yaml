@@ -1,0 +1,28 @@
+# United States - 42 CFR 493.1291 (CLIA) Standard: Test report (GLOBAL COMPARATOR), eCFR.
+source_id: G7
+excerpts:
+  - chunk_id: G7-493.1291g-immediate-alert
+    section_id: "493.1291(g)"
+    page_start: 1
+    page_end: 1
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [critical_result, recipient, timeliness, comparator]
+    text: >-
+      ( g ) The laboratory must immediately alert the individual or entity requesting the test and, if applicable,
+      the individual responsible for using the test results when any test result indicates an imminently
+      life-threatening condition, or panic or alert values.
+    support_note: >-
+      The US rule binds the laboratory to alert the requester "immediately", with no numeric clock, and addresses the
+      requester, not the patient. A walk-in result with no requester has no US analogue (gap GR-16).
+
+  - chunk_id: G7-493.1291h-delayed-results
+    section_id: "493.1291(h)"
+    page_start: 1
+    page_end: 1
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [timeliness, delay, notification]
+    text: >-
+      ( h ) When the laboratory cannot report patient test results within its established time frames, the
+      laboratory must determine, based on the urgency of the patient test(s) requested, the need to notify the
+      appropriate individual(s) of the delayed testing.
+    support_note: Time frames are set by the laboratory itself, as in DHA ST-28 §9.1.5(e) (gap GR-03).

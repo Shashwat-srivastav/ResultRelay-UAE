@@ -28,7 +28,10 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
 
-DB_PATH = Path(os.environ.get("RESULTRELAY_DB", Path(__file__).resolve().parents[1] / "resultrelay.db"))
+# One path for the whole application: the one /api/health reports (critic RT-21).
+from app.core.config import settings as _settings  # noqa: E402
+
+DB_PATH = Path(_settings.db_path)
 
 
 class Base(DeclarativeBase):

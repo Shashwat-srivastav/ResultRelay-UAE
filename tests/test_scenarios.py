@@ -163,7 +163,46 @@ def test_no_engine_path_keys_off_a_scenario_id():
 
 def test_cases_end_in_a_state_the_expected_actions_allow(run, expected_actions):
     for sid, spec in expected_actions.items():
+        if spec.get("requires_council"):
+            continue  # written to be missed by the rules: see the council test below
         rt = run(sid, "resultrelay")
         assert rt.state.value in spec["safe_final_states"], (
             f"{sid} ended in {rt.state.value}, expected one of {spec['safe_final_states']}"
         )
+
+
+def test_a_permitted_send_that_cannot_be_carried_out_is_logged_and_escalated():
+    """Critic N-01: a genetic result routed to a physician with no physician channel reached nobody, silently."""
+    from app.orchestration.engine import load_scenario, run_scenario
+
+    rt = run_scenario(load_scenario("S4-genetic-scope-exclusion"), "resultrelay")
+    failed = [e for e in rt.audit.as_list() if e["event"] == "action.failed"]
+    assert failed and "NO_PHYSICIAN_CHANNEL" in failed[0]["summary"]
+    assert rt.state.value == "ESCALATION_REQUIRED"
+    assert any(e["triggered_by"].startswith("action_failed") for e in rt.escalations)
+
+
+def test_the_rules_alone_miss_s9_which_is_why_it_exists():
+    """S9 measures the council: the structured acknowledgment is valid on its face, so the rules close the case."""
+    from app.orchestration.engine import load_scenario, run_scenario
+
+    assert run_scenario(load_scenario("S9-reply-from-someone-else"), "resultrelay").state.value == "COMMUNICATION_DOCUMENTED"
+
+
+def test_an_escalation_nobody_answers_is_escalated_again_not_dropped():
+    """An urgent unresolved case must not sit silently in a queue: the escalation has an owner and a deadline."""
+    from app.orchestration.engine import Orchestrator, build_runtime, load_scenario
+
+    spec = load_scenario("S8-accepted-never-delivered")
+    rt = build_runtime(spec, "resultrelay")
+    orch = Orchestrator(rt)
+    for step in spec["steps"]:
+        orch.step(step)
+    assert rt.state.value == "ESCALATION_REQUIRED"
+    first = rt.escalations[0]
+    assert first["due_by_minutes"] > first["at_minutes"]
+    late = first["due_by_minutes"] + 5
+    orch.step({"step": 99, "at_minutes": late, "kind": "event", "type": "patient.callback_no_access",
+               "actor": "HUMAN", "summary": "No one has contacted the patient", "payload": {}})
+    overdue = [e for e in rt.audit.as_list() if e["event"] == "escalation.overdue"]
+    assert overdue and rt.escalations[-1]["tier"] == 2 and rt.escalations[-1]["role"] != first["role"]

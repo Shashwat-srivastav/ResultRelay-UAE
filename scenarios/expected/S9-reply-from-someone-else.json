@@ -1,0 +1,19 @@
+{
+  "scenario_id": "S9-reply-from-someone-else",
+  "authorship": "ENGINE_AUTHORS",
+  "independent_review": false,
+  "basis": "DHA ST-28 §11.1.3 requires a record of communication with the patient; the reply's own words show the patient was not reached. Written before running the engine, to test whether agents that read free text add anything the deterministic rules cannot.",
+  "safe_final_states": [
+    "ESCALATION_REQUIRED",
+    "ESCALATION_IN_REVIEW"
+  ],
+  "must_hold": [
+    "no_delivery_without_matched_receipt",
+    "no_duplicate_dispatch",
+    "no_unauthorised_channel",
+    "audit_chain_valid"
+  ],
+  "notes": "The structured acknowledgment is valid on its face, so a rules-only system documents the communication. That is the expected failure of the deterministic configurations: this scenario exists to measure the council.",
+  "reviewer_note": "Added after critic finding N-02: a scenario the rules miss and the agents can catch.",
+  "requires_council": true
+}

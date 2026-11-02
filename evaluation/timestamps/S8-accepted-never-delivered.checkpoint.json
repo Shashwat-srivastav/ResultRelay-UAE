@@ -1,0 +1,9 @@
+{
+ "alg": "HMAC-SHA256",
+ "case_id": "SYN-CASE-009",
+ "entries": 20,
+ "head": "0b65c9744d8931d2b9de6f04ea7c2e5fbee866631c24e753cd470c5939a142e6",
+ "run_id": "RUN-S8-accepted-never-delivered-resultrelay",
+ "signature": "2540ce60efd16adc40074b57e9e6880e7b163cea37aa4487052a5ee83e435c0d",
+ "signed_at": "2026-11-02T10:39:20.609027+00:00"
+}

@@ -46,3 +46,16 @@ def test_a_corrected_revision_is_a_different_message():
     net.send(channel="SMS-PATIENT", result_revision_id="R2", idempotency_key="C:R2:SMS-PATIENT:CORRECTED_RESULT",
              at_minutes=30, content_digest="d2")
     assert len(net.attempts) == 2
+
+
+def test_a_restarted_orchestrator_replaying_a_send_does_not_send_twice():
+    """The proposal's test 4: after a process restart, the same send step is replayed; no second message."""
+    from app.orchestration.engine import Orchestrator, build_runtime, load_scenario
+
+    spec = load_scenario("S8-accepted-never-delivered")
+    rt = build_runtime(spec, "resultrelay")
+    Orchestrator(rt).step(spec["steps"][0])
+    Orchestrator(rt).step(spec["steps"][1])           # the send
+    sent = len(rt.network.attempts)
+    Orchestrator(rt).step(spec["steps"][1])           # a fresh orchestrator replays the same send step
+    assert len(rt.network.attempts) == sent == 1

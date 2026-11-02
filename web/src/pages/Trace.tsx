@@ -196,6 +196,42 @@ export default function Trace() {
                         ))}
                       </div>
 
+                      {s["3b_council"] ? (
+                        <div>
+                          <div className="tiny muted">2b · agent council (advises; can only escalate)</div>
+                          {s["3b_council"].agents.map((a: any, i: number) => (
+                            <div key={i} className="tiny">
+                              <span className="mono">{a.role}</span>{" "}
+                              <Chip tone={a.status === "DISPUTED" ? "bad" : "neutral"}>{a.status}</Chip>{" "}
+                              {Object.entries(a.answers)
+                                .filter(([k]) => k !== "rationale")
+                                .map(([k, v]) => `${k}: ${typeof v === "number" ? (v as number).toFixed(2) : v}`)
+                                .join(" · ")}
+                              {a.answers.rationale ? <div className="muted">“{String(a.answers.rationale).slice(0, 220)}”</div> : null}
+                            </div>
+                          ))}
+                          {s["3b_council"].assurance
+                            .filter((r: any) => r.outcome !== "ACCEPTED")
+                            .map((r: any, i: number) => (
+                              <div key={i} className="tiny">
+                                assurance · <span className="mono">{r.role}</span>{" "}
+                                <Chip tone={r.outcome === "CORRECTED" ? "warn" : r.outcome === "DISPUTED" || r.outcome === "OBJECTION_REJECTED" ? "bad" : "neutral"}>
+                                  {r.outcome}
+                                </Chip>{" "}
+                                <span className="muted">{(r.checks ?? []).join("; ")}</span>
+                              </div>
+                            ))}
+                          <div className="tiny">
+                            orchestrator{" "}
+                            <Chip tone={s["3b_council"].decision === "ESCALATE" ? "warn" : "ok"}>{s["3b_council"].decision}</Chip>{" "}
+                            {s["3b_council"].escalation ? <span>{s["3b_council"].escalation}</span> : null}
+                            {s["3b_council"].conflicts?.length ? (
+                              <span className="muted"> · {s["3b_council"].conflicts.join(" · ")}</span>
+                            ) : null}
+                          </div>
+                        </div>
+                      ) : null}
+
                       <div>
                         <div className="tiny muted">3 · gate</div>
                         <div className="tiny">

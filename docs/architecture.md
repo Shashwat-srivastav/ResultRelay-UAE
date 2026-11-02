@@ -1,314 +1,396 @@
 # Architecture
 
-ResultRelay is a policy-governed workflow for one narrow, high-risk administrative act: telling a
-patient that a laboratory result they are waiting for is ready. It does not interpret results, it
-does not decide what is critical, and it does not give advice. It decides **whether, through
-which channel, and with what evidence** a communication may happen — and it refuses to call that
-communication complete until a person has acknowledged the specific result that was sent.
+*Current as of 2 November 2026. Every claim below can be checked against the file it names. For
+results (scenario pass rates, council-on vs council-off, retrieval checks) see `README.md` and
+`evaluation/report.md`. This document gives no numbers that depend on an evaluation run.*
 
-That narrowness is the design. Every interesting failure in this domain is a confusion between
-things that are adjacent: *accepted* versus *delivered*, *delivered* versus *acknowledged*,
-*relevant* versus *applicable*, *a design decision* versus *a legal requirement*.
+## 1. Purpose
 
----
+ResultRelay governs one narrow, high-risk administrative act: telling a walk-in patient of a
+DHA-licensed laboratory (or, for a genetic result, the referring physician) that a critical result
+is ready, and proving that the right person received the current revision of that result. It does
+not interpret results, decide what is critical, or give clinical advice. It decides **whether,
+through which channel, to whom and on what evidence** a communication may happen, and it will not
+call a communication complete until a named person has acknowledged the specific revision that was
+sent. A deterministic core (state machine, gate, invariants, simulated transport, hash-chained
+audit) decides every transition. A council of LLM agents reads the policy text and what people
+said, and its only possible effect on a case is to open an escalation to a person.
 
-## 1. Shape of the system
+All data is synthetic (`SYN-*` references). The transport is simulated and contacts no network
+(`REAL_NETWORK_ACCESS = False` in `app/transport/simulator.py`).
+
+## 2. Component view
 
 ```
-                       ┌───────────────────────────────────────────┐
-   scenario (JSON)     │            orchestration                  │
-  ────────────────────▶│  engine ──▶ agents ──▶ gate ──▶ machine    │
-   synthetic events    │    │                    │           │     │
-                       │    │                    │           ▼     │
-                       │    │                    │    state transition
-                       │    ▼                    ▼           │     │
-                       │  event store      audit chain       │     │
-                       │  (SQLite)         (SHA-256)         │     │
-                       └────┬───────────────────┬───────────┬┘     │
-                            │                   │           │      │
-        ┌───────────────────┴───┐   ┌───────────┴────┐  ┌───┴──────┐
-        │ knowledge base        │   │ transport      │  │ REST API │
-        │ 63 verified excerpts  │   │ simulator      │  │ + React  │
-        │ BM25 + scope filter   │   │ (no network)   │  │ UI       │
-        └───────────────────────┘   └────────────────┘  └──────────┘
+ scenario steps (scenarios/*.json)          runtime-injected events
+ POST /api/runs  · /step · /play            POST /api/runs/{id}/events
+            \                                   /
+             v                                 v
+ +------------------------------------------------------------------+
+ | EVENT GATEWAY  app/api/routes.py, app/orchestration/engine.py     |
+ | event validated against EventType; event.received / .injected    |
+ | appended to the audit chain before it is applied                  |
+ +------------------------------------------------------------------+
+             |
+             v
+ +------------------------------------------------------------------+
+ | DETERMINISTIC CASE SERVICES                                       |
+ | state machine (app/state_machine/)  transport (app/transport/)    |
+ | five rule-based assessors (app/agents/): lab_workflow,            |
+ | policy_applicability, network_delivery, escalation_coordinator,   |
+ | audit_governance -> one PROPOSAL (no authority)                   |
+ +------------------------------------------------------------------+
+             |                         ^
+             v                         | verified chunks only
+ +---------------------------+   +--------------------------------+
+ | EVIDENCE RETRIEVAL        |<--| KNOWLEDGE BASE                 |
+ | app/kb/retriever.py       |   | kb/source_register.csv (23)    |
+ | BM25 + jurisdiction filter|   | kb/records/*.yaml              |
+ | optional hybrid ChromaDB  |   | kb/index/chunks.json (93,      |
+ | (app/kb/vector.py)        |   | each verified at ingest)       |
+ +---------------------------+   +--------------------------------+
+             |
+             v      (configuration resultrelay_council only)
+ +------------------------------------------------------------------+
+ | AGENT COUNCIL  app/multiagent/council.py (providers.py)           |
+ |  1 Policy Evidence Analyst (LLM, DHA lens)                        |
+ |  2 Institutional analyst (LLM, TDRA lens) - only if transport     |
+ |    is unresolved                                                  |
+ |  3 Adversarial reviewer (LLM, by default another model family)    |
+ |  [residency guard app/advisers/residency.py before every live     |
+ |   model call]                                                     |
+ +------------------------------------------------------------------+
+             |
+             v
+ +------------------------------------------------------------------+
+ | INDEPENDENT ASSURANCE (code): fact_check, policy-rules check,     |
+ | detect_conflicts; one feedback round -> CORRECTED/UPHELD/DISPUTED |
+ +------------------------------------------------------------------+
+             |
+             v
+ +------------------------------------------------------------------+
+ | DETERMINISTIC ORCHESTRATOR  council.orchestrate()                 |
+ | PROCEED (the gate decides) or ESCALATE (named owner, deadline)    |
+ +------------------------------------------------------------------+
+             |
+             v
+ +------------------------------------------------------------------+
+ | GATE  app/orchestration/gate.py  -- reads structured fields only, |
+ | never agent text; applies invariants; maps proposal -> event      |
+ +------------------------------------------------------------------+
+             |
+             v
+ +------------------------------------------------------------------+
+ | EXECUTION + AUDIT  engine.perform_action / escalate,              |
+ | action.performed | action.failed | action.blocked,                |
+ | escalation.overdue; app/audit/log.py hash chain; SQLite store     |
+ | (app/models/db.py); console in app/static/app (built from web/)   |
+ +------------------------------------------------------------------+
 ```
 
-Six modules, each with one job and no upward dependencies:
+Module responsibilities:
 
 | module | responsibility | may not |
 |---|---|---|
-| `kb/` | hold verified quotations; retrieve with an applicability filter | invent text, rank a foreign rule as binding |
-| `agents/` | produce a typed assessment from a *declared subset* of the case | change state, call the transport, see other agents' outputs |
-| `orchestration/gate.py` | decide whether a proposed action may proceed | be overridden by an agent |
-| `state_machine/` | define which transitions exist and which are forbidden | know about policies or channels |
-| `transport/` | simulate an asynchronous network honestly | report acceptance as delivery |
-| `audit/` | append hash-chained entries | allow update or deletion |
+| `app/state_machine/` | define the 18 states, 17 event types, which transitions exist and which are forbidden | know about policies, models or channels |
+| `app/agents/` | five rule-based assessors, each reading a declared subset of the case (`allowed_fields`) | change state, call the transport |
+| `app/orchestration/gate.py` | decide whether a proposed action may proceed | read free text; be overridden by an agent |
+| `app/orchestration/engine.py` | run one step: record event, assess, deliberate, gate, execute, audit | execute an action the gate did not permit |
+| `app/multiagent/` | the council and its model providers | send, close or change a case |
+| `app/advisers/` | residency guard (used by the council); an older single-adviser path behind `RESULTRELAY_ADVISE`, off by default | let a model output become an action |
+| `app/kb/` | ingest and verify quotations; retrieve with an applicability filter | index a quote it cannot find on the declared page |
+| `app/transport/simulator.py` | simulate an asynchronous network | report acceptance as delivery |
+| `app/audit/log.py` | append hash-chained entries; re-verify on read | update or delete an entry |
 
-The rule that keeps this honest: **policy rules live in exactly one place** (the evidence, plus
-the gate that consumes it) and **state rules live in exactly one place** (the transition table).
-An earlier iteration put a `case_scope == "GENETIC"` branch inside an agent; every baseline then
-"passed" the genetic scenario by construction, because the check followed the baseline rather
-than the case. The scope decision now comes from evidence (`scope_permitted`) and is enforced by
-the gate.
+## 3. ITU-T Y.3172 mapping
 
----
+The mapping is descriptive, not a conformance claim. It matches
+`kb/framework/itu_y3172_mapping.csv` (rows Y1–Y11); clause references are to F1 (ITU-T Y.3172
+(06/2019)) in the KB.
 
-## 2. Request path, step by step
-
-A scenario step is one released event. For each one:
-
-1. **Event is stored** (`events`) with a sequence number, actor and layer, and appended to the
-   audit chain as `event.received`.
-2. **Contexts are built.** Each agent receives a named subset of case facts
-   (`information_available` records exactly what it got). The delivery agent never sees patient
-   identity; the clinical agent never sees the transport ledger.
-3. **Agents run** and return a validated `AgentAssessment` — status, recommended action, citations,
-   conditions checked and unresolved, confidence, and a one-paragraph rationale. A malformed
-   assessment is rejected rather than repaired.
-4. **The orchestrator forms one proposal.** It is a *proposal*: it has no authority.
-5. **The gate decides.** `enforce()` checks evidence basis, fallback authorisation, revision
-   consistency, acknowledgment scope, approval requirements and the scope flag, then maps the
-   decision onto the transition table. An agent cannot widen its own permissions; the gate reads
-   the case, not the agent's confidence.
-6. **The state machine resolves** the (state, event) pair. Forbidden pairs win over permissive
-   rules; conflations (transport observation → human completion) are structurally unreachable.
-7. **Effects are applied** — a tool call to the simulated transport, a revision change, an
-   approval record — and both the transition and its reason are stored.
-8. **Downstream events** produced by the tool (provider acceptance, receipt, timeout) re-enter at
-   step 1 as new events with their own layer. That is why an accepted message cannot silently
-   become a delivered one: they are different events, in a different layer, requiring a different
-   guard.
-
-A case can leave this loop only through a state that requires a current-revision acknowledgment
-and recorded documentation, or by being escalated to a named human role. There is no
-"give up and close" path.
-
----
-
-## 3. The three distinctions the system is built around
-
-### 3.1 Acceptance, delivery, acknowledgment
-
-| fact | produced by | proves |
+| Y.3172 node | ResultRelay component | code |
 |---|---|---|
-| transmission accepted | provider API returned an id | a message was taken by the gateway |
-| delivery confirmed | endpoint receipt bound to an attempt id | the channel reached the patient's device |
-| acknowledged | a human act, bound to a specific revision | a person has the content |
+| SRC (source) | synthetic laboratory, transport and human event streams; the verified policy corpus | `scenarios/*.json`, `kb/index/chunks.json`, `POST /api/runs/{id}/events` |
+| C (collector) | event ingestion: each event is recorded in the hash chain before it is applied | `app/orchestration/engine.py` |
+| PP (preprocessor) | normalisation into case state, revision binding, transport reconciliation, jurisdiction-filtered retrieval; the case view given to agents (`_case_view`) | `engine.py`, `app/kb/retriever.py`, `app/transport/simulator.py` |
+| M (model) | Policy Evidence Analyst and conditional TDRA-lens analyst (LLMs), adversarial reviewer (LLM); typed judgments with probabilities | `app/multiagent/council.py`, `app/multiagent/providers.py` |
+| P (policy) | deterministic assurance (fact check, policy-rules check, conflicts) and the gate's invariants decide what may happen | `council.py`, `app/orchestration/gate.py` |
+| D (distributor) | execution of permitted actions to the right sink; failed actions audited and escalated | `engine.py` (`perform_action`, `FAILED_TOOL_OUTCOMES`) |
+| SINK | mock transport, supervisor queue with owner and deadline, communication record | `app/transport/simulator.py`, `app/api/routes.py` |
+| MLFO (ML function orchestrator) | deterministic orchestrator: chains SRC to SINK per step, decides when the council runs and whether to escalate; no LLM coordinator | `engine.py`, `council.py` |
 
-The transport simulator produces the first two, never the third. The transition table has a
-`CONFLATIONS` check that refuses any rule mapping a transport event onto a human-completion
-state, so the distinction survives future edits rather than relying on reviewers to notice.
+The CSV adds three rows outside the eight nodes: Y9 (ML sandbox as containment: residency guard,
+gate, replay), Y10 (P constrained by an external legal layer: only clauses that bind the case
+jurisdiction can block or authorise), and Y11 (audit of the pipeline, which Y.3172 does not
+specify).
 
-The simulated transport models timeout as **absence of information**, not failure: a timeout sets
-`accepted = False`, `delivered = False`, `failed = False`, and only reconciliation can resolve it.
+## 4. The deterministic core
 
-### 3.2 Unknown is a state, not an error
+### 4.1 States
 
-`DELIVERY_STATE_UNKNOWN` is a first-class state with an inbound rule and no outbound shortcut.
-From it, the only permitted actions are reconciliation or escalation; a new transmission is
-forbidden (`INV-4`) because sending again while the first message may have arrived is how
-patients get two conflicting results.
+`app/state_machine/states.py` defines 18 states in four families that are deliberately kept apart:
 
-### 3.3 Revisions, not "the result"
-
-A result is a lineage. A corrected result creates a new revision that supersedes the old one, and
-**every downstream artefact is bound to a revision id**: the attempt, the receipt, the
-acknowledgment, the documentation. An acknowledgment of revision 1 says nothing about revision 2,
-which is the failure the S2 and S5 scenarios exist to expose. Re-communicating a superseded
-result also requires a named human approval, because the first message already left the building.
-
----
-
-## 4. Standards
-
-### 4.1 Why standards are classified before they are used
-
-The system talks about Dubai-licensed laboratories, but most of the world's explicit text on
-critical-result reporting comes from elsewhere. Mixing those up is the single most common way a
-policy prototype becomes misleading: a US accreditation goal gets quoted as if it applied in
-Dubai, and the artefact looks more authoritative than the evidence behind it.
-
-Every excerpt therefore carries a claim classification, and only one class can bind:
-
-| classification | meaning | may block an action |
-|---|---|---|
-| `BINDING_REQUIREMENT` | in force for this jurisdiction and facility type | yes |
-| `OFFICIAL_GUIDANCE` | issued by an authority but advisory | no (informs wording) |
-| `INSTITUTIONAL_PROCEDURE` | the facility's own written process | yes, as an institutional control |
-| `GLOBAL_COMPARATOR` | another jurisdiction or a voluntary standard | no — never |
-| `PRODUCT_DESIGN_CONTROL` | a build decision with no upstream source | recorded as such |
-| `RESEARCH_HYPOTHESIS` | a claim to be tested | no |
-| `UNRESOLVED` | sources conflict or are silent | no (raises a gap) |
-
-Only `S1` (DHA Standards for Clinical Laboratory Services, Issue 2) and `AD1` (HAAD/DoH Abu Dhabi
-Clinical Laboratory Standards) are binding, each inside its own emirate; for a Dubai case `AD1`
-is a comparator. A test asserts this: *only the local and federal layers can be binding for a Dubai
-case*.
-
-Jurisdiction is layered, not a single label. `retriever.JURISDICTION_LAYERS` widens a case upwards:
-
-| case jurisdiction | material that can bind it |
+| family | states |
 |---|---|
-| AE-DU | `AE-DU`, `AE-FED` |
-| AE-AZ | `AE-AZ`, `AE-FED` |
-| AE-FED | `AE-FED` |
+| laboratory record | `RESULT_DRAFT`, `RESULT_FINALIZED` |
+| sender intent | `TRANSMISSION_QUEUED`, `TRANSMISSION_ATTEMPTED` |
+| network-observed | `TRANSPORT_ACCEPTED`, `DELIVERY_CONFIRMED`, `DELIVERY_FAILED`, `DELIVERY_STATE_UNKNOWN` |
+| human-observed | `CLINICAL_ACKNOWLEDGMENT_CONFIRMED`, `COMMUNICATION_DOCUMENTED` |
+| workflow control | `RETRY_PENDING`, `ESCALATION_REQUIRED`, `ESCALATION_IN_REVIEW`, `CORRECTION_PENDING` |
+| corrected result | `CORRECTED_RESULT_FINALIZED`, `CORRECTED_RESULT_DELIVERY_PENDING`, `CORRECTED_RESULT_ACKNOWLEDGED` |
+| terminal record | `SUPERSEDED` |
 
-The widening is one-directional — a Dubai policy never binds an Abu Dhabi case — and it exists
-because the instrument that actually governs health data in the UAE is federal (Federal Law 2/2019),
-so exact-match filtering would have excluded the governing law from every case.
+Only `COMMUNICATION_DOCUMENTED` and `CORRECTED_RESULT_ACKNOWLEDGED` count as complete
+(`is_complete`). `DELIVERY_STATE_UNKNOWN` is a first-class state: an absence of information, not
+an error.
 
-### 4.2 What the binding evidence actually says — and does not say
+### 4.2 How a (state, event) pair is resolved
 
-Verified excerpts (all 44 are machine-checked against the source text; see §4.4):
+`transitions.evaluate()` applies, in order:
 
-- **§11.1** — Dubai laboratories may accept walk-in patients only for tests that do not require a
-  physician's order, per a permitted list (Appendix 3).
-- **§11.1.1** — critical results shall be reported clearly to the patient.
-- **§11.1.2** — the laboratory *should* direct the patient to seek further medical advice
-  (advisory, and the reason the patient message contains no interpretation).
-- **§11.1.3** — the laboratory shall keep a record of the communication.
-- **§9.1.5(e)** — a policy for identifying and reporting critical results.
-- **§9.1.5(f)** — the laboratory shall define the expected turnaround time *in its own internal
-  policy*. This is the clause that decides how the no-clock finding is written: the instrument
-  delegates the clock, so the prototype must not invent a statutory one.
-- **§9.1.5(g)** — corrections must identify the corrected result as revised, with date and time,
-  and both original and corrected reports must be retained.
-- **§13.3–13.5, Appendix 3** — genetic tests require a prescription, a consultant is involved
-  before and after testing, and genetic results **shall not be communicated to patients directly**.
+1. **Forbidden pairs** (`FORBIDDEN`, 2 rules) win over any permissive rule.
+2. **Informational events** (`patient.callback_no_access`, `channel.fallback_proposed`,
+   `policy.source_updated`) are recorded with status `RECORDED` and never move the state.
+3. **Transition rules** (`TRANSITIONS`, 22 rules): the first rule whose guard passes applies,
+   unless its target is forbidden for that event by a **conflation rule** (`CONFLATIONS`, 5 rules),
+   which blocks it even if a future edit adds a permissive rule.
+4. Otherwise `NO_RULE`: the case is unchanged and the event is kept for human review.
 
-That last clause is why scope is an evidence-driven input rather than a setting: a genetic result
-in the same walk-in queue may not take the patient-direct path at all, and the system must be able
-to prove it knew that.
+### 4.3 Invariants
 
-**What is absent matters too.** No retrieved Dubai clause sets a numeric acknowledgment clock, a
-retry count, or a fallback-channel rule for walk-in results. Those values exist in
-`app/policies/profile.py` and are labelled `PRODUCT_DESIGN_CONTROL`; the gap register records the
-absence (`GR-01`, `GR-03`, `GR-04`). "We did not find it" is written as a gap, never as
-"therefore it is permitted".
+The invariant identifiers below are the ones used in `app/state_machine/transitions.py` and
+`app/orchestration/gate.py`. (There is no `INV-7` in the code.)
 
-### 4.3 Comparators are kept, not discarded
-
-US and international sources are retained because they show how other regimes solved the same
-problem — ONC SAFER asks whether the record tracks a result to *acknowledged*; Joint Commission
-NPSG.02.03.01 requires the organisation to define timeliness and to evaluate it; IHE XDW names the
-race conditions that workflow documents must handle. They are cited as `GLOBAL_COMPARATOR` and the
-UI renders that class next to the clause. One scenario (S6) exists specifically because a
-retrieval-only system will present the Abu Dhabi read-back requirement as binding for a Dubai
-case; the isolation test fails the moment the filter is removed.
-
-### 4.4 Provenance is mechanical
-
-`app/kb/ingest.py` normalises each quotation (case, curly punctuation, and *all*
-whitespace, because PDF extractors break words mid-token) and requires it to appear as a
-contiguous substring of the declared page. A quote on the wrong page fails even if it exists
-elsewhere in the document. Excerpts that fail are excluded from the index, so retrieval cannot
-cite them. Sources are fetched at build time into `~/.cache/resultrelay/sources` from the issuing
-bodies and are not redistributed; only minimal necessary quotations are committed.
-
-Current state: **63 excerpts, 63 verified, 0 unverified, 0 rejected**, pinned by
-`kb/index/pinned.sha256` and re-verified at load (0.17 s).
-
-ITU-T Y.3172 §8.1 is used descriptively to name the components (source, collection, preprocessing,
-model, policy, decision, sink). No conformance claim is made, and the mapping file records two
-requirements as `NOT IMPLEMENTED` rather than stretching them.
-
----
-
-## 5. The configurations
-
-The same engine runs eleven ways so that a reviewer can see which control is doing the work. Seven are
-one-flag ablations: each differs from the full system in exactly one input, which is the only shape
-of comparison that supports a causal sentence. Three are compound baselines, kept because they show
-what a system without any of this looks like.
-
-| configuration | knowledge base | applicability filter | invariants | acknowledgment scope | transport semantics |
-|---|---|---|---|---|---|
-| `resultrelay` | yes | yes | yes | revision-bound | strict |
-| `ablate_no_kb` | **no** | yes | yes | revision-bound | strict |
-| `ablate_no_applicability_filter` | yes | **no** | yes | revision-bound | strict |
-| `ablate_no_invariants` | yes | yes | **no** | revision-bound | strict |
-| `ablate_no_audit_agent` | yes | yes | yes (4 assessors) | revision-bound | strict |
-| `ablate_full_context` | yes | yes | yes | revision-bound | strict (no field filtering) |
-| `ablate_ack_any` | yes | yes | yes | **any** | strict |
-| `ablate_optimistic_transport` | yes | yes | yes | revision-bound | **optimistic** |
-| `policy_blind` (compound) | no | n/a | no | any | optimistic |
-| `retrieval_only` (compound) | yes | no | no | any | optimistic |
-| `static_rules` (compound) | no | n/a | yes | revision-bound | strict |
-
-`static_rules` is the fair comparison: a competent hand-coded rules engine. It gets the ordering
-and the acknowledgment binding right and fails only where hard-coded rules cannot know something —
-that a genetic result may not go to the patient, and that a clause belongs to another jurisdiction.
-
-Three ablations produce no difference on the eight scenarios (`ablate_no_audit_agent`,
-`ablate_full_context`, `ablate_optimistic_transport`) and all three are reported as null results. The optimistic-transport flag
-had no behaviour at all until it was implemented: it changed a gate message and nothing else. It now
-records provider acceptance as delivery in the transport ledger, and a constructed
-accepted-without-receipt case diverges (strict `TRANSPORT_ACCEPTED`, optimistic
-`DELIVERY_CONFIRMED`) — see `tests/test_transport_semantics.py`.
-
-## 5b. The advisory boundary (a model may propose, never decide)
-
-`app/advisers/` is the only place a model is allowed to exist, and by default nothing does.
-One switch governs it: `RESULTRELAY_ADVISE=1` (`RESULTRELAY_ENABLE_LLM` is accepted as a legacy alias).
-`/api/health` distinguishes *enabled* from *enabled and connected*, because an operator reading
-"open" while the engine records `DISABLED` would be reading fiction.
-
-```
-case snapshot ──► advisers.guard.advise() ──► AdvisoryRecord ──► gate.enforce(advisory=...)
-                          │                                            │
-                refuse before the model runs                 decision already computed
-                (residency / disabled)                       (advisory attached afterwards)
-```
-
-| check | rule | failure status |
+| id | rule | where enforced |
 |---|---|---|
-| boundary | closed unless `RESULTRELAY_ADVISE=1` *and* an in-country endpoint is configured | `DISABLED` |
-| residency | Art. 13: out-of-country endpoints refused unless a named Health Authority resolution is recorded | `REFUSED_RESIDENCY` |
-| citations resolve | every cited chunk id must exist in the corpus | `REJECTED_UNGROUNDED` |
-| citations apply | every cited chunk must be from the applicable jurisdiction set (Dubai + federal for a Dubai case) | `REJECTED_OUT_OF_JURISDICTION` |
-| shape | the proposal must be over the known action set; an exception is not authority | `REJECTED_MALFORMED` |
-| classification | whatever survives is `PRODUCT_DESIGN_CONTROL`, never policy | `ADVISORY_ONLY` |
+| INV-1 | a transmission request or provider acceptance cannot establish delivery or acknowledgment | `CONFLATIONS` (`transport.accepted`, `transmission.requested`) |
+| INV-2 | an endpoint receipt is not human acknowledgment | `CONFLATIONS` (`transport.delivery_receipt`) |
+| INV-3 | a timeout is an absence of information; an unmatched receipt cannot confirm delivery | `CONFLATIONS` (`transport.timeout`), `g_receipt_matches_attempt` |
+| INV-4 | no new transmission from `DELIVERY_STATE_UNKNOWN`; no retry before the prior attempt is reconciled | `FORBIDDEN`, `g_retry_reconciled` |
+| INV-5 | idempotency: a duplicate receipt is refused; the attempt's stored state, not the payload, decides novelty | `g_receipt_matches_attempt`; idempotency keys in the simulator |
+| INV-6 | a corrected result must reference the revision it supersedes; a receipt for an older revision cannot confirm the current one | `g_correction_reference`, `g_receipt_matches_attempt` |
+| INV-8 | an acknowledgment counts only for the current revision; an acknowledgment arriving while delivery is unconfirmed cannot close the loop | `g_ack_matches_current_revision`, `FORBIDDEN` |
+| INV-9 | an unavailable channel never authorises an alternative by itself: a fallback needs a declared excerpt field (`DECLARED_EXCERPT_FIELD`) or an approved institutional procedure | `MachineContext.fallback_authorised`, gate step 2 |
+| INV-10 | a case cannot close while conditions are unresolved; an acknowledgment alone is not a communication record | `g_documentation_complete`, `CONFLATIONS` |
+| SCOPE_EXCLUSION | a send is blocked when the policy evidence says direct patient communication is not permitted for the scope and the recipient is not the physician | gate step 2b |
+| HUMAN_APPROVAL | a transition marked `requires_approval` (e.g. re-communicating a superseded result) is withheld until a named approval is recorded | gate, end of `_enforce` |
 
-The gate computes its decision first and receives the advisory record afterwards, in
-`gate.enforce`. When the adviser disagreed, the record says so (`advisory_overruled`) and the
-conditions list states that the proposal was not read while deciding. The test that matters is
-`test_the_gate_decision_is_identical_with_and_without_an_adviser`: it asserts the enforced action,
-the permitted flag, the invariant and the blocked-action list are unchanged when an accepted
-proposal is attached.
+The gate also requires an evidence basis for high-risk actions (`SEND_PRIMARY`,
+`RETRY_SAME_CHANNEL`, `PROPOSE_FALLBACK`, `RECORD_DOCUMENTATION`): an applicable source citation
+or a declared `PRODUCT_DESIGN_CONTROL`. Reconciliation is always permitted because it is a
+read-only query of the transport ledger.
 
-Two honesty notes. The residency check reads the endpoint string; it cannot see DNS, a proxy, or a
-model shipped inside a desktop binary. And no model client is implemented: the only adviser in the
-tree is a deterministic stub, so what is tested is the *guard*, not the quality of any model.
+### 4.4 The rule-based assessors
 
-## 6. Persistence and audit
+Five deterministic assessors in `app/agents/` each read only their declared `allowed_fields` and
+return a validated `AgentAssessment`. The orchestrator ranks their proposals with a conservative
+ordering (`_proposal_order` in `gate.py`: escalation first) and forms one proposal. The policy
+assessor (`policy_applicability.py`) sets `scope_permitted`, `recipient` and fallback evidence
+from **declared fields on verified excerpts** (`routes_to_physician`, `authorises_fallback`), not
+from keyword matching. The gate sees only those structured values.
 
-SQLite via SQLAlchemy, twelve tables: cases, result revisions, events, communication attempts,
-delivery receipts, acknowledgments, policy assessments, agent messages, source citations, state
-transitions, escalation requests, audit log, evaluation runs.
+### 4.5 Transport and revisions
 
-Two implementation notes that matter for trust:
+`app/transport/simulator.py` records provider acceptance, endpoint receipt and failure as separate
+facts per attempt; a timeout produces no delivery evidence; every send carries an idempotency key
+and a repeat returns the original attempt; reconciliation is the only way to turn an unknown
+outcome into evidence. `receipt_recorded` is set only when a receipt *event* is applied, which is
+what the duplicate-receipt guard reads. Every attempt, receipt and acknowledgment is bound to a
+result revision id.
 
-- **Rows are keyed per run.** Attempt ids restart at `ATT-001` each run, so the store namespaces
-  them (`run_id:attempt_id`). Without this, a second run silently dropped its own acknowledgments
-  behind a primary-key collision — found by looking at the database rather than the engine.
-- **The audit chain is re-verified when read.** `verify_entries()` recomputes every hash from the
-  stored rows; the API never reports "valid" merely because the writer said so. Editing one
-  summary or deleting one entry changes the reported broken sequence numbers.
+### 4.6 Configurations
 
-An exported bundle contains the scenario, configuration, event stream, assessments, gate
-decisions, attempts, receipts, acknowledgments, approvals, citations and the chain — enough for a
-reviewer to re-run the same scenario and compare state signatures.
+`CONFIGS` in `engine.py` holds 12 configurations: the full system `resultrelay`; three compound
+baselines (`policy_blind`, `retrieval_only`, `static_rules`); seven one-flag ablations of
+`resultrelay` (`ablate_no_kb`, `ablate_no_applicability_filter`, `ablate_no_invariants`,
+`ablate_no_audit_agent`, `ablate_full_context`, `ablate_ack_any`,
+`ablate_optimistic_transport`); and `resultrelay_council`, which differs from `resultrelay` in
+one input, the council. `static_rules` has the genetic-results rule hard-coded
+(`hardcoded_genetic_rule=True`), as a competent rules engine would. **The council runs only in
+`resultrelay_council`**; baselines and ablations never call a model (`Orchestrator._council`).
+The evaluation runner (`app/evaluation/runner.py`) runs all of `CONFIGS` by default.
 
----
+## 5. The agent council
 
-## 7. What this architecture does not claim
+### 5.1 Protocol, step by step
 
-- It is not a medical device and performs no clinical function.
-- Passing a scenario shows internal consistency with a cited clause, not compliance with a
-  regulation, and certainly not patient safety in the real world.
-- The transport is simulated; latency, retries and provider behaviour are scripted.
-- The agent set is deterministic. No model is called at runtime, which is a deliberate choice for
-  reproducibility — the LLM boundary is a defined interface (`mode: "DETERMINISTIC" | "LLM"`) that
-  remains unused.
-- Coverage is the scenario set, authored by the same team that built the engine, and reported as
-  such in `evaluation/report.md`.
+`Council.deliberate()` runs at every decision point (`kind: action`; `RESULTRELAY_AGENT_STEPS=all`
+for every step). Agents answer **typed questions** (a choice among named options, a probability, or
+a score) over a JSON case view; `providers.validate()` rejects any answer that is not one of the
+named options or not a probability in [0, 1], and the question is marked invalid rather than
+repaired.
+
+| # | actor | sees | produces | can change |
+|---|---|---|---|---|
+| 1 | **Policy Evidence Analyst** (LLM, DHA lens) | `_case_view` (scope, jurisdiction, state, this step's event, current revision, recipient route, last 4 attempts, recent non-decision events (from the last 4) in the reporter's words, acknowledgments, elapsed minutes, configured window); the action under review; up to 4 clauses from sources S1, U1, U3, U6, U7 | `obligation` (COMMUNICATED / AWAITING_ACK / DIRECT_NOT_PERMITTED / NOT_YET_SENT / INSUFFICIENT_EVIDENCE), governing `clause`, `settled` probability, `gap` (GR-linked), optional one extra `kb_search` (read-only), rationale | nothing directly |
+| 2 | **Institutional analyst** (LLM, TDRA lens) — only when `transport_unresolved()` (attempts for the current revision, none with a receipt) | same case view; clauses from U8, U10, G6 | `telecom_covers` probability, closest telecom `clause`, rationale | nothing directly |
+| 3 | **Adversarial reviewer** (LLM; by default a different model family) | case view, applicable clauses, and each analyst's claim with the cited clause text | typed `objection` (ACCEPTANCE_AS_DELIVERY, STALE_REVISION_ACK, SCOPE_ROUTES_ELSEWHERE, UNAPPROVED_CHANNEL, RETRY_BEFORE_RECONCILE, ACK_WINDOW_EXPIRED, UNVERIFIED_RECIPIENT, TEXT_CONTRADICTS_RECORD or NONE), `own_reading` of the obligation, per-claim `<role>_supported` and `<role>_issue`, an `alternative` action | nothing directly |
+| 4 | **Independent assurance** (code) | all answers and the case view | `fact_check` (claims against the record, e.g. "communicated" with no acknowledgment of the current revision); policy-rules check (a comparator or out-of-jurisdiction clause cannot govern); verification of the reviewer's objection against the record (`OBJECTION_REJECTED` if it does not fit) | marks claims as flagged |
+| 5 | **Feedback** (one round) | a flagged analyst gets its previous answer plus the findings | revised answer → `CORRECTED`, `UPHELD`, or `DISPUTED` (still failing a check; kept in the trace, never relied on) | the analyst's own answer |
+| 6 | **Deterministic orchestrator** (`orchestrate()`) | messages, reviews, `detect_conflicts()` output | `PROCEED` or `ESCALATE` with a reason | see 5.2 |
+
+`detect_conflicts()` reports `READINGS_DIFFER`, `OBJECTION` (surviving the code check),
+`UNSETTLED_HIGH_RISK`, `TELECOM_GAP` (GR-15) and `SCOPE_CONFLICT` (which now checks the recipient
+route, so a physician-routed send is not a conflict). `orchestrate()` escalates on: a surviving
+reviewer objection with confidence ≥ 0.5 (≥ 0.7 for `TEXT_CONTRADICTS_RECORD`, which code cannot
+verify); a disputed analyst claim on a high-risk step; or a high-risk step the binding clauses do
+not settle **and** on which analyst and reviewer readings differ. A gap on its own is recorded in
+`rt.unresolved`, not escalated. There is no LLM coordinator.
+
+### 5.2 What the agents can and cannot do
+
+The gate never reads council output. If the orchestrator says `ESCALATE` and the case is not
+already with a person or documented (`COUNCIL_NO_ESCALATE_STATES`), the engine either replaces the
+proposal at a decision point with `ESCALATE_HUMAN` (which the gate then evaluates like any other
+proposal) or opens a named escalation via `Orchestrator.escalate()`. **The agents can never send,
+close or change a case: their only possible effect is an escalation.** Every agent message, tool
+call, assurance review and orchestrator decision is appended to the hash chain (`agent.message`,
+`agent.tool_call`, `assurance.review`, `orchestrator.decision`, `council.escalation`).
+
+Scenario S9 (`scenarios/S9-reply-from-someone-else.json`) is the case the rules cannot see: a
+structurally valid acknowledgment whose words show the reply came from someone else. Its expected
+file sets `requires_council: true`.
+
+### 5.3 Providers
+
+`app/multiagent/providers.py` offers `ollama` (local; preset `qwen2.5:14b` at
+`http://localhost:11434/v1`), `mistral` (`mistral-small-latest`), `openai` (any OpenAI-compatible
+endpoint), `jev` (TypeSafe Jev, which answers typed questions natively) and `replay` (recorded
+answers only). `RESULTRELAY_AGENT_PROVIDER` sets every role; `RESULTRELAY_ANALYST_PROVIDER`,
+`RESULTRELAY_INSTITUTION_PROVIDER` and `RESULTRELAY_REVIEWER_PROVIDER` (with matching `_MODEL`,
+`_URL`, `_REPLAY_FROM`) override one role. With nothing configured, `resultrelay_council` uses
+`RECOMMENDED_REPLAY`: recorded Mistral answers for the analysts and recorded Jev answers for the
+reviewer.
+
+Chat models are asked for one JSON object plus a top-level `rationale` (one or two sentences
+citing case facts and the clause id). A Jev answer has no prose; its rationale is the typed
+judgment with probabilities (`source: typed-judgment`). Every live request and response is written
+to `evaluation/agent_runs/agent-<kind>-<digest>.json`, keyed on a hash of the exact state and
+questions; a replay is refused, not guessed, if either changed.
+
+## 6. Failure handling
+
+| failure | handling | where |
+|---|---|---|
+| a permitted action cannot be carried out (`NO_PHYSICIAN_CHANNEL`, `CHANNEL_NOT_AUTHORISED`, `NOT_AUTHORISED`, `NO_FALLBACK_CONFIGURED`) | logged as `action.failed` (not `action.performed`), added to `rt.unresolved`, and escalated | `FAILED_TOOL_OUTCOMES`, `Orchestrator.step` in `engine.py` |
+| blocked proposal | `action.blocked` with the invariant | `engine.py` |
+| unknown delivery (timeout, status unknown) | `DELIVERY_STATE_UNKNOWN`; new sends forbidden (INV-4); only reconciliation or escalation | `transitions.py`, simulator `reconcile` |
+| accepted, never delivered | stays `TRANSPORT_ACCEPTED`; never becomes delivered or communicated (S8) | `CONFLATIONS` |
+| escalation not answered | each escalation carries `role`, `due_by_minutes` and `tier`; the deadline is `escalation_response_minutes` from the profile, which `app/policies/profile.py` does not set, so the engine default of 30 minutes applies; past the deadline a tier-2 escalation is raised (profile `escalation_role_tier2`, default `CLINICAL_LEAD`) and `escalation.overdue` is audited | `Orchestrator.escalate`, start of `Orchestrator.step` |
+| model provider unavailable, error or invalid JSON | that agent's message is `UNAVAILABLE` (or answers `PARTIAL` with invalid ids); the council proceeds with what is trusted; the gate is unaffected | `Council._ask` |
+| residency refusal | message `REFUSED_RESIDENCY`; no request is sent | `providers.Provider.ask`, `residency.authorise` |
+| replay miss | `ProviderError` → `UNAVAILABLE` | `providers.Provider.ask` |
+
+Because the gate never depends on the council, a council that is degraded, refused or absent can
+only mean fewer escalations from the agents; it cannot unblock anything.
+
+## 7. Data residency
+
+Before any live model call, `Provider.ask` calls `app/advisers/residency.authorise()`. The rule
+is Federal Law No. 2 of 2019, Art. 13 (no storing, processing, generating or transferring health
+data outside the State without a Health Authority resolution; penalty in Art. 24):
+
+- a case whose case, patient and contact references are all `SYN-*` is `SYNTHETIC` and may use a
+  hosted endpoint; the same endpoint is refused for a real case;
+- loopback hosts and `.ae` names are treated as in country, but the decision is marked `nominal`:
+  a name is not a location. If the operator supplies resolved addresses and in-country ranges
+  (`RESULTRELAY_RESIDENCY_RESOLVED_IPS`, `RESULTRELAY_RESIDENCY_AE_CIDRS`), the address check
+  decides, and an out-of-range address overrides an in-country name;
+- anything else is refused unless a resolution reference is recorded
+  (`RESULTRELAY_RESIDENCY_RESOLUTION`);
+- whether a Ministerial Resolution No. 51 of 2021 exception applies is never decided in code: the
+  official text was not retrieved, so the reason text sends that determination to a person.
+
+The guard checks residency only. It cannot see network egress, proxies, or a model runtime's own
+network access.
+
+## 8. Knowledge base
+
+| artefact | content |
+|---|---|
+| `kb/source_register.csv` | 23 sources with issuer, jurisdiction, version, official URL, legal status, verification class and limitations |
+| `kb/records/*.yaml` | the committed excerpts: verbatim quotation, section, printed page, claim classification, topics, declared fields |
+| `kb/.sources/<ID>.txt` | page-marked full texts (`===== PAGE n =====`), git-ignored, not redistributed; fetched by `scripts/fetch_sources.py` |
+| `kb/index/chunks.json` | 93 chunks, each verified at ingest; pinned by `kb/index/pinned.sha256` |
+| `kb/gap_register.csv` | policy gaps (GR-01 … GR-19; GR-13 retired) with sources, comparator and consequence |
+| `kb/framework/itu_y3172_mapping.csv`, `kb/framework/ai_readiness_mapping.csv` | Y.3172 node mapping; the 13 AI Readiness dimensions as listed in the ITU reference code (`dimensions.json`) |
+
+**Verification at ingest.** `app/kb/ingest.py` normalises each quotation (NFKC, punctuation,
+case, all whitespace removed) and requires it to appear contiguously on the declared page(s). A
+quote on the wrong page or absent is excluded from the index; a quote whose source text is not
+cached is indexed as `UNVERIFIED_NO_CACHE` and never counted as verified. Each chunk carries
+`excerpt_status` (the result of this check) and `verification_status` (the source's class from
+the register).
+
+**Verification classes** (register column `verification_status`):
+
+| class | meaning | sources |
+|---|---|---|
+| `VERIFIED_OFFICIAL` | checked against the issuer's own published file | S1, AD1, G1–G7, G9, F1, F2, U3, U4, U6, U7 |
+| `VERIFIED_OFFICIAL_REPOSITORY` | checked against an official repository copy (WIPO Lex) | U10 |
+| `VERIFIED_MIRROR` | checked against an unofficial translation on a third-party mirror | U2 (PDPL; excluded for health data by its Art. 2(e)) |
+| `VERIFIED_THIRD_PARTY_COPY` | checked against a copy hosted by a third party | U8 (TDRA Mobile Spam), G8 (EU AI Act) |
+| `VERIFIED_TRANSCRIPTION` | checked against a hand-recorded transcription of the official page; this check is circular | U1, U5, AD2 |
+
+`kb/sources/MANUAL_RETRIEVAL.md` lists the sources that cannot be downloaded by script and how to
+add them.
+
+**Claim classification.** Every excerpt carries one of `BINDING_REQUIREMENT`, `OFFICIAL_GUIDANCE`,
+`INSTITUTIONAL_PROCEDURE`, `GLOBAL_COMPARATOR`, `PRODUCT_DESIGN_CONTROL`, `RESEARCH_HYPOTHESIS`,
+`UNRESOLVED`. Only binding material for the case's jurisdiction can block or authorise an action.
+
+**Retrieval** (`app/kb/retriever.py`): BM25 (k1 = 1.5, b = 0.75) by default. `scope="applicable"`
+returns only jurisdictions that can bind the case (`JURISDICTION_LAYERS`: AE-DU → AE-DU + AE-FED;
+AE-AZ → AE-AZ + AE-FED); `scope="comparator"` returns the rest, labelled as never applicable.
+`RESULTRELAY_RETRIEVAL=hybrid` fuses BM25 with the ChromaDB store built by the ITU reference ingest
+(`scripts/export_itu_kb.py --ingest`, Ollama `nomic-embed-text`, `app/kb/vector.py`); vector hits
+only rank, and the text always comes from the verified index. If ChromaDB or Ollama is missing,
+retrieval falls back to BM25 and says so. Arabic questions are expanded with English terms from
+`ARABIC_GLOSSARY`; no Arabic quotation is stored, because the Arabic PDF text layers tried did not
+extract cleanly.
+
+## 9. Persistence, API and audit
+
+- **Store.** SQLite via SQLAlchemy (`app/models/db.py`), one path for the whole app
+  (`settings.db_path`, overridable with `RESULTRELAY_DB`), which is the path `/api/health` reports.
+  Runs are also held in an in-memory registry bounded by `MAX_RUNS` (`app/api/runs.py`).
+- **API** (`app/api/routes.py`, prefix `/api`): runs (`POST /runs`, `/runs/{id}/step`,
+  `/runs/{id}/play`, `POST /runs/{id}/events` for runtime-injected events validated against
+  `EventType`), traces (`GET /runs/{id}/trace`), audit (`/runs/{id}/audit`,
+  `/cases/{id}/audit`, `/cases/{id}/integrity`, `/cases/{id}/bundle`), KB (`/kb/sources`,
+  `/kb/search`, `/kb/chunks/{id}`), `/gaps`, `/mappings/{name}`, evaluation endpoints and
+  `/health`.
+- **Audit chain** (`app/audit/log.py`): each entry is SHA-256 over the previous hash and the
+  canonical body, which includes `kb_index_sha256`, so the corpus in force is bound to each record.
+  `verify_entries()` recomputes the chain from stored rows, so integrity is re-verified on read,
+  not assumed.
+- **Auth.** None by default. If `RESULTRELAY_API_KEY` is set, `app/main.py` requires `X-API-Key`
+  (constant-time comparison) on every `/api` path except `/api/health` and the docs. There are no
+  user accounts or roles. CORS has no wildcard; the default bind is `127.0.0.1`.
+
+## 10. Known limits
+
+- **Synthetic data only.** Every case is synthetic; the residency guard permits hosted models only
+  for that reason.
+- **Simulated transport.** No SMS gateway, LIS or EHR is contacted; latency and provider behaviour
+  are scripted.
+- **Author-written scenarios.** S1, S2, S3a, S3b, S4–S9 (ten files) and their expectations in
+  `scenarios/expected/` were written by the engine authors (`authorship: ENGINE_AUTHORS`,
+  `independent_review: false`). There is no held-out or independently written set.
+- **Hosted models, synthetic only.** Recorded runs use Mistral (hosted outside the UAE) and
+  TypeSafe Jev (proprietary). The local reference model `qwen2.5:14b` is supported by the `ollama`
+  preset but has **not yet been run end to end**.
+- **Model runs are few.** Council results come from a small number of recorded runs; hosted models
+  are not fully deterministic even at temperature 0.
+- **Rule-based assessors.** The five assessors in `app/agents/` are deterministic rules; the
+  invariants are written by the authors and not independently validated.
+- **Audit integrity.** The audit is a hash chain without signatures or trusted timestamps: it
+  detects edits to stored rows but not a rewrite of the whole chain by someone with write access.
+- **Transcribed sources.** For U1, U5 and AD2 the verification is against a transcription made by
+  the authors, so it proves consistency with that transcription, not with the official text.
+- **Arabic.** Queries in Arabic work through a glossary; the stored quotations and the UI are
+  English.
+- **Residency.** Name-based unless addresses are supplied; MR 51/2021 exceptions are not decided.
+- **Hybrid retrieval is opt-in.** `kb/chroma/` is git-ignored and built locally.
+- **Auth.** No authentication by default; the optional API key is a shared secret, not an
+  authorisation model.

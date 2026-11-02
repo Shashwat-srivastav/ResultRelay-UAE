@@ -1,0 +1,30 @@
+# ETSI TS 123 040 V17.2.0 (3GPP TS 23.040 Release 17) - SMS technical realization (GLOBAL COMPARATOR).
+# The standard behind every SMS delivery receipt: what a status report can and cannot say.
+source_id: G6
+excerpts:
+  - chunk_id: G6-3-sme-definition
+    section_id: "3.1 (Definitions): Short Message Entity"
+    page_start: 15
+    page_end: 15
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [telecom, sms, delivery_semantics, definitions]
+    text: >-
+      Short Message Entity (SME): entity which may send or receive Short Messages
+    support_note: >-
+      The receiving end of an SMS is an entity (a handset, a network node), not a person. A "delivered" status
+      therefore says the message reached an entity, never that a person read it.
+
+  - chunk_id: G6-9.2.3.15-tp-status
+    section_id: "9.2.3.15 TP-Status"
+    page_start: 70
+    page_end: 70
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [telecom, sms, delivery_receipt, delivery_semantics, acceptance]
+    text: >-
+      Indicate whether the previously submitted short message was successfully forwarded to the SME, or whether an
+      error condition has been encountered, as follows: Short message transaction completed 0000000 Short message
+      received by the SME 0000001 Short message forwarded by the SC to the SME but the SC is unable to confirm delivery
+    support_note: >-
+      The status report itself distinguishes "received by the SME" from "forwarded but unable to confirm
+      delivery": the global SMS standard already separates acceptance from delivery, and stops at the handset.
+      ResultRelay's TRANSPORT_ACCEPTED / DELIVERY_CONFIRMED / CLINICAL_ACKNOWLEDGMENT_CONFIRMED states follow it.

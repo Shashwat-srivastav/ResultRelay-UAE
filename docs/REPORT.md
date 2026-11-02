@@ -1,7 +1,6 @@
 # ResultRelay — technical report
 
-> **Reading note (2 Nov 2026).** This long-form report predates S8 (accepted, never delivered), the DHA
-> and TDRA institutional agents, the four new sources (DHA AI policy PP-09, NABIDH Audit Policy, TDRA
+> **Reading note (2 Nov 2026).** This long-form report predates S8 and S9, the agent council, the four new sources (DHA AI policy PP-09, NABIDH Audit Policy, TDRA
 > Mobile Spam policy, RCPath G158) and the ledger-based delivery check. Current figures: 99 runs
 > (9 scenarios × 11 configurations), 82 verified quotations from 18 documents, 17 gaps. The README,
 > `evaluation/report.md` and `submission/` carry them; where this document disagrees, they win.

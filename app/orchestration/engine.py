@@ -71,6 +71,9 @@ class RuntimeConfig:
     #: benchmark that changes six things at once cannot attribute a difference to any of them
     #: (red-team finding H-4).
     ablation_of: str | None = None
+    #: A conventional rules engine would hard-code the genetic-results rule (ST-28 §13.4) rather than
+    #: retrieve it. Without it the baseline lost the genetic scenarios by construction (critic RT-08).
+    hardcoded_genetic_rule: bool = False
 
 
 CONFIGS: dict[str, RuntimeConfig] = {
@@ -230,11 +233,24 @@ CONFIGS: dict[str, RuntimeConfig] = {
         transport_semantics="strict",
         agents=("lab_workflow", "network_delivery", "escalation_coordinator"),
         description=(
-            "The same state machine and invariants, with no policy knowledge. Strong on transport "
-            "semantics, blind to jurisdiction, scope and evidence provenance."
+            "The same state machine and invariants, with no policy knowledge base but the genetic-results "
+            "rule hard-coded, as a competent rules engine would have it. Strong on transport semantics; "
+            "no clause-level provenance and no jurisdiction filter."
         ),
+        hardcoded_genetic_rule=True,
     ),
 }
+
+# The full system with the multi-agent council in the loop (recorded answers by default). It differs from
+# "resultrelay" in one input, the council, so the pair measures what the agents add (critic finding N-02).
+import dataclasses as _dc  # noqa: E402
+
+CONFIGS["resultrelay_council"] = _dc.replace(
+    CONFIGS["resultrelay"], name="resultrelay_council",
+    label="ResultRelay + agent council (policy analyst, TDRA-lens analyst, adversarial reviewer, deterministic assurance)",
+    description=("The full system with the council deliberating at every decision point; a corroborated council "
+                 "finding opens an escalation. Model answers are replayed from evaluation/agent_runs/."),
+    ablation_of=None)
 
 
 # ---------------------------------------------------------------------------
@@ -461,10 +477,11 @@ class Orchestrator:
         """The multi-agent council, for the full system only (baselines and ablations never call a model)."""
         if not hasattr(self, "_council_obj"):
             self._council_obj = None
-            if self.rt.config.name == "resultrelay" and os.environ.get("RESULTRELAY_AGENT_PROVIDER"):
+            name = self.rt.config.name
+            if name == "resultrelay_council":  # never the council-off configurations, so the comparison stays clean
                 from app.multiagent.council import configured_council
 
-                self._council_obj = configured_council()
+                self._council_obj = configured_council(default_replay=(name == "resultrelay_council"))
         return self._council_obj
 
     def run_agents(self, event: dict[str, Any], visible_to: list[str] | None = None) -> list[AgentAssessment]:
@@ -565,6 +582,26 @@ class Orchestrator:
                 "requires_human": result.requires_human}
 
     # -- tools -------------------------------------------------------------
+    def escalate(self, reason: str, triggered_by: str, step: int, at_minutes: float) -> dict[str, Any]:
+        """Open a named escalation and move the case to ESCALATION_REQUIRED (if the state allows it)."""
+        rt = self.rt
+        esc = {
+            "escalation_id": f"ESC-{len(rt.escalations) + 1:03d}",
+            "role": rt.profile.get("escalation_role", "SUPERVISOR"),
+            "reason": reason[:300],
+            "triggered_by": triggered_by,
+            "status": "OPEN",
+            "at": sim_time(at_minutes),
+            "at_minutes": at_minutes,
+            # The obligation keeps an owner and a deadline: an escalation nobody picks up is itself escalated.
+            "due_by_minutes": at_minutes + float(rt.profile.get("escalation_response_minutes", 30)),
+            "tier": 1,
+        }
+        rt.escalations.append(esc)
+        applied = self.apply_event(
+            {"type": "escalation.requested", "actor": "SYSTEM", "at": sim_time(at_minutes)}, step=step)
+        return {"tool": "escalation.create", "escalation": esc, "transitions": [applied]}
+
     def perform_action(self, action: RecommendedAction, step: int, at_minutes: float,
                        channel: str | None = None, authorised_channel: str | None = None) -> dict[str, Any]:
         """Execute a permitted *simulated* tool action and apply the resulting observations."""
@@ -721,18 +758,8 @@ class Orchestrator:
                     "result": rec["result"], "transitions": [applied]}
 
         if action == RecommendedAction.ESCALATE_HUMAN:
-            esc = {
-                "escalation_id": f"ESC-{len(rt.escalations) + 1:03d}",
-                "role": rt.profile.get("escalation_role", "SUPERVISOR"),
-                "reason": "; ".join(rt.unresolved[:3]) or "deterministic gate requires a human decision",
-                "triggered_by": "deterministic_gate",
-                "status": "OPEN",
-                "at": sim_time(at_minutes),
-            }
-            rt.escalations.append(esc)
-            applied = self.apply_event(
-                {"type": "escalation.requested", "actor": "SYSTEM", "at": sim_time(at_minutes)}, step=step)
-            return {"tool": "escalation.create", "escalation": esc, "transitions": [applied]}
+            return self.escalate("; ".join(rt.unresolved[:3]) or "deterministic gate requires a human decision",
+                                 "deterministic_gate", step, at_minutes)
 
         if action == RecommendedAction.RECORD_DOCUMENTATION:
             rt.documentation_recorded = True
@@ -880,6 +907,21 @@ class Orchestrator:
             "audit_findings": [],
         }
 
+        # Escalation follow-through: an open escalation past its deadline goes to the next tier, audited.
+        for esc in [e for e in rt.escalations if e.get("status") == "OPEN" and e.get("due_by_minutes") is not None]:
+            if at_minutes > esc["due_by_minutes"] and not esc.get("overdue_handled"):
+                esc["overdue_handled"] = True
+                nxt = {"escalation_id": f"ESC-{len(rt.escalations) + 1:03d}",
+                       "role": rt.profile.get("escalation_role_tier2", "CLINICAL_LEAD"),
+                       "reason": f"{esc['escalation_id']} unanswered past its deadline ({esc['due_by_minutes']:.0f} min): {esc['reason']}"[:300],
+                       "triggered_by": "escalation_overdue", "status": "OPEN", "at": event["at"], "at_minutes": at_minutes,
+                       "due_by_minutes": at_minutes + float(rt.profile.get("escalation_response_minutes", 30)),
+                       "tier": esc.get("tier", 1) + 1}
+                rt.escalations.append(nxt)
+                rt.audit.append(event="escalation.overdue", actor="ORCHESTRATOR(deterministic)",
+                                summary=f"{esc['escalation_id']} overdue; raised {nxt['escalation_id']} to {nxt['role']}",
+                                payload={"overdue": esc["escalation_id"], "raised": nxt}, at=event["at"])
+
         # Baseline conflation of stale acknowledgments (recorded, not hidden).
         if event["type"] == EventType.CLINICAL_ACKNOWLEDGMENT.value and rt.config.acknowledgement_scope == "any":
             ack_rev = spec.get("payload", {}).get("result_revision_id")
@@ -947,8 +989,11 @@ class Orchestrator:
         # from here rather than deciding for itself who is allowed to receive the result.
         rt.recipient = (policy.data.get("recipient") if policy else "PATIENT") or "PATIENT"
         rt.recipient_basis = (policy.data.get("recipient_basis") if policy else None)
+        hard_genetic = policy is None and rt.config.hardcoded_genetic_rule and rt.case_scope == "GENETIC"
+        if hard_genetic:
+            rt.recipient, rt.recipient_basis = "PHYSICIAN", "hard-coded rule (no clause retrieved)"
         evidence = {
-            "scope_permitted": (policy.data.get("scope_permitted") if policy else True),
+            "scope_permitted": (policy.data.get("scope_permitted") if policy else (not hard_genetic)),
             "recipient": rt.recipient,
             "fallback_authorised": (policy.data.get("fallback_authorised") if policy else False),
             "fallback_evidence_refs": (policy.data.get("fallback_evidence_refs") if policy else []),
@@ -961,9 +1006,10 @@ class Orchestrator:
             require_evidence_for_high_risk=rt.config.use_kb,
             block_on_jurisdiction_violation=rt.config.applicability_filter,
         )
-        # 3b. Multi-agent deliberation (network, health, reviewer agents + coordinator), when configured.
-        #     It runs before the gate and is logged into the hash chain, but the gate never reads it; its
-        #     only effect on the case is an added human-review question when the coordinator escalates.
+        # 3b. Multi-agent deliberation (Policy Evidence Analyst, conditional TDRA-lens analyst, adversarial
+        #     reviewer, deterministic assurance and orchestrator), when configured. It runs before the gate and
+        #     is logged into the hash chain; the gate never reads it. Its only possible effect on the case is a
+        #     named escalation to a person.
         council = self._council()
         if council is not None and _council_enabled_for(spec):
             delib = council.deliberate(rt, event, proposal.value, _case_view(rt, event))
@@ -972,26 +1018,39 @@ class Orchestrator:
                 rt.audit.append(event="agent.message", actor=f"AGENT:{role}",
                                 summary=f"{role} {msg.get('status')}: " + json.dumps(msg.get("answers", {}), default=str)[:240],
                                 payload={"role": role, **msg}, at=event.get("at"))
-            for role, rv in delib.get("reviews", {}).items():
-                rt.audit.append(event="critic.review", actor="AGENT:critic+FACT_CHECK",
-                                summary=(f"{role}: {rv.get('outcome')}; fact check {rv.get('fact_check') or 'clean'}; "
-                                         f"critic issue {rv.get('critic_issue')} (p supported {rv.get('critic_supported')})")[:300],
-                                payload={"role": role, **rv}, at=event.get("at"))
             for call in delib["tool_calls"]:
                 rt.audit.append(event="agent.tool_call", actor=f"AGENT:{call['agent']}",
                                 summary=f"{call['agent']} used read-only tool {call['tool']}", payload=call, at=event.get("at"))
-            rt.audit.append(event="coordinator.resolution", actor="AGENT:coordinator",
-                            summary=(f"coordinator {delib['coordinator'].get('status')}: "
-                                     + json.dumps(delib["coordinator"].get("answers", {}), default=str)[:200]
-                                     + f"; rule check {delib['rule_conflicts'] or 'no conflict'}"),
-                            payload={"coordinator": delib["coordinator"], "rule_conflicts": delib["rule_conflicts"],
-                                     "coordinator_matches_rules": delib["coordinator_matches_rules"],
-                                     "provider": delib["provider"]}, at=event.get("at"))
-            if delib["escalate"]:
-                named = delib["coordinator"].get("answers", {}).get("conflict", {}).get("choice", "unnamed")
-                note = f"agent coordinator requested supervisor review at step {step_no} ({named})"
+            for role, rv in delib["reviews"].items():
+                rt.audit.append(event="assurance.review", actor="ASSURANCE(code)+AGENT:reviewer",
+                                summary=(f"{role}: {rv.get('outcome')}; checks {rv.get('checks') or 'clean'}"
+                                         + (f"; reviewer issue {rv.get('reviewer_issue')} (p supported {rv.get('reviewer_supported')})"
+                                            if role != "reviewer" else ""))[:300],
+                                payload={"role": role, **rv}, at=event.get("at"))
+            rt.audit.append(event="orchestrator.decision", actor="ORCHESTRATOR(deterministic)",
+                            summary=f"{delib['decision']}; conflicts {delib['conflicts'] or 'none'}"[:300],
+                            payload={"decision": delib["decision"], "reason": delib["escalation"],
+                                     "conflicts": delib["conflicts"], "provider": delib["provider"]}, at=event.get("at"))
+            gaps = {m.get("answers", {}).get("gap", {}).get("choice") for m in delib["messages"].values()} - {None, "NONE"}
+            for g in sorted(gaps):
+                note = f"policy gap surfaced at step {step_no}: {g}"
                 if note not in rt.unresolved:
                     rt.unresolved.append(note)
+            if delib["decision"] == "ESCALATE" and rt.state.value not in COUNCIL_NO_ESCALATE_STATES:
+                reason = f"council at step {step_no}: {delib['escalation']}"
+                if reason not in rt.unresolved:
+                    rt.unresolved.insert(0, reason[:300])
+                rt.audit.append(event="council.escalation", actor="ORCHESTRATOR(deterministic)", summary=reason[:300],
+                                payload={"step": step_no, "replaces_proposal": proposal.value}, at=event.get("at"))
+                if spec.get("kind") == "action":
+                    proposal = RecommendedAction.ESCALATE_HUMAN
+                    result["proposed_action"] = proposal.value
+                    result["proposal_overridden_by_council"] = True
+                else:
+                    esc = self.escalate(reason, "council", step_no, at_minutes)
+                    result["actions_performed"].append(esc)
+                    result["transitions"].extend(esc.get("transitions", []))
+                    result["human_intervention"] = esc["escalation"]
 
         advisory = None
         if settings.enable_llm:
@@ -1050,6 +1109,27 @@ class Orchestrator:
             result["actions_performed"].append(tool_result)
             for t in tool_result.get("transitions", []):
                 result["transitions"].append(t)
+            outcome = tool_result.get("outcome")
+            failed = outcome in FAILED_TOOL_OUTCOMES
+            # What happened, not only what the gate allowed: every executed action is in the chain.
+            rt.audit.append(
+                event="action.failed" if failed else "action.performed", actor="SYSTEM",
+                summary=(f"{gate.enforced_action.value} -> {outcome or tool_result.get('tool')}"
+                         + (f": {tool_result.get('note', '')}" if failed else ""))[:300],
+                payload={"action": gate.enforced_action.value, "outcome": outcome, "tool": tool_result.get("tool"),
+                         "attempt_id": tool_result.get("attempt_id"), "note": tool_result.get("note")},
+                at=event["at"],
+            )
+            if failed:
+                # A permitted send that could not be carried out must not end silently: a critical result
+                # that reaches nobody is the failure this system exists to prevent (critic finding N-01).
+                reason = f"permitted {gate.enforced_action.value} could not be carried out ({outcome}): {tool_result.get('note', '')}"
+                if reason not in rt.unresolved:
+                    rt.unresolved.append(reason[:300])
+                esc = self.escalate(reason, f"action_failed:{outcome}", step_no, at_minutes)
+                result["actions_performed"].append(esc)
+                result["transitions"].extend(esc.get("transitions", []))
+                result["human_intervention"] = esc["escalation"]
         elif not gate.permitted:
             rt.audit.append(
                 event="action.blocked",
@@ -1222,6 +1302,13 @@ def _adviser_evidence(rt: "Runtime", event: dict[str, Any] | None, assessments: 
     return [c.model_dump() for c in retriever.search(query, jurisdiction=rt.jurisdiction, scope="applicable", top_k=6).chunks]
 
 
+#: Tool outcomes meaning "the permitted action was not carried out". Each one is audited and escalated.
+#: The council does not escalate a case that is already with a person or already documented.
+COUNCIL_NO_ESCALATE_STATES = {"ESCALATION_REQUIRED", "ESCALATION_IN_REVIEW", "COMMUNICATION_DOCUMENTED"}
+
+FAILED_TOOL_OUTCOMES = {"NO_PHYSICIAN_CHANNEL", "CHANNEL_NOT_AUTHORISED", "NOT_AUTHORISED", "NO_FALLBACK_CONFIGURED"}
+
+
 def _council_enabled_for(spec: dict[str, Any]) -> bool:
     from app.multiagent.council import enabled_for
 
@@ -1239,13 +1326,18 @@ def _case_view(rt: "Runtime", event: dict[str, Any] | None) -> dict[str, Any]:
         "current_result_revision": current,
         "recipient_route": rt.recipient,
         "attempts": [{"channel": a.channel, "revision": a.result_revision_id, "provider_accepted": a.accepted,
-                      "delivery_receipt": bool(a.receipt_recorded), "outcome": a.outcome, "failed": a.failed}
+                      "delivery_receipt": bool(a.receipt_recorded), "outcome": a.outcome, "failed": a.failed,
+                      "reconciled": a.reconciled}
                      for a in rt.network.attempts][-4:],
+        # What people actually reported, in their words: the part of the record rules cannot read.
+        "recent_events": [{"kind": e["kind"], "actor": e["actor"], "summary": e["summary"]}
+                          for e in rt.events[-4:] if e["kind"] != "system.action"],
         "acknowledgments": [{"revision": k.get("result_revision_id"), "role": k.get("role"),
                              "identity_verified": k.get("identity_verified")} for k in rt.acknowledgments][-4:],
         "minutes_elapsed": rt.at_minutes_current,
         "configured_ack_window_minutes": rt.profile.get("acknowledgment_clock_minutes"),
-        "approved_fallback_procedure": bool(rt.profile.get("fallback_channel_id")),
+        # Approved, not merely configured: the default profile always names a fallback channel (critic re-check).
+        "approved_fallback_procedure": bool(rt.profile.get("fallback_channel_approved")),
     }
 
 

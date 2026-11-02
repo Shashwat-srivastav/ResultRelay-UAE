@@ -1,0 +1,29 @@
+# Kingdom of Saudi Arabia - Personal Data Protection Law, SDAIA English text V2 (GLOBAL / GCC COMPARATOR).
+source_id: G9
+excerpts:
+  - chunk_id: G9-art1-13-health-data
+    section_id: "Article 1(13) Health Data"
+    page_start: 3
+    page_end: 3
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [health_data, definitions, gcc, comparator]
+    text: >-
+      13-Health Data: Any Personal Data related to an individual's health condition, whether their physical, mental
+      or psychological conditions, or related to Health Services received by that individual.
+    support_note: >-
+      Saudi Arabia keeps health data inside its general data-protection law; the UAE takes it out of the PDPL
+      (Art. 2(e)) into a health-specific law (Law 2/2019). Same region, different instrument architecture.
+
+  - chunk_id: G9-art29-1-transfer-outside
+    section_id: "Article 29(1)"
+    page_start: 11
+    page_end: 11
+    claim_classification: GLOBAL_COMPARATOR
+    topics: [data_residency, cross_border, gcc, comparator]
+    text: >-
+      1-Subject to the provisions of Paragraph (2) of this Article, a Controller may Transfer Personal Data outside
+      the Kingdom or disclose it to a party outside the Kingdom, in order to achieve any of the following purposes:
+    support_note: >-
+      A purpose-based route out of the Kingdom set in the law itself, against the UAE's default prohibition (Law
+      2/2019 Art. 13) with exceptions left to a ministerial resolution (MR 51/2021, not retrieved). Context for the
+      residency guard, never a basis to permit offshore processing of a UAE case.

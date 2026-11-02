@@ -1,6 +1,6 @@
 {
  "format": "ITUAIReadiness InputDocs (one verified clause per file)",
- "count": 82,
+ "count": 96,
  "files": {
   "UAE_AD1-PP.11.2.intro.txt": {
    "clause_id": "AD1-PP.11.2.intro",
@@ -398,6 +398,105 @@
    "url": "https://www.rcpath.org/asset/BB86B370-1545-4C5A-B5826A2C431934F5/",
    "project": "ResultRelay"
   },
+  "GLOBAL_G6-3-sme-definition.txt": {
+   "clause_id": "G6-3-sme-definition",
+   "source_id": "G6",
+   "authority": "ETSI / 3GPP",
+   "jurisdiction": "GLOBAL",
+   "claim_class": "GLOBAL_COMPARATOR",
+   "section": "3.1 (Definitions): Short Message Entity",
+   "page": 15,
+   "url": "https://www.etsi.org/deliver/etsi_ts/123000_123099/123040/17.02.00_60/ts_123040v170200p.pdf",
+   "project": "ResultRelay"
+  },
+  "GLOBAL_G6-9.2.3.15-tp-status.txt": {
+   "clause_id": "G6-9.2.3.15-tp-status",
+   "source_id": "G6",
+   "authority": "ETSI / 3GPP",
+   "jurisdiction": "GLOBAL",
+   "claim_class": "GLOBAL_COMPARATOR",
+   "section": "9.2.3.15 TP-Status",
+   "page": 70,
+   "url": "https://www.etsi.org/deliver/etsi_ts/123000_123099/123040/17.02.00_60/ts_123040v170200p.pdf",
+   "project": "ResultRelay"
+  },
+  "GLOBAL_G7-493.1291g-immediate-alert.txt": {
+   "clause_id": "G7-493.1291g-immediate-alert",
+   "source_id": "G7",
+   "authority": "United States, Centers for Medicare & Medicaid Services (eCFR)",
+   "jurisdiction": "GLOBAL",
+   "claim_class": "GLOBAL_COMPARATOR",
+   "section": "493.1291(g)",
+   "page": 1,
+   "url": "https://www.ecfr.gov/current/title-42/chapter-IV/subchapter-G/part-493/subpart-K/section-493.1291",
+   "project": "ResultRelay"
+  },
+  "GLOBAL_G7-493.1291h-delayed-results.txt": {
+   "clause_id": "G7-493.1291h-delayed-results",
+   "source_id": "G7",
+   "authority": "United States, Centers for Medicare & Medicaid Services (eCFR)",
+   "jurisdiction": "GLOBAL",
+   "claim_class": "GLOBAL_COMPARATOR",
+   "section": "493.1291(h)",
+   "page": 1,
+   "url": "https://www.ecfr.gov/current/title-42/chapter-IV/subchapter-G/part-493/subpart-K/section-493.1291",
+   "project": "ResultRelay"
+  },
+  "GLOBAL_G8-art14-1-human-oversight.txt": {
+   "clause_id": "G8-art14-1-human-oversight",
+   "source_id": "G8",
+   "authority": "European Parliament and Council of the European Union",
+   "jurisdiction": "GLOBAL",
+   "claim_class": "GLOBAL_COMPARATOR",
+   "section": "Article 14(1)",
+   "page": 1,
+   "url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+   "project": "ResultRelay"
+  },
+  "GLOBAL_G8-art26-2-deployer-oversight.txt": {
+   "clause_id": "G8-art26-2-deployer-oversight",
+   "source_id": "G8",
+   "authority": "European Parliament and Council of the European Union",
+   "jurisdiction": "GLOBAL",
+   "claim_class": "GLOBAL_COMPARATOR",
+   "section": "Article 26(2)",
+   "page": 2,
+   "url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+   "project": "ResultRelay"
+  },
+  "GLOBAL_G8-art73-2-incident-deadline.txt": {
+   "clause_id": "G8-art73-2-incident-deadline",
+   "source_id": "G8",
+   "authority": "European Parliament and Council of the European Union",
+   "jurisdiction": "GLOBAL",
+   "claim_class": "GLOBAL_COMPARATOR",
+   "section": "Article 73(2)",
+   "page": 3,
+   "url": "https://eur-lex.europa.eu/eli/reg/2024/1689/oj",
+   "project": "ResultRelay"
+  },
+  "GLOBAL_G9-art1-13-health-data.txt": {
+   "clause_id": "G9-art1-13-health-data",
+   "source_id": "G9",
+   "authority": "Kingdom of Saudi Arabia; English text published by SDAIA (Saudi Data and AI Authority)",
+   "jurisdiction": "GLOBAL",
+   "claim_class": "GLOBAL_COMPARATOR",
+   "section": "Article 1(13) Health Data",
+   "page": 3,
+   "url": "https://sdaia.gov.sa/en/SDAIA/about/Documents/Personal%20Data%20English%20V2-23April2023-%20Reviewed-.pdf",
+   "project": "ResultRelay"
+  },
+  "GLOBAL_G9-art29-1-transfer-outside.txt": {
+   "clause_id": "G9-art29-1-transfer-outside",
+   "source_id": "G9",
+   "authority": "Kingdom of Saudi Arabia; English text published by SDAIA (Saudi Data and AI Authority)",
+   "jurisdiction": "GLOBAL",
+   "claim_class": "GLOBAL_COMPARATOR",
+   "section": "Article 29(1)",
+   "page": 11,
+   "url": "https://sdaia.gov.sa/en/SDAIA/about/Documents/Personal%20Data%20English%20V2-23April2023-%20Reviewed-.pdf",
+   "project": "ResultRelay"
+  },
   "UAE_S1-11.1.txt": {
    "clause_id": "S1-11.1",
    "source_id": "S1",
@@ -550,6 +649,61 @@
    "section": "Appendix 3 (Genetics row)",
    "page": 65,
    "url": "https://dha.gov.ae/uploads/052023/Standards%20for%20Clinical%20Laboratory%20Services2023552664.pdf",
+   "project": "ResultRelay"
+  },
+  "UAE_U10-art13-1-2-mandate.txt": {
+   "clause_id": "U10-art13-1-2-mandate",
+   "source_id": "U10",
+   "authority": "UAE federal legislation; consolidated English text published by the Telecommunications Regulatory Authority (now TDRA)",
+   "jurisdiction": "AE-FED",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "Article 13(1)-(2)",
+   "page": 12,
+   "url": "https://www.wipo.int/wipolex/en/legislation/details/13914",
+   "project": "ResultRelay"
+  },
+  "UAE_U10-art13-3-quality.txt": {
+   "clause_id": "U10-art13-3-quality",
+   "source_id": "U10",
+   "authority": "UAE federal legislation; consolidated English text published by the Telecommunications Regulatory Authority (now TDRA)",
+   "jurisdiction": "AE-FED",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "Article 13(3)",
+   "page": 12,
+   "url": "https://www.wipo.int/wipolex/en/legislation/details/13914",
+   "project": "ResultRelay"
+  },
+  "UAE_U11-art6a-competent-regulator.txt": {
+   "clause_id": "U11-art6a-competent-regulator",
+   "source_id": "U11",
+   "authority": "Government of Dubai (Ruler of Dubai); Dubai Legal Portal English text",
+   "jurisdiction": "AE-DU",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "Article 6(a) (Functions of the DHA)",
+   "page": 1,
+   "url": "https://dlp.dubai.gov.ae/Legislation%20Reference/2021/Law%20No.%20(14)%20of%202021%20Amending%20Law%20No.%20(6)%20of%202018.html",
+   "project": "ResultRelay"
+  },
+  "UAE_U11-art5-4-smart-health.txt": {
+   "clause_id": "U11-art5-4-smart-health",
+   "source_id": "U11",
+   "authority": "Government of Dubai (Ruler of Dubai); Dubai Legal Portal English text",
+   "jurisdiction": "AE-DU",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "Article 5(4) (Objectives of the DHA)",
+   "page": 1,
+   "url": "https://dlp.dubai.gov.ae/Legislation%20Reference/2021/Law%20No.%20(14)%20of%202021%20Amending%20Law%20No.%20(6)%20of%202018.html",
+   "project": "ResultRelay"
+  },
+  "UAE_U11-art6-21-health-information-system.txt": {
+   "clause_id": "U11-art6-21-health-information-system",
+   "source_id": "U11",
+   "authority": "Government of Dubai (Ruler of Dubai); Dubai Legal Portal English text",
+   "jurisdiction": "AE-DU",
+   "claim_class": "BINDING_REQUIREMENT",
+   "section": "Article 6 (functions), item 21",
+   "page": 1,
+   "url": "https://dlp.dubai.gov.ae/Legislation%20Reference/2021/Law%20No.%20(14)%20of%202021%20Amending%20Law%20No.%20(6)%20of%202018.html",
    "project": "ResultRelay"
   },
   "UAE_U1-art4-confidentiality.txt": {
