@@ -1,6 +1,6 @@
 {
-  "run_started": "2026-11-02T15:16:51.406113+00:00",
-  "run_finished": "2026-11-02T15:17:12.696600+00:00",
+  "run_started": "2026-11-02T15:19:27.179343+00:00",
+  "run_finished": "2026-11-02T15:19:53.692759+00:00",
   "configurations": {
     "resultrelay": "ResultRelay (policy-gated assessors, deterministic)",
     "policy_blind": "Policy-blind baseline (no knowledge base)",
@@ -37,7 +37,7 @@
         "mean_provenance_completeness": 1.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 74.9
+        "mean_wall_ms": 91.5
       },
       "policy_blind": {
         "label": "Policy-blind baseline (no knowledge base)",
@@ -57,7 +57,7 @@
         "mean_provenance_completeness": 0.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 59.2
+        "mean_wall_ms": 80.6
       },
       "retrieval_only": {
         "label": "Citation-only RAG baseline",
@@ -77,7 +77,7 @@
         "mean_provenance_completeness": 1.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 68.5
+        "mean_wall_ms": 106.5
       },
       "ablate_no_kb": {
         "label": "Ablation: knowledge base off (one flag)",
@@ -97,7 +97,7 @@
         "mean_provenance_completeness": 0.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 59.7
+        "mean_wall_ms": 78.7
       },
       "ablate_no_applicability_filter": {
         "label": "Ablation: jurisdiction filter off (one flag)",
@@ -117,7 +117,7 @@
         "mean_provenance_completeness": 1.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 73.2
+        "mean_wall_ms": 90.6
       },
       "ablate_no_invariants": {
         "label": "Ablation: invariant gate off (one flag)",
@@ -137,7 +137,7 @@
         "mean_provenance_completeness": 1.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 68.1
+        "mean_wall_ms": 94.8
       },
       "ablate_no_audit_agent": {
         "label": "Ablation: audit assessor off (one flag)",
@@ -157,7 +157,7 @@
         "mean_provenance_completeness": 1.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 66.2
+        "mean_wall_ms": 88.0
       },
       "ablate_full_context": {
         "label": "Ablation: full context to every assessor (one flag)",
@@ -177,7 +177,7 @@
         "mean_provenance_completeness": 1.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 67.7
+        "mean_wall_ms": 81.1
       },
       "ablate_ack_any": {
         "label": "Ablation: acknowledgement scope any revision (one flag)",
@@ -197,7 +197,7 @@
         "mean_provenance_completeness": 1.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 67.2
+        "mean_wall_ms": 81.5
       },
       "ablate_optimistic_transport": {
         "label": "Ablation: optimistic transport semantics (one flag)",
@@ -217,7 +217,7 @@
         "mean_provenance_completeness": 1.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 66.2
+        "mean_wall_ms": 85.3
       },
       "static_rules": {
         "label": "Conventional deterministic rules baseline",
@@ -237,7 +237,7 @@
         "mean_provenance_completeness": 0.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 58.7
+        "mean_wall_ms": 66.0
       },
       "resultrelay_council": {
         "label": "ResultRelay + agent council (policy analyst, TDRA-lens analyst, adversarial reviewer, deterministic assurance)",
@@ -257,7 +257,7 @@
         "mean_provenance_completeness": 1.0,
         "replay_reproducible": true,
         "audit_chains_valid": true,
-        "mean_wall_ms": 172.5
+        "mean_wall_ms": 144.1
       }
     },
     "by_scenario": {
@@ -1243,7 +1243,7 @@
         "steps": 8,
         "open_questions": 2
       },
-      "wall_ms": 169.6,
+      "wall_ms": 184.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 38,
@@ -1596,7 +1596,7 @@
         "steps": 8,
         "open_questions": 0
       },
-      "wall_ms": 77.7,
+      "wall_ms": 73.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 37,
@@ -1746,7 +1746,7 @@
         "steps": 8,
         "open_questions": 1
       },
-      "wall_ms": 96.8,
+      "wall_ms": 114.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 40,
@@ -2093,7 +2093,7 @@
         "steps": 8,
         "open_questions": 1
       },
-      "wall_ms": 89.1,
+      "wall_ms": 78.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 35,
@@ -2249,7 +2249,7 @@
         "steps": 8,
         "open_questions": 5
       },
-      "wall_ms": 84.2,
+      "wall_ms": 99.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 38,
@@ -2602,7 +2602,7 @@
         "steps": 8,
         "open_questions": 2
       },
-      "wall_ms": 90.3,
+      "wall_ms": 85.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 38,
@@ -2955,7 +2955,7 @@
         "steps": 8,
         "open_questions": 1
       },
-      "wall_ms": 85.7,
+      "wall_ms": 89.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 38,
@@ -3300,7 +3300,7 @@
         "steps": 8,
         "open_questions": 2
       },
-      "wall_ms": 86.1,
+      "wall_ms": 102.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 38,
@@ -3653,7 +3653,7 @@
         "steps": 8,
         "open_questions": 2
       },
-      "wall_ms": 85.1,
+      "wall_ms": 93.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 38,
@@ -4006,7 +4006,7 @@
         "steps": 8,
         "open_questions": 2
       },
-      "wall_ms": 93.9,
+      "wall_ms": 136.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 40,
@@ -4361,7 +4361,7 @@
         "steps": 8,
         "open_questions": 0
       },
-      "wall_ms": 86.5,
+      "wall_ms": 82.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 35,
@@ -4509,7 +4509,7 @@
         "steps": 8,
         "open_questions": 4
       },
-      "wall_ms": 839.4,
+      "wall_ms": 208.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 62,
@@ -4860,7 +4860,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 79.0,
+      "wall_ms": 81.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -5158,7 +5158,7 @@
         "steps": 6,
         "open_questions": 0
       },
-      "wall_ms": 52.8,
+      "wall_ms": 77.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 27,
@@ -5283,7 +5283,7 @@
         "steps": 6,
         "open_questions": 1
       },
-      "wall_ms": 68.5,
+      "wall_ms": 127.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -5577,7 +5577,7 @@
         "steps": 6,
         "open_questions": 1
       },
-      "wall_ms": 60.2,
+      "wall_ms": 88.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 27,
@@ -5706,7 +5706,7 @@
         "steps": 6,
         "open_questions": 4
       },
-      "wall_ms": 68.6,
+      "wall_ms": 88.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -6004,7 +6004,7 @@
         "steps": 6,
         "open_questions": 3
       },
-      "wall_ms": 68.2,
+      "wall_ms": 162.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -6304,7 +6304,7 @@
         "steps": 6,
         "open_questions": 1
       },
-      "wall_ms": 69.9,
+      "wall_ms": 105.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -6596,7 +6596,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 67.8,
+      "wall_ms": 88.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -6894,7 +6894,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 65.9,
+      "wall_ms": 74.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -7192,7 +7192,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 68.0,
+      "wall_ms": 90.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -7490,7 +7490,7 @@
         "steps": 6,
         "open_questions": 0
       },
-      "wall_ms": 58.9,
+      "wall_ms": 58.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 27,
@@ -7613,7 +7613,7 @@
         "steps": 6,
         "open_questions": 7
       },
-      "wall_ms": 135.6,
+      "wall_ms": 155.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 58,
@@ -7913,7 +7913,7 @@
         "steps": 5,
         "open_questions": 3
       },
-      "wall_ms": 53.8,
+      "wall_ms": 60.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -8172,7 +8172,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 63.7,
+      "wall_ms": 60.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 22,
@@ -8285,7 +8285,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 57.4,
+      "wall_ms": 69.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -8539,7 +8539,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 52.4,
+      "wall_ms": 57.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 22,
@@ -8657,7 +8657,7 @@
         "steps": 5,
         "open_questions": 5
       },
-      "wall_ms": 96.3,
+      "wall_ms": 89.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -8916,7 +8916,7 @@
         "steps": 5,
         "open_questions": 3
       },
-      "wall_ms": 61.5,
+      "wall_ms": 94.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -9175,7 +9175,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 56.9,
+      "wall_ms": 94.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -9429,7 +9429,7 @@
         "steps": 5,
         "open_questions": 3
       },
-      "wall_ms": 64.7,
+      "wall_ms": 75.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -9688,7 +9688,7 @@
         "steps": 5,
         "open_questions": 3
       },
-      "wall_ms": 61.8,
+      "wall_ms": 76.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -9947,7 +9947,7 @@
         "steps": 5,
         "open_questions": 3
       },
-      "wall_ms": 61.9,
+      "wall_ms": 101.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -10206,7 +10206,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 59.3,
+      "wall_ms": 80.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 22,
@@ -10319,7 +10319,7 @@
         "steps": 5,
         "open_questions": 5
       },
-      "wall_ms": 92.1,
+      "wall_ms": 189.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 39,
@@ -10575,7 +10575,7 @@
         "steps": 11,
         "open_questions": 4
       },
-      "wall_ms": 131.4,
+      "wall_ms": 198.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 51,
@@ -11056,7 +11056,7 @@
         "steps": 11,
         "open_questions": 2
       },
-      "wall_ms": 118.5,
+      "wall_ms": 255.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 52,
@@ -11248,7 +11248,7 @@
         "steps": 11,
         "open_questions": 3
       },
-      "wall_ms": 118.0,
+      "wall_ms": 388.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 52,
@@ -11720,7 +11720,7 @@
         "steps": 11,
         "open_questions": 3
       },
-      "wall_ms": 106.8,
+      "wall_ms": 203.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 51,
@@ -11921,7 +11921,7 @@
         "steps": 11,
         "open_questions": 7
       },
-      "wall_ms": 164.0,
+      "wall_ms": 206.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 51,
@@ -12402,7 +12402,7 @@
         "steps": 11,
         "open_questions": 4
       },
-      "wall_ms": 117.8,
+      "wall_ms": 197.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 53,
@@ -12883,7 +12883,7 @@
         "steps": 11,
         "open_questions": 3
       },
-      "wall_ms": 113.1,
+      "wall_ms": 187.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 51,
@@ -13353,7 +13353,7 @@
         "steps": 11,
         "open_questions": 4
       },
-      "wall_ms": 116.3,
+      "wall_ms": 169.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 51,
@@ -13834,7 +13834,7 @@
         "steps": 11,
         "open_questions": 4
       },
-      "wall_ms": 113.4,
+      "wall_ms": 186.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 50,
@@ -14317,7 +14317,7 @@
         "steps": 11,
         "open_questions": 4
       },
-      "wall_ms": 114.4,
+      "wall_ms": 169.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 51,
@@ -14798,7 +14798,7 @@
         "steps": 11,
         "open_questions": 2
       },
-      "wall_ms": 108.1,
+      "wall_ms": 135.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 51,
@@ -14988,7 +14988,7 @@
         "steps": 11,
         "open_questions": 5
       },
-      "wall_ms": 184.9,
+      "wall_ms": 211.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 76,
@@ -15469,7 +15469,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 59.2,
+      "wall_ms": 58.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -15725,7 +15725,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 49.0,
+      "wall_ms": 52.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -15837,7 +15837,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 60.7,
+      "wall_ms": 86.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 27,
@@ -16090,7 +16090,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 44.8,
+      "wall_ms": 62.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 22,
@@ -16205,7 +16205,7 @@
         "steps": 5,
         "open_questions": 4
       },
-      "wall_ms": 56.2,
+      "wall_ms": 72.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -16461,7 +16461,7 @@
         "steps": 5,
         "open_questions": 3
       },
-      "wall_ms": 61.0,
+      "wall_ms": 79.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 28,
@@ -16719,7 +16719,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 54.8,
+      "wall_ms": 62.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -16970,7 +16970,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 54.6,
+      "wall_ms": 57.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -17226,7 +17226,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 58.8,
+      "wall_ms": 57.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -17482,7 +17482,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 58.9,
+      "wall_ms": 58.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -17738,7 +17738,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 43.1,
+      "wall_ms": 51.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 22,
@@ -17848,7 +17848,7 @@
         "steps": 5,
         "open_questions": 7
       },
-      "wall_ms": 121.1,
+      "wall_ms": 167.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 52,
@@ -18103,7 +18103,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 85.6,
+      "wall_ms": 89.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -18399,7 +18399,7 @@
         "steps": 6,
         "open_questions": 0
       },
-      "wall_ms": 63.3,
+      "wall_ms": 81.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 30,
@@ -18520,7 +18520,7 @@
         "steps": 6,
         "open_questions": 1
       },
-      "wall_ms": 77.1,
+      "wall_ms": 79.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -18810,7 +18810,7 @@
         "steps": 6,
         "open_questions": 1
       },
-      "wall_ms": 61.1,
+      "wall_ms": 77.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 30,
@@ -18937,7 +18937,7 @@
         "steps": 6,
         "open_questions": 5
       },
-      "wall_ms": 79.7,
+      "wall_ms": 75.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -19529,7 +19529,7 @@
         "steps": 6,
         "open_questions": 1
       },
-      "wall_ms": 81.3,
+      "wall_ms": 81.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -19819,7 +19819,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 83.1,
+      "wall_ms": 81.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -20115,7 +20115,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 70.1,
+      "wall_ms": 73.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -20411,7 +20411,7 @@
         "steps": 6,
         "open_questions": 2
       },
-      "wall_ms": 69.9,
+      "wall_ms": 72.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 32,
@@ -20707,7 +20707,7 @@
         "steps": 6,
         "open_questions": 0
       },
-      "wall_ms": 59.3,
+      "wall_ms": 64.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 30,
@@ -20828,7 +20828,7 @@
         "steps": 6,
         "open_questions": 5
       },
-      "wall_ms": 146.6,
+      "wall_ms": 170.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 56,
@@ -21124,7 +21124,7 @@
         "steps": 3,
         "open_questions": 4
       },
-      "wall_ms": 28.6,
+      "wall_ms": 33.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 12,
@@ -21323,7 +21323,7 @@
         "steps": 3,
         "open_questions": 0
       },
-      "wall_ms": 29.0,
+      "wall_ms": 39.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 14,
@@ -21409,7 +21409,7 @@
         "steps": 3,
         "open_questions": 3
       },
-      "wall_ms": 27.3,
+      "wall_ms": 35.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 13,
@@ -21605,7 +21605,7 @@
         "steps": 3,
         "open_questions": 1
       },
-      "wall_ms": 28.2,
+      "wall_ms": 34.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 14,
@@ -21694,7 +21694,7 @@
         "steps": 3,
         "open_questions": 5
       },
-      "wall_ms": 26.4,
+      "wall_ms": 30.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 12,
@@ -21893,7 +21893,7 @@
         "steps": 3,
         "open_questions": 4
       },
-      "wall_ms": 28.1,
+      "wall_ms": 32.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 13,
@@ -22092,7 +22092,7 @@
         "steps": 3,
         "open_questions": 3
       },
-      "wall_ms": 28.9,
+      "wall_ms": 30.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 12,
@@ -22288,7 +22288,7 @@
         "steps": 3,
         "open_questions": 4
       },
-      "wall_ms": 31.5,
+      "wall_ms": 30.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 12,
@@ -22487,7 +22487,7 @@
         "steps": 3,
         "open_questions": 4
       },
-      "wall_ms": 26.5,
+      "wall_ms": 27.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 12,
@@ -22686,7 +22686,7 @@
         "steps": 3,
         "open_questions": 4
       },
-      "wall_ms": 26.3,
+      "wall_ms": 32.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 12,
@@ -22885,7 +22885,7 @@
         "steps": 3,
         "open_questions": 1
       },
-      "wall_ms": 23.7,
+      "wall_ms": 27.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 12,
@@ -22969,7 +22969,7 @@
         "steps": 3,
         "open_questions": 6
       },
-      "wall_ms": 52.6,
+      "wall_ms": 62.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 22,
@@ -23169,7 +23169,7 @@
         "steps": 9,
         "open_questions": 3
       },
-      "wall_ms": 91.7,
+      "wall_ms": 157.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 42,
@@ -23568,7 +23568,7 @@
         "steps": 9,
         "open_questions": 0
       },
-      "wall_ms": 79.8,
+      "wall_ms": 92.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 40,
@@ -23736,7 +23736,7 @@
         "steps": 9,
         "open_questions": 1
       },
-      "wall_ms": 93.0,
+      "wall_ms": 109.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 40,
@@ -24128,7 +24128,7 @@
         "steps": 9,
         "open_questions": 2
       },
-      "wall_ms": 86.0,
+      "wall_ms": 117.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 42,
@@ -24303,7 +24303,7 @@
         "steps": 9,
         "open_questions": 6
       },
-      "wall_ms": 95.2,
+      "wall_ms": 192.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 42,
@@ -24702,7 +24702,7 @@
         "steps": 9,
         "open_questions": 3
       },
-      "wall_ms": 91.5,
+      "wall_ms": 174.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 41,
@@ -25101,7 +25101,7 @@
         "steps": 9,
         "open_questions": 2
       },
-      "wall_ms": 90.1,
+      "wall_ms": 180.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 42,
@@ -25491,7 +25491,7 @@
         "steps": 9,
         "open_questions": 3
       },
-      "wall_ms": 94.5,
+      "wall_ms": 131.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 42,
@@ -25890,7 +25890,7 @@
         "steps": 9,
         "open_questions": 2
       },
-      "wall_ms": 95.1,
+      "wall_ms": 149.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 41,
@@ -26291,7 +26291,7 @@
         "steps": 9,
         "open_questions": 3
       },
-      "wall_ms": 98.0,
+      "wall_ms": 132.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 42,
@@ -26690,7 +26690,7 @@
         "steps": 9,
         "open_questions": 1
       },
-      "wall_ms": 92.8,
+      "wall_ms": 99.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 42,
@@ -26856,7 +26856,7 @@
         "steps": 9,
         "open_questions": 4
       },
-      "wall_ms": 154.4,
+      "wall_ms": 189.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 57,
@@ -27254,7 +27254,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 54.2,
+      "wall_ms": 67.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -27506,7 +27506,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 46.4,
+      "wall_ms": 83.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -27611,7 +27611,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 52.1,
+      "wall_ms": 94.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -27860,7 +27860,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 47.8,
+      "wall_ms": 70.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -27971,7 +27971,7 @@
         "steps": 5,
         "open_questions": 5
       },
-      "wall_ms": 56.3,
+      "wall_ms": 61.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -28225,7 +28225,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 56.2,
+      "wall_ms": 58.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -28477,7 +28477,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 52.2,
+      "wall_ms": 56.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -28724,7 +28724,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 57.2,
+      "wall_ms": 54.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -28976,7 +28976,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 55.4,
+      "wall_ms": 58.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -29228,7 +29228,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 52.2,
+      "wall_ms": 62.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -29480,7 +29480,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 46.8,
+      "wall_ms": 57.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -29585,7 +29585,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 85.8,
+      "wall_ms": 90.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 34,
@@ -29841,7 +29841,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 44.9,
+      "wall_ms": 49.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -30094,7 +30094,7 @@
         "steps": 4,
         "open_questions": 0
       },
-      "wall_ms": 40.6,
+      "wall_ms": 48.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -30196,7 +30196,7 @@
         "steps": 4,
         "open_questions": 2
       },
-      "wall_ms": 49.4,
+      "wall_ms": 49.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -30445,7 +30445,7 @@
         "steps": 4,
         "open_questions": 1
       },
-      "wall_ms": 49.5,
+      "wall_ms": 48.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -30551,7 +30551,7 @@
         "steps": 4,
         "open_questions": 4
       },
-      "wall_ms": 49.8,
+      "wall_ms": 48.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -30804,7 +30804,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 52.3,
+      "wall_ms": 47.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -31057,7 +31057,7 @@
         "steps": 4,
         "open_questions": 2
       },
-      "wall_ms": 45.2,
+      "wall_ms": 47.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -31306,7 +31306,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 46.2,
+      "wall_ms": 46.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -31559,7 +31559,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 73.7,
+      "wall_ms": 49.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -31812,7 +31812,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 50.0,
+      "wall_ms": 47.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -32065,7 +32065,7 @@
         "steps": 4,
         "open_questions": 0
       },
-      "wall_ms": 40.9,
+      "wall_ms": 41.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -32165,7 +32165,7 @@
         "steps": 4,
         "open_questions": 5
       },
-      "wall_ms": 77.1,
+      "wall_ms": 78.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 31,
@@ -32417,7 +32417,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 45.0,
+      "wall_ms": 51.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -32736,7 +32736,7 @@
         "steps": 4,
         "open_questions": 2
       },
-      "wall_ms": 52.2,
+      "wall_ms": 49.6,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -32951,7 +32951,7 @@
         "steps": 4,
         "open_questions": 2
       },
-      "wall_ms": 39.2,
+      "wall_ms": 40.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 19,
@@ -33055,7 +33055,7 @@
         "steps": 4,
         "open_questions": 5
       },
-      "wall_ms": 45.3,
+      "wall_ms": 48.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -33272,7 +33272,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 45.8,
+      "wall_ms": 47.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -33489,7 +33489,7 @@
         "steps": 4,
         "open_questions": 2
       },
-      "wall_ms": 47.3,
+      "wall_ms": 48.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -33702,7 +33702,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 53.4,
+      "wall_ms": 52.1,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -33919,7 +33919,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 45.7,
+      "wall_ms": 47.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 20,
@@ -34136,7 +34136,7 @@
         "steps": 4,
         "open_questions": 3
       },
-      "wall_ms": 46.7,
+      "wall_ms": 54.9,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 21,
@@ -34355,7 +34355,7 @@
         "steps": 4,
         "open_questions": 1
       },
-      "wall_ms": 38.5,
+      "wall_ms": 45.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 19,
@@ -34455,7 +34455,7 @@
         "steps": 4,
         "open_questions": 6
       },
-      "wall_ms": 94.6,
+      "wall_ms": 116.3,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 39,
@@ -34671,7 +34671,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 55.7,
+      "wall_ms": 67.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -34928,7 +34928,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 49.2,
+      "wall_ms": 60.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -35039,7 +35039,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 69.4,
+      "wall_ms": 73.5,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -35291,7 +35291,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 50.9,
+      "wall_ms": 64.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -35407,7 +35407,7 @@
         "steps": 5,
         "open_questions": 5
       },
-      "wall_ms": 57.0,
+      "wall_ms": 75.4,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -35664,7 +35664,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 59.1,
+      "wall_ms": 73.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -35921,7 +35921,7 @@
         "steps": 5,
         "open_questions": 1
       },
-      "wall_ms": 68.5,
+      "wall_ms": 71.8,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -36173,7 +36173,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 56.5,
+      "wall_ms": 83.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -36430,7 +36430,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 55.0,
+      "wall_ms": 84.2,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -36687,7 +36687,7 @@
         "steps": 5,
         "open_questions": 2
       },
-      "wall_ms": 54.1,
+      "wall_ms": 65.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 25,
@@ -36944,7 +36944,7 @@
         "steps": 5,
         "open_questions": 0
       },
-      "wall_ms": 46.5,
+      "wall_ms": 49.0,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 24,
@@ -37055,7 +37055,7 @@
         "steps": 5,
         "open_questions": 4
       },
-      "wall_ms": 86.0,
+      "wall_ms": 89.7,
       "replay_reproducible": true,
       "deterministic_state": true,
       "audit_entries": 36,

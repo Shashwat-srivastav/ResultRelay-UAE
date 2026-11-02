@@ -55,6 +55,45 @@ The design rule: **use a language model only where the problem needs probabilist
 policy, reading what people said); decide everything else in code — transport status, revision binding,
 idempotency, and whether to escalate.
 
+```mermaid
+flowchart TD
+    EV(["Event chunk: from a scenario file, or injected by a judge through the API"])
+    CS["Deterministic case services: revision binding, transport reconciliation, recipient routing, applicability. Rule-based assessors propose the step's action"]
+    RT["Evidence retrieval: BM25, ChromaDB via the ITU ingest, jurisdiction filter, verified quotations only"]
+    A1["① Policy Evidence Analyst. LLM, DHA lens: obligation status, governing clause, settled?, policy gap"]
+    A2["② Institutional analyst. LLM, TDRA lens, only when transport is unresolved"]
+    A3["③ Adversarial reviewer. LLM, a different model family: challenges each claim, typed objection"]
+    ASR["④ Independent assurance, code: fact check against the case record, policy-rules check, conflicts"]
+    ORC{"⑤ Deterministic orchestrator, code"}
+    PE(["Named owner with a deadline"])
+    GT["Gate, the Y.3172 P node, code: case states and named invariants. Decides every transition"]
+    EX["Execution and audit: failed actions escalated, overdue escalations re-escalated, hash chain, HMAC-signed checkpoints"]
+    EV --> CS --> RT
+    RT --> A1
+    RT --> A2
+    RT --> A3
+    A1 --> ASR
+    A2 --> ASR
+    A3 --> ASR
+    ASR -.->|"one feedback round: CORRECTED, UPHELD or DISPUTED"| A1
+    ASR --> ORC
+    ORC -->|"PROCEED: the gate decides"| GT
+    ORC -->|"ESCALATE: objection that stands, or disputed claim"| PE
+    PE --> GT
+    GT --> EX
+    classDef llm fill:#cde2fb,stroke:#2a78d6,color:#0b0b0b
+    classDef code fill:#f2f1ee,stroke:#52514e,color:#0b0b0b
+    classDef gate fill:#ffffff,stroke:#0b0b0b,stroke-width:2px,color:#0b0b0b
+    class A1,A2,A3 llm
+    class CS,RT,ASR,ORC,EX,EV,PE code
+    class GT gate
+```
+
+<sub>Blue = language models, which advise only; grey = deterministic code. The gate is the only component that changes a case.</sub>
+
+<details>
+<summary>Text version of the diagram</summary>
+
 ```
  event chunk  ── from a scenario file, or injected by a judge:  POST /api/runs/{id}/events
       │
@@ -82,6 +121,8 @@ idempotency, and whether to escalate.
                       every message, check and decision in a hash chain · HMAC-signed checkpoints
 ```
 
+</details>
+
 | Actor | Kind | Produces | Can it change the case? |
 | :--- | :--- | :--- | :--- |
 | ① Policy Evidence Analyst | LLM | obligation status, governing clause, "settled?", policy gap, rationale | No |
@@ -102,12 +143,20 @@ Jev reviewer; synthetic cases only):
 
 | | Result |
 | :--- | :--- |
-| Final state as expected | **6/6** scenarios |
-| Decision points · agent answers · TDRA lens invoked | 18 · 41 · 5 |
-| Analyst claims flagged by assurance | 15 → 7 corrected after feedback, 8 upheld, 0 disputed |
-| Reviewer objections | 13 → 10 rejected by code (each contradicted the case record), 3 acted on |
-| Policy gaps surfaced per case | 13 (e.g. no acknowledgment clock, delivery evidence undefined) |
-| Escalations raised by the agents | 3: S9 (the only one rules miss) and twice in SC-02, an unapproved fallback channel the gate also refuses |
+| Final state as expected | **8/8** scenarios |
+| Decision points · agent answers · TDRA lens invoked | 25 · 58 · 8 |
+| Analyst claims flagged by assurance | 22 → 7 corrected after feedback, 15 upheld, 0 disputed |
+| Reviewer objections | 18 → 13 rejected by code (each contradicted the case record), 5 acted on |
+| Steps tagged with a pre-registered policy gap | 19 (e.g. no acknowledgment clock, delivery evidence undefined) |
+| Escalations raised by the agents | 5: S9 (the only one rules miss), and an unapproved fallback channel the gate also refuses (twice each in SC-02 and SC-07) |
+
+![Council outcomes in the recorded run](docs/figures/council_outcomes.png)
+
+<sub>What the assurance checks did with the analysts' claims and the reviewer's objections, and what the orchestrator decided; read from evaluation/demo_run.json (regenerate with `python docs/figures/make_figures.py`).</sub>
+
+![Every decision point of the recorded council run](docs/figures/council_trace.png)
+
+<sub>Every decision point of the recorded run: the action under review, the reviewer's objection and what code did with it, the analyst outcome, and the decision (orange = escalated).</sub>
 
 **What the agents add that rules cannot (SC-06, scenario S9).** The SMS is delivered with a receipt and a
 reply arrives from the registered number, marked as an acknowledgment from a verified number. The reply
@@ -127,6 +176,32 @@ objection on a consistency heuristic (the reviewer named the same action as its 
 was changed after seeing that run, so only checks against the case record can now reject an objection. The
 recording above was made after the change and caught S9 on its own. Each figure comes from a single
 recorded run of a non-deterministic model.
+
+**One decision point, step by step** — SC-06 (scenario S9), action `RECORD_DOCUMENTATION`, as recorded in
+[evaluation/demo_run.json](evaluation/demo_run.json):
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant S as Case services (code)
+    participant A as Policy Evidence Analyst (LLM)
+    participant R as Adversarial reviewer (LLM)
+    participant Q as Assurance (code)
+    participant O as Orchestrator (code)
+    participant G as Gate (code)
+    Note over S: Delivered with a receipt. The reply from the registered number says 'This is his daughter'
+    S->>A: case view and binding clauses for RECORD_DOCUMENTATION
+    S->>R: the same case view, read independently
+    A-->>Q: obligation COMMUNICATED, clause S1-11.1.3
+    R-->>Q: objection TEXT_CONTRADICTS_RECORD (p 0.93), own reading AWAITING_ACK
+    Note over Q: TDRA analyst not invoked - a delivery receipt is on record
+    Q->>A: claim flagged by the reviewer (IGNORES_WHAT_WAS_SAID) - revise once
+    A-->>Q: same conclusion - UPHELD
+    Note over Q: no check against the case record rejects the objection - it stands
+    Q->>O: conflicts READINGS_DIFFER and OBJECTION
+    O->>G: ESCALATE - free-text objection with confidence 0.93, threshold 0.7
+    G-->>S: ESCALATION_REQUIRED - a named owner and a deadline
+```
 
 **Any model, per role.** Agents ask typed questions (named options or a probability); a chat model's JSON
 answer is validated against them and anything off-list is rejected, never repaired. Every request passes the
@@ -156,6 +231,27 @@ model needs the ITU Lab compute requested in [submission/DESIGN-BRIEF.md](submis
 
 ## Architecture — ITU-T Y.3172, node for node
 
+```mermaid
+flowchart LR
+    SRC["SRC: synthetic event streams and the verified policy corpus"] --> C["C: event ingestion, each event hash-chained before it is applied"]
+    C --> PP["PP: case state, revision binding, transport reconciliation, jurisdiction-filtered retrieval"]
+    PP --> M["M: policy analyst, TDRA-lens analyst, adversarial reviewer (LLMs)"]
+    M --> P["P: assurance and the gate's invariants decide what may happen"]
+    P --> D["D: execution of permitted actions"]
+    D --> SINK["SINK: mock transport, supervisor queue, communication record"]
+    MLFO{{"MLFO: deterministic orchestrator, no LLM coordinator"}}
+    MLFO -.-> C
+    MLFO -.-> M
+    MLFO -.-> P
+    MLFO -.-> D
+    classDef llm fill:#cde2fb,stroke:#2a78d6,color:#0b0b0b
+    classDef code fill:#f2f1ee,stroke:#52514e,color:#0b0b0b
+    class M llm
+    class SRC,C,PP,P,D,SINK,MLFO code
+```
+
+<sub>Node by node from [kb/framework/itu_y3172_mapping.csv](kb/framework/itu_y3172_mapping.csv), which also names the code, the test and the limitation for each node.</sub>
+
 | Node (Y.3172 §8.1) | In ResultRelay | AI Readiness 2.0 dimension | Policy source |
 | :--- | :--- | :--- | :--- |
 | **SRC** | Synthetic result revisions, contacts, channels; the verified corpus | Data/Model Marketplace (1), Contextualization and Regional Impact (4) | DHA ST-28 §11.1 (walk-in tests) |
@@ -166,7 +262,11 @@ model needs the ITU Lab compute requested in [submission/DESIGN-BRIEF.md](submis
 | **D** | Mock transport that separates acceptance, delivery and acknowledgment; idempotency keys | Digital Infrastructure (13), Granular Priorities (12) | Federal Law 2/2019 Art. 4, 13; TDRA Mobile Spam §1-23 |
 | **SINK** | Supervisor queue, React console, hash-chained audit re-verified on read | Human Interface (6), AI for Inclusion (11) | DHA ST-28 §11.1.3; NABIDH Audit Policy §3.2.10–11 |
 
-## The six scenarios — `python run_demo.py`
+![ITU AI Readiness 2.0 dimensions by status](docs/figures/ai_readiness.png)
+
+<sub>Each of the 13 ITU AI Readiness 2.0 dimensions and its status in ResultRelay, from kb/framework/ai_readiness_mapping.csv.</sub>
+
+## The eight scenarios — `python run_demo.py`
 
 | # | Scenario | Final state | Verdict | Rules only · policy-blind |
 | :--- | :--- | :--- | :--- | :--- |
@@ -176,6 +276,40 @@ model needs the ITU Lab compute requested in [submission/DESIGN-BRIEF.md](submis
 | **SC-04** controversial | Generic walk-in rule retrieved for a genetic result; no physician channel | `ESCALATION_REQUIRED` (failed send logged and escalated) | `VIOLATION` (prevented) | same · messages the patient |
 | **SC-05** failure | Gateway accepts the SMS; no receipt ever arrives | `ESCALATION_REQUIRED` | `INSUFFICIENT_EVIDENCE` | same · records delivery |
 | **SC-06** agents | Delivered and "acknowledged", but the reply is from the patient's daughter | `ESCALATION_REQUIRED` | `INSUFFICIENT_EVIDENCE` | **closes the case** · closes the case |
+| **SC-07** failure | Escalated to the supervisor, who never answers | `ESCALATION_REQUIRED` (raised to the clinical lead, tier 2) | `INSUFFICIENT_EVIDENCE` | same · records delivery |
+| **SC-08** failure | Delivered with a receipt, never acknowledged | `ESCALATION_REQUIRED` (when the acknowledgment window passes) | `INSUFFICIENT_EVIDENCE` | same · records delivery |
+
+**The case state machine** (main paths; [app/state_machine/transitions.py](app/state_machine/transitions.py)
+is the full table). Transport states and human states are kept apart: no transport event can reach an
+acknowledged or documented state.
+
+```mermaid
+stateDiagram-v2
+    [*] --> RESULT_DRAFT
+    RESULT_DRAFT --> RESULT_FINALIZED : result finalized
+    RESULT_FINALIZED --> TRANSMISSION_QUEUED : transmission requested
+    TRANSMISSION_QUEUED --> TRANSMISSION_ATTEMPTED : released to transport
+    TRANSMISSION_ATTEMPTED --> TRANSPORT_ACCEPTED : gateway accepts
+    TRANSPORT_ACCEPTED --> DELIVERY_CONFIRMED : receipt matched to the attempt
+    TRANSPORT_ACCEPTED --> DELIVERY_STATE_UNKNOWN : timeout or status unknown
+    TRANSPORT_ACCEPTED --> DELIVERY_FAILED : delivery failed
+    DELIVERY_STATE_UNKNOWN --> RETRY_PENDING : reconciled
+    DELIVERY_STATE_UNKNOWN --> DELIVERY_CONFIRMED : late matched receipt
+    RETRY_PENDING --> TRANSMISSION_ATTEMPTED : retry with a new idempotency key
+    DELIVERY_CONFIRMED --> CLINICAL_ACKNOWLEDGMENT_CONFIRMED : named person, current revision
+    CLINICAL_ACKNOWLEDGMENT_CONFIRMED --> COMMUNICATION_DOCUMENTED : documentation recorded
+    COMMUNICATION_DOCUMENTED --> CORRECTION_PENDING : result corrected
+    CORRECTION_PENDING --> CORRECTED_RESULT_DELIVERY_PENDING : reviewed correction task
+    CORRECTION_PENDING --> SUPERSEDED : old revision kept for history
+    CORRECTED_RESULT_DELIVERY_PENDING --> TRANSMISSION_ATTEMPTED : corrected revision sent
+    DELIVERY_CONFIRMED --> CORRECTED_RESULT_ACKNOWLEDGED : acknowledgment of the corrected revision
+    RESULT_FINALIZED --> ESCALATION_REQUIRED : no permitted route
+    DELIVERY_STATE_UNKNOWN --> ESCALATION_REQUIRED : escalation requested
+    DELIVERY_FAILED --> ESCALATION_REQUIRED : escalation requested
+    CLINICAL_ACKNOWLEDGMENT_CONFIRMED --> ESCALATION_REQUIRED : what the person said contradicts the record
+    ESCALATION_REQUIRED --> ESCALATION_IN_REVIEW : a named reviewer opens the case
+    note right of TRANSPORT_ACCEPTED : Acceptance is not delivery. An acknowledgment arriving here is refused, invariant INV-8
+```
 
 Every run prints the audit checkpoint; set `RESULTRELAY_AUDIT_KEY` to sign it (HMAC-SHA256 over the chain
 head): a rebuilt, internally consistent chain passes the hash check but not the signed checkpoint.
@@ -195,6 +329,8 @@ source is cited as provenance in each scenario file (`"provenance"`), not reprod
 | S1 | notification reached a device or intermediary; the responsible person never acknowledged | strong | [AHRQ PSNet WebM&M (2017)](https://psnet.ahrq.gov/web-mm/delayed-recognition-positive-blood-culture) · [BMJ Open Quality (2021)](https://pmc.ncbi.nlm.nih.gov/articles/PMC8442100/) |
 | S8 | outgoing notification counted as done; acknowledgment by a person absent | strong | [BMJ Open Quality (2021)](https://pmc.ncbi.nlm.nih.gov/articles/PMC8442100/) · [AHRQ PSNet WebM&M (2017)](https://psnet.ahrq.gov/web-mm/delayed-recognition-positive-blood-culture) |
 | S9 | a relative receives or answers for the patient; consent and identity decide, not the phone number | very strong | [Medical Protection Asia Casebook, July 2017, Case 2](https://www.medicalprotection.org/docs/medicalprotectioninternationallibraries/pdfs/casebook-pdfs/asia-casebook-pdfs/july-2017.pdf) · [Medical Protection](https://www.medicalprotection.org/uk/articles/digital-dilemmas-communicating-with-patients-by-text) |
+| S11 | a notification reached a device or intermediary; the responsible person never acknowledged | strong | [AHRQ PSNet WebM&M (2017)](https://psnet.ahrq.gov/web-mm/delayed-recognition-positive-blood-culture) · [BMJ Open Quality (2021)](https://pmc.ncbi.nlm.nih.gov/articles/PMC8442100/) |
+| S10 | the attending was paged and did not respond; nobody escalated further | almost exact | [CRICO / Harvard Risk Management Foundation (2023)](https://rmfcd1-prod.rmf.harvard.edu/Risk-Prevention-and-Education/Case-Study-Catalog-Page/Case-Study/2023/Discharged-Patient-with-Pending-Test-Results) |
 | S2 | an amended result reached a unit, not the clinician who had acted on the first version | almost exact | [AHRQ PSNet WebM&M (2012)](https://psnet.ahrq.gov/web-mm/amended-lab-results-communication-slip) |
 | S5 | an acknowledgment that belongs to an earlier version must not close the amended one | related | [AHRQ PSNet WebM&M (2012)](https://psnet.ahrq.gov/web-mm/amended-lab-results-communication-slip) |
 | S3a | the intended recipient could not be reached and no escalation path was followed | almost exact | [CRICO / Harvard Risk Management Foundation (2023)](https://rmfcd1-prod.rmf.harvard.edu/Risk-Prevention-and-Education/Case-Study-Catalog-Page/Case-Study/2023/Discharged-Patient-with-Pending-Test-Results) · [American Journal of Clinical Pathology (2011)](https://pmc.ncbi.nlm.nih.gov/articles/PMC7065418/) |
@@ -208,25 +344,37 @@ that every genetic result must go to a particular specialist — that routing co
 
 ## Evaluation — `python scripts/run_evaluation.py`
 
-10 scenarios × 12 configurations = 120 runs. *Fully safe* = every must-hold assertion passed **and** the case
+12 scenarios × 12 configurations = 144 runs. *Fully safe* = every must-hold assertion passed **and** the case
 ended in a state its expectation allows (assertions alone had scored a case closed on the daughter's reply
 as safe).
 
 | Configuration | Fully safe | Assertions | Provenance |
 | :--- | ---: | ---: | ---: |
-| `resultrelay_council` (rules + agent council) | **10/10** | **42/42** | 1.00 |
-| `resultrelay` (rules, no agents) | 9/10 — misses S9 | 42/42 | 1.00 |
-| `static_rules` (competent hand-written rules, genetic rule hard-coded) | 9/10 — misses S9 | 42/42 | 0.00 |
-| `ablate_no_applicability_filter` | 8/10 | 41/42 | 1.00 |
-| `ablate_no_kb` · `ablate_ack_any` · `ablate_optimistic_transport` · `ablate_no_invariants` | 7/10 | 40–41/42 | 0.00–1.00 |
-| `retrieval_only` | 3/10 | 36/42 | 1.00 |
-| `policy_blind` | 2/10 | 35/42 | 0.00 |
+| `resultrelay_council` (rules + agent council) | **12/12** | **53/53** | 1.00 |
+| `resultrelay` (rules, no agents) | 11/12 — misses S9 | 53/53 | 1.00 |
+| `static_rules` (competent hand-written rules, genetic rule hard-coded) | 11/12 — misses S9 | 53/53 | 0.00 |
+| `ablate_no_applicability_filter` | 10/12 | 52/53 | 1.00 |
+| `ablate_no_kb` · `ablate_ack_any` · `ablate_optimistic_transport` | 9/12 | 51/53 | 0.00–1.00 |
+| `ablate_no_invariants` | 8/12 | 51/53 | 1.00 |
+| `retrieval_only` | 4/12 | 46/53 | 1.00 |
+| `policy_blind` | 3/12 | 45/53 | 0.00 |
+
+![Fully safe scenarios by configuration](docs/figures/eval_fully_safe.png)
+
+<sub>Fully safe scenarios per configuration, read from evaluation/results/latest.json (regenerate with `python docs/figures/make_figures.py`).</sub>
+
+![Final state of every evaluation run](docs/figures/eval_heatmap.png)
+
+<sub>Every run of the matrix: the final state each configuration reached on each scenario; red = not fully safe.</sub>
+
+S11 exposed a real bug: delivery time and the scenario clock used different units, so a delivered-but-never-
+acknowledged result was never escalated; fixed, and S11 now guards it.
 
 What this shows, and does not: a competent rules engine with the same state machine is as safe as
 ResultRelay's rules on structured events — ResultRelay's added value there is **provenance** (every
 decision cites a verified clause; 1.00 vs 0.00) and jurisdiction gating. The agents add the one case rules
 cannot read (S9). `ablate_no_audit_agent` and `ablate_full_context` are **controls**: they cannot change an
-outcome by construction and score 9/10 like `resultrelay`. All scenarios and expectations were written by
+outcome by construction and score 11/12 like `resultrelay`. All scenarios and expectations were written by
 the team that wrote the engine (each file says so); the council figures come from one recorded run. DHA's
 AI policy (PP-09 §4.3.3) requires independent third-party validation; this system has had none.
 
@@ -245,6 +393,10 @@ SHA-256 and re-checked on load.
 | Federal | Federal Law 2/2019 (ICT in health) · Telecom Law (Decree-Law 3/2003, Art. 13: TDRA's mandate) · PDPL (scope exclusion only) · UAE AI Charter · TDRA Mobile Spam policy |
 | Comparators | DoH Abu Dhabi lab standard and ADHICS · RCPath G158 (UK) · US CLIA 42 CFR 493.1291 · EU AI Act Arts 14/26/73 · Saudi PDPL (GCC) · ETSI TS 123 040 (3GPP SMS) · Joint Commission NPSG · ONC SAFER Guide 8 · HL7 FHIR R5 Task · IHE XDW · ITU-T Y.3172 · ITU AI Readiness 2.0 |
 
+![Knowledge base composition](docs/figures/kb_composition.png)
+
+<sub>Sources by layer (kb/source_register.csv); quotations by verification class and by claim class (kb/index/chunks.json).</sub>
+
 **Vector KB built with the ITU reference code — shipped in `kb/chroma`.** `python scripts/export_itu_kb.py
 --ingest PATH/TO/ITUAIReadiness` writes every verified excerpt to `kb/itu_inputdocs/` in the ITU InputDocs
 format and runs the ITU `ingest.py` (Ollama `nomic-embed-text`, ChromaDB, cosine), with clause id, authority,
@@ -256,6 +408,10 @@ recorded answers replay exactly on any machine.
 On seven plain-language questions ([evaluation/retrieval_check.md](evaluation/retrieval_check.md)) the
 expected clause is in the top 5 for **hybrid 4/7, BM25 1/7**; Arabic questions are mapped to the English
 clauses ("نقل البيانات الصحية خارج الدولة" → Law 2/2019 Art. 13 first). The questions are ours: a smoke test.
+
+![Retrieval check, BM25 vs hybrid](docs/figures/retrieval_check.png)
+
+<sub>The seven questions of evaluation/retrieval_check.md: expected clause in the top 5, BM25 against hybrid retrieval.</sub>
 
 **Sources a script cannot download** — the UAE National Strategy for AI 2031, Ministerial Resolution 51/2021,
 the National Cybersecurity Strategy, a MOHAP health-AI instrument, and the official texts behind the
@@ -274,6 +430,10 @@ transcriptions — are listed with official links and the steps to add them in
 | **GR-18** No route for a clinical SMS to show it is not marketing (quiet hours 9pm–7am, §8-3) | Implementation | none retrieved |
 | **GR-19** The exceptions to the UAE ban on processing health data abroad sit in Ministerial Resolution 51/2021, which no official portal served | AI governance / residency | Saudi PDPL Art. 29: lists transfer purposes in the law and delegates the rest, and the adequacy test, to Regulations (GCC) |
 
+![Policy and standards gaps by type](docs/figures/gap_register.png)
+
+<sub>All entries of kb/gap_register.csv by type, and whether a comparator from another jurisdiction was retrieved.</sub>
+
 18 entries in total; each lists the sources reviewed, what they establish, what remains unclear and the
 product control that follows. Gaps that rest on an absence say what was searched (the full corpus, 2 Nov 2026):
 an absence cannot be proven, only searched for. PDPL (Federal Decree-Law
@@ -285,7 +445,7 @@ its own legislation.
 ```bash
 python -m pip install -r requirements.txt
 python -m pytest -q                          # 257 tests (one skips unless every source text is cached)
-python run_demo.py                           # six scenarios; the agent council replays recorded answers offline
+python run_demo.py                           # eight scenarios; the agent council replays recorded answers offline
 python scripts/run_evaluation.py             # 120-run matrix → evaluation/report.md
 python -m uvicorn app.main:app --port 8000   # API + built UI on http://127.0.0.1:8000  (docs at /api/docs)
 python scripts/fetch_sources.py              # optional: download the official texts and re-verify every quote
