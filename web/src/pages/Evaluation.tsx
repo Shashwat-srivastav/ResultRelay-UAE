@@ -92,7 +92,9 @@ export default function Evaluation() {
                 </tr>
               </thead>
               <tbody>
-                {Object.entries(summary).map(([name, s]: any) => (
+                {Object.entries(summary)
+                  .sort(([, a]: any, [, b]: any) => b.scenarios_fully_safe - a.scenarios_fully_safe)
+                  .map(([name, s]: any) => (
                   <tr key={name}>
                     <td>
                       <div className="mono small">{name}</div>

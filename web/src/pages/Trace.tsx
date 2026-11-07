@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { api } from "../api/client";
-import { Banner, Chip, Empty, Panel, Skeleton, fmtTime, useAsync } from "../ui";
-import { Pipeline3DLazy as Pipeline3D } from "../design/Pipeline3DLazy";
+import { Banner, Chip, Empty, Panel, Skeleton, fmtTime, stateTone, useAsync } from "../ui";
 import { useReveal } from "../design/motion";
 
 /**
@@ -13,6 +12,13 @@ import { useReveal } from "../design/motion";
  * paragraph of self-report. Raw model reasoning is not published, and in the shipped configuration
  * there is no model to reason.
  */
+/** Shorten at a word boundary and say so, instead of cutting a word in half. */
+function clip(text: string, max: number): string {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  return cut.slice(0, cut.lastIndexOf(" ")) + "…";
+}
+
 export default function Trace() {
   const [params, setParams] = useSearchParams();
   const runParam = params.get("run");
@@ -33,15 +39,6 @@ export default function Trace() {
   const reveal = useReveal<HTMLDivElement>([trace.data, active], 0.03);
   const stepRefs = useRef<Record<number, HTMLDivElement | null>>({});
 
-  const pipeline = useMemo(
-    () =>
-      steps.map((s: any) => ({
-        label: `step ${s.step}`,
-        permitted: Boolean(s["4_gate"]?.permitted),
-        active: s.step === open,
-      })),
-    [steps, open]
-  );
 
   function goTo(step: number) {
     setOpen(step);
@@ -106,11 +103,6 @@ export default function Trace() {
               <span title={trace.data.kb_index_sha256}>corpus {trace.data.kb_index_sha256?.slice(0, 12)}</span>
             </div>
 
-            {pipeline.some((s: { permitted: boolean }) => !s.permitted) && (
-              <Pipeline3D steps={pipeline} onSelect={(i) => goTo(i + 1)} caption="this run, step by step — refused steps stop at the gate" />
-            )}
-
-            {/* Keyboard-parity navigation: the same jump the 3-D scene offers, in text. */}
             <div className="step-rail" role="tablist" aria-label="steps">
               {steps.map((s: any) => (
                 <button
@@ -121,7 +113,7 @@ export default function Trace() {
                   aria-selected={s.step === open}
                   onClick={() => goTo(s.step)}
                 >
-                  {String(s.step).padStart(2, "0")} · {s["4_gate"]?.permitted ? "ok" : "blocked"}
+                  Step {s.step}{s["4_gate"]?.permitted ? "" : " refused"}
                 </button>
               ))}
             </div>
@@ -132,8 +124,8 @@ export default function Trace() {
               return (
                 <div
                   key={s.step}
-                  className={`card${isOpen ? " panel-glow" : ""}`}
-                  style={{ padding: 12 }}
+                  className="card"
+                  style={{ padding: "12px 16px" }}
                   ref={(el) => {
                     stepRefs.current[s.step] = el;
                   }}
@@ -161,95 +153,104 @@ export default function Trace() {
                       <Chip tone="neutral">{s["1_event"] ?? "event"}</Chip>
                     </span>
                     <span className="row" style={{ gap: 8 }}>
-                      <Chip tone={gate.permitted ? "ok" : "bad"}>{gate.permitted ? "permitted" : "blocked"}</Chip>
+                      <Chip tone={gate.permitted ? "ok" : "bad"}>{gate.permitted ? "permitted" : "refused"}</Chip>
                       <Chip tone="info">{gate.enforced_action}</Chip>
                       <span className="btn small">{isOpen ? "Hide" : "Trace"}</span>
                     </span>
                   </button>
 
                   {isOpen && (
-                    <div className="stack" style={{ gap: 10, marginTop: 10 }}>
-                      <div>
-                        <div className="tiny muted">1 · evidence retrieved</div>
+                    <div className="trace-grid">
+                      <div className="tg-k">Evidence</div>
+                      <div className="tg-v">
                         {(s["2_evidence"] ?? []).length === 0 ? (
-                          <div className="tiny muted">none — no clause matched above the relevance floor</div>
+                          <span className="muted">No clause matched above the relevance floor.</span>
                         ) : (
                           s["2_evidence"].slice(0, 4).map((e: any, i: number) => (
-                            <div key={i} className="tiny">
-                              <span className="mono">{e.source_id} {e.section}</span> · p.{e.page} ·{" "}
-                              <Chip tone="outline">{e.claim_type}</Chip> {e.quote?.slice(0, 120)}
+                            <div key={i} className="ev-line">
+                              <span className="mono">{e.source_id} {e.section}, p.{e.page}</span>
+                              <Chip tone={e.claim_type === "BINDING_REQUIREMENT" ? "ok" : "outline"}>{e.claim_type}</Chip>
+                              <span>{e.quote?.slice(0, 160)}</span>
                             </div>
                           ))
                         )}
                       </div>
 
-                      <div>
-                        <div className="tiny muted">2 · proposals</div>
+                      <div className="tg-k">Rule proposals</div>
+                      <div className="tg-v">
                         {s["3_proposals"].map((p: any, i: number) => (
-                          <div key={i} className="tiny">
-                            <span className="mono">{p.agent}</span> → <strong>{p.action}</strong>{" "}
-                            <span className="muted">
-                              (confidence {p.confidence}; {p.confidence_basis ?? p.status})
-                            </span>
-                            {p.citations?.length ? <span className="muted"> · cites {p.citations.join(", ")}</span> : null}
+                          <div key={i} className="ev-line">
+                            <span className="mono">{p.agent}</span>
+                            <strong className="mono">{p.action}</strong>
+                            <span className="muted">confidence {p.confidence}{p.citations?.length ? `, cites ${p.citations.join(", ")}` : ""}</span>
                           </div>
                         ))}
                       </div>
 
                       {s["3b_council"] ? (
-                        <div>
-                          <div className="tiny muted">2b · agent council (advises; can only escalate)</div>
-                          {s["3b_council"].agents.map((a: any, i: number) => (
-                            <div key={i} className="tiny">
-                              <span className="mono">{a.role}</span>{" "}
-                              <Chip tone={a.status === "DISPUTED" ? "bad" : "neutral"}>{a.status}</Chip>{" "}
-                              {Object.entries(a.answers)
-                                .filter(([k]) => k !== "rationale")
-                                .map(([k, v]) => `${k}: ${typeof v === "number" ? (v as number).toFixed(2) : v}`)
-                                .join(" · ")}
-                              {a.answers.rationale ? <div className="muted">“{String(a.answers.rationale).slice(0, 220)}”</div> : null}
-                            </div>
-                          ))}
-                          {s["3b_council"].assurance
-                            .filter((r: any) => r.outcome !== "ACCEPTED")
-                            .map((r: any, i: number) => (
-                              <div key={i} className="tiny">
-                                assurance · <span className="mono">{r.role}</span>{" "}
-                                <Chip tone={r.outcome === "CORRECTED" ? "warn" : r.outcome === "DISPUTED" || r.outcome === "OBJECTION_REJECTED" ? "bad" : "neutral"}>
-                                  {r.outcome}
-                                </Chip>{" "}
-                                <span className="muted">{(r.checks ?? []).join("; ")}</span>
+                        <>
+                          <div className="tg-k">
+                            Agent council
+                            <div className="tg-sub">advises; can only escalate</div>
+                          </div>
+                          <div className="tg-v">
+                            {s["3b_council"].agents.map((a: any, i: number) => (
+                              <div key={i} className="agent">
+                                <div className="row-wrap">
+                                  <strong>{a.role === "reviewer" ? "Adversarial reviewer" : a.role === "institution" ? "TDRA-lens analyst" : "Policy analyst"}</strong>
+                                  <Chip tone={a.status === "DISPUTED" ? "bad" : "neutral"}>{a.status}</Chip>
+                                </div>
+                                <div className="mono answers">
+                                  {Object.entries(a.answers)
+                                    .filter(([k]) => k !== "rationale")
+                                    .map(([k, v]) => `${k} ${typeof v === "number" ? (v as number).toFixed(2) : v}`)
+                                    .join(",  ")}
+                                </div>
+                                {a.answers.rationale ? <div className="quote">{clip(String(a.answers.rationale).replace(/\*\*/g, ""), 280)}</div> : null}
                               </div>
                             ))}
-                          <div className="tiny">
-                            orchestrator{" "}
-                            <Chip tone={s["3b_council"].decision === "ESCALATE" ? "warn" : "ok"}>{s["3b_council"].decision}</Chip>{" "}
-                            {s["3b_council"].escalation ? <span>{s["3b_council"].escalation}</span> : null}
-                            {s["3b_council"].conflicts?.length ? (
-                              <span className="muted"> · {s["3b_council"].conflicts.join(" · ")}</span>
-                            ) : null}
+                            {s["3b_council"].assurance
+                              .filter((r: any) => r.outcome !== "ACCEPTED")
+                              .map((r: any, i: number) => (
+                                <div key={i} className="ev-line">
+                                  <span>Assurance check on the {r.role}</span>
+                                  <Chip tone={r.outcome === "CORRECTED" ? "warn" : r.outcome === "DISPUTED" || r.outcome === "OBJECTION_REJECTED" ? "bad" : "neutral"}>
+                                    {r.outcome}
+                                  </Chip>
+                                  {(r.checks ?? []).length ? <span className="muted">{(r.checks ?? []).join("; ")}</span> : null}
+                                </div>
+                              ))}
+                            <div className={`decision${s["3b_council"].decision === "ESCALATE" ? " escalate" : ""}`}>
+                              <strong>Orchestrator: {s["3b_council"].decision === "ESCALATE" ? "escalate to a person" : "proceed"}</strong>
+                              {s["3b_council"].escalation ? <div>{s["3b_council"].escalation}</div> : null}
+                              {s["3b_council"].conflicts?.length ? (
+                                <div className="tiny muted">Recorded differences: {s["3b_council"].conflicts.join("; ")}</div>
+                              ) : null}
+                            </div>
                           </div>
-                        </div>
+                        </>
                       ) : null}
 
-                      <div>
-                        <div className="tiny muted">3 · gate</div>
-                        <div className="tiny">
+                      <div className="tg-k">Gate</div>
+                      <div className="tg-v">
+                        <div>
                           {gate.reason}
-                          {gate.invariant ? <> · invariant <strong>{gate.invariant}</strong></> : null}
+                          {gate.invariant ? <> Invariant <strong className="mono">{gate.invariant}</strong>.</> : null}
                         </div>
-                        {gate.conditions_checked.map((c: string, i: number) => (
-                          <div key={i} className="tiny muted">
-                            · {c}
-                          </div>
-                        ))}
+                        {gate.conditions_checked.length ? (
+                          <ul>
+                            {gate.conditions_checked.map((c: string, i: number) => (
+                              <li key={i} className="muted">{c}</li>
+                            ))}
+                          </ul>
+                        ) : null}
                         {gate.advisory ? (
-                          <div className="tiny" style={{ marginTop: 4 }}>
-                            adviser: <Chip tone={gate.advisory.status === "ADVISORY_ONLY" ? "warn" : "neutral"}>{gate.advisory.status}</Chip>{" "}
+                          <div className="small" style={{ marginTop: 4 }}>
+                            Adviser <Chip tone={gate.advisory.status === "ADVISORY_ONLY" ? "warn" : "neutral"}>{gate.advisory.status}</Chip>{" "}
                             {gate.advisory.candidate_action ? (
                               <>
                                 proposed <strong>{gate.advisory.candidate_action}</strong>
-                                {gate.advisory_overruled ? " — overruled by the gate" : " — agreed, but agreement is not evidence"}
+                                {gate.advisory_overruled ? ", overruled by the gate" : ", agreed; agreement is not evidence"}
                               </>
                             ) : (
                               <span className="muted">{gate.advisory.reason}</span>
@@ -258,24 +259,34 @@ export default function Trace() {
                         ) : null}
                       </div>
 
-                      <div>
-                        <div className="tiny muted">4 · transition</div>
+                      <div className="tg-k">Transition</div>
+                      <div className="tg-v">
                         {(s["5_transitions"] ?? []).map((t: any, i: number) => (
-                          <div key={i} className="tiny">
-                            <Chip tone={t.status === "APPLIED" ? "ok" : t.status === "BLOCKED" ? "bad" : "neutral"}>
-                              {t.status}
-                            </Chip>{" "}
-                            {t.prior} → {t.resulting} · {t.reason?.slice(0, 160)}
+                          <div key={i} className="ev-line">
+                            <Chip tone={t.status === "APPLIED" ? "ok" : t.status === "BLOCKED" ? "bad" : "neutral"}>{t.status}</Chip>
+                            <span className="mono">{t.prior} → {t.resulting}</span>
+                            <span className="muted">{t.reason?.slice(0, 160)}</span>
                           </div>
                         ))}
-                        {!s["5_transitions"]?.length && <div className="tiny muted">no transition attempted</div>}
+                        {!s["5_transitions"]?.length && <span className="muted">No transition attempted.</span>}
                       </div>
 
-                      <div className="tiny">
-                        <span className="muted">5 · resulting state</span> <strong>{s["6_resulting_state"]}</strong>
+                      <div className="tg-k">Result</div>
+                      <div className="tg-v">
+                        <Chip tone={stateTone(s["6_resulting_state"])}>{s["6_resulting_state"]}</Chip>
                       </div>
+
                       {s.unresolved?.length ? (
-                        <div className="tiny muted">open questions: {s.unresolved.slice(0, 3).join("; ")}</div>
+                        <>
+                          <div className="tg-k">Open questions</div>
+                          <div className="tg-v">
+                            <ul>
+                              {s.unresolved.slice(0, 3).map((u: string, i: number) => (
+                                <li key={i} className="muted">{u}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </>
                       ) : null}
                     </div>
                   )}

@@ -231,15 +231,24 @@ export default function Simulator() {
                 </div>
                 <div className="layer-card">
                   <div className="k">Open questions</div>
-                  <div className="v" style={{ fontSize: 11.5 }}>
-                    {run.open_questions.length === 0 ? "none" : run.open_questions.join(" · ")}
+                  <div className="v">
+                    {run.open_questions.length === 0 ? (
+                      "none"
+                    ) : (
+                      <ul style={{ margin: "4px 0 0", paddingLeft: 16 }}>
+                        {run.open_questions.slice(0, 4).map((q, i) => (
+                          <li key={i} style={{ marginBottom: 4 }}>{q.replace(/^policy gap surfaced at step (\d+): /, "Step $1 gap: ")}</li>
+                        ))}
+                        {run.open_questions.length > 4 ? <li className="muted">and {run.open_questions.length - 4} more in the trace</li> : null}
+                      </ul>
+                    )}
                   </div>
                 </div>
                 <div className="layer-card">
                   <div className="k">Audit chain</div>
                   <div className="v">
                     <Chip tone={run.audit_chain_valid ? "ok" : "bad"}>
-                      {run.audit_chain_valid ? `valid · ${run.audit.length} entries` : "BROKEN"}
+                      {run.audit_chain_valid ? `valid, ${run.audit.length} entries` : "broken"}
                     </Chip>
                   </div>
                 </div>

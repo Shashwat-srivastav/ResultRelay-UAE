@@ -1,10 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api/client";
-import {
-  Banner, Chip, Empty, Panel, Skeleton, fmtTime, shortHash, stateTone, useAsync,
-} from "../ui";
-import { Pipeline3DLazy as Pipeline3D } from "../design/Pipeline3DLazy";
-import { useCountUp, useReveal, onActivate } from "../design/motion";
+import { Banner, Chip, Empty, Panel, Skeleton, fmtTime, shortHash, stateTone, useAsync } from "../ui";
+import { onActivate } from "../design/motion";
 
 type Dash = {
   counters: Record<string, number>;
@@ -12,111 +9,78 @@ type Dash = {
   recent_audit: Array<{ seq: number; at: string; event: string; actor: string; summary: string; case_id: string; hash: string }>;
 };
 
-/** One lead figure, counted up once because it is computed once per page load — not live data. */
-function LeadMetric({ value, of, label }: { value: number | null; of: number | null; label: string }) {
-  const v = useCountUp(value);
-  return (
-    <div>
-      <div className="label">{label}</div>
-      <div className="display tnum" style={{ marginTop: 6 }}>
-        <span ref={v.ref}>{value === null ? "—" : v.value}</span>
-        <span style={{ fontSize: 20, color: "var(--ink-3)", fontWeight: 600 }}>
-          {" / "}
-          {of === null ? "—" : of}
-        </span>
-      </div>
-    </div>
-  );
-}
+/** The six stages a result must pass, in order. Each case sits in exactly one stage or one exit. */
+const STAGES: Array<{ name: string; states: string[]; note: string }> = [
+  { name: "Finalised", states: ["RESULT_DRAFT", "RESULT_FINALIZED"], note: "the laboratory has released the result" },
+  { name: "Sending", states: ["TRANSMISSION_QUEUED", "TRANSMISSION_ATTEMPTED", "RETRY_PENDING"], note: "a message is queued or in flight" },
+  { name: "Accepted by gateway", states: ["TRANSPORT_ACCEPTED"], note: "accepted is not delivered" },
+  { name: "Delivered", states: ["DELIVERY_CONFIRMED", "AWAITING_ACKNOWLEDGMENT"], note: "delivered is not acknowledged" },
+  { name: "Acknowledged", states: ["CLINICAL_ACKNOWLEDGMENT_CONFIRMED"], note: "a named person, the current revision" },
+  { name: "Documented", states: ["COMMUNICATION_DOCUMENTED", "CORRECTED_RESULT_ACKNOWLEDGED"], note: "the only state that closes a case" },
+];
+
+const EXITS: Array<{ name: string; states: string[]; why: string; tone: "bad" | "warn" }> = [
+  { name: "With a named person", states: ["ESCALATION_REQUIRED", "ESCALATION_IN_REVIEW"], why: "escalated, with an owner and a deadline", tone: "bad" },
+  { name: "Delivery unknown or failed", states: ["DELIVERY_STATE_UNKNOWN", "DELIVERY_FAILED"], why: "must be reconciled before any retry", tone: "bad" },
+  { name: "Correction in progress", states: ["CORRECTION_PENDING", "CORRECTED_RESULT_FINALIZED", "CORRECTED_RESULT_DELIVERY_PENDING"], why: "an earlier acknowledgment no longer counts", tone: "warn" },
+];
 
 export default function Dashboard() {
   const dash = useAsync<Dash>(() => api.dashboard(), []);
   const cases = useAsync<{ cases: any[]; count: number }>(() => api.cases(), []);
   const health = useAsync<any>(() => api.health(), []);
   const navigate = useNavigate();
-  const reveal = useReveal<HTMLDivElement>([dash.data, cases.data], 0.035);
 
-  const c = dash.data?.counters;
-  const rows = (cases.data?.cases ?? []).slice(0, 8);
-  const documented = rows.filter((r) => r.current_state === "COMMUNICATION_DOCUMENTED").length;
-  const active = cases.data?.count ?? rows.length;
-
-  const pipeline = [
-    { label: "event", permitted: true, active: false },
-    { label: "evidence", permitted: true, active: false },
-    { label: "proposal", permitted: true, active: false },
-    { label: "gate", permitted: true, active: true },
-    { label: "transition", permitted: true, active: false },
-    { label: "state", permitted: true, active: false },
-  ];
+  const all = cases.data?.cases ?? [];
+  const rows = all.slice(0, 10);
+  const count = (states: string[]) => all.filter((r) => states.includes(r.current_state)).length;
 
   const openTrace = (runId?: string) => {
-    if (!runId) return;
-    navigate(`/trace?run=${encodeURIComponent(runId)}`);
+    if (runId) navigate(`/trace?run=${encodeURIComponent(runId)}`);
   };
 
   return (
-    <div className="stack" ref={reveal}>
-      <div data-reveal>
-        <Banner tone="info">
-          <span>
-            <strong>Demonstration prototype.</strong> Every patient, result and channel here is synthetic. The
-            system does not diagnose, does not set clinical thresholds and does not give medical advice; it
-            enforces <em>communication</em> obligations over results that a laboratory has already finalised.
-          </span>
-        </Banner>
-      </div>
+    <div className="stack">
+      <section aria-label="Where each case is">
+        <div className="chain">
+          {STAGES.map((s, i) => {
+            const n = cases.loading ? null : count(s.states);
+            return (
+              <div key={s.name} className={`chain-stage${i === STAGES.length - 1 ? " final" : ""}`}>
+                <div className="n">{i + 1}</div>
+                <div className="name">{s.name}</div>
+                <div className={`count${n === 0 ? " zero" : ""}`}>{n ?? "–"}</div>
+                <div className="rule-note">{s.note}</div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="chain-exits">
+          {EXITS.map((e) => {
+            const n = cases.loading ? null : count(e.states);
+            return (
+              <div key={e.name} className={`exit${e.tone === "bad" ? " bad" : ""}`}>
+                <div className="spread">
+                  <span className="name">{e.name}</span>
+                  <span className={`count${n === 0 ? " zero" : ""}`}>{n ?? "–"}</span>
+                </div>
+                <div className="why">{e.why}</div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
-      {/* The screen's one question: how many cases are documented, out of how many. */}
-      <div className="lead-card" data-reveal>
-        <div className="lead-split">
-          <div>
-            <LeadMetric
-              value={cases.loading ? null : documented}
-              of={cases.loading ? null : active}
-              label="Cases with a documented communication"
-            />
-            <p className="lead-note" style={{ marginTop: 10 }}>
-              A case reaches <span className="mono">COMMUNICATION_DOCUMENTED</span> only when the gate has
-              permitted the transition <em>and</em> a record of the communication exists. Delivery is not
-              acknowledgment, and neither is assumed.
-            </p>
-            <div className="legend" style={{ marginTop: 14 }}>
-              <Chip tone="ok">documented</Chip>
-              <Chip tone="warn" title="an obligation needs a named person">needs a human</Chip>
-              <Chip tone="bad" title="the gate refused the transition">refused</Chip>
-              <Chip tone="info" title="material that cannot bind this case's jurisdiction">comparator</Chip>
-              <Chip tone="neutral" title="labels, never status">metadata</Chip>
-            </div>
-          </div>
-          <Pipeline3D steps={pipeline} caption="the chain every case must pass" />
-        </div>
-      </div>
-
-      <div className="metric-row" data-reveal>
-        <div className="metric-sm">
-          <div className="k">Awaiting acknowledgment</div>
-          <div className="v">{c ? c.awaiting_acknowledgment : "—"}</div>
-          <div className="s">delivered, no acknowledgment bound to the current revision</div>
-        </div>
-        <div className="metric-sm">
-          <div className="k">Delivery unknown</div>
-          <div className="v">{c ? c.uncertain_delivery : "—"}</div>
-          <div className="s">must be reconciled before any retry</div>
-        </div>
-        <div className="metric-sm">
-          <div className="k">Open escalations</div>
-          <div className="v">{c ? c.escalations_open : "—"}</div>
-          <div className="s">routed to a named role — not an action</div>
-        </div>
-      </div>
-
-      <div className="grid split-8-4" data-reveal>
+      <div className="grid split-8-4">
         <div className="stack">
-          <Panel title="Live cases" hint="state is read from the event store · open a row for its decision trace" flush>
+          <Panel
+            title="Cases"
+            hint={all.length ? `${all.length} in this store; open one to see why it is where it is` : undefined}
+            action={<Link to="/simulator" className="btn small primary">Run a scenario</Link>}
+            flush
+          >
             {cases.loading && (
               <div className="panel-body">
-                <Skeleton height={14} />
                 <Skeleton height={14} />
                 <Skeleton height={14} />
               </div>
@@ -124,7 +88,7 @@ export default function Dashboard() {
             {cases.error && <div className="panel-body"><Banner tone="bad">{cases.error}</Banner></div>}
             {!cases.loading && !cases.error && rows.length === 0 && (
               <Empty>
-                No cases yet. Open the <Link to="/simulator">simulator</Link> and release a scenario to create one.
+                No cases yet. Run a scenario in the <Link to="/simulator">simulator</Link>; each run creates one case.
               </Empty>
             )}
             {rows.length > 0 && (
@@ -133,7 +97,7 @@ export default function Dashboard() {
                   <thead>
                     <tr>
                       <th>Case</th>
-                      <th>Scenario</th>
+                      <th>Scenario and configuration</th>
                       <th>State</th>
                       <th>Acknowledgment</th>
                       <th aria-label="open" />
@@ -150,13 +114,13 @@ export default function Dashboard() {
                         onClick={() => openTrace(r.run_id)}
                         onKeyDown={onActivate(() => openTrace(r.run_id))}
                       >
-                        <td style={{ minWidth: 190 }}>
-                          <span className="mono" style={{ fontSize: 11.5 }}>{r.case_id}</span>
-                          <div className="tiny muted">{r.jurisdiction} · {r.case_scope}</div>
+                        <td style={{ minWidth: 180 }}>
+                          <span className="mono">{r.case_id.split("-").slice(0, 3).join("-")}</span>
+                          <div className="tiny muted">{r.jurisdiction}, {String(r.case_scope).toLowerCase().replace("_", "-")}</div>
                         </td>
                         <td>
-                          <div className="truncate" style={{ maxWidth: 180 }}>{r.scenario_id}</div>
-                          <Chip tone="neutral">{r.configuration}</Chip>
+                          <div className="truncate" style={{ maxWidth: 260 }}>{r.scenario_id}</div>
+                          <div className="tiny muted mono">{r.configuration}</div>
                         </td>
                         <td>
                           <Chip tone={stateTone(r.current_state)}>{r.current_state}</Chip>
@@ -166,14 +130,12 @@ export default function Dashboard() {
                             <span className="muted small">none</span>
                           ) : (
                             <Chip tone={r.acknowledges_current ? "ok" : "bad"}>
-                              {r.acknowledges_current ? "current rev" : "stale rev"}
+                              {r.acknowledges_current ? "current revision" : "earlier revision"}
                             </Chip>
                           )}
                         </td>
-                        <td style={{ width: 64, textAlign: "right" }}>
-                          <span className="go small" style={{ color: "var(--accent)", whiteSpace: "nowrap" }}>
-                            why →
-                          </span>
+                        <td style={{ width: 70, textAlign: "right" }}>
+                          <span className="go small">Trace</span>
                         </td>
                       </tr>
                     ))}
@@ -183,16 +145,16 @@ export default function Dashboard() {
             )}
           </Panel>
 
-          <Panel title="What this console deliberately does not show" hint="scope limits, stated up front">
-            <div className="grid cols-3">
+          <Panel title="What this console does not do">
+            <div className="layer-grid">
               {[
-                ["No clinical judgement", "No result is flagged critical by this system. The critical flag arrives with the result and is carried, not computed."],
-                ["No patient-facing advice", "Messages are about collection of a result that already exists. No interpretation, no treatment, no diagnosis."],
-                ["No compliance claim", "Passing a scenario shows the workflow is internally consistent with a cited requirement. It is not evidence of clinical safety or regulatory conformity."],
+                ["No clinical judgement", "The critical flag arrives with the result. This system carries it; it never computes it."],
+                ["No advice to patients", "Messages ask the patient to collect a result that already exists. No interpretation, treatment or diagnosis."],
+                ["No compliance claim", "A passing scenario shows the workflow follows a cited requirement. It is not evidence of clinical safety."],
               ].map(([h, b]) => (
                 <div key={h} className="layer-card">
                   <div className="k">{h}</div>
-                  <div className="v muted">{b}</div>
+                  <div className="v">{b}</div>
                 </div>
               ))}
             </div>
@@ -200,67 +162,42 @@ export default function Dashboard() {
         </div>
 
         <div className="stack">
-          <Panel title="Evidence base" hint="retrieval manifest">
+          <Panel title="Evidence base">
             {health.loading && <Skeleton height={90} />}
             {health.data && (
-              <div className="stack" style={{ gap: 10 }}>
-                <div className="spread">
-                  <span className="muted small">Verified excerpts</span>
-                  <Chip tone="ok">
-                    {health.data.knowledge_base.verification.verified}/{health.data.knowledge_base.chunk_count}
-                  </Chip>
-                </div>
-                <div className="spread">
-                  <span className="muted small">Retrieval</span>
-                  <span
-                    className="small mono"
-                    style={{ textAlign: "right" }}
-                    title={health.data.knowledge_base.engine}
-                  >
-                    {String(health.data.knowledge_base.engine).split(/[\s(]/)[0]}
-                    <span className="muted"> · deterministic</span>
-                  </span>
-                </div>
-                <div className="spread">
-                  <span className="muted small">Real network access</span>
-                  <Chip tone="neutral">{String(health.data.real_network_access)}</Chip>
-                </div>
-                <div className="spread">
-                  <span className="muted small">Adviser</span>
-                  <Chip tone={health.data.advisory_boundary?.status === "closed" ? "neutral" : "warn"}>
-                    {health.data.advisory_boundary?.status ?? "closed"}
-                  </Chip>
-                </div>
-                <hr className="sep" />
-                <div className="tiny muted">
-                  Every quoted clause is verified against the local source text at index time. A quote that
-                  cannot be located is excluded from retrieval rather than shown with a warning.
-                </div>
-              </div>
+              <dl className="kv" style={{ margin: 0 }}>
+                <dt>Excerpts checked against their source</dt>
+                <dd className="mono">
+                  {health.data.knowledge_base.verification.verified} of {health.data.knowledge_base.chunk_count}
+                </dd>
+                <dt>Retrieval for decisions</dt>
+                <dd className="mono">{String(health.data.knowledge_base.engine).split(/[\s(]/)[0]}, deterministic</dd>
+                <dt>Live network</dt>
+                <dd>{health.data.real_network_access ? "connected" : "none"}</dd>
+              </dl>
+            )}
+            {health.data && (
+              <p className="tiny muted" style={{ marginTop: 12 }}>
+                A quotation that cannot be found on its source page is left out of retrieval, not shown with a warning.
+              </p>
             )}
           </Panel>
 
           <Panel
             title="Audit activity"
-            hint="hash-chained"
-            action={
-              <Link to="/audit" className="btn small ghost">
-                Verify chain →
-              </Link>
-            }
+            action={<Link to="/audit" className="btn small ghost">Verify the chain</Link>}
             flush
           >
             {dash.data && dash.data.recent_audit.length === 0 && <Empty>No audit entries yet.</Empty>}
             <div className="timeline panel-body" style={{ paddingBottom: 4 }}>
-              {(dash.data?.recent_audit ?? []).map((a) => (
+              {(dash.data?.recent_audit ?? []).slice(0, 6).map((a) => (
                 <div className="tl-item" key={`${a.case_id}-${a.seq}`}>
-                  <div className="row-wrap" style={{ gap: 6 }}>
+                  <div className="row-wrap" style={{ gap: 8 }}>
                     <span className="mono tiny muted">{fmtTime(a.at)}</span>
-                    <Chip tone="neutral">{a.event}</Chip>
-                    <span className="mono tiny muted">#{a.seq}</span>
+                    <span className="mono tiny">{a.event}</span>
                   </div>
                   <div className="small" style={{ marginTop: 2 }}>{a.summary}</div>
-                  <div className="mono tiny muted">{a.case_id} · {shortHash(a.hash)}</div>
+                  <div className="mono tiny muted">entry {a.seq}, hash {shortHash(a.hash)}</div>
                 </div>
               ))}
             </div>

@@ -29,30 +29,29 @@ const NAV = [
   },
 ];
 
-const TITLES: Record<string, { kicker: string; title: string }> = {
-  "/": { kicker: "Result communication", title: "Console" },
-  "/cases": { kicker: "Case layer", title: "Case timeline" },
-  "/simulator": { kicker: "Scenario runner", title: "Simulator" },
-  "/compare": { kicker: "Same scenario, two configurations", title: "Side-by-side" },
-  "/trace": { kicker: "Artefacts, not self-report", title: "Decision trace" },
-  "/standards": { kicker: "Evidence layer", title: "Standards & gaps" },
-  "/evaluation": { kicker: "Evidence layer", title: "Evaluation" },
-  "/audit": { kicker: "Audit layer", title: "Audit trail" },
+const TITLES: Record<string, { title: string; purpose: string }> = {
+  "/": { title: "Console", purpose: "Where every critical result is on its way to a person, and which ones need someone now." },
+  "/cases": { title: "Case timeline", purpose: "Every event, revision and transition of one case, in order." },
+  "/simulator": { title: "Simulator", purpose: "Release a scenario's events one at a time and watch each decision." },
+  "/compare": { title: "Side-by-side", purpose: "The same scenario under two configurations, so you can see what each control changes." },
+  "/trace": { title: "Decision trace", purpose: "For each step: the evidence retrieved, what the agents said, what code checked, and what the gate allowed." },
+  "/standards": { title: "Standards and gaps", purpose: "The policy clauses the system cites, and where the rules say nothing." },
+  "/evaluation": { title: "Evaluation", purpose: "Twelve scenarios in twelve configurations: which ones end safely." },
+  "/audit": { title: "Audit trail", purpose: "The hash-chained record of every case, re-verified when you open it." },
 };
 
 function Logo() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M4 7h9a4 4 0 0 1 0 8H9" stroke="#eafffa" strokeWidth="2" strokeLinecap="round" />
-      <path d="M11 11l-4 4 4 4" stroke="#8ef0dc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="19" cy="17" r="2.4" fill="#8ef0dc" />
+      <path d="M4 7h9a4 4 0 0 1 0 8H9" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" />
+      <path d="M11 11l-4 4 4 4" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
 export default function App() {
   const loc = useLocation();
-  const meta = TITLES[loc.pathname] ?? { kicker: "ResultRelay", title: "Console" };
+  const meta = TITLES[loc.pathname] ?? TITLES["/"];
 
   return (
     <div className="shell">
@@ -64,7 +63,7 @@ export default function App() {
           </span>
           <div>
             <div className="brand-name">ResultRelay</div>
-            <div className="brand-sub" style={{ whiteSpace: "nowrap" }}>Policy-governed relay</div>
+            <div className="brand-sub">Result communication</div>
           </div>
         </div>
 
@@ -78,7 +77,6 @@ export default function App() {
                 end={it.exact}
                 className={({ isActive }) => `nav-item${isActive ? " active" : ""}`}
               >
-                <span className="dot" />
                 {it.label}
               </NavLink>
             ))}
@@ -86,37 +84,31 @@ export default function App() {
         ))}
 
         <div className="sidebar-foot">
-          <strong style={{ color: "#9aa7b3" }}>Demonstration build</strong>
+          <strong style={{ color: "var(--ink)", fontWeight: 600 }}>Demonstration build</strong>
           <div style={{ marginTop: 4 }}>
-            Synthetic patients and results only. No EHR, messaging or model provider is connected.
+            Synthetic patients and results only. No hospital system or live messaging is connected.
           </div>
           <div className="shell-status">
             <div className="row-s"><span>Synthetic data</span><b>yes</b></div>
-            <div className="row-s"><span>Network access</span><b>none</b></div>
-            <div className="row-s"><span>Authentication</span><b>not present</b></div>
+            <div className="row-s"><span>Live network</span><b>none</b></div>
+            <div className="row-s"><span>Version</span><b className="mono">0.1.0</b></div>
           </div>
-          <div style={{ marginTop: 8, fontFamily: "var(--mono)", fontSize: 11 }}>v0.1.0 · deterministic</div>
         </div>
       </aside>
 
       <div className="main">
         <header className="topbar">
           <div className="topbar-title">
-            <span className="kicker">{meta.kicker}</span>
-            <h1 style={{ fontSize: 19 }}>{meta.title}</h1>
+            <h1>{meta.title}</h1>
+            <p className="purpose">{meta.purpose}</p>
           </div>
-          <div className="row">
-            <span className="chip outline" title="Every case in this build is synthetic">
-              SYNTHETIC DATA
-            </span>
-            <span className="chip neutral" title="No live network, EHR or model provider">
-              OFFLINE
-            </span>
-          </div>
+          <span className="data-flag" title="No live network, hospital system or patient data">
+            Synthetic data, offline
+          </span>
         </header>
 
         <main className="content" id="main">
-          <div key={loc.pathname} className="blur-fade">
+          <div key={loc.pathname}>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/cases" element={<CaseTimeline />} />

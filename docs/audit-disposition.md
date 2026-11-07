@@ -63,7 +63,7 @@ when this was regenerated. For results see `README.md` and `evaluation/report.md
 | RJ-23 | minor | Residency treated `.ae` or loopback as in-country and ignored the implementing resolution. | LIMIT-DISCLOSED | `app/advisers/residency.py`: decisions are marked `nominal`; an operator address check (`RESULTRELAY_RESIDENCY_RESOLVED_IPS` / `_AE_CIDRS`) overrides the name; MR 51/2021 is sent to a person. Egress is not observed. |
 | RJ-24 | minor | Register fields corrupted; PDPL kept as binding for a case it excludes. | PARTIAL | U2 relabelled as excluded. `local_file_path` still mixes `kb/records/*.yaml` (e.g. S1, U6, U8) and `kb/.sources/*.txt` (U1–U5, AD2). |
 | RJ-25 | minor | No Arabic support. | PARTIAL | Arabic queries via `ARABIC_GLOSSARY`. No Arabic quotation stored (U10 limitations: Arabic PDF extracts with broken glyphs); UI is English; U2 is an unofficial translation. |
-| RJ-26 | minor | Effort spent on 3-D pipeline and design documents. | NOTE | `web/package.json` still depends on `three`; `docs/design/` still present. |
+| RJ-26 | minor | Effort spent on 3-D pipeline and design documents. | FIXED | The 3-D scene, `three` and `gsap` are removed (console bundle 850 kB to 245 kB); the console was redesigned around the communication chain itself. `docs/design/` is kept as history. |
 | RJ-27 | minor | The evaluation only shows the system agrees with itself. | OPEN | All 12 files in `scenarios/expected/` have `authorship: ENGINE_AUTHORS`, `independent_review: false`. A protocol for an outside reviewer and held-out scenarios is in `docs/independent-review.md`; no review has been done yet. |
 
 ## RT series (technical view)

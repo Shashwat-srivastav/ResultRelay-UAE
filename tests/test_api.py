@@ -233,7 +233,7 @@ def test_self_hosted_fonts_are_served_as_fonts(client):
     STATIC = Path(__file__).resolve().parents[1] / "app" / "static" / "app"
     if not (STATIC / "fonts").exists():
         pytest.skip("frontend not built: no static fonts to serve")
-    for name in ("inter-var-latin.woff2", "jetbrains-mono-var-latin.woff2"):
+    for name in ("ibm-plex-sans-latin-400-normal.woff2", "ibm-plex-mono-latin-400-normal.woff2"):
         r = client.get(f"/fonts/{name}")
         assert r.status_code == 200, name
         assert r.headers["content-type"] in {"font/woff2", "application/font-woff2", "application/octet-stream"}, (
