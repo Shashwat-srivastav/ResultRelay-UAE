@@ -21,8 +21,14 @@ from app.api.routes import router
 from app.core.config import settings
 from app.models.db import get_engine
 
-# Windows registries often map .woff2/.woff to text/plain, and StaticFiles takes its content type
-# from `mimetypes`; pin the font types so the self-hosted fonts load on every platform.
+# Windows registries often map .js, .css and .woff2/.woff to text/plain, and StaticFiles takes its
+# content type from `mimetypes`. A browser refuses a module script served as text/plain, so the console
+# rendered blank on such machines. Pin the types so the built UI loads on every platform.
+mimetypes.add_type("text/javascript", ".js")
+mimetypes.add_type("text/javascript", ".mjs")
+mimetypes.add_type("text/css", ".css")
+mimetypes.add_type("image/svg+xml", ".svg")
+mimetypes.add_type("application/json", ".json")
 mimetypes.add_type("font/woff2", ".woff2")
 mimetypes.add_type("font/woff", ".woff")
 
