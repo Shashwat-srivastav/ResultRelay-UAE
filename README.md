@@ -10,15 +10,19 @@ result version, and refuses another jurisdiction's rule as binding.
 `ITU AI for Good Sandbox Hackathon — UAE` · Healthcare track · agent roles: **policy & legal adviser · institutional participants (DHA, TDRA) · multi-agent coordination**
 
 ![Standard](https://img.shields.io/badge/ITU--T-Y.3172-0ea5e9)
-![Data](https://img.shields.io/badge/data-100%25%20synthetic-success)
+![Scenarios](https://img.shields.io/badge/scenarios-from%20published%20incidents-success)
 [![CI](https://github.com/Shashwat-srivastav/ResultRelay-UAE/actions/workflows/ci.yml/badge.svg)](https://github.com/Shashwat-srivastav/ResultRelay-UAE/actions/workflows/ci.yml)
 ![Tests](https://img.shields.io/badge/tests-259%20passing-success)
 ![KB](https://img.shields.io/badge/excerpts-96%20traceable%20(74%20official)-success)
 
 </div>
 
-> ⚠️ **Synthetic data, hackathon exercise only.** No real patient data, EHR, SMS gateway or clinical
-> claim. ResultRelay does not diagnose, set thresholds, interpret results or give medical advice.
+> **Built from real failures.** Eleven of the twelve scenarios are reconstructed from, adapted from or informed by a
+> published patient-safety incident (S6 is a designed test):
+> a reply from the patient's daughter taken as acknowledgment, an escalation nobody answered, a result delivered
+> and never read ([sources below](#where-the-scenarios-come-from): AHRQ PSNet, CRICO/Harvard, Medical Protection,
+> BMJ Open Quality). Names, numbers and results are invented, so no patient data is used. This is a hackathon
+> prototype: it does not diagnose, set thresholds, interpret results or give medical advice.
 
 ## Demo video
 
@@ -291,7 +295,7 @@ flowchart TB
     MLFO{{"<b>MLFO · orchestrator</b><br/>deterministic, no LLM coordinator<br/>chains the nodes per incident"}}
     subgraph PIPE["ITU-T Y.3172 pipeline"]
         direction LR
-        SRC["<b>SRC</b><br/>synthetic<br/>events"]
+        SRC["<b>SRC</b><br/>events from<br/>real incidents"]
         C["<b>C</b><br/>ingest<br/>hash-chained"]
         PP["<b>PP</b><br/>case state<br/>retrieval"]
         M["<b>M</b><br/>analysts<br/>+ reviewer"]
@@ -387,7 +391,7 @@ agent's answers and rationale, assurance outcomes, and the orchestrator's decisi
 
 ## Where the scenarios come from
 
-The scenarios are **synthetic adaptations of published patient-safety incidents** and clinical-workflow studies:
+The scenarios are **reconstructed from published patient-safety incidents** (identities and values invented) and clinical-workflow studies:
 the failure mode is taken from the published case, the facts, names and timings are invented, and the
 source is cited as provenance in each scenario file (`"provenance"`), not reproduced.
 
