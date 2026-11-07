@@ -12,13 +12,36 @@ result version, and refuses another jurisdiction's rule as binding.
 ![Standard](https://img.shields.io/badge/ITU--T-Y.3172-0ea5e9)
 ![Data](https://img.shields.io/badge/data-100%25%20synthetic-success)
 [![CI](https://github.com/Shashwat-srivastav/ResultRelay-UAE/actions/workflows/ci.yml/badge.svg)](https://github.com/Shashwat-srivastav/ResultRelay-UAE/actions/workflows/ci.yml)
-![Tests](https://img.shields.io/badge/tests-258%20passing-success)
+![Tests](https://img.shields.io/badge/tests-259%20passing-success)
 ![KB](https://img.shields.io/badge/excerpts-96%20traceable%20(74%20official)-success)
 
 </div>
 
 > ⚠️ **Synthetic data, hackathon exercise only.** No real patient data, EHR, SMS gateway or clinical
 > claim. ResultRelay does not diagnose, set thresholds, interpret results or give medical advice.
+
+## Demo video
+
+[![Demo video: the ResultRelay console, end to end](docs/demo_poster.png)](docs/ResultRelay_demo.mp4)
+
+**[Watch the demo (4 min 51 s, MP4)](docs/ResultRelay_demo.mp4)** · [transcript](docs/demo_transcript.md). Every
+screen is the console in this repository, recorded from a fresh database: a channel outage, a reply from someone
+other than the patient caught by the agent council, a genetic result with no physician channel, an escalation
+nobody answers, Arabic retrieval, the gap register, the 144-run evaluation and the audit chain.
+
+## The console
+
+The console opens on the chain every result must pass, from *finalised* to *documented*, with live counts, and on
+the cases that left the chain because a person is needed. Each case links to its decision trace.
+
+![The console: where every critical result is on its way to a person](docs/figures/console.png)
+
+<sub>Console, after five scenarios: three cases documented, two with a named person.</sub>
+
+![Decision trace for the reply from someone else](docs/figures/console_trace.png)
+
+<sub>Decision trace, S9 step 5: the analyst reads the reply as an acknowledgment; the adversarial reviewer objects that the
+text contradicts the record; the orchestrator escalates; the gate routes the case to a named person.</sub>
 
 ---
 
@@ -503,7 +526,7 @@ its own legislation.
 
 ```bash
 python -m pip install -r requirements.txt
-python -m pytest -q                          # 258 tests (one skips unless every source text is cached)
+python -m pytest -q                          # 259 tests (one skips unless every source text is cached)
 python run_demo.py                           # DEMO: 8 headline scenarios (SC-01…SC-08); the council replays recorded answers offline
 python scripts/run_evaluation.py             # EVALUATION: all 12 scenarios × 12 configurations = 144 runs → evaluation/report.md
 python scripts/s9_robustness.py --repeats 3  # optional, live models: 20 reply variants of S9 → evaluation/s9_robustness.md
@@ -534,7 +557,7 @@ scenarios/    S1–S11 (12 files) staged event streams · expected/ (assertions)
 evaluation/   report.md · results/latest.json · agent_runs/ (recorded adviser responses)
 submission/   technical report · design brief · build scripts
 docs/         architecture, REPORT, audit disposition, design notes
-tests/        258 tests
+tests/        259 tests
 ```
 
 ## License

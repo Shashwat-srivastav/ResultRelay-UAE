@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { api } from "../api/client";
-import { Banner, Chip, Empty, Panel, Spinner, fmtTime, useAsync } from "../ui";
+import { Banner, Chip, Empty, Panel, Spinner, fmtTime, stateTone, useAsync } from "../ui";
 
 const CONFIGS = [
-  { id: "resultrelay", label: "ResultRelay (policy-governed)" },
+  { id: "resultrelay_council", label: "ResultRelay + agent council" },
+  { id: "resultrelay", label: "ResultRelay, rules only" },
   { id: "retrieval_only", label: "Citation-only RAG" },
   { id: "static_rules", label: "Conventional rules" },
   { id: "policy_blind", label: "Policy-blind" },
@@ -15,9 +16,9 @@ const CONFIGS = [
  */
 export default function Compare() {
   const scenarios = useAsync<{ scenarios: any[] }>(() => api.scenarios(), []);
-  const [scenario, setScenario] = useState<string>("S6-jurisdiction-conflict");
-  const [left, setLeft] = useState("resultrelay");
-  const [right, setRight] = useState("retrieval_only");
+  const [scenario, setScenario] = useState<string>("S9-reply-from-someone-else");
+  const [left, setLeft] = useState("resultrelay_council");
+  const [right, setRight] = useState("resultrelay");
   const [busy, setBusy] = useState(false);
   const [runs, setRuns] = useState<Record<string, any> | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -112,7 +113,7 @@ export default function Compare() {
               >
                 <div className="stack" style={{ gap: 8 }}>
                   <div className="row" style={{ gap: 8 }}>
-                    <Chip tone={finalState.includes("ACKNOWLEDGED") || finalState === "COMMUNICATION_DOCUMENTED" ? "ok" : "warn"}>
+                    <Chip tone={stateTone(finalState)}>
                       {finalState}
                     </Chip>
                     <span className="tiny muted">{r.runtime.attempts.length} attempt(s)</span>

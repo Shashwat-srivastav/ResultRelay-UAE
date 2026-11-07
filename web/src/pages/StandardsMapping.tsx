@@ -274,7 +274,7 @@ function Gaps() {
           <tbody>
             {rows.map((g) => (
               <tr key={g.gap_id}>
-                <td className="mono">{g.gap_id}</td>
+                <td className="mono" style={{ whiteSpace: "nowrap" }}>{g.gap_id}</td>
                 <td style={{ maxWidth: 420 }}>
                   <div className="small">{g.question ?? g.description ?? g.gap_description}</div>
                   {g.consequence && <div className="tiny muted" style={{ marginTop: 3 }}>{g.consequence}</div>}
