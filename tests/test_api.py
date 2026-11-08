@@ -233,13 +233,32 @@ def test_self_hosted_fonts_are_served_as_fonts(client):
     STATIC = Path(__file__).resolve().parents[1] / "app" / "static" / "app"
     if not (STATIC / "fonts").exists():
         pytest.skip("frontend not built: no static fonts to serve")
-    for name in ("ibm-plex-sans-latin-400-normal.woff2", "ibm-plex-mono-latin-400-normal.woff2"):
+    # Name-agnostic: the build copies whatever web/public/fonts holds (renamed in the v4 re-subset).
+    names = sorted(p.name for p in (STATIC / "fonts").glob("*.woff2"))
+    assert any("sans" in n for n in names) and any("mono" in n for n in names), names
+    for name in names:
         r = client.get(f"/fonts/{name}")
         assert r.status_code == 200, name
         assert r.headers["content-type"] in {"font/woff2", "application/font-woff2", "application/octet-stream"}, (
             f"{name} served as {r.headers['content-type']}"
         )
         assert r.content[:4] == b"wOF2", f"{name} is not a woff2 payload"
+
+
+def test_shipped_latin_fonts_draw_arrows_math_and_checks():
+    """Visual system C1: a subset without U+2192 draws every `A → B` in a fallback face."""
+    ttlib = pytest.importorskip("fontTools.ttLib")
+    pytest.importorskip("fontTools.agl")  # a partial fontTools install cannot build glyph names
+    pytest.importorskip("brotli")
+    fonts = Path(__file__).resolve().parents[1] / "web" / "public" / "fonts"
+    latin = sorted(p for p in fonts.glob("plex-*.woff2") if "arabic" not in p.name)
+    assert len(latin) == 5, latin
+    for p in latin:
+        cmap = ttlib.TTFont(str(p)).getBestCmap()
+        for ch in "→←↗≠≤≥−×…✓":
+            assert ord(ch) in cmap, f"{p.name} lacks U+{ord(ch):04X}"
+    for p in sorted(fonts.glob("plex-sans-arabic-*.woff2")):
+        assert 0x0627 in ttlib.TTFont(str(p)).getBestCmap(), p.name  # alef
 
 
 def test_a_judge_can_inject_an_error_event_into_a_live_run(client):

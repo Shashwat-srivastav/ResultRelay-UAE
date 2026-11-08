@@ -114,7 +114,7 @@
   ],
   "provenance": {
     "note": "Synthetic adaptation of a published patient-safety incident or clinical-workflow study; the source is cited as provenance, not reproduced. The scenario's facts, names and timings are invented.",
-    "match": "almost exact",
+    "match": "close",
     "failure_mode": "the intended recipient could not be reached and no escalation path was followed",
     "sources": [
       {

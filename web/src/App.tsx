@@ -1,4 +1,7 @@
-import { NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { NavLink, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { api } from "./api/client";
+import { Tooltip } from "./ui";
 import Dashboard from "./pages/Dashboard";
 import CaseTimeline from "./pages/CaseTimeline";
 import Simulator from "./pages/Simulator";
@@ -10,34 +13,39 @@ import Compare from "./pages/Compare";
 
 const NAV = [
   {
-    group: "Operate",
+    group: "Work",
     items: [
-      { to: "/", label: "Console", exact: true },
-      { to: "/cases", label: "Case timeline" },
-      { to: "/simulator", label: "Simulator" },
-      { to: "/compare", label: "Side-by-side" },
+      { to: "/", label: "Overview", exact: true },
+      { to: "/cases", label: "Cases" },
       { to: "/trace", label: "Decision trace" },
+    ],
+  },
+  {
+    group: "Test",
+    items: [
+      { to: "/simulator", label: "Scenarios" },
+      { to: "/compare", label: "Side-by-side" },
     ],
   },
   {
     group: "Evidence",
     items: [
-      { to: "/standards", label: "Standards & gaps" },
+      { to: "/standards", label: "Rules & gaps" },
       { to: "/evaluation", label: "Evaluation" },
-      { to: "/audit", label: "Audit trail" },
+      { to: "/audit", label: "Audit chain" },
     ],
   },
 ];
 
 const TITLES: Record<string, { title: string; purpose: string }> = {
-  "/": { title: "Console", purpose: "Where every critical result is on its way to a person, and which ones need someone now." },
-  "/cases": { title: "Case timeline", purpose: "Every event, revision and transition of one case, in order." },
-  "/simulator": { title: "Simulator", purpose: "Release a scenario's events one at a time and watch each decision." },
+  "/": { title: "Overview", purpose: "Which critical results need a person now, and where every other one is." },
+  "/cases": { title: "Cases", purpose: "Every case, where it is, and who holds it." },
+  "/simulator": { title: "Scenarios", purpose: "Replay a published incident event by event, or against a weaker system." },
   "/compare": { title: "Side-by-side", purpose: "The same scenario under two configurations, so you can see what each control changes." },
   "/trace": { title: "Decision trace", purpose: "For each step: the evidence retrieved, what the agents said, what code checked, and what the gate allowed." },
-  "/standards": { title: "Standards and gaps", purpose: "The policy clauses the system cites, and where the rules say nothing." },
-  "/evaluation": { title: "Evaluation", purpose: "Twelve scenarios in twelve configurations: which ones end safely." },
-  "/audit": { title: "Audit trail", purpose: "The hash-chained record of every case, re-verified when you open it." },
+  "/standards": { title: "Rules and gaps", purpose: "The clauses behind each decision, whether they bind in Dubai, and where the rules say nothing." },
+  "/evaluation": { title: "Evaluation", purpose: "12 scenarios × 12 configurations: which end safely, and which control made the difference." },
+  "/audit": { title: "Audit chain", purpose: "Every decision, hash-linked and re-checked when you open it." },
 };
 
 function Logo() {
@@ -51,6 +59,31 @@ function Logo() {
 
 export default function App() {
   const loc = useLocation();
+  const navigate = useNavigate();
+  const [touring, setTouring] = useState(false);
+  const [tourErr, setTourErr] = useState(false);
+
+  /** Latest S9 council run, or start and play one, then open the trace at the handoff step. */
+  async function tour() {
+    setTouring(true);
+    setTourErr(false);
+    try {
+      const runs = await api.listTraces().catch(() => [] as any[]);
+      const hit = [...(runs ?? [])].reverse().find((x: any) =>
+        /S9/.test(String(x.scenario_id ?? "")) && x.configuration === "resultrelay_council");
+      let id: string | undefined = hit?.run_id;
+      if (!id) {
+        const started = await api.startRun("S9-reply-from-someone-else", "resultrelay_council");
+        id = started.run.run_id as string;
+        await api.playRun(id);
+      }
+      navigate(`/trace?run=${encodeURIComponent(id)}&step=5`);
+    } catch {
+      setTourErr(true);
+    } finally {
+      setTouring(false);
+    }
+  }
   const meta = TITLES[loc.pathname] ?? TITLES["/"];
 
   return (
@@ -63,7 +96,7 @@ export default function App() {
           </span>
           <div>
             <div className="brand-name">ResultRelay</div>
-            <div className="brand-sub">Result communication</div>
+            <div className="brand-sub">Critical lab results</div>
           </div>
         </div>
 
@@ -84,9 +117,9 @@ export default function App() {
         ))}
 
         <div className="sidebar-foot">
-          <strong style={{ color: "var(--ink)", fontWeight: 600 }}>Demonstration build</strong>
+          <strong style={{ color: "var(--ink)", fontWeight: 600 }}>Demonstration build.</strong>
           <div style={{ marginTop: 4 }}>
-            Synthetic patients and results only. No hospital system or live messaging is connected.
+            Synthetic patients; identities invented. No hospital system or live messaging is connected. Clock: simulated, GST.
           </div>
           <div className="shell-status">
             <div className="row-s"><span>Synthetic data</span><b>yes</b></div>
@@ -102,9 +135,14 @@ export default function App() {
             <h1>{meta.title}</h1>
             <p className="purpose">{meta.purpose}</p>
           </div>
-          <span className="data-flag" title="No live network, hospital system or patient data">
-            Synthetic data, offline
-          </span>
+          <div className="row" style={{ gap: 12, flex: "none" }}>
+            <button className="btn small primary" onClick={tour} disabled={touring} data-video="tour">
+              {touring ? "Opening…" : tourErr ? "Tour failed, retry" : "Start here: 3-minute tour"}
+            </button>
+            <Tooltip content="No live network, hospital system or patient data. Identities are invented." focusable>
+              <span className="data-flag">Scenarios from published incidents · identities invented</span>
+            </Tooltip>
+          </div>
         </header>
 
         <main className="content" id="main">

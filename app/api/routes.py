@@ -45,7 +45,7 @@ from app.orchestration.engine import CONFIGS, Orchestrator, build_runtime, list_
 from app.policies.profile import DEFAULT_PROFILE
 from app.state_machine.states import STATE_DESCRIPTIONS, CaseState
 from app.state_machine.transitions import transition_table_as_dicts
-from app.transport.simulator import REAL_NETWORK_ACCESS
+from app.transport.simulator import REAL_NETWORK_ACCESS, sim_time
 
 router = APIRouter(prefix="/api")
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -58,6 +58,27 @@ KB_DIR = REPO_ROOT / "kb"
 
 def serialise_step(step: dict[str, Any]) -> dict[str, Any]:
     return json.loads(json.dumps(step, default=str))
+
+
+def escalation_summary(esc: dict[str, Any]) -> dict[str, Any]:
+    """Who owns an escalated case, at which tier, and by when (simulated clock, ISO 8601 Z).
+
+    The same shape for the live runtime (``rt.escalations``) and the store (EscalationRow payload),
+    so the Console and the trace can show an owner and a deadline without opening the case.
+    """
+    due = esc.get("due_by_minutes")
+    eid = str(esc.get("escalation_id", ""))
+    return {
+        "escalation_id": eid.split(":")[-1],
+        "role": esc.get("role"),
+        "status": esc.get("status"),
+        "tier": int(esc.get("tier") or 1),
+        "reason": esc.get("reason", ""),
+        "triggered_by": esc.get("triggered_by"),
+        "at": esc.get("at"),
+        "due_by_minutes": due,
+        "due_at": sim_time(float(due)) if due is not None else None,
+    }
 
 
 def serialise_runtime(rt, include_steps: bool = True) -> dict[str, Any]:
@@ -197,12 +218,18 @@ def _persist(rt) -> None:
 
         for esc in rt.escalations:
             stored_escalation_id = f"{rt.run_id}:{esc['escalation_id']}"
-            if s.get(EscalationRow, stored_escalation_id) is None:
+            row = s.get(EscalationRow, stored_escalation_id)
+            if row is None:
                 s.add(EscalationRow(
                     escalation_id=stored_escalation_id, case_id=rt.case_id, role=esc["role"],
                     reason=esc["reason"], triggered_by=esc["triggered_by"], status=esc["status"],
                     at=esc.get("at", ""), payload=json.dumps(esc, default=str),
                 ))
+            else:
+                # Escalations change status (OPEN -> IN_REVIEW -> CLOSED_ON_COMPLETION) after they are
+                # first written; a row frozen at creation would show a taken case as still waiting.
+                row.status = esc["status"]
+                row.payload = json.dumps(esc, default=str)
 
         persisted_steps = {
             (r.agent_id, r.step) for r in s.scalars(select(AssessmentRow).where(AssessmentRow.run_id == rt.run_id))
@@ -397,9 +424,17 @@ def cases(
                     AttemptRow.case_id == cid, AttemptRow.delivered.is_(True)
                 )
             ) or 0
-            r["escalation_count"] = s.scalar(
-                select(func.count()).select_from(EscalationRow).where(EscalationRow.case_id == cid)
-            ) or 0
+            esc_rows = s.scalars(
+                select(EscalationRow).where(EscalationRow.case_id == cid).order_by(EscalationRow.at)
+            ).all()
+            r["escalation_count"] = len(esc_rows)
+            cfg = CONFIGS.get(r.get("configuration") or "")
+            r["configuration_label"] = cfg.label if cfg else r.get("configuration")
+            r["escalations"] = [
+                escalation_summary({**json.loads(e.payload or "{}"), "escalation_id": e.escalation_id,
+                                    "role": e.role, "status": e.status, "at": e.at})
+                for e in esc_rows
+            ]
             current = r.get("current_revision_id")
             r["acknowledges_current"] = bool(current) and bool(s.scalar(
                 select(func.count()).select_from(AcknowledgmentRow).where(
@@ -1005,7 +1040,11 @@ def run_trace(run_id: str) -> dict[str, Any]:
     return {
         "run_id": run_id,
         "case_id": rt.case_id,
+        "scenario_id": rt.scenario_id,
         "configuration": rt.config.name,
+        "configuration_label": rt.config.label,
+        "state": rt.state.value,
+        "escalations": [escalation_summary(e) for e in rt.escalations],
         "kb_index_sha256": retriever.index_sha256(),
         "steps": steps,
         "note": (

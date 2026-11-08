@@ -1,6 +1,10 @@
 import { useState } from "react";
-import { api } from "../api/client";
-import { Banner, Chip, Empty, Panel, Spinner, fmtTime, stateTone, useAsync } from "../ui";
+import { api, currentOwner } from "../api/client";
+import { Banner, Empty, Panel, Spinner, StateBadge, fmtTime, useAsync } from "../ui";
+import { Chip } from "../ui";
+import { Provenance } from "../components";
+import { lookup, roleLabel, scenarioKey } from "../labels";
+import "../styles/scenarios.css";
 
 const CONFIGS = [
   { id: "resultrelay_council", label: "ResultRelay + agent council" },
@@ -9,6 +13,17 @@ const CONFIGS = [
   { id: "static_rules", label: "Conventional rules" },
   { id: "policy_blind", label: "Policy-blind" },
 ];
+const CLOSED = ["COMMUNICATION_DOCUMENTED", "CORRECTED_RESULT_ACKNOWLEDGED"];
+const SHORT: Record<string, string> = { resultrelay_council: "ResultRelay", resultrelay: "ResultRelay (rules only)" };
+
+/** What a configuration did, in a clause: "closes the case", "hands it to the supervisor on duty", or its state label. */
+function did(run: any): string {
+  const st: string = run.runtime.state;
+  if (CLOSED.includes(st)) return "closes the case";
+  const owner = currentOwner(run.trace?.escalations);
+  if (st.startsWith("ESCALATION") && owner) return `hands it to the ${roleLabel(owner.role).toLowerCase()}`;
+  return `ends at \u201c${lookup("state", st, { role: owner?.role }).label}\u201d`;
+}
 
 /**
  * One scenario, two configurations, same seed. This is the screen that makes the claim checkable:
@@ -17,8 +32,8 @@ const CONFIGS = [
 export default function Compare() {
   const scenarios = useAsync<{ scenarios: any[] }>(() => api.scenarios(), []);
   const [scenario, setScenario] = useState<string>("S9-reply-from-someone-else");
-  const [left, setLeft] = useState("resultrelay_council");
-  const [right, setRight] = useState("resultrelay");
+  const [left, setLeft] = useState("policy_blind");
+  const [right, setRight] = useState("resultrelay_council");
   const [busy, setBusy] = useState(false);
   const [runs, setRuns] = useState<Record<string, any> | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -52,17 +67,17 @@ export default function Compare() {
       }
     : null;
 
+  const nameOf = (id: string) => SHORT[id] ?? CONFIGS.find((c) => c.id === id)?.label ?? id;
+  const verdict = (() => {
+    if (!runs || !runs[left] || !runs[right] || !diff) return "";
+    const tail = scenarioKey(scenario) === "S9" && CLOSED.includes(runs[left].runtime.state) ? " on the daughter\u2019s reply" : "";
+    if (!diff.state) return `${nameOf(left)} and ${nameOf(right)} reach the same outcome on this scenario: both ${did(runs[left])}.`;
+    return `${nameOf(left)} ${did(runs[left])}${tail}; ${nameOf(right)} ${did(runs[right])}.`;
+  })();
+
   return (
     <div className="stack">
-      <Banner tone="info">
-        <span>
-          The same synthetic scenario is executed twice, once per configuration, from the same seed. Any difference
-          in the two columns is attributable to the policy layer, because the scenario, the transport plan and the
-          event order are identical.
-        </span>
-      </Banner>
-
-      <Panel title="Run a comparison">
+      <Panel title="Run a comparison" hint="same scenario, same seed, two configurations">
         <div className="row" style={{ gap: 10, flexWrap: "wrap" }}>
           <select value={scenario} onChange={(e) => setScenario(e.target.value)} style={{ width: 340 }} aria-label="scenario">
             {list.map((s: any) => (
@@ -87,18 +102,22 @@ export default function Compare() {
           </button>
         </div>
         {left === right && <div className="tiny muted">Pick two different configurations.</div>}
+        <div style={{ marginTop: 10 }}><Provenance scenarioId={scenario} size="strip" /></div>
         {error && <Empty>{error}</Empty>}
       </Panel>
 
       {runs && diff && (
         <>
-        <div className="row" style={{ alignItems: "flex-start", gap: 16, flexWrap: "wrap" }}>
+        <div className={`verdict${diff.state ? "" : " same"}`} data-video="verdict">
+          {verdict}
+        </div>
+        <div className="cmp-cols">
           {[left, right].map((cfg) => {
             const r = runs[cfg];
             const finalState = r.runtime.state;
             const differs = cfg === left ? null : runs[left].runtime.state !== finalState;
             return (
-              <div key={cfg} style={{ flex: "1 1 400px", minWidth: 340 }}>
+              <div key={cfg} data-video={cfg === left ? "result-left" : "result-right"}>
               <Panel
                 title={CONFIGS.find((c) => c.id === cfg)?.label ?? cfg}
                 hint={
@@ -113,9 +132,7 @@ export default function Compare() {
               >
                 <div className="stack" style={{ gap: 8 }}>
                   <div className="row" style={{ gap: 8 }}>
-                    <Chip tone={stateTone(finalState)}>
-                      {finalState}
-                    </Chip>
+                    <StateBadge code={finalState} role={currentOwner(r.trace?.escalations)?.role} size="lg" />
                     <span className="tiny muted">{r.runtime.attempts.length} attempt(s)</span>
                   </div>
 

@@ -1,3 +1,5 @@
+import type { CaseRowV4, EscalationSummary, ScenarioInfo, ScenariosResponse, TraceResponse } from "../types";
+
 const BASE = "/api";
 
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
@@ -44,4 +46,25 @@ export const api = {
   stateMachine: () => req<any>("/meta/state-machine"),
   evaluate: () => req<any>("/evaluation/run", { method: "POST", body: JSON.stringify({}) }),
   latestEvaluation: () => req<any>("/evaluation/latest"),
+
+  /* v4 typed helpers (same endpoints; the untyped ones above keep working) */
+  scenariosTyped: () => req<ScenariosResponse>("/scenarios"),
+  casesTyped: (qs = "") => req<{ cases: CaseRowV4[]; count: number }>(`/cases${qs}`),
+  traceTyped: (runId: string) => req<TraceResponse>(`/runs/${runId}/trace`),
+  injectEvent: (runId: string, body: Record<string, unknown>) =>
+    req<any>(`/runs/${runId}/events`, { method: "POST", body: JSON.stringify(body) }),
 };
+
+/** The current owner of a case: the newest escalation that is still open or in review. */
+export function currentOwner(escalations: EscalationSummary[] | undefined | null): EscalationSummary | null {
+  const live = (escalations ?? []).filter((e) => e.status === "OPEN" || e.status === "IN_REVIEW");
+  return live.length ? live[live.length - 1] : null;
+}
+
+let scenarioCache: Promise<ScenariosResponse> | null = null;
+/** Cached GET /scenarios (scenarios are static files; one fetch per page load). */
+export function loadScenarios(): Promise<ScenariosResponse> {
+  if (!scenarioCache) scenarioCache = api.scenariosTyped().catch((e) => { scenarioCache = null; throw e; });
+  return scenarioCache;
+}
+export type { ScenarioInfo };

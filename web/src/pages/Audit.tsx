@@ -1,6 +1,45 @@
 import { useState } from "react";
 import { api } from "../api/client";
-import { Banner, Chip, Empty, Panel, Skeleton, fmtTime, shortHash, useAsync } from "../ui";
+import { Banner, Empty, Glyph, Panel, Skeleton, fmtTime, humanise, shortHash, useAsync } from "../ui";
+import { TrustTag } from "../components";
+import "../styles/evidence.css";
+
+/** Who acted: AI agents get the dashed mark, code and the gate their own, people the filled one. */
+function By({ actor }: { actor: string }) {
+  const a = String(actor ?? "");
+  if (a.startsWith("AGENT:")) return <TrustTag kind="ai" who={humanise("agent", a.slice(6))} />;
+  if (a.includes("ASSURANCE")) return <TrustTag kind="code" />;
+  if (a.startsWith("ORCHESTRATOR") || a === "GATE" || a.includes("GATE")) return <TrustTag kind="gate" label="Gate / orchestrator" />;
+  if (a === "SYSTEM" || a === "NETWORK" || a === "LAB") return <TrustTag kind="code" label={a === "LAB" ? "Laboratory system" : a === "NETWORK" ? "Delivery network" : "System"} />;
+  return <TrustTag kind="person" who={humanise("role", a)} />;
+}
+
+function short(v: any, n = 90): string {
+  const t0 = typeof v === "string" ? v : v && typeof v === "object" ? String(v.choice ?? v.text ?? v.noul ?? "") : String(v ?? "");
+  const t = t0.replace(/\*\*/g, "");
+  return t.length > n ? t.slice(0, n).replace(/\s+\S*$/, "") + "…" : t;
+}
+
+/** Humanised one-line summary; never raw JSON. */
+function Summary({ e }: { e: any }) {
+  let text: string = String(e.summary ?? "");
+  const p = e.payload ?? {};
+  if (e.event === "agent.message") {
+    const who = humanise("agent", p.role);
+    const a = p.answers ?? {};
+    const lead = a.rationale ? short(a.rationale, 110) : a.objection ? humanise("objection", a.objection) : a.obligation ? humanise("obligation", short(a.obligation)) : humanise("agentStatus", p.status);
+    text = `${who} answered: ${lead}`;
+  } else if (/[{][\"]/.test(text)) {
+    text = text.replace(/:\s*[{].*$/s, "").trim() || humanise("event", e.event);
+  }
+  const raw = e.payload && Object.keys(e.payload).length ? JSON.stringify(e.payload, null, 2) : null;
+  return (
+    <div className="audit-sum">
+      <div>{text}</div>
+      {raw && <details><summary>Full payload</summary><pre>{raw}</pre></details>}
+    </div>
+  );
+}
 
 export default function Audit() {
   const list = useAsync<{ cases: any[]; count: number }>(() => api.cases(), []);
@@ -65,10 +104,13 @@ export default function Audit() {
         {audit.loading && caseId !== null && <div className="panel-body"><Skeleton height={100} /></div>}
         {audit.data && (
           <div className="panel-body">
-            <div className="row-wrap" style={{ marginBottom: 12 }}>
-              <Chip tone={audit.data.chain_valid ? "ok" : "bad"}>
-                {audit.data.chain_valid ? "chain valid" : `broken at ${audit.data.broken_sequences.join(", ")}`}
-              </Chip>
+            <div className={`audit-verdict${audit.data.chain_valid ? "" : " broken"}`} data-video="audit-verdict">
+              <Glyph name={audit.data.chain_valid ? "check" : "crit"} size={audit.data.chain_valid ? 16 : 12} toned={!audit.data.chain_valid} />
+              <span className="av-text">
+                {audit.data.chain_valid
+                  ? `Chain intact: ${audit.data.count} entries re-verified from stored rows`
+                  : `Chain broken at entry ${audit.data.broken_sequences[0]}`}
+              </span>
               <span className="mono tiny muted">run {audit.data.run_id}</span>
               <span className="tiny muted">{audit.data.verification}</span>
             </div>
@@ -79,7 +121,7 @@ export default function Audit() {
                     <th className="num">Seq</th>
                     <th>At</th>
                     <th>Event</th>
-                    <th>Actor</th>
+                    <th>By</th>
                     <th>Summary</th>
                     <th>Prev</th>
                     <th>Hash</th>
@@ -90,9 +132,9 @@ export default function Audit() {
                     <tr key={e.seq}>
                       <td className="num">{e.seq}</td>
                       <td className="mono tiny">{fmtTime(e.at)}</td>
-                      <td className="mono tiny">{e.event}</td>
-                      <td className="mono tiny">{e.actor}</td>
-                      <td className="small" style={{ maxWidth: 380 }}>{e.summary}</td>
+                      <td className="small" title={e.event}>{humanise("event", e.event)}</td>
+                      <td><By actor={e.actor} /></td>
+                      <td className="small" style={{ maxWidth: 420 }}><Summary e={e} /></td>
                       <td className="mono tiny muted">{shortHash(e.prev_hash)}</td>
                       <td className="mono tiny">{shortHash(e.hash)}</td>
                     </tr>

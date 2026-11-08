@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { api } from "../api/client";
-import { Banner, Chip, Empty, Panel, Spinner, Skeleton, fmtTime, statusTone, useAsync } from "../ui";
+import { Banner, Chip, Empty, Panel, Spinner, Skeleton, fmtTime, humanise, useAsync } from "../ui";
+import "../styles/evidence.css";
 
 const ASSERTION_LABELS: Record<string, string> = {
   no_delivery_without_matched_receipt: "No delivery without a matched receipt",
@@ -43,6 +44,14 @@ export default function Evaluation() {
 
   const report = result ?? latest.data;
   const summary: Record<string, any> = report?.summary?.by_configuration ?? {};
+  const safeSet = (cfg: string) => new Set<string>(
+    (report?.runs ?? []).filter((r: any) => r.configuration === cfg && r.all_assertions_passed && (r.expected_safe_states ?? []).includes(r.final_state)).map((r: any) => String(r.scenario_id).split("-")[0])
+  );
+  const councilOnly = (() => {
+    const c = safeSet("resultrelay_council"), r = safeSet("resultrelay");
+    return Array.from(c).filter((x) => !r.has(x));
+  })();
+  const sc = summary.resultrelay_council, sr = summary.resultrelay, sp = summary.policy_blind;
 
   return (
     <div className="stack">
@@ -56,6 +65,16 @@ export default function Evaluation() {
           ))}
         </span>
       </Banner>
+
+      {sc && sr && sp && (
+        <div className="eval-headline" data-video="eval-headline">
+          <p className="eh-main">
+            With the agent council, {sc.scenarios_fully_safe} of {sc.runs} scenarios end safely; rules only, {sr.scenarios_fully_safe}; policy-blind, {sp.scenarios_fully_safe}.
+            {councilOnly.length ? ` ${councilOnly.join(", ")} ${councilOnly.length === 1 ? "is" : "are"} safe only with the council.` : ""}
+          </p>
+          <p className="eh-sub">&ldquo;Safe&rdquo; means the case ended in an outcome the authors listed as acceptable and every invariant held.</p>
+        </div>
+      )}
 
       <Panel
         title="Evaluation run"
@@ -95,15 +114,13 @@ export default function Evaluation() {
                 {Object.entries(summary)
                   .sort(([, a]: any, [, b]: any) => b.scenarios_fully_safe - a.scenarios_fully_safe)
                   .map(([name, s]: any) => (
-                  <tr key={name}>
+                  <tr key={name} className={name === "resultrelay_council" ? "council-row" : undefined} data-video={name === "resultrelay_council" ? "eval-council-row" : undefined}>
                     <td>
-                      <div className="mono small">{name}</div>
+                      <div className="small" title={name}>{humanise("config", name)}</div>
                       <div className="tiny muted">{s.label}</div>
                     </td>
                     <td className="num">
-                      <Chip tone={s.scenarios_fully_safe === s.runs ? "ok" : s.scenarios_fully_safe === 0 ? "bad" : "warn"}>
-                        {s.scenarios_fully_safe}/{s.runs}
-                      </Chip>
+                      {s.scenarios_fully_safe}/{s.runs}
                     </td>
                     <td className="num">
                       {s.assertions_passed}/{s.assertions_total}
@@ -115,7 +132,7 @@ export default function Evaluation() {
                     <td className="num">{s.scope_violations}</td>
                     <td className="num">{s.comparator_cited_as_binding}</td>
                     <td className="num">{s.mean_provenance_completeness.toFixed(2)}</td>
-                    <td>{s.replay_reproducible ? <Chip tone="ok">stable</Chip> : <Chip tone="bad">drift</Chip>}</td>
+                    <td>{s.replay_reproducible ? "stable" : <Chip tone="bad">drift</Chip>}</td>
                   </tr>
                 ))}
               </tbody>
@@ -209,7 +226,7 @@ function PerScenario({ runs }: { runs: any[] }) {
             <tr>
               <th>Scenario</th>
               {configs.map((c) => (
-                <th key={c}>{c}</th>
+                <th key={c} title={c}>{humanise("config", c)}</th>
               ))}
             </tr>
           </thead>
@@ -225,16 +242,14 @@ function PerScenario({ runs }: { runs: any[] }) {
                   return (
                     <td key={c}>
                       <div className="row" style={{ gap: 6, flexWrap: "wrap" }}>
-                        <Chip tone={failed.length === 0 ? "ok" : failed.length >= 3 ? "bad" : "warn"}>
-                          {r.assertions_passed}/{r.assertions_total}
-                        </Chip>
+                        <span className="small">{r.assertions_passed}/{r.assertions_total}</span>
                         {r.final_state && (
                           <span
                             className="mono tiny muted"
                             title={r.final_state}
                             style={{ overflowWrap: "anywhere", whiteSpace: "normal" }}
                           >
-                            {r.final_state}
+                            {humanise("state", r.final_state)}
                           </span>
                         )}
                       </div>

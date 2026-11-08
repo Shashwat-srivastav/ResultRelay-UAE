@@ -1437,13 +1437,20 @@ def list_scenarios() -> list[dict[str, Any]]:
     out = []
     for path in sorted(SCENARIO_DIR.glob("*.json")):
         data = json.loads(path.read_text(encoding="utf-8"))
+        expected_path = SCENARIO_DIR / "expected" / path.name
+        expected = json.loads(expected_path.read_text(encoding="utf-8")) if expected_path.exists() else {}
         out.append({
             "scenario_id": data["scenario_id"],
             "title": data["title"],
+            "short_title": data.get("short_title"),
             "summary": data.get("summary", ""),
             "case_scope": data.get("case_scope", "WALK_IN"),
             "step_count": len(data.get("steps", [])),
             "variant_of": data.get("variant_of"),
+            # Where the scenario comes from (ux-research §6): None means a designed test with no
+            # incident source (S6), which the console must say rather than leave blank.
+            "provenance": data.get("provenance"),
+            "safe_final_states": expected.get("safe_final_states", []),
         })
     return out
 

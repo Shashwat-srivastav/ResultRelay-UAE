@@ -1,8 +1,9 @@
 import { useReveal } from "../design/motion";
+import "../styles/evidence.css";
 import { useState } from "react";
 import { api } from "../api/client";
 import {
-  Banner, Chip, CLASS_TONE, CLAIM_TONE, Empty, Panel, PillGroup, Skeleton, Tabs, statusTone, useAsync,
+  Banner, Chip, CLASS_TONE, CLAIM_TONE, CodeLabel, Empty, Panel, PillGroup, Skeleton, Tabs, statusTone, useAsync,
 } from "../ui";
 
 type Tab = "sources" | "search" | "gaps" | "y3172" | "readiness" | "profile";
@@ -108,7 +109,7 @@ function Sources() {
                     </div>
                   )}
                   <div className="tiny muted" style={{ marginTop: 3 }}>
-                    {r.verification_status}
+                    <CodeLabel kind="verification" code={r.verification_status} />
                   </div>
                 </td>
                 <td className="num">{r.chunk_count}</td>
@@ -193,16 +194,21 @@ function Search() {
               <Chip tone="warn">{res.data.excluded_by_filter} excluded by filter</Chip>
             )}
           </div>
-          {(res.data.notes ?? []).map((n: string, i: number) => (
-            <Banner key={i} tone="warn">{n}</Banner>
-          ))}
+          {(res.data.notes ?? []).map((n: string, i: number) =>
+            /hybrid|chroma|ollama/i.test(n) ? (
+              <div key={i} className="ev-note">Search is using keyword ranking (BM25); vector ranking needs the local embedding service.</div>
+            ) : (
+              <div key={i} className="ev-note">{n}</div>
+            )
+          )}
+          {/[؀-ۿ]/.test(q) && <div className="ev-note">Arabic terms are mapped to their English clauses.</div>}
           {res.data.chunks.length === 0 && <Empty>No excerpt in scope matches that query.</Empty>}
           <div className="stack" style={{ gap: 8 }}>
-            {res.data.chunks.map((r: any) => (
-              <div key={r.chunk_id} className="panel" style={{ boxShadow: "none" }}>
+            {res.data.chunks.map((r: any, ri: number) => (
+              <div key={r.chunk_id} className="panel" style={{ boxShadow: "none" }} data-video={ri === 0 ? "first-result" : undefined}>
                 <div className="panel-head" style={{ padding: "8px 12px" }}>
                   <div className="row" style={{ minWidth: 0 }}>
-                    <Chip tone={CLAIM_TONE[r.claim_classification] ?? "neutral"}>{r.claim_classification}</Chip>
+                    <Chip tone={CLAIM_TONE[r.claim_classification] ?? "neutral"}><CodeLabel kind="claim" code={r.claim_classification} /></Chip>
                     <span className="mono tiny">
                       {r.source_id} · {r.section_id} · printed p.{r.page_start}–{r.page_end} · {r.jurisdiction}
                     </span>
@@ -213,7 +219,7 @@ function Search() {
                   <div className="quote">{r.text}</div>
                   <div className="row-wrap" style={{ marginTop: 6 }}>
                     <Chip tone={r.excerpt_status === "VERIFIED_AGAINST_SOURCE" ? "ok" : "warn"}>
-                      {r.excerpt_status ?? "unverified this run"}
+                      {r.excerpt_status ? <CodeLabel kind="verification" code={r.excerpt_status} /> : "unverified this run"}
                     </Chip>
                     <span className="tiny muted">
                       {r.title} · {r.document_version}
@@ -274,7 +280,7 @@ function Gaps() {
           <tbody>
             {rows.map((g) => (
               <tr key={g.gap_id}>
-                <td className="mono" style={{ whiteSpace: "nowrap" }}>{g.gap_id}</td>
+                <td className="mono gap-id">{g.gap_id}</td>
                 <td style={{ maxWidth: 420 }}>
                   <div className="small">{g.question ?? g.description ?? g.gap_description}</div>
                   {g.consequence && <div className="tiny muted" style={{ marginTop: 3 }}>{g.consequence}</div>}
@@ -284,10 +290,10 @@ function Gaps() {
                     </div>
                   )}
                 </td>
-                <td><Chip tone={CLASS_TONE[g.classification] ?? "neutral"}>{g.classification}</Chip></td>
+                <td><Chip tone={CLASS_TONE[g.classification] ?? "neutral"}><CodeLabel kind="gapKind" code={g.classification} /></Chip></td>
                 <td className="mono tiny">{g.workflow_stage}</td>
                 <td className="mono tiny">{g.jurisdictions_compared}</td>
-                <td><Chip tone={g.verification_status === "VERIFIED" ? "ok" : "warn"}>{g.verification_status}</Chip></td>
+                <td><Chip tone={g.verification_status === "VERIFIED" ? "ok" : "warn"}><CodeLabel kind="verification" code={g.verification_status} /></Chip></td>
                 <td className="tiny">{g.confidence}</td>
               </tr>
             ))}

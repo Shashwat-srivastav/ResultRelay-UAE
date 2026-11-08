@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { api } from "../api/client";
+import { api, currentOwner } from "../api/client";
 import {
-  Banner, Chip, CLAIM_TONE, Empty, Panel, Skeleton, Spinner, fmtTime, stateTone, statusTone, useAsync,
+  Banner, Chip, CLAIM_TONE, Empty, Panel, Skeleton, Spinner, StateBadge, fmtTime, statusTone, useAsync,
 } from "../ui";
+import { deadline, roleLabel } from "../labels";
+import { ChainBeam, Provenance } from "../components";
+import "../styles/scenarios.css";
 import type { Run, Step } from "../types";
 
 /** The number is a check/citation heuristic (audit finding M-1): say so where it is rendered. */
@@ -103,18 +106,14 @@ export default function Simulator() {
     URL.revokeObjectURL(a.href);
   }
 
+  const owner = run ? currentOwner(run.escalations as any) : null;
+  const dl = owner ? deadline(owner.due_at, steps.length ? steps[steps.length - 1].at : null) : null;
+  const chainStates = run ? (steps.length ? steps.map((x) => x.resulting_state) : [run.state]) : [];
   const progress = total ? Math.min(100, (steps.length / total) * 100) : 0;
 
   return (
     <div className="stack">
-      <Banner tone="info">
-        <span>
-          A scenario is a fixed list of synthetic events released in order. Step it to watch the workflow
-          decide; the same scenario under a different configuration shows what each control is doing.
-        </span>
-      </Banner>
-
-      <Panel title="Run a scenario" hint="12 scenarios · 12 configurations">
+      <Panel title="Run a scenario" hint="a fixed list of events, released in order">
         <div className="grid cols-4" style={{ alignItems: "end" }}>
           <div className="field" style={{ gridColumn: "span 2" }}>
             <label htmlFor="scenario">Scenario</label>
@@ -151,6 +150,11 @@ export default function Simulator() {
           </div>
         </div>
 
+        {scenarioId && (
+          <div className="sim-prov">
+            <Provenance scenarioId={scenarioId} provenance={selectedScenario?.provenance} size="strip" />
+          </div>
+        )}
         {selectedScenario && (
           <div style={{ marginTop: 12 }}>
             <div className="small">{selectedScenario.summary}</div>
@@ -170,6 +174,7 @@ export default function Simulator() {
       {run && (
         <>
           <div className="grid split-8-4">
+            <div data-video="case-state">
             <Panel
               title="Case state"
               hint={`${run.case_id} · ${run.configuration}`}
@@ -188,8 +193,11 @@ export default function Simulator() {
               }
             >
               <div className="row-wrap" style={{ marginBottom: 10 }}>
-                <Chip tone={stateTone(run.state)} >{run.state}</Chip>
+                <StateBadge code={run.state} role={owner?.role} size="lg" />
                 <span className="small muted">{run.state_description}</span>
+              </div>
+              <div style={{ marginBottom: 12 }}>
+                <ChainBeam states={chainStates} role={owner?.role} />
               </div>
               <div style={{ height: 6, background: "#eef1f4", borderRadius: 3, overflow: "hidden" }}>
                 <div
@@ -202,6 +210,25 @@ export default function Simulator() {
               <div className="spread" style={{ marginTop: 6 }}>
                 <span className="tiny muted">{steps.length} of {total} events released</span>
                 {done && <Chip tone="ok">run complete</Chip>}
+              </div>
+
+              <div className="owner-card-wrap" data-video="owner-now" style={{ marginTop: 14 }}>
+                <div className={`owner-card${owner ? "" : " none"}`}>
+                  <div className="k">Owner now</div>
+                  {owner ? (
+                    <>
+                      <div className="who">{roleLabel(owner.role)}, tier {owner.tier}</div>
+                      <div className="small">
+                        {dl ? <span className={dl.overdue ? "over" : ""}>{dl.text}</span> : null}
+                        {owner.reason ? (
+                          <span className="muted">{dl ? " · " : ""}{owner.reason.split(":")[0]}</span>
+                        ) : null}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="small muted">Nobody holds this case yet. Release events to see who is handed it.</div>
+                  )}
+                </div>
               </div>
 
               <div className="layer-grid" style={{ marginTop: 14 }}>
@@ -224,10 +251,6 @@ export default function Simulator() {
                       ? "none"
                       : run.acknowledgments.map((a) => a.result_revision_id).join(", ")}
                   </div>
-                </div>
-                <div className="layer-card">
-                  <div className="k">Escalations</div>
-                  <div className="v">{run.escalations.length === 0 ? "none" : run.escalations.map((e) => e.role).join(", ")}</div>
                 </div>
                 <div className="layer-card">
                   <div className="k">Open questions</div>
@@ -265,7 +288,9 @@ export default function Simulator() {
                 </div>
               )}
             </Panel>
+            </div>
 
+            <div data-video="channel-status">
             <Panel title="Channel status" hint="transport layer, per run" flush>
               <div className="table-wrap" style={{ maxHeight: 300 }}>
                 <table>
@@ -280,7 +305,7 @@ export default function Simulator() {
                           </div>
                         </td>
                         <td style={{ textAlign: "right" }}>
-                          <Chip tone={c.status === "UP" ? "ok" : c.status === "DEGRADED" ? "warn" : "bad"}>{c.status}</Chip>
+                          <Chip tone={c.status === "UP" ? "ok" : c.status === "DEGRADED" ? "warn" : "bad"}>{c.status === "UP" ? "Up" : c.status === "DEGRADED" ? "Degraded" : "Down"}</Chip>
                           {c.note && <div className="tiny muted" style={{ marginTop: 3 }}>{c.note}</div>}
                         </td>
                       </tr>
@@ -289,6 +314,7 @@ export default function Simulator() {
                 </table>
               </div>
             </Panel>
+            </div>
           </div>
 
           <Panel title="Released events" hint={`${steps.length} processed`} flush>
@@ -327,7 +353,7 @@ function StepCard({ s, open, onToggle }: { s: Step; open: boolean; onToggle: () 
         <div className="row" style={{ flex: "none" }}>
           <span className="mono tiny muted">{fmtTime(s.at)}</span>
           {s.transitions.map((t, i) => (
-            <Chip key={i} tone={statusTone(t.status)}>{t.resulting_state}</Chip>
+            <StateBadge key={i} code={t.resulting_state} />
           ))}
           <span className="muted">{open ? "▾" : "▸"}</span>
         </div>
@@ -335,9 +361,9 @@ function StepCard({ s, open, onToggle }: { s: Step; open: boolean; onToggle: () 
 
       <div className="panel-body" style={{ paddingTop: 12 }}>
         <div className="row-wrap" style={{ marginBottom: 10 }}>
-          <Chip tone="outline">{s.prior_state}</Chip>
+          <StateBadge code={s.prior_state} size="md" />
           <span className="muted">→</span>
-          <Chip tone={stateTone(s.resulting_state)}>{s.resulting_state}</Chip>
+          <StateBadge code={s.resulting_state} />
           {s.proposed_action && (
             <>
               <span className="muted tiny">proposed</span>

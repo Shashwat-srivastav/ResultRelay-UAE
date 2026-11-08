@@ -93,3 +93,59 @@ export interface Run {
   audit_chain_valid: boolean;
   synthetic: boolean;
 }
+
+/* ---- v4 console fields (GET /scenarios, GET /cases, GET /runs/:id/trace) ---- */
+
+export interface ProvenanceSource { title: string; url: string }
+
+/** scenarios/*.json `provenance`. `match` drives the honesty tier (ux-research §6.2). */
+export interface ScenarioProvenance {
+  note: string;
+  match: string; // "very strong" | "almost exact" | "strong" | "close" | "related" | "related, not exact"
+  failure_mode: string;
+  sources: ProvenanceSource[];
+}
+
+export interface ScenarioInfo {
+  scenario_id: string;
+  title: string;
+  short_title?: string | null;
+  summary: string;
+  case_scope: string;
+  step_count: number;
+  variant_of?: string | null;
+  provenance: ScenarioProvenance | null; // null = designed test (S6)
+  safe_final_states: string[];
+}
+
+export interface ScenariosResponse {
+  scenarios: ScenarioInfo[];
+  configurations: Record<string, { label: string; description: string }>;
+}
+
+/** Owner and deadline of an escalation. `due_at` is ISO 8601 on the simulated clock. */
+export interface EscalationSummary {
+  escalation_id: string;
+  role: string;          // SUPERVISOR | CLINICAL_LEAD
+  status: string;        // OPEN | IN_REVIEW | CLOSED_ON_COMPLETION
+  tier: number;          // 1, 2, …
+  reason: string;
+  triggered_by?: string | null;
+  at?: string | null;
+  due_by_minutes?: number | null;
+  due_at?: string | null;
+}
+
+export interface CaseRowV4 {
+  case_id: string; run_id: string; scenario_id: string; configuration: string; configuration_label: string;
+  title: string; jurisdiction: string; facility_type: string; case_scope: string; current_state: string;
+  current_revision_id?: string | null; created_at: string; updated_at: string;
+  revision_count: number; acknowledgment_count: number; delivered_attempts: number;
+  escalation_count: number; escalations: EscalationSummary[];
+  acknowledges_current: boolean; open_questions: string[]; blocking_conditions: string[];
+}
+
+export interface TraceResponse {
+  run_id: string; case_id: string; scenario_id: string; configuration: string; configuration_label: string;
+  state: string; escalations: EscalationSummary[]; kb_index_sha256: string; steps: any[]; note: string;
+}

@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { api } from "../api/client";
 import {
-  Banner, Chip, Empty, Panel, PillGroup, Skeleton, Tabs, fmtTime, stateTone, statusTone, useAsync,
+  Banner, Chip, Empty, Panel, PillGroup, Skeleton, StateBadge, Tabs, fmtTime, statusTone, useAsync,
 } from "../ui";
 
 const LAYERS = [
@@ -88,7 +88,7 @@ export default function CaseTimeline() {
                     <td className="mono">{r.case_id}</td>
                     <td className="truncate" style={{ maxWidth: 170 }}>{r.scenario_id}</td>
                     <td><Chip tone={r.configuration === "resultrelay" ? "ok" : "neutral"}>{r.configuration}</Chip></td>
-                    <td><Chip tone={stateTone(r.current_state)}>{r.current_state}</Chip></td>
+                    <td><StateBadge code={r.current_state} /></td>
                     <td className="mono tiny">{r.current_revision_id ?? "—"}</td>
                     <td>
                       {r.acknowledgment_count === 0 ? (
@@ -136,7 +136,7 @@ export default function CaseTimeline() {
           <div className="grid cols-4">
             <div className="panel metric">
               <div className="label">Current state</div>
-              <div style={{ marginTop: 8 }}><Chip tone={stateTone(d.case.current_state)}>{d.case.current_state}</Chip></div>
+              <div style={{ marginTop: 8 }}><StateBadge code={d.case.current_state} size="lg" /></div>
               <div className="sub">{d.case.jurisdiction} · {d.case.facility_type} · {d.case.case_scope}</div>
             </div>
             <div className="panel metric">
@@ -281,7 +281,7 @@ export default function CaseTimeline() {
                           <td className="num">{t.step}</td>
                           <td className="mono tiny">{t.trigger_event}</td>
                           <td className="mono tiny">
-                            {t.prior_state} → <strong>{t.resulting_state}</strong>
+                            <StateBadge code={t.prior_state} /> → <StateBadge code={t.resulting_state} />
                           </td>
                           <td><Chip tone={statusTone(t.status)}>{t.status}</Chip></td>
                           <td className="small">{t.reason}</td>
