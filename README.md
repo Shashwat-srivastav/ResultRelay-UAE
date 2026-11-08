@@ -28,7 +28,7 @@ result version, and refuses another jurisdiction's rule as binding.
 
 [![Demo video: the ResultRelay console, end to end](docs/demo_poster.png)](docs/ResultRelay_demo.mp4)
 
-**[Watch the demo (4 min 51 s, MP4)](docs/ResultRelay_demo.mp4)** · [transcript](docs/demo_transcript.md). Every
+**[Watch the demo (4 min 45 s, MP4)](docs/ResultRelay_demo.mp4)** · [transcript](docs/demo_transcript.md). Every
 screen is the console in this repository, recorded from a fresh database: a channel outage, a reply from someone
 other than the patient caught by the agent council, a genetic result with no physician channel, an escalation
 nobody answers, Arabic retrieval, the gap register, the 144-run evaluation and the audit chain.
